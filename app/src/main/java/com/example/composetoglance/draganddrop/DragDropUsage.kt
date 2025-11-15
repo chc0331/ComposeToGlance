@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -101,8 +103,8 @@ fun MainContent() {
                 }
             }
 
-            WidgetsList(
-                widgetList = widgets,
+            BottomPanelWithTabs(
+                widgets = widgets,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -110,10 +112,40 @@ fun MainContent() {
 }
 
 @Composable
+fun BottomPanelWithTabs(widgets: List<Widget>, modifier: Modifier = Modifier) {
+    var tabIndex by remember { mutableStateOf(0) }
+    val tabs = listOf("레이아웃", "위젯")
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        TabRow(selectedTabIndex = tabIndex) {
+            tabs.forEachIndexed { index, title ->
+                Tab(selected = tabIndex == index,
+                    onClick = { tabIndex = index },
+                    text = { Text(text = title) })
+            }
+        }
+        when (tabIndex) {
+            0 -> LayoutsTabContent()
+            1 -> WidgetsList(widgetList = widgets, modifier = Modifier.fillMaxSize())
+        }
+    }
+}
+
+@Composable
+fun LayoutsTabContent() {
+    Box(
+        modifier = Modifier.fillMaxSize().background(Color(R.color.bottom_panel_background_color.toColor())),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("레이아웃 탭")
+    }
+}
+
+@Composable
 fun WidgetsList(widgetList: List<Widget>, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(Color(R.color.bottom_panel_background_color.toColor())),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
