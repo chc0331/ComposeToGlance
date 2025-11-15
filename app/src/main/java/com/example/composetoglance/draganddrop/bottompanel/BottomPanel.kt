@@ -1,24 +1,17 @@
 package com.example.composetoglance.draganddrop.bottompanel
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -34,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.R
+import com.example.composetoglance.draganddrop.layout.DragTargetLayoutComponent
+import com.example.composetoglance.draganddrop.layout.Layout
 import com.example.composetoglance.draganddrop.widget.DragTargetWidgetItem
 import com.example.composetoglance.draganddrop.widget.Widget
 import com.example.composetoglance.util.toColor
@@ -89,49 +84,8 @@ fun LayoutTypeSection(title: String, layoutType: String, components: List<String
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(components) { componentType ->
-                LayoutComponent(componentType, layoutType)
+                DragTargetLayoutComponent(data = Layout(componentType, layoutType))
             }
-        }
-    }
-}
-
-@Composable
-fun LayoutComponent(type: String, layoutType: String) {
-    val (width, height) = when (layoutType) {
-        "Small" -> Pair(105.dp, 45.dp)
-        "Medium" -> Pair(90.dp, 90.dp)
-        "Large" -> Pair(180.dp, 90.dp)
-        else -> Pair(105.dp, 45.dp) // Default to Small
-    }
-
-    Box(
-        modifier = Modifier
-            .size(width, height)
-            .background(Color.LightGray)
-            .border(1.dp, Color.DarkGray),
-        contentAlignment = Alignment.Center
-    ) {
-        when (type) {
-            "Full" -> Box(modifier = Modifier.fillMaxSize()) { Text(type, Modifier.align(Alignment.Center)) }
-            "1:1" -> Row {
-                Box(modifier = Modifier.weight(1f).fillMaxHeight()) { Text("1", Modifier.align(Alignment.Center)) }
-                Divider(modifier = Modifier.fillMaxHeight().width(1.dp), color = Color.DarkGray)
-                Box(modifier = Modifier.weight(1f).fillMaxHeight()) { Text("1", Modifier.align(Alignment.Center)) }
-            }
-            "1:N" -> Row {
-                Box(
-                    modifier = Modifier
-                        .width(height) // Set width equal to height to make a square
-                        .fillMaxHeight()
-                ) { Text("1", Modifier.align(Alignment.Center)) }
-                Divider(modifier = Modifier.fillMaxHeight().width(1.dp), color = Color.DarkGray)
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f) // Fill remaining space
-                ) { Text("N", Modifier.align(Alignment.Center)) }
-            }
-            else -> Text(type)
         }
     }
 }

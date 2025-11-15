@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.draganddrop.DropTarget
 import com.example.composetoglance.draganddrop.LocalDragTargetInfo
+import com.example.composetoglance.draganddrop.layout.Layout
+import com.example.composetoglance.draganddrop.layout.LayoutComponent
+import com.example.composetoglance.draganddrop.layout.PositionedLayout
 import com.example.composetoglance.draganddrop.widget.PositionedWidget
 import com.example.composetoglance.draganddrop.widget.Widget
 import com.example.composetoglance.draganddrop.widget.WidgetItem
@@ -29,7 +32,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WidgetCanvas(modifier: Modifier = Modifier) {
-    val canvasWidgets = remember { mutableStateListOf<PositionedWidget>() }
+    val canvasItems = remember { mutableStateListOf<Any>() }
     var canvasPosition by remember { mutableStateOf(Offset.Zero) }
     val density = LocalDensity.current
 
@@ -41,36 +44,58 @@ fun WidgetCanvas(modifier: Modifier = Modifier) {
             }
     ) {
         val dragInfo = LocalDragTargetInfo.current
-        DropTarget<Widget>(modifier = Modifier.fillMaxSize()) { isInBound, droppedWidget ->
-            if (isInBound && droppedWidget != null && !dragInfo.itemDropped) {
+        DropTarget(modifier = Modifier.fillMaxSize()) { isInBound, droppedItem ->
+            if (isInBound && droppedItem != null && !dragInfo.itemDropped) {
                 val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
                 val relativeOffset = dropPositionInWindow - canvasPosition
 
-                val widgetSizePx = with(density) { 50.dp.toPx() }
-
-                val adjustedOffset = Offset(
-                    x = relativeOffset.x - widgetSizePx / 2,
-                    y = relativeOffset.y - widgetSizePx / 2
-                )
-
-                canvasWidgets.add(PositionedWidget(droppedWidget, adjustedOffset))
+                when (droppedItem) {
+                    is Widget -> {
+                        val widgetSizePx = with(density) { 50.dp.toPx() }
+                        val adjustedOffset = Offset(relativeOffset.x - widgetSizePx / 2, relativeOffset.y - widgetSizePx / 2)
+                        canvasItems.add(PositionedWidget(droppedItem, adjustedOffset))
+                    }
+                    is Layout -> {
+                        val (width, height) = when (droppedItem.sizeType) {
+                            "Small" -> Pair(105.dp, 45.dp)
+                            "Medium" -> Pair(90.dp, 90.dp)
+                            "Large" -> Pair(180.dp, 90.dp)
+                            else -> Pair(105.dp, 45.dp)
+                        }
+                        val adjustedOffset = Offset(
+                            relativeOffset.x - with(density) { width.toPx() } / 2,
+                            relativeOffset.y - with(density) { height.toPx() } / 2
+                        )
+                        canvasItems.add(PositionedLayout(droppedItem, adjustedOffset))
+                    }
+                }
                 dragInfo.itemDropped = true
             }
         }
 
-        if (canvasWidgets.isEmpty()) {
+        if (canvasItems.isEmpty()) {
             Text("위젯 캔버스", modifier = Modifier.align(Alignment.Center))
         } else {
-            canvasWidgets.forEach { positionedWidget ->
-                Box(
-                    modifier = Modifier.offset {
-                        IntOffset(
-                            positionedWidget.offset.x.roundToInt(),
-                            positionedWidget.offset.y.roundToInt()
-                        )
+            canvasItems.forEach { item ->
+                when (item) {
+                    is PositionedWidget -> {
+                        Box(
+                            modifier = Modifier.offset {
+                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
+                            }
+                        ) {
+                            WidgetItem(data = item.widget, shouldAnimate = false)
+                        }
                     }
-                ) {
-                    WidgetItem(data = positionedWidget.widget, shouldAnimate = false)
+                    is PositionedLayout -> {
+                        Box(
+                            modifier = Modifier.offset {
+                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
+                            }
+                        ) {
+                            LayoutComponent(type = item.layout.type, layoutType = item.layout.sizeType, shouldAnimate = false)
+                        }
+                    }
                 }
             }
         }

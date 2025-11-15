@@ -34,7 +34,6 @@ internal class DragTargetInfo {
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
-
 @Composable
 fun LongPressDrawable(
     modifier: Modifier = Modifier,
@@ -91,7 +90,7 @@ fun DragTarget(
             .pointerInput(Unit) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = {
-                        currentState.dragOffset = Offset.Zero // BUG FIX: Reset offset here
+                        currentState.dragOffset = Offset.Zero
                         currentState.dataToDrop = dataToDrop
                         currentState.isDragging = true
                         currentState.dragPosition = currentPosition + it
@@ -104,7 +103,7 @@ fun DragTarget(
                         currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
 
                     }, onDragEnd = {
-                        currentState.isDragging = false // BUG FIX: Do NOT reset offset here
+                        currentState.isDragging = false
                     }, onDragCancel = {
                         currentState.isDragging = false
                         currentState.dragOffset = Offset.Zero
@@ -116,9 +115,9 @@ fun DragTarget(
 }
 
 @Composable
-fun <T> DropTarget(
+fun DropTarget(
     modifier: Modifier,
-    content: @Composable() (BoxScope.(isInBound: Boolean, data: T?) -> Unit)
+    content: @Composable() (BoxScope.(isInBound: Boolean, data: Any?) -> Unit)
 ) {
     val dragInfo = LocalDragTargetInfo.current
     val dragPosition = dragInfo.dragPosition
@@ -136,7 +135,7 @@ fun <T> DropTarget(
             }
     ) {
         val data =
-            if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop as T? else null
+            if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop else null
         content(isCurrentDropTarget, data)
     }
 }
