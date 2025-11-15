@@ -5,9 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -20,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.composetoglance.R
 import com.example.composetoglance.draganddrop.widget.DragTargetWidgetItem
 import com.example.composetoglance.draganddrop.widget.Widget
@@ -48,11 +55,59 @@ fun BottomPanelWithTabs(widgets: List<Widget>, modifier: Modifier = Modifier) {
 
 @Composable
 fun LayoutsTabContent() {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(R.color.bottom_panel_background_color.toColor()))
+            .padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            LayoutTypeSection("Small (2x1)", "Small", listOf("Full", "1:1", "1:N"))
+        }
+        item {
+            LayoutTypeSection("Medium (2x2)", "Medium", listOf("Full"))
+        }
+        item {
+            LayoutTypeSection("Large (4x2)", "Large", listOf("Full"))
+        }
+    }
+}
+
+@Composable
+fun LayoutTypeSection(title: String, layoutType: String, components: List<String>) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Text(text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(components) { componentType ->
+                LayoutComponent(componentType, layoutType)
+            }
+        }
+    }
+}
+
+@Composable
+fun LayoutComponent(type: String, layoutType: String) {
+    val baseUnit = 40.dp
+    val (width, height) = when (layoutType) {
+        "Small" -> Pair(baseUnit * 2, baseUnit)
+        "Medium" -> Pair(baseUnit * 2, baseUnit * 2)
+        "Large" -> Pair(baseUnit * 4, baseUnit * 2)
+        else -> Pair(baseUnit * 2, baseUnit) // Default to Small
+    }
+
     Box(
-        modifier = Modifier.fillMaxSize().background(Color(R.color.bottom_panel_background_color.toColor())),
+        modifier = Modifier
+            .size(width, height)
+            .background(Color.LightGray)
+            .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("레이아웃 탭")
+        Text(text = type)
     }
 }
 
