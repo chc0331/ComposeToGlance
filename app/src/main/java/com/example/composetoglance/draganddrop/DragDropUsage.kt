@@ -2,6 +2,7 @@ package com.example.composetoglance.draganddrop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +18,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -31,34 +34,46 @@ import com.example.composetoglance.util.toColor
 
 @Composable
 fun MainContent() {
-    // Wrap the entire horizontal pager with LongPressDraggable
-    LongPressDrawable(modifier = Modifier.fillMaxSize()) {
-        val widgetList = listOf(
+    val widgets = remember {
+        mutableStateListOf(
             Widget("1", "2"),
             Widget("2", "3")
         )
-
-        DropTarget<Widget>(modifier = Modifier.fillMaxSize()) { isInBound, droppedWidget ->
-            if (!LocalDragTargetInfo.current.itemDropped) {
-                if (isInBound) {
-                    droppedWidget?.let { widget ->
-                        LocalDragTargetInfo.current.itemDropped = true
-                        LocalDragTargetInfo.current.dataToDrop = null
+    }
+    // Wrap the entire horizontal pager with LongPressDraggable
+    LongPressDrawable(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // DropTarget at the top
+            Box(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxWidth()
+                    .background(Color.LightGray.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                DropTarget<Widget>(modifier = Modifier.fillMaxSize()) { isInBound, droppedWidget ->
+                    if (isInBound) {
+                        droppedWidget?.let {
+                            widgets.add(it)
+                        }
                     }
                 }
+                Text("위젯 캔버스")
             }
-        }
 
-        WidgetsList(widgetList)
+            WidgetsList(
+                widgetList = widgets,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
 @Composable
-fun WidgetsList(widgetList: List<Widget>) {
+fun WidgetsList(widgetList: List<Widget>, modifier: Modifier = Modifier) {
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
             .background(Color(R.color.bottom_panel_background_color.toColor())),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
