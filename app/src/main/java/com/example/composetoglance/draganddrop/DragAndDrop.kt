@@ -13,7 +13,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,20 +21,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntSize
-import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 internal class DragTargetInfo {
-    var isDragging: Boolean? by mutableStateOf(false)
+    var isDragging: Boolean by mutableStateOf(false)
     var dragPosition by mutableStateOf(Offset.Zero)
     var dragOffset by mutableStateOf(Offset.Zero)
     var draggableComposable by mutableStateOf<(@Composable () -> Unit)?>(null)
     var dataToDrop by mutableStateOf<Any?>(null)
     var itemDropped: Boolean by mutableStateOf(false)
-    var absolutePositionX: Float by mutableStateOf(0F)
-    var absolutePositionY: Float by mutableStateOf(0F)
 }
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
@@ -53,7 +47,7 @@ fun LongPressDrawable(
     ) {
         Box(modifier = modifier.fillMaxSize()) {
             content()
-            if (state.isDragging == true) {
+            if (state.isDragging) {
                 var targetSize by remember {
                     mutableStateOf(IntSize.Zero)
                 }
@@ -69,10 +63,6 @@ fun LongPressDrawable(
                         }
                         .onGloballyPositioned {
                             targetSize = it.size
-                            it.let { coordinates ->
-                                state.absolutePositionX = coordinates.positionInRoot().x
-                                state.absolutePositionY = coordinates.positionInRoot().y
-                            }
                         }
                 ) {
                     state.draggableComposable?.invoke()
@@ -90,8 +80,6 @@ fun DragTarget(
     dataToDrop: Any? = null, // change type here to your data model class
     content: @Composable (shouldAnimate: Boolean) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDragTargetInfo.current
 
@@ -103,7 +91,7 @@ fun DragTarget(
             .pointerInput(Unit) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = {
-
+                        currentState.dragOffset = Offset.Zero // BUG FIX: Reset offset here
                         currentState.dataToDrop = dataToDrop
                         currentState.isDragging = true
                         currentState.dragPosition = currentPosition + it
@@ -112,20 +100,11 @@ fun DragTarget(
                         }
                     }, onDrag = { change, dragAmount ->
                         change.consume()
-
-                        currentState.itemDropped = false // used to prevent drop target from multiple re-renders
-
+                        currentState.itemDropped = false
                         currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
 
-                        val xOffset = abs(currentState.dragOffset.x)
-                        val yOffset = abs(currentState.dragOffset.y)
-
-                        coroutineScope.launch {
-                        }
-
                     }, onDragEnd = {
-                        currentState.isDragging = false
-                        currentState.dragOffset = Offset.Zero
+                        currentState.isDragging = false // BUG FIX: Do NOT reset offset here
                     }, onDragCancel = {
                         currentState.isDragging = false
                         currentState.dragOffset = Offset.Zero
@@ -157,8 +136,7 @@ fun <T> DropTarget(
             }
     ) {
         val data =
-            if (isCurrentDropTarget && dragInfo.isDragging == false) dragInfo.dataToDrop as T? else null
+            if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop as T? else null
         content(isCurrentDropTarget, data)
     }
 }
-

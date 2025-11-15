@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,20 +16,29 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.R
 import com.example.composetoglance.util.toColor
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -41,7 +49,9 @@ fun MainContent() {
             Widget("2", "3")
         )
     }
-    val canvasWidgets = remember { mutableStateListOf<Widget>() }
+    val canvasWidgets = remember { mutableStateListOf<PositionedWidget>() }
+    var canvasPosition by remember { mutableStateOf(Offset.Zero) }
+    val density = LocalDensity.current
 
     LongPressDrawable(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -50,12 +60,25 @@ fun MainContent() {
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxWidth()
-                    .background(Color.LightGray.copy(alpha = 0.5f))
+                    .background(Color(0xFFADD8E6)) // Light Blue Background
+                    .onGloballyPositioned {
+                        canvasPosition = it.positionInWindow()
+                    }
             ) {
                 val dragInfo = LocalDragTargetInfo.current
                 DropTarget<Widget>(modifier = Modifier.fillMaxSize()) { isInBound, droppedWidget ->
                     if (isInBound && droppedWidget != null && !dragInfo.itemDropped) {
-                        canvasWidgets.add(droppedWidget)
+                        val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
+                        val relativeOffset = dropPositionInWindow - canvasPosition
+
+                        val widgetSizePx = with(density) { 50.dp.toPx() }
+
+                        val adjustedOffset = Offset(
+                            x = relativeOffset.x - widgetSizePx / 2,
+                            y = relativeOffset.y - widgetSizePx / 2
+                        )
+
+                        canvasWidgets.add(PositionedWidget(droppedWidget, adjustedOffset))
                         dragInfo.itemDropped = true
                     }
                 }
@@ -63,13 +86,16 @@ fun MainContent() {
                 if (canvasWidgets.isEmpty()) {
                     Text("위젯 캔버스", modifier = Modifier.align(Alignment.Center))
                 } else {
-                    FlowRow(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        canvasWidgets.forEach { widget ->
-                            WidgetItem(data = widget, shouldAnimate = false)
+                    canvasWidgets.forEach { positionedWidget ->
+                        Box(
+                            modifier = Modifier.offset {
+                                IntOffset(
+                                    positionedWidget.offset.x.roundToInt(),
+                                    positionedWidget.offset.y.roundToInt()
+                                )
+                            }
+                        ) {
+                            WidgetItem(data = positionedWidget.widget, shouldAnimate = false)
                         }
                     }
                 }
@@ -124,7 +150,6 @@ fun WidgetItem(
 ) {
     Column(
         modifier = Modifier
-            .padding(8.dp)
             .graphicsLayer {
                 scaleX = if (shouldAnimate) 1.2f else 1.0f
                 scaleY = if (shouldAnimate) 1.2f else 1.0f
@@ -135,15 +160,18 @@ fun WidgetItem(
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray),
+                .background(Color.DarkGray), // Dark Gray background for widget
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = data.name,
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                color = Color.White // White text for visibility
             )
         }
     }
 }
 
 data class Widget(val name: String, val description: String)
+
+data class PositionedWidget(val widget: Widget, val offset: Offset)
