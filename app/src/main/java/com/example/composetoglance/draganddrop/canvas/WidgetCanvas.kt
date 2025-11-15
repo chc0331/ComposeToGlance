@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,17 +25,23 @@ import com.example.composetoglance.draganddrop.DropTarget
 import com.example.composetoglance.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.draganddrop.layout.Layout
 import com.example.composetoglance.draganddrop.layout.LayoutComponent
-import com.example.composetoglance.draganddrop.layout.PositionedLayout
 import com.example.composetoglance.draganddrop.widget.PositionedWidget
 import com.example.composetoglance.draganddrop.widget.Widget
 import com.example.composetoglance.draganddrop.widget.WidgetItem
 import kotlin.math.roundToInt
 
 @Composable
-fun WidgetCanvas(modifier: Modifier = Modifier) {
-    val canvasItems = remember { mutableStateListOf<Any>() }
+fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
+    val positionedWidgets = remember { mutableStateListOf<PositionedWidget>() }
     var canvasPosition by remember { mutableStateOf(Offset.Zero) }
     val density = LocalDensity.current
+
+    // When a new layout is selected, clear the existing widgets.
+    LaunchedEffect(selectedLayout) {
+        if (selectedLayout != null) {
+            positionedWidgets.clear()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -49,53 +56,37 @@ fun WidgetCanvas(modifier: Modifier = Modifier) {
                 val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
                 val relativeOffset = dropPositionInWindow - canvasPosition
 
-                when (droppedItem) {
-                    is Widget -> {
-                        val widgetSizePx = with(density) { 50.dp.toPx() }
-                        val adjustedOffset = Offset(relativeOffset.x - widgetSizePx / 2, relativeOffset.y - widgetSizePx / 2)
-                        canvasItems.add(PositionedWidget(droppedItem, adjustedOffset))
-                    }
-                    is Layout -> {
-                        val (width, height) = when (droppedItem.sizeType) {
-                            "Small" -> Pair(105.dp, 45.dp)
-                            "Medium" -> Pair(90.dp, 90.dp)
-                            "Large" -> Pair(180.dp, 90.dp)
-                            else -> Pair(105.dp, 45.dp)
-                        }
-                        val adjustedOffset = Offset(
-                            relativeOffset.x - with(density) { width.toPx() } / 2,
-                            relativeOffset.y - with(density) { height.toPx() } / 2
-                        )
-                        canvasItems.add(PositionedLayout(droppedItem, adjustedOffset))
-                    }
+                if (droppedItem is Widget) {
+                    val widgetSizePx = with(density) { 50.dp.toPx() }
+                    val adjustedOffset = Offset(relativeOffset.x - widgetSizePx / 2, relativeOffset.y - widgetSizePx / 2)
+                    positionedWidgets.add(PositionedWidget(droppedItem, adjustedOffset))
+                    dragInfo.itemDropped = true
                 }
-                dragInfo.itemDropped = true
             }
         }
 
-        if (canvasItems.isEmpty()) {
+        if (selectedLayout == null && positionedWidgets.isEmpty()) {
             Text("위젯 캔버스", modifier = Modifier.align(Alignment.Center))
         } else {
-            canvasItems.forEach { item ->
-                when (item) {
-                    is PositionedWidget -> {
-                        Box(
-                            modifier = Modifier.offset {
-                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
-                            }
-                        ) {
-                            WidgetItem(data = item.widget, shouldAnimate = false)
-                        }
+            // Display selected layout in the center
+            selectedLayout?.let {
+                Box(modifier = Modifier.align(Alignment.Center)) {
+                    LayoutComponent(
+                        type = it.type,
+                        layoutType = it.sizeType,
+                        shouldAnimate = false,
+                        showText = false
+                    )
+                }
+            }
+            // Display dropped widgets
+            positionedWidgets.forEach { item ->
+                Box(
+                    modifier = Modifier.offset {
+                        IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
                     }
-                    is PositionedLayout -> {
-                        Box(
-                            modifier = Modifier.offset {
-                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
-                            }
-                        ) {
-                            LayoutComponent(type = item.layout.type, layoutType = item.layout.sizeType, shouldAnimate = false)
-                        }
-                    }
+                ) {
+                    WidgetItem(data = item.widget, shouldAnimate = false)
                 }
             }
         }

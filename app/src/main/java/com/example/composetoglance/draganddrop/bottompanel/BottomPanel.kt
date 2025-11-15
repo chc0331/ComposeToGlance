@@ -27,14 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.R
-import com.example.composetoglance.draganddrop.layout.DragTargetLayoutComponent
+import com.example.composetoglance.draganddrop.layout.ClickableLayoutComponent
 import com.example.composetoglance.draganddrop.layout.Layout
 import com.example.composetoglance.draganddrop.widget.DragTargetWidgetItem
 import com.example.composetoglance.draganddrop.widget.Widget
 import com.example.composetoglance.util.toColor
 
 @Composable
-fun BottomPanelWithTabs(widgets: List<Widget>, modifier: Modifier = Modifier) {
+fun BottomPanelWithTabs(widgets: List<Widget>, onLayoutSelected: (Layout) -> Unit, modifier: Modifier = Modifier) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
 
@@ -47,14 +47,14 @@ fun BottomPanelWithTabs(widgets: List<Widget>, modifier: Modifier = Modifier) {
             }
         }
         when (tabIndex) {
-            0 -> LayoutsTabContent()
+            0 -> LayoutsTabContent(onLayoutSelected)
             1 -> WidgetsList(widgetList = widgets, modifier = Modifier.fillMaxSize())
         }
     }
 }
 
 @Composable
-fun LayoutsTabContent() {
+fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -63,19 +63,19 @@ fun LayoutsTabContent() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"))
+            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"), onLayoutSelected)
         }
         item {
-            LayoutTypeSection("Medium", "Medium", listOf("Full"))
+            LayoutTypeSection("Medium", "Medium", listOf("Full"), onLayoutSelected)
         }
         item {
-            LayoutTypeSection("Large", "Large", listOf("Full"))
+            LayoutTypeSection("Large", "Large", listOf("Full"), onLayoutSelected)
         }
     }
 }
 
 @Composable
-fun LayoutTypeSection(title: String, layoutType: String, components: List<String>) {
+fun LayoutTypeSection(title: String, layoutType: String, components: List<String>, onLayoutSelected: (Layout) -> Unit) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Spacer(modifier = Modifier.height(8.dp))
@@ -84,7 +84,7 @@ fun LayoutTypeSection(title: String, layoutType: String, components: List<String
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(components) { componentType ->
-                DragTargetLayoutComponent(data = Layout(componentType, layoutType))
+                ClickableLayoutComponent(data = Layout(componentType, layoutType), onClick = onLayoutSelected)
             }
         }
     }
