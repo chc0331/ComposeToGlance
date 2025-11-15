@@ -55,6 +55,8 @@ fun BottomPanelWithTabs(widgets: List<Widget>, onLayoutSelected: (Layout) -> Uni
 
 @Composable
 fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
+    var activeLayout by remember { mutableStateOf<Layout?>(null) }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -63,19 +65,26 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"), onLayoutSelected)
+            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"), activeLayout, { activeLayout = it }, onLayoutSelected)
         }
         item {
-            LayoutTypeSection("Medium", "Medium", listOf("Full"), onLayoutSelected)
+            LayoutTypeSection("Medium", "Medium", listOf("Full"), activeLayout, { activeLayout = it }, onLayoutSelected)
         }
         item {
-            LayoutTypeSection("Large", "Large", listOf("Full"), onLayoutSelected)
+            LayoutTypeSection("Large", "Large", listOf("Full"), activeLayout, { activeLayout = it }, onLayoutSelected)
         }
     }
 }
 
 @Composable
-fun LayoutTypeSection(title: String, layoutType: String, components: List<String>, onLayoutSelected: (Layout) -> Unit) {
+fun LayoutTypeSection(
+    title: String,
+    layoutType: String,
+    components: List<String>,
+    activeLayout: Layout?,
+    onActiveLayoutChange: (Layout?) -> Unit,
+    onLayoutSelected: (Layout) -> Unit
+) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Spacer(modifier = Modifier.height(8.dp))
@@ -84,7 +93,18 @@ fun LayoutTypeSection(title: String, layoutType: String, components: List<String
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(components) { componentType ->
-                ClickableLayoutComponent(data = Layout(componentType, layoutType), onClick = onLayoutSelected)
+                val currentLayout = Layout(componentType, layoutType)
+                ClickableLayoutComponent(
+                    data = currentLayout,
+                    isClicked = activeLayout == currentLayout,
+                    onComponentClick = {
+                        onActiveLayoutChange(if (activeLayout == currentLayout) null else currentLayout)
+                    },
+                    onAddClick = {
+                        onLayoutSelected(it)
+                        onActiveLayoutChange(null)
+                    }
+                )
             }
         }
     }

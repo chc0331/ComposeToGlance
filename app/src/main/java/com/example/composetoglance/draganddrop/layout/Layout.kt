@@ -14,10 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -31,14 +27,14 @@ data class PositionedLayout(val layout: Layout, val offset: Offset)
 fun ClickableLayoutComponent(
     modifier: Modifier = Modifier,
     data: Layout,
-    onClick: (Layout) -> Unit
+    isClicked: Boolean,
+    onComponentClick: () -> Unit,
+    onAddClick: (Layout) -> Unit,
 ) {
-    var isClicked by remember { mutableStateOf(false) }
-
     Box(
         modifier = modifier
             .wrapContentSize()
-            .clickable { isClicked = !isClicked },
+            .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
         LayoutComponent(data.type, data.sizeType, shouldAnimate = false, showText = true)
@@ -49,10 +45,7 @@ fun ClickableLayoutComponent(
                     .background(Color.Black.copy(alpha = 0.5f))
             ) {
                 Button(
-                    onClick = {
-                        onClick(data)
-                        isClicked = false
-                    },
+                    onClick = { onAddClick(data) },
                     modifier = Modifier.align(Alignment.Center)
                 ) {
                     Text("추가")
