@@ -1,19 +1,24 @@
 package com.example.composetoglance.draganddrop.bottompanel
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -63,13 +68,13 @@ fun LayoutsTabContent() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            LayoutTypeSection("Small (2x1)", "Small", listOf("Full", "1:1", "1:N"))
+            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"))
         }
         item {
-            LayoutTypeSection("Medium (2x2)", "Medium", listOf("Full"))
+            LayoutTypeSection("Medium", "Medium", listOf("Full"))
         }
         item {
-            LayoutTypeSection("Large (4x2)", "Large", listOf("Full"))
+            LayoutTypeSection("Large", "Large", listOf("Full"))
         }
     }
 }
@@ -92,22 +97,42 @@ fun LayoutTypeSection(title: String, layoutType: String, components: List<String
 
 @Composable
 fun LayoutComponent(type: String, layoutType: String) {
-    val baseUnit = 40.dp
     val (width, height) = when (layoutType) {
-        "Small" -> Pair(baseUnit * 2, baseUnit)
-        "Medium" -> Pair(baseUnit * 2, baseUnit * 2)
-        "Large" -> Pair(baseUnit * 4, baseUnit * 2)
-        else -> Pair(baseUnit * 2, baseUnit) // Default to Small
+        "Small" -> Pair(105.dp, 45.dp)
+        "Medium" -> Pair(90.dp, 90.dp)
+        "Large" -> Pair(180.dp, 90.dp)
+        else -> Pair(105.dp, 45.dp) // Default to Small
     }
 
     Box(
         modifier = Modifier
             .size(width, height)
             .background(Color.LightGray)
-            .padding(8.dp),
+            .border(1.dp, Color.DarkGray),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = type)
+        when (type) {
+            "Full" -> Box(modifier = Modifier.fillMaxSize()) { Text(type, Modifier.align(Alignment.Center)) }
+            "1:1" -> Row {
+                Box(modifier = Modifier.weight(1f).fillMaxHeight()) { Text("1", Modifier.align(Alignment.Center)) }
+                Divider(modifier = Modifier.fillMaxHeight().width(1.dp), color = Color.DarkGray)
+                Box(modifier = Modifier.weight(1f).fillMaxHeight()) { Text("1", Modifier.align(Alignment.Center)) }
+            }
+            "1:N" -> Row {
+                Box(
+                    modifier = Modifier
+                        .width(height) // Set width equal to height to make a square
+                        .fillMaxHeight()
+                ) { Text("1", Modifier.align(Alignment.Center)) }
+                Divider(modifier = Modifier.fillMaxHeight().width(1.dp), color = Color.DarkGray)
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f) // Fill remaining space
+                ) { Text("N", Modifier.align(Alignment.Center)) }
+            }
+            else -> Text(type)
+        }
     }
 }
 
