@@ -2,7 +2,6 @@ package com.example.composetoglance.draganddrop
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -19,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
@@ -98,7 +96,7 @@ fun DragTarget(
     val currentState = LocalDragTargetInfo.current
 
     Box(
-        modifier = modifier.wrapContentSize().background(Color.White)
+        modifier = modifier.wrapContentSize()
             .onGloballyPositioned {
                 currentPosition = it.localToWindow(Offset.Zero)
             }
@@ -110,8 +108,7 @@ fun DragTarget(
                         currentState.isDragging = true
                         currentState.dragPosition = currentPosition + it
                         currentState.draggableComposable = {
-//                            content(false) // render scaled item without animation }
-
+                            content(false) // render scaled item without animation
                         }
                     }, onDrag = { change, dragAmount ->
                         change.consume()

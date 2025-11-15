@@ -4,24 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.composetoglance.R
 import com.example.composetoglance.util.toColor
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MainContent() {
     val widgets = remember {
@@ -40,7 +41,8 @@ fun MainContent() {
             Widget("2", "3")
         )
     }
-    // Wrap the entire horizontal pager with LongPressDraggable
+    val canvasWidgets = remember { mutableStateListOf<Widget>() }
+
     LongPressDrawable(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             // DropTarget at the top
@@ -48,17 +50,29 @@ fun MainContent() {
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxWidth()
-                    .background(Color.LightGray.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
+                    .background(Color.LightGray.copy(alpha = 0.5f))
             ) {
+                val dragInfo = LocalDragTargetInfo.current
                 DropTarget<Widget>(modifier = Modifier.fillMaxSize()) { isInBound, droppedWidget ->
-                    if (isInBound) {
-                        droppedWidget?.let {
-                            widgets.add(it)
+                    if (isInBound && droppedWidget != null && !dragInfo.itemDropped) {
+                        canvasWidgets.add(droppedWidget)
+                        dragInfo.itemDropped = true
+                    }
+                }
+
+                if (canvasWidgets.isEmpty()) {
+                    Text("위젯 캔버스", modifier = Modifier.align(Alignment.Center))
+                } else {
+                    FlowRow(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        canvasWidgets.forEach { widget ->
+                            WidgetItem(data = widget, shouldAnimate = false)
                         }
                     }
                 }
-                Text("위젯 캔버스")
             }
 
             WidgetsList(
@@ -108,34 +122,26 @@ fun WidgetItem(
     data: Widget,
     shouldAnimate: Boolean
 ) {
-    // Add your custom implementation for the WidgetItem here.
-    // This composable will render the content of the draggable widget.
-    // You can use the 'data' parameter to extract necessary information and display it.
-    // The 'shouldAnimate' parameter can be used to control animations if needed.
-
-    // Example: Displaying a simple card with the widget's name
-    Card(
+    Column(
         modifier = Modifier
-            .size(50.dp)
-            .padding(16.dp)
+            .padding(8.dp)
             .graphicsLayer {
-                // Scale the card when shouldAnimate is true
                 scaleX = if (shouldAnimate) 1.2f else 1.0f
                 scaleY = if (shouldAnimate) 1.2f else 1.0f
             },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+                .size(50.dp)
+                .clip(CircleShape)
+                .background(Color.LightGray),
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = data.name,
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = data.description)
         }
     }
 }
