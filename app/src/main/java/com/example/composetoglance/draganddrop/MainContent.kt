@@ -2,7 +2,6 @@ package com.example.composetoglance.draganddrop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -81,7 +80,7 @@ fun MainContent() {
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 16.dp)
             ) {
-                Box(
+                WidgetCanvas(
                     modifier = Modifier
                         .weight(2.8f)
                         .fillMaxWidth()
@@ -91,21 +90,29 @@ fun MainContent() {
                             val strokeWidth = 2.dp.toPx()
                             // 점선 PathEffect
                             val dashEffect = PathEffect.dashPathEffect(
-                                floatArrayOf(10f, 10f),
+                                floatArrayOf(20f, 20f),
                                 0f
                             )
-                            val inset = strokeWidth / 2
+                            val inset = strokeWidth / 6
+                            val borderRoundRect = RoundRect(
+                                left = -inset,
+                                top = -inset,
+                                right = size.width + inset,
+                                bottom = size.height + inset,
+                                cornerRadius = CornerRadius(
+                                    cornerRadius + inset,
+                                    cornerRadius + inset
+                                )
+                            )
+                            drawRoundRect(
+                                color = Color(80f,47f,100f,0.1f),
+                                topLeft = Offset.Zero,
+                                size = size,
+                                cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                            )
                             val path = Path().apply {
                                 addRoundRect(
-                                    RoundRect(
-                                        rect = Rect(
-                                            inset,
-                                            inset,
-                                            size.width - inset,
-                                            size.height - inset
-                                        ),
-                                        cornerRadius = CornerRadius(cornerRadius, cornerRadius)
-                                    )
+                                    borderRoundRect
                                 )
                             }
                             val stroke = Stroke(
@@ -118,19 +125,10 @@ fun MainContent() {
                                 color = outline,
                                 style = stroke
                             )
-                        }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(Color(0x30FFF7F7))
-                    ) {
-                        WidgetCanvas(
-                            selectedLayout = selectedLayout,
-                        )
-                    }
-                }
+                        },
+                    selectedLayout = selectedLayout,
+                )
+
                 Spacer(modifier = Modifier.size(6.dp))
 
                 BottomPanelWithTabs(
