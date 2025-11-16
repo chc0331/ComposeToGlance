@@ -90,11 +90,11 @@ fun MainContent() {
                     onLayoutSelected = { selectedLayout = it },
                     modifier = Modifier
                         .weight(1.2f)
-                        .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .border(
                             1.dp,
                             outline,
-                            RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+                            RoundedCornerShape(12.dp)
                         )
                 )
             }
