@@ -37,7 +37,7 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data.type, data.sizeType, shouldAnimate = false, showText = true)
+        LayoutComponent(data.type, data.sizeType, shouldAnimate = false, showText = false)
         if (isClicked) {
             Box(
                 modifier = Modifier
@@ -60,7 +60,7 @@ fun LayoutComponent(
     type: String,
     layoutType: String,
     shouldAnimate: Boolean = false,
-    showText: Boolean = true
+    showText: Boolean = false
 ) {
     val (width, height) = when (layoutType) {
         "Small" -> Pair(105.dp, 45.dp)
