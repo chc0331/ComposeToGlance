@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -35,9 +36,14 @@ fun MainContent() {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Glance") },
-                modifier = Modifier.height(64.dp)
+            CenterAlignedTopAppBar(
+                title = { Text("위젯 편집") },
+                modifier = Modifier.height(64.dp),
+                actions = {
+                    TextButton(onClick = { /*TODO: 저장 기능 구현*/ }) {
+                        Text("저장")
+                    }
+                }
             )
         }
     ) { paddingValues ->
