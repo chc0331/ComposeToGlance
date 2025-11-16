@@ -1,11 +1,15 @@
 package com.example.composetoglance.draganddrop
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
@@ -61,29 +70,68 @@ fun MainContent() {
             )
         }
     ) { paddingValues ->
-        LongPressDrawable(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)) {
-            Column(modifier = Modifier
+        LongPressDrawable(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)) {
-                WidgetCanvas(
-                    selectedLayout = selectedLayout,
+                .padding(paddingValues)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Box(
                     modifier = Modifier
                         .weight(2.8f)
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                         .drawBehind {
-                            val stroke = Stroke(
-                                width = 1.dp.toPx(),
-                                pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                            val cornerRadius = 16.dp.toPx()
+                            val strokeWidth = 2.dp.toPx()
+                            // 점선 PathEffect
+                            val dashEffect = PathEffect.dashPathEffect(
+                                floatArrayOf(10f, 10f),
+                                0f
                             )
-                            drawRect(
+                            val inset = strokeWidth / 2
+                            val path = Path().apply {
+                                addRoundRect(
+                                    RoundRect(
+                                        rect = Rect(
+                                            inset,
+                                            inset,
+                                            size.width - inset,
+                                            size.height - inset
+                                        ),
+                                        cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                                    )
+                                )
+                            }
+                            val stroke = Stroke(
+                                width = strokeWidth,
+                                pathEffect = dashEffect
+                            )
+
+                            drawPath(
+                                path = path,
                                 color = outline,
                                 style = stroke
                             )
                         }
-                )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(Color(0x30FFF7F7))
+                    ) {
+                        WidgetCanvas(
+                            selectedLayout = selectedLayout,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.size(6.dp))
 
                 BottomPanelWithTabs(
                     widgets = widgets,
