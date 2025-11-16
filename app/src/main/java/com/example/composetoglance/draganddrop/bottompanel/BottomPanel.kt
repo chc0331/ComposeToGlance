@@ -4,14 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -22,26 +21,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.R
 import com.example.composetoglance.draganddrop.layout.ClickableLayoutComponent
 import com.example.composetoglance.draganddrop.layout.Layout
 import com.example.composetoglance.draganddrop.widget.DragTargetWidgetItem
 import com.example.composetoglance.draganddrop.widget.Widget
-import com.example.composetoglance.util.toColor
 
 @Composable
-fun BottomPanelWithTabs(widgets: List<Widget>, onLayoutSelected: (Layout) -> Unit, modifier: Modifier = Modifier) {
+fun BottomPanelWithTabs(
+    widgets: List<Widget>,
+    onLayoutSelected: (Layout) -> Unit,
+    modifier: Modifier = Modifier
+) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
 
     Column(modifier = modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex) {
             tabs.forEachIndexed { index, title ->
-                Tab(selected = tabIndex == index,
+                Tab(
+                    selected = tabIndex == index,
                     onClick = { tabIndex = index },
                     text = { Text(text = title) })
             }
@@ -56,53 +57,35 @@ fun BottomPanelWithTabs(widgets: List<Widget>, onLayoutSelected: (Layout) -> Uni
 @Composable
 fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
     var activeLayout by remember { mutableStateOf<Layout?>(null) }
+    val layouts = listOf(
+        Layout("Full", "Small"),
+        Layout("Full", "Medium"),
+        Layout("Full", "Large")
+    )
 
-    LazyColumn(
+    LazyRow(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(R.color.bottom_panel_background_color.toColor()))
-            .padding(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        item {
-            LayoutTypeSection("Small", "Small", listOf("Full", "1:1", "1:N"), activeLayout, { activeLayout = it }, onLayoutSelected)
-        }
-        item {
-            LayoutTypeSection("Medium", "Medium", listOf("Full"), activeLayout, { activeLayout = it }, onLayoutSelected)
-        }
-        item {
-            LayoutTypeSection("Large", "Large", listOf("Full"), activeLayout, { activeLayout = it }, onLayoutSelected)
-        }
-    }
-}
-
-@Composable
-fun LayoutTypeSection(
-    title: String,
-    layoutType: String,
-    components: List<String>,
-    activeLayout: Layout?,
-    onActiveLayoutChange: (Layout?) -> Unit,
-    onLayoutSelected: (Layout) -> Unit
-) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Text(text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items(components) { componentType ->
-                val currentLayout = Layout(componentType, layoutType)
+        items(layouts) { layout ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = layout.sizeType, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 ClickableLayoutComponent(
-                    data = currentLayout,
-                    isClicked = activeLayout == currentLayout,
+                    data = layout,
+                    isClicked = activeLayout == layout,
                     onComponentClick = {
-                        onActiveLayoutChange(if (activeLayout == currentLayout) null else currentLayout)
+                        activeLayout = if (activeLayout == layout) null else layout
                     },
                     onAddClick = {
                         onLayoutSelected(it)
-                        onActiveLayoutChange(null)
+                        activeLayout = null
                     }
                 )
             }
@@ -115,7 +98,7 @@ fun WidgetsList(widgetList: List<Widget>, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(R.color.bottom_panel_background_color.toColor())),
+            .background(MaterialTheme.colorScheme.surface),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

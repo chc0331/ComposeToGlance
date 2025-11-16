@@ -9,28 +9,49 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Color(0xFF6dd58c),
+    secondary = Color(0xFFb7ccb7),
+    tertiary = Color(0xFFa0d0b0)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = Color(0xFF006e2c),
     onPrimary = Color.White,
+    primaryContainer = Color(0xFF8af2a6),
+    onPrimaryContainer = Color(0xFF002108),
+    secondary = Color(0xFF506352),
     onSecondary = Color.White,
+    secondaryContainer = Color(0xFFd3e8d2),
+    onSecondaryContainer = Color(0xFF0e1f12),
+    tertiary = Color(0xFF3a656a),
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiaryContainer = Color(0xFFbeebee),
+    onTertiaryContainer = Color(0xFF002022),
+    error = Color(0xFFba1a1a),
+    errorContainer = Color(0xFFffdad6),
+    onError = Color.White,
+    onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFfcfdf7),
+    onBackground = Color(0xFF1a1c1a),
+    surface = Color(0xFFfcfdf7),
+    onSurface = Color(0xFF1a1c1a),
+    surfaceVariant = Color(0xFFdee5d9),
+    onSurfaceVariant = Color(0xFF424941),
+    outline = Color(0xFF727970),
+    inverseOnSurface = Color(0xFFf0f1ec),
+    inverseSurface = Color(0xFF2e312e),
+    inversePrimary = Color(0xFF6dd58c),
+    surfaceTint = Color(0xFF006e2c),
+    outlineVariant = Color(0xFFc2c9be),
+    scrim = Color.Black,
 )
 
 @Composable
@@ -48,6 +69,14 @@ fun ComposeToGlanceTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+        }
     }
 
     MaterialTheme(

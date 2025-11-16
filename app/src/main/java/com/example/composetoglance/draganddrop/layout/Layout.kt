@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 data class Layout(val type: String, val sizeType: String)
@@ -42,7 +42,7 @@ fun ClickableLayoutComponent(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
             ) {
                 Button(
                     onClick = { onAddClick(data) },
@@ -72,8 +72,8 @@ fun LayoutComponent(
     Box(
         modifier = Modifier
             .size(width, height)
-            .background(Color.LightGray)
-            .border(1.dp, Color.DarkGray),
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, MaterialTheme.colorScheme.outline),
         contentAlignment = Alignment.Center
     ) {
         when (type) {
@@ -93,7 +93,7 @@ fun LayoutComponent(
                 }
                 Divider(modifier = Modifier
                     .fillMaxHeight()
-                    .width(1.dp), color = Color.DarkGray)
+                    .width(1.dp), color = MaterialTheme.colorScheme.outline)
                 Box(modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()) {
@@ -115,7 +115,7 @@ fun LayoutComponent(
                 }
                 Divider(modifier = Modifier
                     .fillMaxHeight()
-                    .width(1.dp), color = Color.DarkGray)
+                    .width(1.dp), color = MaterialTheme.colorScheme.outline)
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()

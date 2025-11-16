@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
@@ -45,7 +45,7 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
 
     Box(
         modifier = modifier
-            .background(Color(0xFFADD8E6)) // Light Blue Background
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .onGloballyPositioned {
                 canvasPosition = it.positionInWindow()
             }
