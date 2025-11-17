@@ -44,8 +44,8 @@ fun WidgetItem(
     Column(
         modifier = Modifier
             .graphicsLayer {
-                scaleX = if (shouldAnimate) 1.2f else 1.0f
-                scaleY = if (shouldAnimate) 1.2f else 1.0f
+                scaleX = 1.0f
+                scaleY = 1.0f
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

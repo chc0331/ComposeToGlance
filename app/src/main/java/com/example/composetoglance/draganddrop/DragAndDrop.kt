@@ -40,11 +40,17 @@ fun LongPressDrawable(
     content: @Composable BoxScope.() -> Unit
 ) {
     val state = remember { DragTargetInfo() }
+    var canvasPosition by remember { mutableStateOf(Offset.Zero) }
 
     CompositionLocalProvider(
         LocalDragTargetInfo provides state
     ) {
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .onGloballyPositioned {
+                    canvasPosition = it.localToWindow(Offset.Zero)
+                }) {
             content()
             if (state.isDragging) {
                 var targetSize by remember {
@@ -53,12 +59,19 @@ fun LongPressDrawable(
                 Box(
                     modifier = Modifier
                         .graphicsLayer {
-                            val offset = (state.dragPosition + state.dragOffset)
-                            scaleX = 1.5f
-                            scaleY = 1.5f
+                            val currentTouchWindowPosition = state.dragPosition + state.dragOffset
+                            val relativeOffset = currentTouchWindowPosition - canvasPosition
+                            val scaleFactor = 1.5f
+                            val scaledWidth = targetSize.width * scaleFactor
+                            val scaledHeight = targetSize.height * scaleFactor
+                            val centerX = relativeOffset.x - scaledWidth / 2
+                            val centerY = relativeOffset.y - scaledHeight / 2
+
+                            scaleX = scaleFactor
+                            scaleY = scaleFactor
                             alpha = if (targetSize == IntSize.Zero) 0f else .9f
-                            translationX = offset.x.minus(targetSize.width / 2)
-                            translationY = offset.y.minus(targetSize.height / 2)
+                            translationX = centerX
+                            translationY = centerY
                         }
                         .onGloballyPositioned {
                             targetSize = it.size
@@ -83,17 +96,18 @@ fun DragTarget(
     val currentState = LocalDragTargetInfo.current
 
     Box(
-        modifier = modifier.wrapContentSize()
+        modifier = modifier
+            .wrapContentSize()
             .onGloballyPositioned {
                 currentPosition = it.localToWindow(Offset.Zero)
             }
             .pointerInput(Unit) {
                 detectDragGesturesAfterLongPress(
-                    onDragStart = {
-                        currentState.dragOffset = Offset.Zero
+                    onDragStart = { offset ->
+                        currentState.dragOffset = offset
                         currentState.dataToDrop = dataToDrop
                         currentState.isDragging = true
-                        currentState.dragPosition = currentPosition + it
+                        currentState.dragPosition = currentPosition
                         currentState.draggableComposable = {
                             content(false) // render scaled item without animation
                         }
@@ -130,7 +144,8 @@ fun DropTarget(
         modifier = modifier
             .onGloballyPositioned {
                 it.boundsInWindow().let { rect ->
-                    isCurrentDropTarget = rect.contains(dragPosition + dragOffset)
+                    val currentPos = dragPosition + dragOffset
+                    isCurrentDropTarget = rect.contains(currentPos)
                 }
             }
     ) {
