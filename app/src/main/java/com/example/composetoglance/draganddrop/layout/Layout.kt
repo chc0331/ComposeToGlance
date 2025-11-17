@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class Layout(val type: String, val sizeType: String)
@@ -40,7 +41,7 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data.type, data.sizeType)
+        LayoutComponent(data.type, data.sizeType, isPreview = true)
         if (isClicked) {
             Box(
                 modifier = Modifier
@@ -58,19 +59,30 @@ fun ClickableLayoutComponent(
     }
 }
 
+val WidgetLayoutComponentsize = mapOf<String, Pair<Dp, Dp>>(
+    "Small" to Pair(155.dp, 80.dp),
+    "Medium" to Pair(155.dp, 170.dp),
+    "Large" to Pair(320.dp, 170.dp)
+)
+val PreviewLayoutComponentSize = mapOf<String, Pair<Dp, Dp>>(
+    "Small" to Pair(105.dp, 45.dp),
+    "Medium" to Pair(105.dp, 100.dp),
+    "Large" to Pair(210.dp, 100.dp)
+)
+
 @Composable
 fun LayoutComponent(
     type: String,
     layoutType: String,
     shouldAnimate: Boolean = false,
-    showText: Boolean = false
+    showText: Boolean = false,
+    isPreview: Boolean = false
 ) {
-    val (width, height) = when (layoutType) {
-        "Small" -> Pair(105.dp, 45.dp)
-        "Medium" -> Pair(90.dp, 90.dp)
-        "Large" -> Pair(180.dp, 90.dp)
-        else -> Pair(105.dp, 45.dp) // Default to Small
-    }
+    val (width, height) = if (isPreview) PreviewLayoutComponentSize[layoutType] ?: Pair(
+        105.dp,
+        45.dp
+    )
+    else WidgetLayoutComponentsize[layoutType] ?: Pair(180.dp, 80.dp)
 
     Box(
         modifier = Modifier
@@ -84,46 +96,159 @@ fun LayoutComponent(
                 when (layoutType) {
                     "Small" -> {
                         Row(Modifier.fillMaxSize()) {
-                            Box(Modifier.weight(1f).fillMaxHeight())
-                            Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                            Box(Modifier.weight(1f).fillMaxHeight())
+                            Box(
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                            )
+                            Divider(
+                                Modifier
+                                    .fillMaxHeight()
+                                    .width(1.dp),
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                            Box(
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                            )
                         }
                     }
+
                     "Medium" -> {
                         Column(Modifier.fillMaxSize()) {
                             Row(Modifier.weight(1f)) {
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
                             }
-                            Divider(Modifier.fillMaxWidth().height(1.dp), color = MaterialTheme.colorScheme.outline)
+                            Divider(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp),
+                                color = MaterialTheme.colorScheme.outline
+                            )
                             Row(Modifier.weight(1f)) {
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
                             }
                         }
                     }
+
                     "Large" -> {
                         Column(Modifier.fillMaxSize()) {
                             Row(Modifier.weight(1f)) {
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
                             }
-                            Divider(Modifier.fillMaxWidth().height(1.dp), color = MaterialTheme.colorScheme.outline)
+                            Divider(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp),
+                                color = MaterialTheme.colorScheme.outline
+                            )
                             Row(Modifier.weight(1f)) {
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
-                                Divider(Modifier.fillMaxHeight().width(1.dp), color = MaterialTheme.colorScheme.outline)
-                                Box(Modifier.weight(1f).fillMaxHeight())
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                Divider(
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Box(
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
                             }
                         }
                     }
@@ -131,19 +256,25 @@ fun LayoutComponent(
             }
 
             "1:1" -> Row {
-                Box(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
                     if (showText) {
                         Text("1", Modifier.align(Alignment.Center))
                     }
                 }
-                Divider(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp), color = MaterialTheme.colorScheme.outline)
-                Box(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()) {
+                Divider(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(1.dp), color = MaterialTheme.colorScheme.outline
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
                     if (showText) {
                         Text("1", Modifier.align(Alignment.Center))
                     }
@@ -160,9 +291,11 @@ fun LayoutComponent(
                         Text("1", Modifier.align(Alignment.Center))
                     }
                 }
-                Divider(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp), color = MaterialTheme.colorScheme.outline)
+                Divider(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(1.dp), color = MaterialTheme.colorScheme.outline
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
