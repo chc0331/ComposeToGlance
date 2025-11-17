@@ -67,4 +67,8 @@ fun WidgetItem(
 
 data class Widget(val name: String, val description: String)
 
-data class PositionedWidget(val widget: Widget, val offset: Offset)
+data class PositionedWidget(
+    val widget: Widget,
+    val offset: Offset,
+    val cellIndex: Int? = null
+)

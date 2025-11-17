@@ -27,6 +27,26 @@ import androidx.compose.ui.unit.dp
 data class Layout(val type: String, val sizeType: String)
 data class PositionedLayout(val layout: Layout, val offset: Offset)
 
+data class LayoutGridSpec(val rows: Int, val columns: Int)
+
+private val layoutGridSpecs = mapOf(
+    "Full" to mapOf(
+        "Small" to LayoutGridSpec(rows = 1, columns = 2),
+        "Medium" to LayoutGridSpec(rows = 2, columns = 2),
+        "Large" to LayoutGridSpec(rows = 2, columns = 4)
+    ),
+    "1:1" to mapOf(
+        "Small" to LayoutGridSpec(rows = 1, columns = 2),
+        "Medium" to LayoutGridSpec(rows = 1, columns = 2)
+    ),
+    "1:N" to mapOf(
+        "Medium" to LayoutGridSpec(rows = 1, columns = 2),
+        "Large" to LayoutGridSpec(rows = 1, columns = 2)
+    )
+)
+
+fun Layout.gridSpec(): LayoutGridSpec? = layoutGridSpecs[type]?.get(sizeType)
+
 @Composable
 fun ClickableLayoutComponent(
     modifier: Modifier = Modifier,
