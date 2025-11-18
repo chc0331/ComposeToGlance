@@ -60,8 +60,6 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
         DropTarget(modifier = Modifier.fillMaxSize()) { isInBound, droppedItem ->
             if (isInBound && droppedItem != null && !dragInfo.itemDropped) {
                 val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
-                val relativeOffset = dropPositionInWindow - canvasPosition
-
                 if (droppedItem is Widget) {
                     val widgetSizePx = with(density) { 50.dp.toPx() }
                     val targetCell = findTargetCell(
@@ -70,24 +68,22 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                         layoutBounds = layoutBounds,
                         positionedWidgets = positionedWidgets
                     )
-                    val adjustedOffset = if (targetCell != null) {
+                    if (targetCell != null) {
                         val cellCenter = targetCell.rect.center
                         val relativeCenter = cellCenter - canvasPosition
-                        Offset(
+                        val adjustedOffset = Offset(
                             relativeCenter.x - widgetSizePx / 2,
                             relativeCenter.y - widgetSizePx / 2
                         )
-                    } else {
-                        Offset(relativeOffset.x - widgetSizePx / 2, relativeOffset.y - widgetSizePx / 2)
-                    }
-                    positionedWidgets.add(
-                        PositionedWidget(
-                            widget = droppedItem,
-                            offset = adjustedOffset,
-                            cellIndex = targetCell?.index
+                        positionedWidgets.add(
+                            PositionedWidget(
+                                widget = droppedItem,
+                                offset = adjustedOffset,
+                                cellIndex = targetCell.index
+                            )
                         )
-                    )
-                    dragInfo.itemDropped = true
+                        dragInfo.itemDropped = true
+                    }
                 }
             }
         }
