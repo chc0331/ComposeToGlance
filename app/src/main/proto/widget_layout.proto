@@ -5,224 +5,241 @@ package composetoglance.proto;
 option java_package = "com.example.composetoglance.proto";
 option java_multiple_files = true;
 
-message WidgetDocument {
-  WidgetMetadata metadata = 1;
-  LayoutNode root = 2;
+// Top-level document storing the full widget layout tree.
+message WidgetLayoutDocument {
+  WidgetNode root = 1;
 }
 
-message WidgetMetadata {
-  string widget_id = 1;
-  string display_name = 2;
-  string description = 3;
-  WidgetSize size = 4;
-}
-
-enum WidgetSize {
-  WIDGET_SIZE_UNSPECIFIED = 0;
-  WIDGET_SIZE_SMALL = 1;
-  WIDGET_SIZE_MEDIUM = 2;
-  WIDGET_SIZE_LARGE = 3;
-}
-
-message LayoutNode {
-  string id = 1;
-  LayoutKind kind = 2;
-  repeated LayoutProperty properties = 3;
-  Modifier modifier = 4;
-  repeated LayoutNode children = 5;
-  repeated Component components = 6;
-}
-
-enum LayoutKind {
-  LAYOUT_KIND_UNSPECIFIED = 0;
-  LAYOUT_KIND_BOX = 1;
-  LAYOUT_KIND_ROW = 2;
-  LAYOUT_KIND_COLUMN = 3;
-  LAYOUT_KIND_LAZY_COLUMN = 4;
-  LAYOUT_KIND_LAZY_ROW = 5;
-  LAYOUT_KIND_STACK = 6;
-}
-
-message LayoutProperty {
-  oneof property {
-    Arrangement arrangement = 1;
-    Alignment alignment = 2;
-    Spacing spacing = 3;
+// Recursive node representation so layouts are stored as a hierarchy.
+message WidgetNode {
+  oneof payload {
+    BoxLayoutProperty box = 1;
+    RowLayoutProperty row = 2;
+    ColumnLayoutProperty column = 3;
+    TextProperty text = 4;
+    ImageProperty image = 5;
+    ButtonProperty button = 6;
+    SpacerProperty spacer = 7;
+    ProgressProperty progress = 8;
   }
+  repeated WidgetNode children = 10;
 }
 
-message Arrangement {
-  Axis axis = 1;
-  ArrangementType type = 2;
-  Dimension spacing = 3;
+// --------------------------
+// Base property abstractions
+// --------------------------
+
+message Dp {
+  float value = 1;
 }
 
-enum Axis {
-  AXIS_UNSPECIFIED = 0;
-  AXIS_HORIZONTAL = 1;
-  AXIS_VERTICAL = 2;
-}
-
-enum ArrangementType {
-  ARRANGEMENT_TYPE_UNSPECIFIED = 0;
-  ARRANGEMENT_TYPE_START = 1;
-  ARRANGEMENT_TYPE_CENTER = 2;
-  ARRANGEMENT_TYPE_END = 3;
-  ARRANGEMENT_TYPE_SPACE_BETWEEN = 4;
-  ARRANGEMENT_TYPE_SPACE_AROUND = 5;
-  ARRANGEMENT_TYPE_SPACE_EVENLY = 6;
-}
-
-message Alignment {
-  HorizontalAlignment horizontal = 1;
-  VerticalAlignment vertical = 2;
-}
-
-enum HorizontalAlignment {
-  H_ALIGN_UNSPECIFIED = 0;
-  H_START = 1;
-  H_CENTER = 2;
-  H_END = 3;
-}
-
-enum VerticalAlignment {
-  V_ALIGN_UNSPECIFIED = 0;
-  V_TOP = 1;
-  V_CENTER = 2;
-  V_BOTTOM = 3;
-}
-
-message Spacing {
-  Dimension horizontal = 1;
-  Dimension vertical = 2;
+message Dimension {
+  oneof value {
+    Dp dp = 1;
+    bool wrap_content = 2;
+    bool match_parent = 3;
+    float weight = 4;
+  }
 }
 
 message Component {
-  string id = 1;
-  oneof content {
-    TextComponent text = 2;
-    ImageComponent image = 3;
-    ButtonComponent button = 4;
-    SpacerComponent spacer = 5;
-  }
-  Modifier modifier = 10;
+  string package_name = 1;
+  string class_name = 2;
 }
 
-message TextComponent {
-  string text = 1;
-  string content_description = 2;
-  TextStyle style = 3;
-  Color color = 4;
-  TextOverflow overflow = 5;
-  int32 max_lines = 6;
+message Action {
+  bool activity = 1;
+  bool service = 2;
+  bool broadcast_receiver = 3;
+  Component component = 4;
 }
 
-message TextStyle {
-  string font_family = 1;
-  FontWeight weight = 2;
-  Dimension font_size = 3;
-  Dimension letter_spacing = 4;
+message CornerRadius {
+  float radius = 1;
+}
+
+message Padding {
+  Dp start = 1;
+  Dp top = 2;
+  Dp end = 3;
+  Dp bottom = 4;
+}
+
+message Semantics {
+  string content_description = 1;
 }
 
 enum FontWeight {
   FONT_WEIGHT_UNSPECIFIED = 0;
-  FONT_WEIGHT_LIGHT = 1;
-  FONT_WEIGHT_NORMAL = 2;
-  FONT_WEIGHT_MEDIUM = 3;
-  FONT_WEIGHT_SEMIBOLD = 4;
-  FONT_WEIGHT_BOLD = 5;
+  FONT_WEIGHT_NORMAL = 1;
+  FONT_WEIGHT_MEDIUM = 2;
+  FONT_WEIGHT_BOLD = 3;
 }
 
-enum TextOverflow {
-  TEXT_OVERFLOW_UNSPECIFIED = 0;
-  CLIP = 1;
-  ELLIPSIS = 2;
+enum TextAlign {
+  TEXT_ALIGN_UNSPECIFIED = 0;
+  TEXT_ALIGN_START = 1;
+  TEXT_ALIGN_END = 2;
+  TEXT_ALIGN_CENTER = 3;
 }
 
-message ImageComponent {
-  ResourceRef painter = 1;
-  string content_description = 2;
-  ContentScale scale = 3;
+message Color {
+  uint32 argb = 1;
+}
+
+message ColorProvider {
+  int32 res_id = 1;
+  Color color = 2;
+  Color dark_color = 3;
+}
+
+message TextContent {
+  int32 res_id = 1;
+  string text = 2;
+}
+
+message ImageProvider {
+  oneof source {
+    int32 drawable_res_id = 1;
+    bytes bitmap = 2;
+    string uri = 3;
+    string icon_resource = 4;
+  }
 }
 
 enum ContentScale {
   CONTENT_SCALE_UNSPECIFIED = 0;
-  FIT = 1;
-  FILL_BOUNDS = 2;
-  CROP = 3;
+  CONTENT_SCALE_CROP = 1;
+  CONTENT_SCALE_FIT = 2;
+  CONTENT_SCALE_FILL_BOUNDS = 3;
 }
 
-message ButtonComponent {
-  string text = 1;
-  string action_id = 2;
-  Color background_color = 3;
-  Color text_color = 4;
+enum ProgressType {
+  PROGRESS_TYPE_UNSPECIFIED = 0;
+  PROGRESS_TYPE_LINEAR = 1;
+  PROGRESS_TYPE_CIRCULAR = 2;
 }
 
-message SpacerComponent {
-  Dimension width = 1;
-  Dimension height = 2;
+// --------------------------
+// Layout alignment structures
+// --------------------------
+
+enum HorizontalAlignment {
+  H_ALIGN_UNSPECIFIED = 0;
+  H_ALIGN_START = 1;
+  H_ALIGN_CENTER = 2;
+  H_ALIGN_END = 3;
 }
 
-message Modifier {
-  Dimension width = 1;
-  Dimension height = 2;
-  Padding padding = 3;
-  Margin margin = 4;
+enum VerticalAlignment {
+  V_ALIGN_UNSPECIFIED = 0;
+  V_ALIGN_TOP = 1;
+  V_ALIGN_CENTER = 2;
+  V_ALIGN_BOTTOM = 3;
+}
+
+enum AlignmentType {
+  ALIGNMENT_TYPE_UNSPECIFIED = 0;
+  ALIGNMENT_TYPE_TOP_START = 1;
+  ALIGNMENT_TYPE_TOP_CENTER = 2;
+  ALIGNMENT_TYPE_TOP_END = 3;
+  ALIGNMENT_TYPE_CENTER_START = 4;
+  ALIGNMENT_TYPE_CENTER = 5;
+  ALIGNMENT_TYPE_CENTER_END = 6;
+  ALIGNMENT_TYPE_BOTTOM_START = 7;
+  ALIGNMENT_TYPE_BOTTOM_CENTER = 8;
+  ALIGNMENT_TYPE_BOTTOM_END = 9;
+  ALIGNMENT_TYPE_TOP = 10;
+  ALIGNMENT_TYPE_CENTER_VERTICAL = 11;
+  ALIGNMENT_TYPE_BOTTOM = 12;
+  ALIGNMENT_TYPE_START = 13;
+  ALIGNMENT_TYPE_CENTER_HORIZONTAL = 14;
+  ALIGNMENT_TYPE_END = 15;
+}
+
+message Alignment {
+  AlignmentType type = 1;
+  HorizontalAlignment horizontal = 2;
+  VerticalAlignment vertical = 3;
+}
+
+// --------------------------
+// View property base
+// --------------------------
+
+message ViewProperty {
+  int32 view_id = 1;
+  Dimension width = 2;
+  Dimension height = 3;
+  Padding padding = 4;
   CornerRadius corner_radius = 5;
-  Color background_color = 6;
-  Color border_color = 7;
-  Dimension border_width = 8;
-  bool fill_max_width = 9;
-  bool fill_max_height = 10;
-  Alignment alignment = 11;
+  Semantics semantics = 6;
+  Action click_action = 7;
 }
 
-message Padding {
-  Dimension start = 1;
-  Dimension top = 2;
-  Dimension end = 3;
-  Dimension bottom = 4;
+// --------------------------
+// Layout nodes
+// --------------------------
+
+message BoxLayoutProperty {
+  ViewProperty view_property = 1;
+  Alignment content_alignment = 2;
 }
 
-message Margin {
-  Dimension start = 1;
-  Dimension top = 2;
-  Dimension end = 3;
-  Dimension bottom = 4;
+message RowLayoutProperty {
+  ViewProperty view_property = 1;
+  HorizontalAlignment horizontal_alignment = 2;
+  VerticalAlignment vertical_alignment = 3;
 }
 
-message CornerRadius {
-  Dimension top_start = 1;
-  Dimension top_end = 2;
-  Dimension bottom_end = 3;
-  Dimension bottom_start = 4;
+message ColumnLayoutProperty {
+  ViewProperty view_property = 1;
+  HorizontalAlignment horizontal_alignment = 2;
+  VerticalAlignment vertical_alignment = 3;
 }
 
-message Dimension {
-  oneof unit {
-    float dp = 1;
-    float sp = 2;
-    float percent = 3;
-  }
+// --------------------------
+// UI component nodes
+// --------------------------
+
+message TextProperty {
+  ViewProperty view_property = 1;
+  TextContent text = 2;
+  int32 max_line = 3;
+  ColorProvider font_color = 4;
+  float font_size = 5;
+  FontWeight font_weight = 6;
+  TextAlign text_align = 7;
 }
 
-message Color {
-  oneof value {
-    uint32 argb = 1;
-    ResourceRef resource = 2;
-  }
+message ImageProperty {
+  ViewProperty view_property = 1;
+  ImageProvider provider = 2;
+  Color tint_color = 3;
+  float alpha = 4;
+  ContentScale content_scale = 5;
 }
 
-message ResourceRef {
-  string name = 1;
-  ResourceType type = 2;
+message ButtonProperty {
+  ViewProperty view_property = 1;
+  TextContent text = 2;
+  int32 max_line = 3;
+  ColorProvider font_color = 4;
+  float font_size = 5;
+  FontWeight font_weight = 6;
+  ColorProvider background_color = 7;
 }
 
-enum ResourceType {
-  RESOURCE_TYPE_UNSPECIFIED = 0;
-  DRAWABLE = 1;
-  STRING = 2;
-  COLOR = 3;
+message SpacerProperty {
+  ViewProperty view_property = 1;
+}
+
+message ProgressProperty {
+  ViewProperty view_property = 1;
+  ProgressType progress_type = 2;
+  float max_value = 3;
+  float progress_value = 4;
+  ColorProvider progress_color = 5;
+  ColorProvider background_color = 6;
 }
 
