@@ -1,4 +1,4 @@
-package com.example.composetoglance.draganddrop
+package com.example.composetoglance.ui.draganddrop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,10 +34,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.draganddrop.bottompanel.BottomPanelWithTabs
-import com.example.composetoglance.draganddrop.canvas.WidgetCanvas
-import com.example.composetoglance.draganddrop.layout.Layout
-import com.example.composetoglance.draganddrop.widget.Widget
+import com.example.composetoglance.ui.draganddrop.bottompanel.BottomPanelWithTabs
+import com.example.composetoglance.ui.draganddrop.canvas.WidgetCanvas
+import com.example.composetoglance.ui.draganddrop.layout.Layout
+import com.example.composetoglance.ui.draganddrop.widget.Widget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

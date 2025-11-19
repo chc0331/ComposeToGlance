@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.composetoglance.draganddrop.MainContent
+import com.example.composetoglance.ui.draganddrop.MainContent
 import com.example.composetoglance.ui.theme.ComposeToGlanceTheme
 
 class MainActivity : ComponentActivity() {

@@ -1,4 +1,4 @@
-package com.example.composetoglance.draganddrop.canvas
+package com.example.composetoglance.ui.draganddrop.canvas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,15 +25,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.draganddrop.DropTarget
-import com.example.composetoglance.draganddrop.LocalDragTargetInfo
-import com.example.composetoglance.draganddrop.layout.Layout
-import com.example.composetoglance.draganddrop.layout.LayoutComponent
-import com.example.composetoglance.draganddrop.layout.LayoutGridSpec
-import com.example.composetoglance.draganddrop.layout.gridSpec
-import com.example.composetoglance.draganddrop.widget.PositionedWidget
-import com.example.composetoglance.draganddrop.widget.Widget
-import com.example.composetoglance.draganddrop.widget.WidgetItem
+import com.example.composetoglance.ui.draganddrop.DropTarget
+import com.example.composetoglance.ui.draganddrop.LocalDragTargetInfo
+import com.example.composetoglance.ui.draganddrop.layout.Layout
+import com.example.composetoglance.ui.draganddrop.layout.LayoutComponent
+import com.example.composetoglance.ui.draganddrop.layout.LayoutGridSpec
+import com.example.composetoglance.ui.draganddrop.layout.gridSpec
+import com.example.composetoglance.ui.draganddrop.widget.PositionedWidget
+import com.example.composetoglance.ui.draganddrop.widget.Widget
+import com.example.composetoglance.ui.draganddrop.widget.WidgetItem
 import kotlin.math.roundToInt
 
 @Composable
