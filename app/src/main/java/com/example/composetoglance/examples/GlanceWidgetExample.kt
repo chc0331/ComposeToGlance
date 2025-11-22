@@ -2,8 +2,9 @@ package com.example.composetoglance.examples
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import com.example.composetoglance.proto.WidgetLayoutDocument
+import androidx.compose.ui.platform.LocalContext
 import com.example.toolkit.glance.GlanceRenderer
+import com.example.toolkit.proto.WidgetLayoutDocument
 
 /**
  * Glance 위젯 예제
@@ -29,5 +30,15 @@ fun renderWidgetLayout(
 ) {
     val renderer = GlanceRenderer(context)
     renderer.render(document)
+}
+
+/**
+ * Compose 예제: DSL을 활용해 실제 위젯을 Glance로 보여주는 데모
+ */
+@Composable
+fun DslWidgetDemo() {
+    val context = LocalContext.current
+    val layout = createSimpleColumnLayoutDsl()
+    renderWidgetLayout(layout, context)
 }
 
