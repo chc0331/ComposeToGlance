@@ -1,6 +1,23 @@
 package com.example.toolkit.dsl
 
 import androidx.annotation.DrawableRes
+import com.example.composetoglance.proto.AlignmentType
+import com.example.composetoglance.proto.AlignmentType.ALIGNMENT_TYPE_START
+import com.example.composetoglance.proto.ContentScale
+import com.example.composetoglance.proto.ContentScale.CONTENT_SCALE_FIT
+import com.example.composetoglance.proto.Dimension
+import com.example.composetoglance.proto.FontWeight
+import com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_NORMAL
+import com.example.composetoglance.proto.HorizontalAlignment
+import com.example.composetoglance.proto.HorizontalAlignment.H_ALIGN_START
+import com.example.composetoglance.proto.Padding
+import com.example.composetoglance.proto.ProgressType
+import com.example.composetoglance.proto.TextAlign
+import com.example.composetoglance.proto.TextAlign.TEXT_ALIGN_START
+import com.example.composetoglance.proto.VerticalAlignment
+import com.example.composetoglance.proto.VerticalAlignment.V_ALIGN_TOP
+import com.example.composetoglance.proto.WidgetLayoutDocument
+import com.example.composetoglance.proto.WidgetNode
 import com.example.toolkit.builder.boxLayoutProperty
 import com.example.toolkit.builder.buttonProperty
 import com.example.toolkit.builder.color
@@ -19,23 +36,6 @@ import com.example.toolkit.builder.textContent
 import com.example.toolkit.builder.textProperty
 import com.example.toolkit.builder.viewProperty
 import com.example.toolkit.builder.wrapContentDimension
-import com.example.composetoglance.proto.AlignmentType
-import com.example.composetoglance.proto.AlignmentType.ALIGNMENT_TYPE_START
-import com.example.composetoglance.proto.ContentScale
-import com.example.composetoglance.proto.ContentScale.CONTENT_SCALE_FIT
-import com.example.composetoglance.proto.Dimension
-import com.example.composetoglance.proto.FontWeight
-import com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_NORMAL
-import com.example.composetoglance.proto.HorizontalAlignment
-import com.example.composetoglance.proto.HorizontalAlignment.H_ALIGN_START
-import com.example.composetoglance.proto.Padding
-import com.example.composetoglance.proto.ProgressType
-import com.example.composetoglance.proto.TextAlign
-import com.example.composetoglance.proto.TextAlign.TEXT_ALIGN_START
-import com.example.composetoglance.proto.VerticalAlignment
-import com.example.composetoglance.proto.VerticalAlignment.V_ALIGN_TOP
-import com.example.composetoglance.proto.WidgetLayoutDocument
-import com.example.composetoglance.proto.WidgetNode
 
 /**
  * Widget DSL - Compose 스타일의 선언적 API
@@ -56,7 +56,7 @@ import com.example.composetoglance.proto.WidgetNode
 /**
  * WidgetLayoutDocument를 생성하는 최상위 DSL 함수
  */
-fun widgetLayout(block: WidgetScope.() -> Unit): WidgetLayoutDocument {
+fun WidgetLayout(block: WidgetScope.() -> Unit): WidgetLayoutDocument {
     val scope = WidgetScope()
     scope.block()
     return WidgetLayoutDocument.newBuilder()
@@ -111,7 +111,7 @@ class WidgetScope {
 /**
  * Column 레이아웃
  */
-fun WidgetScope.column(
+fun WidgetScope.Column(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
     height: Dimension = wrapContentDimension,
@@ -147,7 +147,7 @@ fun WidgetScope.column(
 /**
  * Row 레이아웃
  */
-fun WidgetScope.row(
+fun WidgetScope.Row(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
     height: Dimension = wrapContentDimension,
@@ -183,7 +183,7 @@ fun WidgetScope.row(
 /**
  * Box 레이아웃
  */
-fun WidgetScope.box(
+fun WidgetScope.Box(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
     height: Dimension = wrapContentDimension,
@@ -219,7 +219,7 @@ fun WidgetScope.box(
 /**
  * Text 컴포넌트
  */
-fun WidgetScope.text(
+fun WidgetScope.Text(
     text: String,
     viewId: Int = nextViewId(),
     width: Dimension = wrapContentDimension,
@@ -256,7 +256,7 @@ fun WidgetScope.text(
 /**
  * Image 컴포넌트
  */
-fun WidgetScope.image(
+fun WidgetScope.Image(
     @DrawableRes drawableResId: Int? = null,
     uri: String? = null,
     viewId: Int = nextViewId(),
@@ -296,7 +296,7 @@ fun WidgetScope.image(
 /**
  * Button 컴포넌트
  */
-fun WidgetScope.button(
+fun WidgetScope.Button(
     text: String,
     viewId: Int = nextViewId(),
     width: Dimension = wrapContentDimension,
@@ -335,7 +335,7 @@ fun WidgetScope.button(
 /**
  * Spacer 컴포넌트
  */
-fun WidgetScope.spacer(
+fun WidgetScope.Spacer(
     viewId: Int = nextViewId(),
     width: Dimension = wrapContentDimension,
     height: Dimension = wrapContentDimension
@@ -358,7 +358,7 @@ fun WidgetScope.spacer(
 /**
  * Progress 컴포넌트
  */
-fun WidgetScope.progress(
+fun WidgetScope.Progress(
     type: ProgressType = ProgressType.PROGRESS_TYPE_LINEAR,
     maxValue: Float = 100f,
     progressValue: Float = 0f,
