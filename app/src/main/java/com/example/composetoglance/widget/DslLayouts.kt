@@ -25,7 +25,7 @@ import com.example.toolkit.proto.WidgetLayoutDocument
  */
 
 /**
- * 예시 7: 음악 플레이어 위젯
+ * 예시 1: 음악 플레이어 위젯
  */
 fun createMusicPlayerWidgetDsl(): WidgetLayoutDocument {
     return WidgetLayout {
