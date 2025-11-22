@@ -1,9 +1,9 @@
 package com.example.toolkit.glance.converter
 
 import androidx.glance.layout.Alignment
-import com.example.composetoglance.proto.AlignmentType
-import com.example.composetoglance.proto.HorizontalAlignment
-import com.example.composetoglance.proto.VerticalAlignment
+import com.example.toolkit.proto.AlignmentType
+import com.example.toolkit.proto.HorizontalAlignment
+import com.example.toolkit.proto.VerticalAlignment
 
 /**
  * Proto Alignment를 Glance Alignment로 변환

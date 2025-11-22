@@ -2,8 +2,6 @@ package com.example.toolkit.glance
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import com.example.composetoglance.proto.WidgetLayoutDocument
-import com.example.composetoglance.proto.WidgetNode
 import com.example.toolkit.glance.renderer.BoxRenderer
 import com.example.toolkit.glance.renderer.ButtonRenderer
 import com.example.toolkit.glance.renderer.ColumnRenderer
@@ -13,6 +11,8 @@ import com.example.toolkit.glance.renderer.ProgressRenderer
 import com.example.toolkit.glance.renderer.RowRenderer
 import com.example.toolkit.glance.renderer.SpacerRenderer
 import com.example.toolkit.glance.renderer.TextRenderer
+import com.example.toolkit.proto.WidgetLayoutDocument
+import com.example.toolkit.proto.WidgetNode
 
 /**
  * Proto WidgetLayoutDocument를 Jetpack Glance Composable로 렌더링하는 메인 렌더러

@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.glance.action.Action
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.action.actionStartService
-import com.example.composetoglance.proto.Action as ProtoAction
+import com.example.toolkit.proto.Action as ProtoAction
 
 /**
  * Proto Action을 Glance Action으로 변환

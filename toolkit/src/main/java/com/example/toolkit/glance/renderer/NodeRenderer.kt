@@ -1,7 +1,7 @@
 package com.example.toolkit.glance.renderer
 
 import androidx.compose.runtime.Composable
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext
 

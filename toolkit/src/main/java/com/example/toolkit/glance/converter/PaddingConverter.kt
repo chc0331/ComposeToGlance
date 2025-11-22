@@ -2,7 +2,7 @@ package com.example.toolkit.glance.converter
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.proto.Padding
+import com.example.toolkit.proto.Padding
 
 /**
  * Proto Padding을 Glance Padding으로 변환

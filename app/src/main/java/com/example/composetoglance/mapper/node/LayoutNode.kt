@@ -1,11 +1,11 @@
 package com.example.composetoglance.mapper.node
 
-import com.example.composetoglance.proto.ColumnLayoutProperty
-import com.example.composetoglance.proto.Dimension
-import com.example.composetoglance.proto.HorizontalAlignment
-import com.example.composetoglance.proto.VerticalAlignment
-import com.example.composetoglance.proto.ViewProperty
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.ColumnLayoutProperty
+import com.example.toolkit.proto.Dimension
+import com.example.toolkit.proto.HorizontalAlignment
+import com.example.toolkit.proto.VerticalAlignment
+import com.example.toolkit.proto.ViewProperty
+import com.example.toolkit.proto.WidgetNode
 
 //data class ColumnNode(
 //    val viewProperty: ViewProperty,

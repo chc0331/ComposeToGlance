@@ -1,19 +1,19 @@
 package com.example.toolkit.builder
 
-import com.example.composetoglance.proto.ButtonProperty
-import com.example.composetoglance.proto.Color
-import com.example.composetoglance.proto.ColorProvider
-import com.example.composetoglance.proto.ContentScale
-import com.example.composetoglance.proto.FontWeight
-import com.example.composetoglance.proto.ImageProperty
-import com.example.composetoglance.proto.ImageProvider
-import com.example.composetoglance.proto.ProgressProperty
-import com.example.composetoglance.proto.ProgressType
-import com.example.composetoglance.proto.SpacerProperty
-import com.example.composetoglance.proto.TextAlign
-import com.example.composetoglance.proto.TextContent
-import com.example.composetoglance.proto.TextProperty
-import com.example.composetoglance.proto.ViewProperty
+import com.example.toolkit.proto.ButtonProperty
+import com.example.toolkit.proto.Color
+import com.example.toolkit.proto.ColorProvider
+import com.example.toolkit.proto.ContentScale
+import com.example.toolkit.proto.FontWeight
+import com.example.toolkit.proto.ImageProperty
+import com.example.toolkit.proto.ImageProvider
+import com.example.toolkit.proto.ProgressProperty
+import com.example.toolkit.proto.ProgressType
+import com.example.toolkit.proto.SpacerProperty
+import com.example.toolkit.proto.TextAlign
+import com.example.toolkit.proto.TextContent
+import com.example.toolkit.proto.TextProperty
+import com.example.toolkit.proto.ViewProperty
 
 
 fun textProperty(

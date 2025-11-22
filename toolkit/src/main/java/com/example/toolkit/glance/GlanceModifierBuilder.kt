@@ -9,7 +9,7 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.unit.Dimension
-import com.example.composetoglance.proto.ViewProperty
+import com.example.toolkit.proto.ViewProperty
 import com.example.toolkit.glance.converter.ActionConverter
 import com.example.toolkit.glance.converter.DimensionConverter
 import com.example.toolkit.glance.converter.PaddingConverter

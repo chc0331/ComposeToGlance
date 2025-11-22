@@ -1,13 +1,5 @@
 package com.example.composetoglance.examples
 
-import com.example.composetoglance.proto.AlignmentType.ALIGNMENT_TYPE_CENTER
-import com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_BOLD
-import com.example.composetoglance.proto.HorizontalAlignment.H_ALIGN_CENTER
-import com.example.composetoglance.proto.HorizontalAlignment.H_ALIGN_START
-import com.example.composetoglance.proto.ProgressType
-import com.example.composetoglance.proto.TextAlign.TEXT_ALIGN_CENTER
-import com.example.composetoglance.proto.VerticalAlignment.V_ALIGN_CENTER
-import com.example.composetoglance.proto.WidgetLayoutDocument
 import com.example.toolkit.builder.dimensionDp
 import com.example.toolkit.builder.dimensionWeight
 import com.example.toolkit.builder.matchParentDimension
@@ -21,6 +13,14 @@ import com.example.toolkit.dsl.Spacer
 import com.example.toolkit.dsl.Text
 import com.example.toolkit.dsl.WidgetLayout
 import com.example.toolkit.dsl.padding
+import com.example.toolkit.proto.AlignmentType.ALIGNMENT_TYPE_CENTER
+import com.example.toolkit.proto.FontWeight.FONT_WEIGHT_BOLD
+import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_CENTER
+import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_START
+import com.example.toolkit.proto.ProgressType
+import com.example.toolkit.proto.TextAlign.TEXT_ALIGN_CENTER
+import com.example.toolkit.proto.VerticalAlignment.V_ALIGN_CENTER
+import com.example.toolkit.proto.WidgetLayoutDocument
 
 /**
  * DSL을 사용한 간단한 레이아웃 예시들

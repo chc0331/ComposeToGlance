@@ -1,10 +1,10 @@
 package com.example.toolkit.builder
 
 import androidx.annotation.DrawableRes
-import com.example.composetoglance.proto.Color
-import com.example.composetoglance.proto.ColorProvider
-import com.example.composetoglance.proto.ImageProvider
-import com.example.composetoglance.proto.TextContent
+import com.example.toolkit.proto.Color
+import com.example.toolkit.proto.ColorProvider
+import com.example.toolkit.proto.ImageProvider
+import com.example.toolkit.proto.TextContent
 
 /**
  * Color, ColorProvider, TextContent, ImageProvider

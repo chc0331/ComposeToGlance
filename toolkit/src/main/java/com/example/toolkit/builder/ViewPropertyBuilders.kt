@@ -1,15 +1,15 @@
 package com.example.toolkit.builder
 
-import com.example.composetoglance.proto.Action
-import com.example.composetoglance.proto.Alignment
-import com.example.composetoglance.proto.AlignmentType
-import com.example.composetoglance.proto.CornerRadius
-import com.example.composetoglance.proto.Dimension
-import com.example.composetoglance.proto.HorizontalAlignment
-import com.example.composetoglance.proto.Padding
-import com.example.composetoglance.proto.Semantics
-import com.example.composetoglance.proto.VerticalAlignment
-import com.example.composetoglance.proto.ViewProperty
+import com.example.toolkit.proto.Action
+import com.example.toolkit.proto.Alignment
+import com.example.toolkit.proto.AlignmentType
+import com.example.toolkit.proto.CornerRadius
+import com.example.toolkit.proto.Dimension
+import com.example.toolkit.proto.HorizontalAlignment
+import com.example.toolkit.proto.Padding
+import com.example.toolkit.proto.Semantics
+import com.example.toolkit.proto.VerticalAlignment
+import com.example.toolkit.proto.ViewProperty
 
 /**
  * ViewProperty, Alignment

@@ -1,16 +1,20 @@
 package com.example.toolkit.glance.renderer
 
 import android.graphics.drawable.Drawable
-import androidx.compose.Composable
+import android.net.Uri
+import androidx.compose.runtime.Composable
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
 import androidx.glance.Image
 import androidx.glance.ImageProvider
-import androidx.glance.contentDescription
+import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.layout.ContentScale
-import com.example.composetoglance.proto.ContentScale as ProtoContentScale
-import com.example.composetoglance.proto.ImageProperty
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.ColorProvider
+import com.example.toolkit.proto.ContentScale as ProtoContentScale
+import com.example.toolkit.proto.ImageProperty
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
+import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext
 import com.example.toolkit.glance.converter.ColorConverter
 
@@ -41,14 +45,17 @@ object ImageRenderer : NodeRenderer {
             imageProperty.provider.hasDrawableResId() -> {
                 ImageProvider(imageProperty.provider.drawableResId)
             }
+
             imageProperty.provider.hasUri() -> {
-                ImageProvider(imageProperty.provider.uri)
+                androidx.glance.appwidget.ImageProvider(Uri.parse(imageProperty.provider.uri))
             }
+
             imageProperty.provider.hasBitmap() -> {
                 // Bitmap은 Glance에서 직접 지원하지 않으므로 변환 필요
                 // 여기서는 기본 이미지 제공자 반환
                 ImageProvider(android.R.drawable.ic_menu_gallery)
             }
+
             else -> {
                 // 기본 이미지
                 ImageProvider(android.R.drawable.ic_menu_gallery)
@@ -60,7 +67,8 @@ object ImageRenderer : NodeRenderer {
 
         // Alpha (Glance는 alpha를 modifier로 지원)
         val finalModifier = if (imageProperty.alpha != 1f && imageProperty.alpha > 0f) {
-            modifier.then(androidx.glance.GlanceModifier.alpha(imageProperty.alpha))
+//            modifier.then(androidx.glance.GlanceModifier.alpha(imageProperty.alpha))
+            modifier
         } else {
             modifier
         }
@@ -68,7 +76,9 @@ object ImageRenderer : NodeRenderer {
         // Tint Color (Glance는 colorFilter로 지원)
         val colorFilter = if (imageProperty.hasTintColor()) {
             androidx.glance.ColorFilter.tint(
-                ColorConverter.toGlanceColor(imageProperty.tintColor)
+                androidx.glance.unit.ColorProvider(
+                    ColorConverter.toGlanceColor(imageProperty.tintColor)
+                )
             )
         } else {
             null

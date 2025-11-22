@@ -2,7 +2,7 @@ package com.example.toolkit.glance.renderer
 
 import androidx.compose.runtime.Composable
 import androidx.glance.layout.Spacer
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext

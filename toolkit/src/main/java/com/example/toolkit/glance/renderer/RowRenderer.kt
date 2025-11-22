@@ -3,8 +3,8 @@ package com.example.toolkit.glance.renderer
 import androidx.compose.runtime.Composable
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Row
-import com.example.composetoglance.proto.RowLayoutProperty
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.RowLayoutProperty
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext

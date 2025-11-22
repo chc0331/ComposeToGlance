@@ -7,12 +7,12 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext
 import com.example.toolkit.glance.converter.ColorConverter
-import com.example.composetoglance.proto.TextAlign as ProtoTextAlign
+import com.example.toolkit.proto.TextAlign as ProtoTextAlign
 
 /**
  * Text 노드 렌더러
@@ -69,11 +69,11 @@ object TextRenderer : NodeRenderer {
         )
     }
 
-    private fun toGlanceFontWeight(protoWeight: com.example.composetoglance.proto.FontWeight): FontWeight {
+    private fun toGlanceFontWeight(protoWeight: com.example.toolkit.proto.FontWeight): FontWeight {
         return when (protoWeight) {
-            com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_NORMAL -> FontWeight.Normal
-            com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_MEDIUM -> FontWeight.Medium
-            com.example.composetoglance.proto.FontWeight.FONT_WEIGHT_BOLD -> FontWeight.Bold
+            com.example.toolkit.proto.FontWeight.FONT_WEIGHT_NORMAL -> FontWeight.Normal
+            com.example.toolkit.proto.FontWeight.FONT_WEIGHT_MEDIUM -> FontWeight.Medium
+            com.example.toolkit.proto.FontWeight.FONT_WEIGHT_BOLD -> FontWeight.Bold
             else -> FontWeight.Normal
         }
     }

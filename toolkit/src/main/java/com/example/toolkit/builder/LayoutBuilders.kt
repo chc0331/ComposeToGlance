@@ -1,12 +1,12 @@
 package com.example.toolkit.builder
 
-import com.example.composetoglance.proto.AlignmentType
-import com.example.composetoglance.proto.BoxLayoutProperty
-import com.example.composetoglance.proto.ColumnLayoutProperty
-import com.example.composetoglance.proto.HorizontalAlignment
-import com.example.composetoglance.proto.RowLayoutProperty
-import com.example.composetoglance.proto.VerticalAlignment
-import com.example.composetoglance.proto.ViewProperty
+import com.example.toolkit.proto.AlignmentType
+import com.example.toolkit.proto.BoxLayoutProperty
+import com.example.toolkit.proto.ColumnLayoutProperty
+import com.example.toolkit.proto.HorizontalAlignment
+import com.example.toolkit.proto.RowLayoutProperty
+import com.example.toolkit.proto.VerticalAlignment
+import com.example.toolkit.proto.ViewProperty
 
 fun boxLayoutProperty(
     viewProperty: ViewProperty, alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_START

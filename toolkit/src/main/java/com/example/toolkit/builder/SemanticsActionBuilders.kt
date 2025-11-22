@@ -1,8 +1,8 @@
 package com.example.toolkit.builder
 
-import com.example.composetoglance.proto.Action
-import com.example.composetoglance.proto.Component
-import com.example.composetoglance.proto.Semantics
+import com.example.toolkit.proto.Action
+import com.example.toolkit.proto.Component
+import com.example.toolkit.proto.Semantics
 
 
 /**

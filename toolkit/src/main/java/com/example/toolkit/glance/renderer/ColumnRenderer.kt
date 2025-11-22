@@ -3,8 +3,8 @@ package com.example.toolkit.glance.renderer
 import androidx.compose.runtime.Composable
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
-import com.example.composetoglance.proto.ColumnLayoutProperty
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.ColumnLayoutProperty
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext

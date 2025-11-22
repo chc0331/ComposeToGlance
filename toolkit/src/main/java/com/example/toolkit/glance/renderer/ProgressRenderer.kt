@@ -3,9 +3,9 @@ package com.example.toolkit.glance.renderer
 import androidx.compose.runtime.Composable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.LinearProgressIndicator
-import com.example.composetoglance.proto.ProgressProperty
-import com.example.composetoglance.proto.ProgressType
-import com.example.composetoglance.proto.WidgetNode
+import com.example.toolkit.proto.ProgressProperty
+import com.example.toolkit.proto.ProgressType
+import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext

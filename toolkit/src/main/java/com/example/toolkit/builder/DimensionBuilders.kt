@@ -1,9 +1,9 @@
 package com.example.toolkit.builder
 
-import com.example.composetoglance.proto.CornerRadius
-import com.example.composetoglance.proto.Dimension
-import com.example.composetoglance.proto.Dp
-import com.example.composetoglance.proto.Padding
+import com.example.toolkit.proto.CornerRadius
+import com.example.toolkit.proto.Dimension
+import com.example.toolkit.proto.Dp
+import com.example.toolkit.proto.Padding
 
 /**
  * Dp / Dimension / Padding / CornerRadius

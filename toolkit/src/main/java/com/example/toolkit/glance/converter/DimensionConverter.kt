@@ -2,7 +2,7 @@ package com.example.toolkit.glance.converter
 
 import androidx.compose.ui.unit.dp
 import androidx.glance.unit.Dimension
-import com.example.composetoglance.proto.Dimension as ProtoDimension
+import com.example.toolkit.proto.Dimension as ProtoDimension
 
 /**
  * Proto Dimension을 Glance Dimension으로 변환

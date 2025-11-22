@@ -2,8 +2,8 @@ package com.example.toolkit.glance.converter
 
 import android.content.Context
 import androidx.compose.ui.graphics.Color
-import com.example.composetoglance.proto.Color as ProtoColor
-import com.example.composetoglance.proto.ColorProvider
+import com.example.toolkit.proto.Color as ProtoColor
+import com.example.toolkit.proto.ColorProvider
 
 /**
  * Proto Color를 Glance Color로 변환
