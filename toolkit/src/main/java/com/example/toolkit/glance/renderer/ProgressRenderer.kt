@@ -1,15 +1,18 @@
 package com.example.toolkit.glance.renderer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.LinearProgressIndicator
-import com.example.toolkit.proto.ProgressProperty
-import com.example.toolkit.proto.ProgressType
-import com.example.toolkit.proto.WidgetNode
+import com.example.toolkit.builder.color
+import com.example.toolkit.builder.colorProvider
 import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext
 import com.example.toolkit.glance.converter.ColorConverter
+import com.example.toolkit.proto.ProgressProperty
+import com.example.toolkit.proto.ProgressType
+import com.example.toolkit.proto.WidgetNode
 
 /**
  * Progress 노드 렌더러
@@ -73,8 +76,12 @@ object ProgressRenderer : NodeRenderer {
 
         // Glance의 LinearProgressIndicator는 색상을 직접 지원하지 않을 수 있음
         // 기본 구현 사용
-
-        LinearProgressIndicator(progress = progress.coerceIn(0f, 1f), modifier = modifier)
+        LinearProgressIndicator(
+            progress = progress.coerceIn(0f, 1f),
+            modifier = modifier,
+            color = ColorConverter.toGlanceColorProvider(colorProvider(color = color(progressColor.toArgb()))),
+            backgroundColor = ColorConverter.toGlanceColorProvider(colorProvider(color = color(backgroundColor.toArgb())))
+        )
     }
 
     @Composable

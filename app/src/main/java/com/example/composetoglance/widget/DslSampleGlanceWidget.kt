@@ -1,4 +1,4 @@
-package com.example.composetoglance
+package com.example.composetoglance.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -7,8 +7,8 @@ import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.provideContent
-import com.example.composetoglance.examples.createSimpleColumnLayoutDsl
-import com.example.composetoglance.examples.renderWidgetLayout
+import com.example.toolkit.glance.GlanceRenderer
+import com.example.toolkit.proto.WidgetLayoutDocument
 
 // Glance 위젯 코드 - 실제 홈화면 위젯에서 동작할 수 있음
 class DslSampleGlanceWidget : GlanceAppWidget() {
@@ -22,8 +22,20 @@ class DslSampleGlanceWidget : GlanceAppWidget() {
     @Composable
     fun Content() {
         val context = LocalContext.current
-        val layout = createSimpleColumnLayoutDsl()
-        renderWidgetLayout(layout, context)
+        val layout = createMusicPlayerWidgetDsl()
+        RenderWidgetLayout(layout, context)
+    }
+
+    /**
+     * DSL로 생성한 레이아웃을 Glance 위젯으로 렌더링하는 예제
+     */
+    @Composable
+    fun RenderWidgetLayout(
+        document: WidgetLayoutDocument,
+        context: Context
+    ) {
+        val renderer = GlanceRenderer(context)
+        renderer.render(document)
     }
 }
 
