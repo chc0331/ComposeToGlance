@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import com.example.composetoglance.proto.Action
 import com.example.composetoglance.proto.Component
@@ -22,5 +22,4 @@ fun action(
     component: Component
 ): Action = Action.newBuilder().setActivity(activity).setService(service)
     .setBroadcastReceiver(broadcastReceiver).setComponent(component).build()
-
 

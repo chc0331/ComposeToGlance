@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import androidx.annotation.DrawableRes
 import com.example.composetoglance.proto.Color
@@ -24,5 +24,4 @@ fun imageProviderFromDrawable(@DrawableRes resId: Int): ImageProvider =
 
 fun imageProviderFromUri(uri: String): ImageProvider =
     ImageProvider.newBuilder().setUri(uri).build()
-
 

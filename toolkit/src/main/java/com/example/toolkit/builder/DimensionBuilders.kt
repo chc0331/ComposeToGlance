@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import com.example.composetoglance.proto.CornerRadius
 import com.example.composetoglance.proto.Dimension
@@ -23,3 +23,4 @@ fun padding(
     .setBottom(dp(bottom)).build()
 
 fun cornerRadius(all: Float): CornerRadius = CornerRadius.newBuilder().setRadius(all).build()
+

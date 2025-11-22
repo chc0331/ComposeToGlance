@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import com.example.composetoglance.proto.ButtonProperty
 import com.example.composetoglance.proto.Color
@@ -67,3 +67,4 @@ fun progressProperty(
 fun spacerProperty(
     viewProperty: ViewProperty
 ): SpacerProperty = SpacerProperty.newBuilder().setViewProperty(viewProperty).build()
+

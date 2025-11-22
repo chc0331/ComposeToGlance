@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import com.example.composetoglance.proto.AlignmentType
 import com.example.composetoglance.proto.BoxLayoutProperty
@@ -26,5 +26,4 @@ fun columnLayoutProperty(
     verticalAlignment: VerticalAlignment = VerticalAlignment.V_ALIGN_TOP
 ): ColumnLayoutProperty = ColumnLayoutProperty.newBuilder().setViewProperty(viewProperty)
     .setHorizontalAlignment(horizontalAlignment).setVerticalAlignment(verticalAlignment).build()
-
 

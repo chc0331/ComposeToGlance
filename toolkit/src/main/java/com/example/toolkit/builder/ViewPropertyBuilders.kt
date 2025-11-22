@@ -1,4 +1,4 @@
-package com.example.composetoglance.builder
+package com.example.toolkit.builder
 
 import com.example.composetoglance.proto.Action
 import com.example.composetoglance.proto.Alignment
@@ -35,6 +35,4 @@ fun alignment(
     vertical: VerticalAlignment = VerticalAlignment.V_ALIGN_UNSPECIFIED
 ): Alignment = Alignment.newBuilder().setAlignment(alignment).setHorizontal(horizontal)
     .setVertical(vertical).build()
-
-
 
