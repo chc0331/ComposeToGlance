@@ -175,6 +175,7 @@ message ViewProperty {
   CornerRadius corner_radius = 5;
   Semantics semantics = 6;
   Action click_action = 7;
+  ColorProvider background_color = 8;
 }
 
 // --------------------------
@@ -242,4 +243,3 @@ message ProgressProperty {
   ColorProvider progress_color = 5;
   ColorProvider background_color = 6;
 }
-

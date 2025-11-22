@@ -3,16 +3,18 @@ package com.example.toolkit.glance
 import android.content.Context
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
+import androidx.glance.background
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.unit.Dimension
-import com.example.toolkit.proto.ViewProperty
 import com.example.toolkit.glance.converter.ActionConverter
+import com.example.toolkit.glance.converter.ColorConverter
 import com.example.toolkit.glance.converter.DimensionConverter
 import com.example.toolkit.glance.converter.PaddingConverter
+import com.example.toolkit.proto.ViewProperty
 
 /**
  * Proto ViewProperty를 GlanceModifier로 변환하는 빌더
@@ -59,6 +61,10 @@ object GlanceModifierBuilder {
                 modifier = modifier.clickable(it)
             }
         }
+
+        // Background color
+        modifier =
+            modifier.background(ColorConverter.toGlanceColorProvider(viewProperty.backgroundColor))
 
         return modifier
     }

@@ -1,5 +1,9 @@
 package com.example.composetoglance.examples
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.example.toolkit.builder.color
+import com.example.toolkit.builder.colorProvider
 import com.example.toolkit.builder.dimensionDp
 import com.example.toolkit.builder.dimensionWeight
 import com.example.toolkit.builder.matchParentDimension
@@ -35,7 +39,11 @@ import com.example.toolkit.proto.WidgetLayoutDocument
  */
 fun createSimpleColumnLayoutDsl(): WidgetLayoutDocument {
     return WidgetLayout {
-        Column(horizontalAlignment = H_ALIGN_CENTER) {
+        Column(
+            horizontalAlignment = H_ALIGN_CENTER, backgroundColor = colorProvider(
+                color = color(Color.Gray.toArgb())
+            )
+        ) {
             Text("Hello Glance!", fontSize = 18f, fontWeight = FONT_WEIGHT_BOLD)
             Text(
                 "프로토 빌더 예시",

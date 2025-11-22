@@ -1,23 +1,6 @@
 package com.example.toolkit.dsl
 
 import androidx.annotation.DrawableRes
-import com.example.toolkit.proto.AlignmentType
-import com.example.toolkit.proto.AlignmentType.ALIGNMENT_TYPE_START
-import com.example.toolkit.proto.ContentScale
-import com.example.toolkit.proto.ContentScale.CONTENT_SCALE_FIT
-import com.example.toolkit.proto.Dimension
-import com.example.toolkit.proto.FontWeight
-import com.example.toolkit.proto.FontWeight.FONT_WEIGHT_NORMAL
-import com.example.toolkit.proto.HorizontalAlignment
-import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_START
-import com.example.toolkit.proto.Padding
-import com.example.toolkit.proto.ProgressType
-import com.example.toolkit.proto.TextAlign
-import com.example.toolkit.proto.TextAlign.TEXT_ALIGN_START
-import com.example.toolkit.proto.VerticalAlignment
-import com.example.toolkit.proto.VerticalAlignment.V_ALIGN_TOP
-import com.example.toolkit.proto.WidgetLayoutDocument
-import com.example.toolkit.proto.WidgetNode
 import com.example.toolkit.builder.boxLayoutProperty
 import com.example.toolkit.builder.buttonProperty
 import com.example.toolkit.builder.color
@@ -36,6 +19,24 @@ import com.example.toolkit.builder.textContent
 import com.example.toolkit.builder.textProperty
 import com.example.toolkit.builder.viewProperty
 import com.example.toolkit.builder.wrapContentDimension
+import com.example.toolkit.proto.AlignmentType
+import com.example.toolkit.proto.AlignmentType.ALIGNMENT_TYPE_START
+import com.example.toolkit.proto.ColorProvider
+import com.example.toolkit.proto.ContentScale
+import com.example.toolkit.proto.ContentScale.CONTENT_SCALE_FIT
+import com.example.toolkit.proto.Dimension
+import com.example.toolkit.proto.FontWeight
+import com.example.toolkit.proto.FontWeight.FONT_WEIGHT_NORMAL
+import com.example.toolkit.proto.HorizontalAlignment
+import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_START
+import com.example.toolkit.proto.Padding
+import com.example.toolkit.proto.ProgressType
+import com.example.toolkit.proto.TextAlign
+import com.example.toolkit.proto.TextAlign.TEXT_ALIGN_START
+import com.example.toolkit.proto.VerticalAlignment
+import com.example.toolkit.proto.VerticalAlignment.V_ALIGN_TOP
+import com.example.toolkit.proto.WidgetLayoutDocument
+import com.example.toolkit.proto.WidgetNode
 
 /**
  * Widget DSL - Compose 스타일의 선언적 API
@@ -118,6 +119,7 @@ fun WidgetScope.Column(
     padding: Padding? = null,
     horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
     verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
+    backgroundColor: ColorProvider? = null,
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
@@ -130,7 +132,8 @@ fun WidgetScope.Column(
                     viewId = viewId,
                     width = width,
                     height = height,
-                    padding = padding
+                    padding = padding,
+                    backgroundColor = backgroundColor
                 ),
                 horizontalAlignment = horizontalAlignment,
                 verticalAlignment = verticalAlignment
@@ -154,6 +157,7 @@ fun WidgetScope.Row(
     padding: Padding? = null,
     horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
     verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
+    backgroundColor: ColorProvider? = null,
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
@@ -166,7 +170,8 @@ fun WidgetScope.Row(
                     viewId = viewId,
                     width = width,
                     height = height,
-                    padding = padding
+                    padding = padding,
+                    backgroundColor = backgroundColor
                 ),
                 horizontalAlignment = horizontalAlignment,
                 verticalAlignment = verticalAlignment
@@ -189,6 +194,7 @@ fun WidgetScope.Box(
     height: Dimension = wrapContentDimension,
     padding: Padding? = null,
     alignment: AlignmentType = ALIGNMENT_TYPE_START,
+    backgroundColor: ColorProvider? = null,
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
@@ -201,7 +207,8 @@ fun WidgetScope.Box(
                     viewId = viewId,
                     width = width,
                     height = height,
-                    padding = padding
+                    padding = padding,
+                    backgroundColor = backgroundColor
                 ),
                 alignment = alignment
             )

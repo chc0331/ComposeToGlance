@@ -53,6 +53,31 @@ object ColorConverter {
     }
 
     /**
+     * Proto ColorProvider를 Glance ColorProvider로 변환
+     * @param colorProvider Proto ColorProvider
+     * @return Glance ColorProvider
+     */
+    fun toGlanceColorProvider(colorProvider: ColorProvider): androidx.glance.unit.ColorProvider {
+        if (colorProvider.resId != 0) {
+            return androidx.glance.unit.ColorProvider(resId = colorProvider.resId)
+        }
+
+        if (colorProvider.hasDarkColor()) {
+            val day = if (colorProvider.hasColor()) colorProvider.color else colorProvider.darkColor
+            return androidx.glance.color.ColorProvider(
+                day = toGlanceColor(day),
+                night = toGlanceColor(colorProvider.darkColor)
+            )
+        }
+
+        if (colorProvider.hasColor()) {
+            return androidx.glance.unit.ColorProvider(color = toGlanceColor(colorProvider.color))
+        }
+
+        return androidx.glance.unit.ColorProvider(android.R.color.transparent)
+    }
+
+    /**
      * Proto Color를 Compose Color로 변환 (필요한 경우)
      */
     fun toComposeColor(protoColor: ProtoColor): androidx.compose.ui.graphics.Color {
@@ -66,4 +91,3 @@ object ColorConverter {
         return Color(argb)
     }
 }
-
