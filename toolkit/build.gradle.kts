@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.protobuf.javalite)
+    implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
     api("androidx.compose.runtime:runtime:1.7.8")
     api("androidx.compose.ui:ui-graphics:1.6.0")
     api("androidx.compose.ui:ui-unit:1.6.0")
