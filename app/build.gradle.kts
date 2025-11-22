@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.protobuf.javalite)
     implementation(project(":toolkit"))
-    implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
     implementation("androidx.core:core-remoteviews:1.1.0")
 
     testImplementation(libs.junit)
