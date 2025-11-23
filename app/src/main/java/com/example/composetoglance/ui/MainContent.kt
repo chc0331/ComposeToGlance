@@ -26,7 +26,7 @@ import com.example.composetoglance.ui.bottompanel.BottomPanelWithTabs
 import com.example.composetoglance.ui.canvas.WidgetCanvas
 import com.example.composetoglance.ui.modifier.CanvasConstants
 import com.example.composetoglance.ui.modifier.canvasBorder
-import com.example.composetoglance.ui.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.viewmodel.WidgetEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

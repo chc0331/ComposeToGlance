@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.viewmodel
+package com.example.composetoglance.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
