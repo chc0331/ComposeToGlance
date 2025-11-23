@@ -46,11 +46,11 @@ internal class DragTargetInfo {
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
 /**
- * 롱 프레스 후 드래그 가능한 영역을 제공하는 Composable
- * 드래그 중인 아이템을 확대하여 표시합니다.
+ * 위젯 편집 컨테이너 Composable
+ * 드래그 앤 드롭 기능을 제공하며, 드래그 중인 아이템을 확대하여 표시합니다.
  */
 @Composable
-fun LongPressDrawable(
+fun WidgetEditorContainer(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {

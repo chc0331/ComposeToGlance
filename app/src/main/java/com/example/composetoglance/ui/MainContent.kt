@@ -53,7 +53,7 @@ fun MainContent(
             )
         }
     ) { paddingValues ->
-        LongPressDrawable(
+        WidgetEditorContainer(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
