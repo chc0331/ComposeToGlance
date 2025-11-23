@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composetoglance.ui.bottompanel.BottomPanelWithTabs
 import com.example.composetoglance.ui.canvas.WidgetCanvas
 import com.example.composetoglance.ui.layout.Layout
+import com.example.composetoglance.ui.widget.Category
 import com.example.composetoglance.ui.widget.Widget
 
 /**
@@ -102,12 +103,22 @@ private fun Modifier.canvasBorder(outline: Color): Modifier {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
+    val categories = remember {
+        listOf(
+            Category("cat1", "카테고리 1"),
+            Category("cat2", "카테고리 2"),
+            Category("cat3", "카테고리 3")
+        )
+    }
+    
     val widgets = remember {
         mutableStateListOf(
-            Widget("위젯 1", "설명 1", "1x1"),
-            Widget("위젯 2", "설명 2", "2x1"),
-            Widget("위젯 3", "설명 3", "2x2"),
-            Widget("위젯 4", "설명 4", "1x1")
+            Widget("위젯 1", "설명 1", "1x1", "cat1"),
+            Widget("위젯 2", "설명 2", "2x1", "cat1"),
+            Widget("위젯 3", "설명 3", "2x2", "cat2"),
+            Widget("위젯 4", "설명 4", "1x1", "cat2"),
+            Widget("위젯 5", "설명 5", "1x1", "cat3"),
+            Widget("위젯 6", "설명 6", "2x1", "cat3")
         )
     }
     var selectedLayout by remember { mutableStateOf<Layout?>(null) }
@@ -155,6 +166,7 @@ fun MainContent() {
 
                 BottomPanelWithTabs(
                     widgets = widgets,
+                    categories = categories,
                     onLayoutSelected = { selectedLayout = it },
                     modifier = Modifier
                         .weight(CanvasConstants.BOTTOM_PANEL_WEIGHT)

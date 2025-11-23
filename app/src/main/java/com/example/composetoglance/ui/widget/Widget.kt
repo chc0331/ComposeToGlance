@@ -78,7 +78,14 @@ fun WidgetItem(
 data class Widget(
     val name: String, 
     val description: String,
-    val sizeType: String = "1x1" // "1x1", "2x1", "2x2"
+    val sizeType: String = "1x1", // "1x1", "2x1", "2x2"
+    val categoryId: String? = null // 카테고리 ID
+)
+
+data class Category(
+    val id: String,
+    val name: String,
+    val icon: String? = null // 아이콘은 나중에 추가 가능
 )
 
 data class PositionedWidget(
