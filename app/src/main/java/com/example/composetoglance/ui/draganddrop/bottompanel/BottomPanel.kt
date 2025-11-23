@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.draganddrop.bottompanel
+package com.example.composetoglance.ui.bottompanel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.ui.draganddrop.layout.ClickableLayoutComponent
-import com.example.composetoglance.ui.draganddrop.layout.Layout
-import com.example.composetoglance.ui.draganddrop.widget.DragTargetWidgetItem
-import com.example.composetoglance.ui.draganddrop.widget.Widget
+import com.example.composetoglance.ui.layout.ClickableLayoutComponent
+import com.example.composetoglance.ui.layout.Layout
+import com.example.composetoglance.ui.widget.DragTargetWidgetItem
+import com.example.composetoglance.ui.widget.Widget
 
 @Composable
 fun BottomPanelWithTabs(

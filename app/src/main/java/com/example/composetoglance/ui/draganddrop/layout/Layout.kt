@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.draganddrop.layout
+package com.example.composetoglance.ui.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
