@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.bottompanel
+package com.example.composetoglance.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

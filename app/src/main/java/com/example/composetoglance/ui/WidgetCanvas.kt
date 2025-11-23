@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.canvas
+package com.example.composetoglance.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -410,7 +411,7 @@ private fun WidgetPreview(
     layoutBounds: LayoutBounds?,
     selectedLayout: Layout?,
     canvasPosition: Offset,
-    density: androidx.compose.ui.unit.Density
+    density: Density
 ) {
     val bounds = layoutBounds
     val spec = selectedLayout?.gridSpec()
@@ -459,7 +460,7 @@ private fun GridCellHighlight(
     occupiedCells: Set<Int>,
     hoveredCellIndices: List<Int>,
     canvasPosition: Offset,
-    density: androidx.compose.ui.unit.Density
+    density: Density
 ) {
     gridCells.forEach { cell ->
         val isOccupied = occupiedCells.contains(cell.index)
