@@ -1,11 +1,14 @@
 package com.example.composetoglance.ui.draganddrop.widget
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,10 +42,18 @@ fun DragTargetWidgetItem(
 @Composable
 fun WidgetItem(
     data: Widget,
-    shouldAnimate: Boolean
+    shouldAnimate: Boolean,
+    modifier: Modifier = Modifier
 ) {
+    val (width, height) = when (data.sizeType) {
+        "1x1" -> 50.dp to 50.dp
+        "2x1" -> 100.dp to 50.dp
+        "2x2" -> 100.dp to 100.dp
+        else -> 50.dp to 50.dp
+    }
+    
     Column(
-        modifier = Modifier
+        modifier = modifier
             .graphicsLayer {
                 scaleX = 1.0f
                 scaleY = 1.0f
@@ -51,24 +62,53 @@ fun WidgetItem(
     ) {
         Box(
             modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
+                .width(width)
+                .height(height)
+                .clip(RoundedCornerShape(8.dp))
                 .background(Color.DarkGray), // Dark Gray background for widget
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = data.name,
-                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
-                color = Color.White // White text for visibility
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = data.name,
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+                    color = Color.White // White text for visibility
+                )
+                Text(
+                    text = data.sizeType,
+                    style = TextStyle(fontSize = 12.sp),
+                    color = Color.LightGray
+                )
+            }
         }
     }
 }
 
-data class Widget(val name: String, val description: String)
+data class Widget(
+    val name: String, 
+    val description: String,
+    val sizeType: String = "1x1" // "1x1", "2x1", "2x2"
+)
 
 data class PositionedWidget(
     val widget: Widget,
     val offset: Offset,
-    val cellIndex: Int? = null
+    val cellIndex: Int? = null,
+    val cellIndices: List<Int> = emptyList() // 여러 셀을 차지하는 경우
 )
+
+/**
+ * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환
+ * @return Pair<width in cells, height in cells>
+ */
+fun Widget.getSizeInCells(): Pair<Int, Int> {
+    return when (sizeType) {
+        "1x1" -> 1 to 1
+        "2x1" -> 2 to 1
+        "2x2" -> 2 to 2
+        else -> 1 to 1
+    }
+}

@@ -44,8 +44,10 @@ import com.example.composetoglance.ui.draganddrop.widget.Widget
 fun MainContent() {
     val widgets = remember {
         mutableStateListOf(
-            Widget("1", "2"),
-            Widget("2", "3")
+            Widget("위젯 1", "설명 1", "1x1"),
+            Widget("위젯 2", "설명 2", "2x1"),
+            Widget("위젯 3", "설명 3", "2x2"),
+            Widget("위젯 4", "설명 4", "1x1")
         )
     }
     var selectedLayout by remember { mutableStateOf<Layout?>(null) }
