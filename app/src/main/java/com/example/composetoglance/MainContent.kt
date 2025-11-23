@@ -22,10 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.composetoglance.bottompanel.BottomPanelWithTabs
-import com.example.composetoglance.modifier.CanvasConstants
-import com.example.composetoglance.modifier.canvasBorder
-import com.example.composetoglance.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.bottompanel.BottomPanelWithTabs
+import com.example.composetoglance.editor.WidgetCanvas
+import com.example.composetoglance.editor.WidgetEditorContainer
+import com.example.composetoglance.editor.modifier.CanvasConstants
+import com.example.composetoglance.editor.modifier.canvasBorder
+import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

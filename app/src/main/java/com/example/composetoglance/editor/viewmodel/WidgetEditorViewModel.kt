@@ -1,4 +1,4 @@
-package com.example.composetoglance.viewmodel
+package com.example.composetoglance.editor.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
-import com.example.composetoglance.layout.Layout
-import com.example.composetoglance.widget.Category
-import com.example.composetoglance.widget.PositionedWidget
-import com.example.composetoglance.widget.Widget
+import com.example.composetoglance.editor.layout.Layout
+import com.example.composetoglance.editor.widget.Category
+import com.example.composetoglance.editor.widget.PositionedWidget
+import com.example.composetoglance.editor.widget.Widget
 
 class WidgetEditorViewModel : ViewModel() {
     

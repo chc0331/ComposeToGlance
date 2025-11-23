@@ -1,9 +1,9 @@
-package com.example.composetoglance.util
+package com.example.composetoglance.editor.util
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
-import com.example.composetoglance.layout.LayoutGridSpec
+import com.example.composetoglance.editor.layout.LayoutGridSpec
 import kotlin.math.pow
 import kotlin.math.sqrt
 

@@ -25,7 +25,7 @@
         </activity>
 
         <receiver
-            android:name=".widget.DslSampleGlanceWidgetReceiver"
+            android:name=".dsl.DslSampleGlanceWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

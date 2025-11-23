@@ -1,4 +1,4 @@
-package com.example.composetoglance
+package com.example.composetoglance.editor
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -14,9 +14,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import com.example.composetoglance.draganddrop.DragAndDropConstants
-import com.example.composetoglance.draganddrop.DragTargetInfo
-import com.example.composetoglance.draganddrop.LocalDragTargetInfo
+import com.example.composetoglance.editor.draganddrop.DragAndDropConstants
+import com.example.composetoglance.editor.draganddrop.DragTargetInfo
+import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
 
 /**
  * 위젯 편집 컨테이너 Composable

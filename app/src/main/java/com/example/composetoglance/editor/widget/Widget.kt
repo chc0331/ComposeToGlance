@@ -1,4 +1,4 @@
-package com.example.composetoglance.widget
+package com.example.composetoglance.editor.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,15 +18,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composetoglance.editor.draganddrop.DragTarget
 
 @Composable
 fun DragTargetWidgetItem(
     modifier: Modifier = Modifier,
     data: Widget
 ) {
-    _root_ide_package_.com.example.composetoglance.draganddrop.DragTarget(
+    DragTarget(
         context = LocalContext.current,
         modifier = modifier
             .wrapContentSize(),
@@ -111,7 +113,7 @@ fun Widget.getSizeInCells(): Pair<Int, Int> {
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
  * @return Pair<width in dp, height in dp>
  */
-fun Widget.getSizeInDp(): Pair<androidx.compose.ui.unit.Dp, androidx.compose.ui.unit.Dp> {
+fun Widget.getSizeInDp(): Pair<Dp, Dp> {
     return when (sizeType) {
         "1x1" -> 50.dp to 50.dp
         "2x1" -> 100.dp to 50.dp

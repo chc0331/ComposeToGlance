@@ -1,4 +1,4 @@
-package com.example.composetoglance
+package com.example.composetoglance.editor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,21 +24,21 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.draganddrop.DragTargetInfo
-import com.example.composetoglance.draganddrop.DropTarget
-import com.example.composetoglance.draganddrop.LocalDragTargetInfo
-import com.example.composetoglance.layout.Layout
-import com.example.composetoglance.layout.LayoutComponent
-import com.example.composetoglance.layout.gridSpec
-import com.example.composetoglance.widget.PositionedWidget
-import com.example.composetoglance.widget.Widget
-import com.example.composetoglance.widget.WidgetItem
-import com.example.composetoglance.widget.getSizeInCells
-import com.example.composetoglance.widget.getSizeInDp
-import com.example.composetoglance.util.GridCalculator
-import com.example.composetoglance.util.GridCell
-import com.example.composetoglance.util.LayoutBounds
-import com.example.composetoglance.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.draganddrop.DragTargetInfo
+import com.example.composetoglance.editor.draganddrop.DropTarget
+import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
+import com.example.composetoglance.editor.layout.Layout
+import com.example.composetoglance.editor.layout.LayoutComponent
+import com.example.composetoglance.editor.layout.gridSpec
+import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.util.GridCalculator
+import com.example.composetoglance.editor.util.GridCell
+import com.example.composetoglance.editor.util.LayoutBounds
+import com.example.composetoglance.editor.widget.PositionedWidget
+import com.example.composetoglance.editor.widget.Widget
+import com.example.composetoglance.editor.widget.WidgetItem
+import com.example.composetoglance.editor.widget.getSizeInCells
+import com.example.composetoglance.editor.widget.getSizeInDp
 import kotlin.math.roundToInt
 
 // 상수 정의

@@ -1,4 +1,4 @@
-package com.example.composetoglance.widget
+package com.example.composetoglance.dsl
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

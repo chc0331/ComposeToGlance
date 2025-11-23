@@ -1,4 +1,4 @@
-package com.example.composetoglance.draganddrop
+package com.example.composetoglance.editor.draganddrop
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
