@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class Layout(val type: String, val sizeType: String)
-data class PositionedLayout(val layout: Layout, val offset: Offset)
 
 data class LayoutGridSpec(val rows: Int, val columns: Int)
 
