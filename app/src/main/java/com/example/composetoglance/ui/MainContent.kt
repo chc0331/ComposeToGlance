@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.ui.bottompanel.BottomPanelWithTabs
 import com.example.composetoglance.ui.canvas.WidgetCanvas
+import com.example.composetoglance.ui.container.WidgetEditorContainer
 import com.example.composetoglance.ui.modifier.CanvasConstants
 import com.example.composetoglance.ui.modifier.canvasBorder
 import com.example.composetoglance.viewmodel.WidgetEditorViewModel

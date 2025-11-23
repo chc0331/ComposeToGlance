@@ -20,7 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.ui.DragTarget
+import com.example.composetoglance.ui.draganddrop.DragTarget
 
 @Composable
 fun DragTargetWidgetItem(

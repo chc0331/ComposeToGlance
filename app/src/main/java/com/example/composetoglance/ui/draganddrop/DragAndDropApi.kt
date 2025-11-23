@@ -1,15 +1,12 @@
-package com.example.composetoglance.ui
+package com.example.composetoglance.ui.draganddrop
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,87 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.IntSize
-
-/**
- * 드래그 앤 드롭 관련 상수
- */
-private object DragConstants {
-    const val SCALE_FACTOR = 1.5f
-    const val DRAG_ALPHA = 0.9f
-}
-
-/**
- * 드래그 앤 드롭 상태를 관리하는 내부 클래스
- */
-internal class DragTargetInfo {
-    var isDragging: Boolean by mutableStateOf(false)
-    var dragPosition by mutableStateOf(Offset.Zero)
-    var dragOffset by mutableStateOf(Offset.Zero)
-    var draggableComposable by mutableStateOf<(@Composable () -> Unit)?>(null)
-    var dataToDrop by mutableStateOf<Any?>(null)
-    var itemDropped: Boolean by mutableStateOf(false)
-}
-
-internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
-
-/**
- * 위젯 편집 컨테이너 Composable
- * 드래그 앤 드롭 기능을 제공하며, 드래그 중인 아이템을 확대하여 표시합니다.
- */
-@Composable
-fun WidgetEditorContainer(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
-) {
-    val state = remember { DragTargetInfo() }
-    var canvasPosition by remember { mutableStateOf(Offset.Zero) }
-
-    CompositionLocalProvider(
-        LocalDragTargetInfo provides state
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .onGloballyPositioned {
-                    canvasPosition = it.localToWindow(Offset.Zero)
-                }) {
-            content()
-            if (state.isDragging) {
-                var targetSize by remember {
-                    mutableStateOf(IntSize.Zero)
-                }
-                Box(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            val currentTouchWindowPosition = state.dragPosition + state.dragOffset
-                            val relativeOffset = currentTouchWindowPosition - canvasPosition
-                            val scaleFactor = DragConstants.SCALE_FACTOR
-                            val scaledWidth = targetSize.width * scaleFactor
-                            val scaledHeight = targetSize.height * scaleFactor
-                            val centerX = relativeOffset.x - scaledWidth / 2
-                            val centerY = relativeOffset.y - scaledHeight / 2
-
-                            scaleX = scaleFactor
-                            scaleY = scaleFactor
-                            alpha = if (targetSize == IntSize.Zero) 0f else DragConstants.DRAG_ALPHA
-                            translationX = centerX
-                            translationY = centerY
-                        }
-                        .onGloballyPositioned {
-                            targetSize = it.size
-                        }
-                ) {
-                    state.draggableComposable?.invoke()
-                }
-            }
-        }
-    }
-}
 
 /**
  * 드래그 가능한 타겟을 생성하는 Composable
@@ -185,3 +104,4 @@ fun DropTarget(
         content(isCurrentDropTarget, data)
     }
 }
+

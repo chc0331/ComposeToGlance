@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.ui.DropTarget
-import com.example.composetoglance.ui.LocalDragTargetInfo
+import com.example.composetoglance.ui.draganddrop.DropTarget
+import com.example.composetoglance.ui.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.ui.layout.Layout
 import com.example.composetoglance.ui.layout.LayoutComponent
 import com.example.composetoglance.ui.layout.LayoutGridSpec
