@@ -19,9 +19,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetoglance.ui.modifier.CanvasConstants
 import com.example.composetoglance.ui.modifier.canvasBorder
 import com.example.composetoglance.viewmodel.WidgetEditorViewModel
@@ -68,7 +68,7 @@ fun MainContent(
                         .fillMaxWidth()
                         .padding(top = CanvasConstants.TOP_PADDING)
                         .canvasBorder(outline),
-                    selectedLayout = viewModel.selectedLayout,
+                    viewModel = viewModel,
                 )
 
                 Spacer(modifier = Modifier.size(CanvasConstants.SPACER_SIZE))
