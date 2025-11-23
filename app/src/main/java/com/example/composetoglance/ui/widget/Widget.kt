@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,19 +44,10 @@ fun WidgetItem(
     shouldAnimate: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val (width, height) = when (data.sizeType) {
-        "1x1" -> 50.dp to 50.dp
-        "2x1" -> 100.dp to 50.dp
-        "2x2" -> 100.dp to 100.dp
-        else -> 50.dp to 50.dp
-    }
+    val (width, height) = data.getSizeInDp()
     
     Column(
-        modifier = modifier
-            .graphicsLayer {
-                scaleX = 1.0f
-                scaleY = 1.0f
-            },
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -110,5 +100,18 @@ fun Widget.getSizeInCells(): Pair<Int, Int> {
         "2x1" -> 2 to 1
         "2x2" -> 2 to 2
         else -> 1 to 1
+    }
+}
+
+/**
+ * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
+ * @return Pair<width in dp, height in dp>
+ */
+fun Widget.getSizeInDp(): Pair<androidx.compose.ui.unit.Dp, androidx.compose.ui.unit.Dp> {
+    return when (sizeType) {
+        "1x1" -> 50.dp to 50.dp
+        "2x1" -> 100.dp to 50.dp
+        "2x2" -> 100.dp to 100.dp
+        else -> 50.dp to 50.dp
     }
 }

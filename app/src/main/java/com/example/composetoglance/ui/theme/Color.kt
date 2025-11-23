@@ -1,11 +1,4 @@
 package com.example.composetoglance.ui.theme
 
-import androidx.compose.ui.graphics.Color
-
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// 이 파일은 Material3 테마 색상이 필요할 때 사용할 수 있습니다.
+// 현재는 Theme.kt에서 직접 색상을 정의하고 있습니다.

@@ -23,6 +23,17 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 
+/**
+ * 드래그 앤 드롭 관련 상수
+ */
+private object DragConstants {
+    const val SCALE_FACTOR = 1.5f
+    const val DRAG_ALPHA = 0.9f
+}
+
+/**
+ * 드래그 앤 드롭 상태를 관리하는 내부 클래스
+ */
 internal class DragTargetInfo {
     var isDragging: Boolean by mutableStateOf(false)
     var dragPosition by mutableStateOf(Offset.Zero)
@@ -34,6 +45,10 @@ internal class DragTargetInfo {
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
+/**
+ * 롱 프레스 후 드래그 가능한 영역을 제공하는 Composable
+ * 드래그 중인 아이템을 확대하여 표시합니다.
+ */
 @Composable
 fun LongPressDrawable(
     modifier: Modifier = Modifier,
@@ -61,7 +76,7 @@ fun LongPressDrawable(
                         .graphicsLayer {
                             val currentTouchWindowPosition = state.dragPosition + state.dragOffset
                             val relativeOffset = currentTouchWindowPosition - canvasPosition
-                            val scaleFactor = 1.5f
+                            val scaleFactor = DragConstants.SCALE_FACTOR
                             val scaledWidth = targetSize.width * scaleFactor
                             val scaledHeight = targetSize.height * scaleFactor
                             val centerX = relativeOffset.x - scaledWidth / 2
@@ -69,7 +84,7 @@ fun LongPressDrawable(
 
                             scaleX = scaleFactor
                             scaleY = scaleFactor
-                            alpha = if (targetSize == IntSize.Zero) 0f else .9f
+                            alpha = if (targetSize == IntSize.Zero) 0f else DragConstants.DRAG_ALPHA
                             translationX = centerX
                             translationY = centerY
                         }
@@ -84,12 +99,21 @@ fun LongPressDrawable(
     }
 }
 
+/**
+ * 드래그 가능한 타겟을 생성하는 Composable
+ * 롱 프레스 후 드래그 제스처를 감지합니다.
+ *
+ * @param context Android Context
+ * @param modifier Modifier
+ * @param dataToDrop 드롭될 데이터 (현재는 Any? 타입이지만, 향후 제네릭으로 개선 가능)
+ * @param content 드래그 중인 아이템을 렌더링하는 콘텐츠
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DragTarget(
     context: Context,
     modifier: Modifier,
-    dataToDrop: Any? = null, // change type here to your data model class
+    dataToDrop: Any? = null,
     content: @Composable (shouldAnimate: Boolean) -> Unit
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
@@ -128,6 +152,13 @@ fun DragTarget(
     }
 }
 
+/**
+ * 드롭 가능한 타겟 영역을 생성하는 Composable
+ * 드래그 중인 아이템이 이 영역에 들어왔는지 감지합니다.
+ *
+ * @param modifier Modifier
+ * @param content 드롭 영역의 콘텐츠. isInBound는 드래그 아이템이 영역 내부에 있는지 여부, data는 드롭된 데이터
+ */
 @Composable
 fun DropTarget(
     modifier: Modifier,

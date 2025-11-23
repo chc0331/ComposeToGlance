@@ -29,6 +29,29 @@ import com.example.composetoglance.ui.layout.Layout
 import com.example.composetoglance.ui.widget.DragTargetWidgetItem
 import com.example.composetoglance.ui.widget.Widget
 
+/**
+ * 기본 레이아웃 리스트
+ */
+private val DefaultLayouts = listOf(
+    Layout("Full", "Small"),
+    Layout("Full", "Medium"),
+    Layout("Full", "Large")
+)
+
+/**
+ * BottomPanel 관련 상수
+ */
+private object BottomPanelConstants {
+    val TAB_PADDING_TOP = 8.dp
+    val TAB_PADDING_HORIZONTAL = 16.dp
+    val TAB_PADDING_BOTTOM = 8.dp
+    val LAYOUT_SPACING = 16.dp
+    val LAYOUT_TEXT_SIZE = 16.sp
+    val LAYOUT_ITEM_SPACING = 8.dp
+    val WIDGET_LIST_PADDING = 16.dp
+    val WIDGET_LIST_SPACING = 8.dp
+}
+
 @Composable
 fun BottomPanelWithTabs(
     widgets: List<Widget>,
@@ -57,26 +80,30 @@ fun BottomPanelWithTabs(
 @Composable
 fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
     var activeLayout by remember { mutableStateOf<Layout?>(null) }
-    val layouts = listOf(
-        Layout("Full", "Small"),
-        Layout("Full", "Medium"),
-        Layout("Full", "Large")
-    )
 
     LazyRow(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(
+                top = BottomPanelConstants.TAB_PADDING_TOP,
+                start = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
+                end = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
+                bottom = BottomPanelConstants.TAB_PADDING_BOTTOM
+            ),
+        horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        items(layouts) { layout ->
+        items(DefaultLayouts) { layout ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_ITEM_SPACING)
             ) {
-                Text(text = layout.sizeType, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(
+                    text = layout.sizeType,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = BottomPanelConstants.LAYOUT_TEXT_SIZE
+                )
                 ClickableLayoutComponent(
                     data = layout,
                     isClicked = activeLayout == layout,
@@ -99,8 +126,8 @@ fun WidgetsList(widgetList: List<Widget>, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(BottomPanelConstants.WIDGET_LIST_PADDING),
+        verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING)
     ) {
         items(widgetList) { widget ->
             DragTargetWidgetItem(
