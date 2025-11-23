@@ -18,12 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -36,9 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.ui.bottompanel.BottomPanelWithTabs
 import com.example.composetoglance.ui.canvas.WidgetCanvas
-import com.example.composetoglance.ui.layout.Layout
-import com.example.composetoglance.ui.widget.Category
-import com.example.composetoglance.ui.widget.Widget
+import com.example.composetoglance.ui.viewmodel.WidgetEditorViewModel
 
 /**
  * 캔버스 관련 상수
@@ -102,26 +96,9 @@ private fun Modifier.canvasBorder(outline: Color): Modifier {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainContent() {
-    val categories = remember {
-        listOf(
-            Category("cat1", "카테고리 1"),
-            Category("cat2", "카테고리 2"),
-            Category("cat3", "카테고리 3")
-        )
-    }
-    
-    val widgets = remember {
-        mutableStateListOf(
-            Widget("위젯 1", "설명 1", "1x1", "cat1"),
-            Widget("위젯 2", "설명 2", "2x1", "cat1"),
-            Widget("위젯 3", "설명 3", "2x2", "cat2"),
-            Widget("위젯 4", "설명 4", "1x1", "cat2"),
-            Widget("위젯 5", "설명 5", "1x1", "cat3"),
-            Widget("위젯 6", "설명 6", "2x1", "cat3")
-        )
-    }
-    var selectedLayout by remember { mutableStateOf<Layout?>(null) }
+fun MainContent(
+    viewModel: WidgetEditorViewModel = viewModel()
+) {
     val outline = MaterialTheme.colorScheme.outline
 
     Scaffold(
@@ -130,7 +107,7 @@ fun MainContent() {
                 title = { Text("위젯 편집") },
                 modifier = Modifier.height(64.dp),
                 actions = {
-                    TextButton(onClick = { /*TODO: 저장 기능 구현*/ }) {
+                    TextButton(onClick = { viewModel.save() }) {
                         Text("저장")
                     }
                 },
@@ -159,15 +136,15 @@ fun MainContent() {
                         .fillMaxWidth()
                         .padding(top = CanvasConstants.TOP_PADDING)
                         .canvasBorder(outline),
-                    selectedLayout = selectedLayout,
+                    selectedLayout = viewModel.selectedLayout,
                 )
 
                 Spacer(modifier = Modifier.size(CanvasConstants.SPACER_SIZE))
 
                 BottomPanelWithTabs(
-                    widgets = widgets,
-                    categories = categories,
-                    onLayoutSelected = { selectedLayout = it },
+                    widgets = viewModel.widgets,
+                    categories = viewModel.categories,
+                    onLayoutSelected = { viewModel.selectLayout(it) },
                     modifier = Modifier
                         .weight(CanvasConstants.BOTTOM_PANEL_WEIGHT)
                         .clip(RoundedCornerShape(CanvasConstants.BOTTOM_PANEL_CORNER_RADIUS))
