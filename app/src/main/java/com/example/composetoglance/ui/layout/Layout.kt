@@ -35,18 +35,10 @@ private val layoutGridSpecs = mapOf(
         "Small" to LayoutGridSpec(rows = 1, columns = 2),
         "Medium" to LayoutGridSpec(rows = 2, columns = 2),
         "Large" to LayoutGridSpec(rows = 2, columns = 4)
-    ),
-    "1:1" to mapOf(
-        "Small" to LayoutGridSpec(rows = 1, columns = 2),
-        "Medium" to LayoutGridSpec(rows = 1, columns = 2)
-    ),
-    "1:N" to mapOf(
-        "Medium" to LayoutGridSpec(rows = 1, columns = 2),
-        "Large" to LayoutGridSpec(rows = 1, columns = 2)
     )
 )
 
-fun Layout.gridSpec(): LayoutGridSpec? = layoutGridSpecs[type]?.get(sizeType)
+fun Layout.gridSpec(): LayoutGridSpec? = layoutGridSpecs["Full"]?.get(sizeType)
 
 @Composable
 fun ClickableLayoutComponent(
@@ -112,14 +104,7 @@ fun LayoutComponent(
             .border(1.dp, MaterialTheme.colorScheme.outline),
         contentAlignment = Alignment.Center
     ) {
-        when (type) {
-            "Full" -> FullLayoutComponent(layoutType, showText)
-            "1:1" -> OneToOneLayoutComponent(showText)
-            "1:N" -> OneToNLayoutComponent(showText, height)
-            else -> if (showText) {
-                Text(type)
-            }
-        }
+        FullLayoutComponent(layoutType, showText)
     }
 }
 
@@ -132,46 +117,6 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
         "Small" -> createGridRow(columns = 2, showText = showText)
         "Medium" -> createGridLayout(rows = 2, columns = 2, showText = showText)
         "Large" -> createGridLayout(rows = 2, columns = 4, showText = showText)
-    }
-}
-
-/**
- * 1:1 레이아웃 타입의 컴포넌트
- */
-@Composable
-private fun OneToOneLayoutComponent(showText: Boolean) {
-    createGridRow(columns = 2, showText = showText)
-}
-
-/**
- * 1:N 레이아웃 타입의 컴포넌트
- */
-@Composable
-private fun OneToNLayoutComponent(showText: Boolean, height: Dp) {
-    Row {
-                Box(
-                    modifier = Modifier
-                        .width(height) // Set width equal to height to make a square
-                        .fillMaxHeight()
-                ) {
-                    if (showText) {
-                        Text("1", Modifier.align(Alignment.Center))
-                    }
-                }
-                VerticalDivider(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(1.dp), color = MaterialTheme.colorScheme.outline
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f) // Fill remaining space
-                ) {
-                    if (showText) {
-                        Text("N", Modifier.align(Alignment.Center))
-            }
-        }
     }
 }
 
