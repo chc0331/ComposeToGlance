@@ -245,7 +245,7 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                         IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
                     }
                 ) {
-                    WidgetItem(data = item.widget, shouldAnimate = false)
+                    WidgetItem(data = item.widget)
                 }
             }
         }
@@ -441,7 +441,6 @@ private fun WidgetPreview(
         ) {
             WidgetItem(
                 data = draggedWidget,
-                shouldAnimate = false,
                 modifier = Modifier.alpha(0.6f)
             )
         }

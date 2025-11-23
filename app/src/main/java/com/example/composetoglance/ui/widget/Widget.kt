@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,14 +33,13 @@ fun DragTargetWidgetItem(
             .wrapContentSize(),
         dataToDrop = data,
     ) { shouldAnimate ->
-        WidgetItem(data, shouldAnimate)
+        WidgetItem(data)
     }
 }
 
 @Composable
 fun WidgetItem(
     data: Widget,
-    shouldAnimate: Boolean,
     modifier: Modifier = Modifier
 ) {
     val (width, height) = data.getSizeInDp()
