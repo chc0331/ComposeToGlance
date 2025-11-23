@@ -69,15 +69,15 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                     val sizeInCells = droppedItem.getSizeInCells()
                     val widgetWidthCells = sizeInCells.first
                     val widgetHeightCells = sizeInCells.second
-                    
+
                     val bounds = layoutBounds
                     val spec = selectedLayout?.gridSpec()
                     if (bounds != null && spec != null) {
                         val gridCells = calculateGridCells(spec, bounds)
-                        val occupied = positionedWidgets.flatMap { 
+                        val occupied = positionedWidgets.flatMap {
                             if (it.cellIndices.isNotEmpty()) it.cellIndices else listOfNotNull(it.cellIndex)
                         }.toSet()
-                        
+
                         val bestStart = calculateBestCellPosition(
                             dropPositionInWindow,
                             widgetWidthCells,
@@ -86,7 +86,7 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                             spec,
                             bounds
                         )
-                        
+
                         if (bestStart != null) {
                             val (startRow, startCol) = bestStart
                             val indices = calculateCellIndices(
@@ -96,14 +96,14 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                                 widgetHeightCells,
                                 spec
                             )
-                                
-                                // 모든 셀이 비어있는지 확인
-                                if (indices.all { !occupied.contains(it) }) {
-                                    // 위젯의 실제 크기를 dp에서 픽셀로 변환
+
+                            // 모든 셀이 비어있는지 확인
+                            if (indices.all { !occupied.contains(it) }) {
+                                // 위젯의 실제 크기를 dp에서 픽셀로 변환
                                 val (widgetWidthDp, widgetHeightDp) = droppedItem.getSizeInDp()
-                                    val widgetWidthPx = with(density) { widgetWidthDp.toPx() }
-                                    val widgetHeightPx = with(density) { widgetHeightDp.toPx() }
-                                    
+                                val widgetWidthPx = with(density) { widgetWidthDp.toPx() }
+                                val widgetHeightPx = with(density) { widgetHeightDp.toPx() }
+
                                 val adjustedOffset = calculateWidgetOffset(
                                     startRow,
                                     startCol,
@@ -114,18 +114,18 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                                     bounds,
                                     spec,
                                     canvasPosition
-                        )
-                                    
-                                    val startCellIndex = indices.first()
-                        positionedWidgets.add(
-                            PositionedWidget(
-                                widget = droppedItem,
-                                offset = adjustedOffset,
-                                            cellIndex = startCellIndex,
-                                            cellIndices = indices
-                            )
-                        )
-                        dragInfo.itemDropped = true
+                                )
+
+                                val startCellIndex = indices.first()
+                                positionedWidgets.add(
+                                    PositionedWidget(
+                                        widget = droppedItem,
+                                        offset = adjustedOffset,
+                                        cellIndex = startCellIndex,
+                                        cellIndices = indices
+                                    )
+                                )
+                                dragInfo.itemDropped = true
                             }
                         }
                     }
@@ -158,16 +158,16 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
             }
 
             val gridCells = rememberGridCells(selectedLayout, layoutBounds)
-            val occupiedCells = positionedWidgets.flatMap { 
+            val occupiedCells = positionedWidgets.flatMap {
                 if (it.cellIndices.isNotEmpty()) it.cellIndices else listOfNotNull(it.cellIndex)
             }.toSet()
-            
+
             // 드래그 중인 위젯의 사이즈 타입 확인
             val draggedWidget = dragInfo.dataToDrop as? Widget
             val draggedSizeInCells = draggedWidget?.getSizeInCells() ?: (1 to 1)
             val widgetWidthCells = draggedSizeInCells.first
             val widgetHeightCells = draggedSizeInCells.second
-            
+
             val hoveredCellIndices = run {
                 if (dragInfo.isDragging && gridCells.isNotEmpty() && draggedWidget != null && selectedLayout != null) {
                     val bounds = layoutBounds
@@ -183,9 +183,9 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                                 spec,
                                 bounds
                             )
-                                
-                                if (bestStart != null) {
-                                    val (startRow, startCol) = bestStart
+
+                            if (bestStart != null) {
+                                val (startRow, startCol) = bestStart
                                 val indices = calculateCellIndices(
                                     startRow,
                                     startCol,
@@ -193,9 +193,9 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                                     widgetHeightCells,
                                     spec
                                 )
-                                    // 모든 셀이 비어있는지 확인
-                                    if (indices.all { !occupiedCells.contains(it) }) {
-                                        indices
+                                // 모든 셀이 비어있는지 확인
+                                if (indices.all { !occupiedCells.contains(it) }) {
+                                    indices
                                 } else {
                                     emptyList()
                                 }
@@ -226,7 +226,7 @@ fun WidgetCanvas(selectedLayout: Layout?, modifier: Modifier = Modifier) {
                     density = density
                 )
             }
-            
+
             // 그리드 셀 하이라이트 (보조 표시)
             if (gridCells.isNotEmpty() && dragInfo.isDragging) {
                 GridCellHighlight(
@@ -256,7 +256,10 @@ private data class LayoutBounds(val position: Offset, val size: IntSize)
 private data class GridCell(val index: Int, val rect: Rect)
 
 @Composable
-private fun rememberGridCells(selectedLayout: Layout?, layoutBounds: LayoutBounds?): List<GridCell> {
+private fun rememberGridCells(
+    selectedLayout: Layout?,
+    layoutBounds: LayoutBounds?
+): List<GridCell> {
     return remember(selectedLayout, layoutBounds) {
         if (selectedLayout == null || layoutBounds == null) return@remember emptyList()
         val spec = selectedLayout.gridSpec() ?: return@remember emptyList()
@@ -302,30 +305,30 @@ private fun calculateBestCellPosition(
     val touchedCell = gridCells.firstOrNull { cell ->
         cell.rect.contains(dropPositionInWindow)
     } ?: return null
-    
+
     val touchedRow = touchedCell.index / spec.columns
     val touchedCol = touchedCell.index % spec.columns
-    
+
     // 위젯이 차지할 영역의 가능한 시작 위치들을 계산
     val possibleStarts = mutableListOf<Pair<Int, Int>>()
-    
+
     // 터치 위치가 위젯 영역의 어느 부분에 있어도 배치 가능하도록
     for (rowOffset in 0 until widgetHeightCells) {
         for (colOffset in 0 until widgetWidthCells) {
             val startRow = touchedRow - rowOffset
             val startCol = touchedCol - colOffset
-            
+
             if (startRow >= 0 && startCol >= 0) {
-    val endRow = startRow + widgetHeightCells - 1
-    val endCol = startCol + widgetWidthCells - 1
-    
+                val endRow = startRow + widgetHeightCells - 1
+                val endCol = startCol + widgetWidthCells - 1
+
                 if (endRow < spec.rows && endCol < spec.columns) {
                     possibleStarts.add(startRow to startCol)
                 }
             }
         }
     }
-    
+
     // 가장 가까운 시작 위치 선택
     return possibleStarts.minByOrNull { (row, col) ->
         val cellWidth = bounds.size.width.toFloat() / spec.columns
@@ -334,7 +337,7 @@ private fun calculateBestCellPosition(
         val widgetAreaCenterY = (row + widgetHeightCells / 2f) * cellHeight + bounds.position.y
         val distance = sqrt(
             (dropPositionInWindow.x - widgetAreaCenterX).pow(2) +
-            (dropPositionInWindow.y - widgetAreaCenterY).pow(2)
+                    (dropPositionInWindow.y - widgetAreaCenterY).pow(2)
         )
         distance
     }
@@ -376,7 +379,7 @@ private fun calculateWidgetOffset(
 ): Offset {
     val cellWidth = bounds.size.width.toFloat() / spec.columns
     val cellHeight = bounds.size.height.toFloat() / spec.rows
-    
+
     // 위젯이 차지하는 셀 영역의 중심 계산
     val cellAreaLeft = bounds.position.x + startCol * cellWidth
     val cellAreaTop = bounds.position.y + startRow * cellHeight
@@ -386,7 +389,7 @@ private fun calculateWidgetOffset(
         cellAreaLeft + cellAreaWidth / 2f,
         cellAreaTop + cellAreaHeight / 2f
     )
-    
+
     // 셀 영역의 중심에서 위젯의 실제 크기의 절반을 빼서 정중앙 배치
     val relativeCenter = cellAreaCenter - canvasPosition
     return Offset(
@@ -415,12 +418,12 @@ private fun WidgetPreview(
         val startCellIndex = hoveredCellIndices.first()
         val startRow = startCellIndex / spec.columns
         val startCol = startCellIndex % spec.columns
-        
+
         // 위젯의 실제 크기를 dp에서 픽셀로 변환
         val (widgetWidthDp, widgetHeightDp) = draggedWidget.getSizeInDp()
         val widgetWidthPx = with(density) { widgetWidthDp.toPx() }
         val widgetHeightPx = with(density) { widgetHeightDp.toPx() }
-        
+
         val previewOffset = calculateWidgetOffset(
             startRow,
             startCol,
@@ -432,7 +435,7 @@ private fun WidgetPreview(
             spec,
             canvasPosition
         )
-        
+
         // 반투명 위젯 미리보기 표시
         Box(
             modifier = Modifier.offset {
