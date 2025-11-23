@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.draganddrop
+package com.example.composetoglance.draganddrop
 
 /**
  * 드래그 앤 드롭 관련 상수

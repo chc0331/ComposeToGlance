@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui
+package com.example.composetoglance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,17 +24,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.composetoglance.ui.draganddrop.DragTargetInfo
-import com.example.composetoglance.ui.draganddrop.DropTarget
-import com.example.composetoglance.ui.draganddrop.LocalDragTargetInfo
-import com.example.composetoglance.ui.layout.Layout
-import com.example.composetoglance.ui.layout.LayoutComponent
-import com.example.composetoglance.ui.layout.gridSpec
-import com.example.composetoglance.ui.widget.PositionedWidget
-import com.example.composetoglance.ui.widget.Widget
-import com.example.composetoglance.ui.widget.WidgetItem
-import com.example.composetoglance.ui.widget.getSizeInCells
-import com.example.composetoglance.ui.widget.getSizeInDp
+import com.example.composetoglance.draganddrop.DragTargetInfo
+import com.example.composetoglance.draganddrop.DropTarget
+import com.example.composetoglance.draganddrop.LocalDragTargetInfo
+import com.example.composetoglance.layout.Layout
+import com.example.composetoglance.layout.LayoutComponent
+import com.example.composetoglance.layout.gridSpec
+import com.example.composetoglance.widget.PositionedWidget
+import com.example.composetoglance.widget.Widget
+import com.example.composetoglance.widget.WidgetItem
+import com.example.composetoglance.widget.getSizeInCells
+import com.example.composetoglance.widget.getSizeInDp
 import com.example.composetoglance.util.GridCalculator
 import com.example.composetoglance.util.GridCell
 import com.example.composetoglance.util.LayoutBounds

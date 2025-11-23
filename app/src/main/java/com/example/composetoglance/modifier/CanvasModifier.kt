@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.modifier
+package com.example.composetoglance.modifier
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind

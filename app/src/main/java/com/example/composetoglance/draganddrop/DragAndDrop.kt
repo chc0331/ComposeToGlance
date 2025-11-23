@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.draganddrop
+package com.example.composetoglance.draganddrop
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi

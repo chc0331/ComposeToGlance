@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.widget
+package com.example.composetoglance.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,14 +20,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.ui.draganddrop.DragTarget
 
 @Composable
 fun DragTargetWidgetItem(
     modifier: Modifier = Modifier,
     data: Widget
 ) {
-    DragTarget(
+    _root_ide_package_.com.example.composetoglance.draganddrop.DragTarget(
         context = LocalContext.current,
         modifier = modifier
             .wrapContentSize(),

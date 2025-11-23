@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.bottompanel
+package com.example.composetoglance.bottompanel
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Tab
@@ -12,9 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.ui.layout.Layout
-import com.example.composetoglance.ui.widget.Category
-import com.example.composetoglance.ui.widget.Widget
+import com.example.composetoglance.layout.Layout
+import com.example.composetoglance.widget.Category
+import com.example.composetoglance.widget.Widget
 
 val DefaultLayouts = listOf(
     Layout("Full", "Small"),

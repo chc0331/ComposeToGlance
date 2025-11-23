@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui
+package com.example.composetoglance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,9 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.composetoglance.ui.bottompanel.BottomPanelWithTabs
-import com.example.composetoglance.ui.modifier.CanvasConstants
-import com.example.composetoglance.ui.modifier.canvasBorder
+import com.example.composetoglance.bottompanel.BottomPanelWithTabs
+import com.example.composetoglance.modifier.CanvasConstants
+import com.example.composetoglance.modifier.canvasBorder
 import com.example.composetoglance.viewmodel.WidgetEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

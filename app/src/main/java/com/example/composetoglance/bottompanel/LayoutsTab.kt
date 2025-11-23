@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.bottompanel
+package com.example.composetoglance.bottompanel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,8 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.example.composetoglance.ui.layout.Layout
-import com.example.composetoglance.ui.layout.ClickableLayoutComponent
+import com.example.composetoglance.layout.ClickableLayoutComponent
+import com.example.composetoglance.layout.Layout
 
 @Composable
 fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
