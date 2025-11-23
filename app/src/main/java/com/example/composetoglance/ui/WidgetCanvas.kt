@@ -18,30 +18,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.ui.draganddrop.DragTargetInfo
 import com.example.composetoglance.ui.draganddrop.DropTarget
 import com.example.composetoglance.ui.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.ui.layout.Layout
 import com.example.composetoglance.ui.layout.LayoutComponent
-import com.example.composetoglance.ui.layout.LayoutGridSpec
 import com.example.composetoglance.ui.layout.gridSpec
 import com.example.composetoglance.ui.widget.PositionedWidget
 import com.example.composetoglance.ui.widget.Widget
 import com.example.composetoglance.ui.widget.WidgetItem
 import com.example.composetoglance.ui.widget.getSizeInCells
 import com.example.composetoglance.ui.widget.getSizeInDp
+import com.example.composetoglance.util.GridCalculator
+import com.example.composetoglance.util.GridCell
+import com.example.composetoglance.util.LayoutBounds
 import com.example.composetoglance.viewmodel.WidgetEditorViewModel
-import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 // 상수 정의
 private object WidgetCanvasConstants {
@@ -53,150 +51,12 @@ private object WidgetCanvasConstants {
     const val EMPTY_CELL_BORDER_WIDTH_DP = 1
 }
 
-// 데이터 클래스
-private data class LayoutBounds(val position: Offset, val size: IntSize)
-private data class GridCell(val index: Int, val rect: Rect)
-
 // PositionedWidget 확장 함수
 private fun PositionedWidget.getAllCellIndices(): Set<Int> {
     return if (cellIndices.isNotEmpty()) {
         cellIndices.toSet()
     } else {
         listOfNotNull(cellIndex).toSet()
-    }
-}
-
-// 그리드 계산 유틸리티 클래스
-private object GridCalculator {
-    fun calculateGridCells(spec: LayoutGridSpec, bounds: LayoutBounds): List<GridCell> {
-    val cellWidth = bounds.size.width.toFloat() / spec.columns
-    val cellHeight = bounds.size.height.toFloat() / spec.rows
-    val cells = mutableListOf<GridCell>()
-    var index = 0
-    repeat(spec.rows) { row ->
-        repeat(spec.columns) { column ->
-            val left = bounds.position.x + column * cellWidth
-            val top = bounds.position.y + row * cellHeight
-            val rect = Rect(
-                left = left,
-                top = top,
-                right = left + cellWidth,
-                bottom = top + cellHeight
-            )
-            cells.add(GridCell(index = index, rect = rect))
-            index++
-        }
-    }
-    return cells
-}
-
-/**
- * 드롭 위치를 기반으로 위젯을 배치할 최적의 셀 위치를 계산
- * @return Pair<startRow, startCol> 또는 null
- */
-    fun calculateBestCellPosition(
-    dropPositionInWindow: Offset,
-    widgetWidthCells: Int,
-    widgetHeightCells: Int,
-    gridCells: List<GridCell>,
-    spec: LayoutGridSpec,
-    bounds: LayoutBounds
-): Pair<Int, Int>? {
-    // 터치 위치가 포함된 셀 찾기
-    val touchedCell = gridCells.firstOrNull { cell ->
-        cell.rect.contains(dropPositionInWindow)
-    } ?: return null
-
-    val touchedRow = touchedCell.index / spec.columns
-    val touchedCol = touchedCell.index % spec.columns
-
-    // 위젯이 차지할 영역의 가능한 시작 위치들을 계산
-    val possibleStarts = mutableListOf<Pair<Int, Int>>()
-
-    // 터치 위치가 위젯 영역의 어느 부분에 있어도 배치 가능하도록
-    for (rowOffset in 0 until widgetHeightCells) {
-        for (colOffset in 0 until widgetWidthCells) {
-            val startRow = touchedRow - rowOffset
-            val startCol = touchedCol - colOffset
-
-            if (startRow >= 0 && startCol >= 0) {
-                val endRow = startRow + widgetHeightCells - 1
-                val endCol = startCol + widgetWidthCells - 1
-
-                if (endRow < spec.rows && endCol < spec.columns) {
-                    possibleStarts.add(startRow to startCol)
-                }
-            }
-        }
-    }
-
-    // 가장 가까운 시작 위치 선택
-    return possibleStarts.minByOrNull { (row, col) ->
-        val cellWidth = bounds.size.width.toFloat() / spec.columns
-        val cellHeight = bounds.size.height.toFloat() / spec.rows
-        val widgetAreaCenterX = (col + widgetWidthCells / 2f) * cellWidth + bounds.position.x
-        val widgetAreaCenterY = (row + widgetHeightCells / 2f) * cellHeight + bounds.position.y
-        val distance = sqrt(
-            (dropPositionInWindow.x - widgetAreaCenterX).pow(2) +
-                    (dropPositionInWindow.y - widgetAreaCenterY).pow(2)
-        )
-        distance
-    }
-}
-
-/**
- * 시작 위치를 기반으로 위젯이 차지하는 셀 인덱스 리스트를 계산
- */
-    fun calculateCellIndices(
-    startRow: Int,
-    startCol: Int,
-    widgetWidthCells: Int,
-    widgetHeightCells: Int,
-    spec: LayoutGridSpec
-): List<Int> {
-    val indices = mutableListOf<Int>()
-    for (row in startRow until startRow + widgetHeightCells) {
-        for (col in startCol until startCol + widgetWidthCells) {
-            val index = row * spec.columns + col
-            indices.add(index)
-        }
-    }
-    return indices
-}
-
-/**
- * 위젯의 오프셋을 계산하여 셀 영역의 중심에 배치
- */
-    fun calculateWidgetOffset(
-    startRow: Int,
-    startCol: Int,
-    widgetWidthCells: Int,
-    widgetHeightCells: Int,
-    widgetWidthPx: Float,
-    widgetHeightPx: Float,
-    bounds: LayoutBounds,
-    spec: LayoutGridSpec,
-    canvasPosition: Offset
-): Offset {
-    val cellWidth = bounds.size.width.toFloat() / spec.columns
-    val cellHeight = bounds.size.height.toFloat() / spec.rows
-
-    // 위젯이 차지하는 셀 영역의 중심 계산
-    val cellAreaLeft = bounds.position.x + startCol * cellWidth
-    val cellAreaTop = bounds.position.y + startRow * cellHeight
-    val cellAreaWidth = cellWidth * widgetWidthCells
-    val cellAreaHeight = cellHeight * widgetHeightCells
-    val cellAreaCenter = Offset(
-        cellAreaLeft + cellAreaWidth / 2f,
-        cellAreaTop + cellAreaHeight / 2f
-    )
-
-    // 셀 영역의 중심에서 위젯의 실제 크기의 절반을 빼서 정중앙 배치
-    val relativeCenter = cellAreaCenter - canvasPosition
-    return Offset(
-        relativeCenter.x - widgetWidthPx / 2f,
-        relativeCenter.y - widgetHeightPx / 2f
-    )
     }
 }
 
@@ -510,35 +370,35 @@ private fun WidgetPreview(
     val bounds = layoutBounds ?: return
     val spec = selectedLayout?.gridSpec() ?: return
 
-        val startCellIndex = hoveredCellIndices.first()
-        val startRow = startCellIndex / spec.columns
-        val startCol = startCellIndex % spec.columns
+    val startCellIndex = hoveredCellIndices.first()
+    val startRow = startCellIndex / spec.columns
+    val startCol = startCellIndex % spec.columns
 
     val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
     val (widgetWidthPx, widgetHeightPx) = draggedWidget.toPixels(density)
 
     val previewOffset = GridCalculator.calculateWidgetOffset(
-            startRow,
-            startCol,
-            widgetWidthCells,
-            widgetHeightCells,
-            widgetWidthPx,
-            widgetHeightPx,
-            bounds,
-            spec,
-            canvasPosition
-        )
+        startRow,
+        startCol,
+        widgetWidthCells,
+        widgetHeightCells,
+        widgetWidthPx,
+        widgetHeightPx,
+        bounds,
+        spec,
+        canvasPosition
+    )
 
-        // 반투명 위젯 미리보기 표시
-        Box(
-            modifier = Modifier.offset {
-                IntOffset(previewOffset.x.roundToInt(), previewOffset.y.roundToInt())
-            }
-        ) {
-            WidgetItem(
-                data = draggedWidget,
+    // 반투명 위젯 미리보기 표시
+    Box(
+        modifier = Modifier.offset {
+            IntOffset(previewOffset.x.roundToInt(), previewOffset.y.roundToInt())
+        }
+    ) {
+        WidgetItem(
+            data = draggedWidget,
             modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
-            )
+        )
     }
 }
 
@@ -579,26 +439,26 @@ private fun HighlightedCell(
     canvasPosition: Offset,
     density: Density
 ) {
-            val offset = IntOffset(
-                (cell.rect.left - canvasPosition.x).roundToInt(),
-                (cell.rect.top - canvasPosition.y).roundToInt()
-            )
-            val widthDp = with(density) { cell.rect.width.toDp() }
-            val heightDp = with(density) { cell.rect.height.toDp() }
-            Box(
-                modifier = Modifier
-                    .offset { offset }
-                    .size(widthDp, heightDp)
+    val offset = IntOffset(
+        (cell.rect.left - canvasPosition.x).roundToInt(),
+        (cell.rect.top - canvasPosition.y).roundToInt()
+    )
+    val widthDp = with(density) { cell.rect.width.toDp() }
+    val heightDp = with(density) { cell.rect.height.toDp() }
+    Box(
+        modifier = Modifier
+            .offset { offset }
+            .size(widthDp, heightDp)
             .background(
                 MaterialTheme.colorScheme.primary.copy(
                     alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA
                 )
             )
-                    .border(
+            .border(
                 width = WidgetCanvasConstants.HOVERED_CELL_BORDER_WIDTH_DP.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                color = MaterialTheme.colorScheme.primary
             )
+    )
 }
 
 @Composable
@@ -607,26 +467,26 @@ private fun EmptyCell(
     canvasPosition: Offset,
     density: Density
 ) {
-            val offset = IntOffset(
-                (cell.rect.left - canvasPosition.x).roundToInt(),
-                (cell.rect.top - canvasPosition.y).roundToInt()
-            )
-            val widthDp = with(density) { cell.rect.width.toDp() }
-            val heightDp = with(density) { cell.rect.height.toDp() }
-            Box(
-                modifier = Modifier
-                    .offset { offset }
-                    .size(widthDp, heightDp)
+    val offset = IntOffset(
+        (cell.rect.left - canvasPosition.x).roundToInt(),
+        (cell.rect.top - canvasPosition.y).roundToInt()
+    )
+    val widthDp = with(density) { cell.rect.width.toDp() }
+    val heightDp = with(density) { cell.rect.height.toDp() }
+    Box(
+        modifier = Modifier
+            .offset { offset }
+            .size(widthDp, heightDp)
             .background(
                 MaterialTheme.colorScheme.primary.copy(
                     alpha = WidgetCanvasConstants.EMPTY_CELL_BACKGROUND_ALPHA
                 )
             )
-                    .border(
+            .border(
                 width = WidgetCanvasConstants.EMPTY_CELL_BORDER_WIDTH_DP.dp,
                 color = MaterialTheme.colorScheme.outline.copy(
                     alpha = WidgetCanvasConstants.EMPTY_CELL_BORDER_ALPHA
-                    )
+                )
             )
     )
 }
