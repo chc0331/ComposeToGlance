@@ -1,7 +1,10 @@
 package com.example.toolkit.glance.renderer
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
@@ -17,6 +20,7 @@ import com.example.toolkit.glance.GlanceModifierBuilder
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.glance.RenderContext
 import com.example.toolkit.glance.converter.ColorConverter
+import com.google.protobuf.ByteString
 
 /**
  * Image 노드 렌더러
@@ -53,7 +57,9 @@ object ImageRenderer : NodeRenderer {
             imageProperty.provider.hasBitmap() -> {
                 // Bitmap은 Glance에서 직접 지원하지 않으므로 변환 필요
                 // 여기서는 기본 이미지 제공자 반환
-                ImageProvider(android.R.drawable.ic_menu_gallery)
+                val byteArray = imageProperty.provider.bitmap.toByteArray()
+                val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                ImageProvider(bitmap = bitmap)
             }
 
             else -> {

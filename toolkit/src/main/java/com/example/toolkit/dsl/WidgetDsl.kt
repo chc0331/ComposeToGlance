@@ -1,5 +1,6 @@
 package com.example.toolkit.dsl
 
+import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import com.example.toolkit.builder.boxLayoutProperty
 import com.example.toolkit.builder.buttonProperty
@@ -9,6 +10,7 @@ import com.example.toolkit.builder.columnLayoutProperty
 import com.example.toolkit.builder.cornerRadius
 import com.example.toolkit.builder.dimensionDp
 import com.example.toolkit.builder.imageProperty
+import com.example.toolkit.builder.imageProviderFromBitmap
 import com.example.toolkit.builder.imageProviderFromDrawable
 import com.example.toolkit.builder.imageProviderFromUri
 import com.example.toolkit.builder.matchParentDimension
@@ -266,6 +268,7 @@ fun WidgetScope.Text(
 fun WidgetScope.Image(
     @DrawableRes drawableResId: Int? = null,
     uri: String? = null,
+    bitmap: Bitmap? = null,
     viewId: Int = nextViewId(),
     width: Dimension = wrapContentDimension,
     height: Dimension = wrapContentDimension,
@@ -277,7 +280,8 @@ fun WidgetScope.Image(
     val provider = when {
         drawableResId != null -> imageProviderFromDrawable(drawableResId)
         uri != null -> imageProviderFromUri(uri)
-        else -> throw IllegalArgumentException("Either drawableResId or uri must be provided")
+        bitmap != null -> imageProviderFromBitmap(bitmap)
+        else -> throw IllegalArgumentException("Either drawableResId, uri, or bitmap must be provided")
     }
 
     val imageNode = WidgetNode.newBuilder()
@@ -424,4 +428,3 @@ fun WidgetScope.padding(
         bottom = finalBottom
     )
 }
-

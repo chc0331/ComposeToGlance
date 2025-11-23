@@ -1,10 +1,13 @@
 package com.example.toolkit.builder
 
+import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import com.example.toolkit.proto.Color
 import com.example.toolkit.proto.ColorProvider
 import com.example.toolkit.proto.ImageProvider
 import com.example.toolkit.proto.TextContent
+import com.google.protobuf.ByteString
+import java.io.ByteArrayOutputStream
 
 /**
  * Color, ColorProvider, TextContent, ImageProvider
@@ -25,3 +28,9 @@ fun imageProviderFromDrawable(@DrawableRes resId: Int): ImageProvider =
 fun imageProviderFromUri(uri: String): ImageProvider =
     ImageProvider.newBuilder().setUri(uri).build()
 
+fun imageProviderFromBitmap(bitmap: Bitmap): ImageProvider {
+    val stream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    val byteArray = stream.toByteArray()
+    return ImageProvider.newBuilder().setBitmap(ByteString.copyFrom(byteArray)).build()
+}
