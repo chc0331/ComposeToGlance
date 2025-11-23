@@ -1,4 +1,4 @@
-package com.example.composetoglance.editor
+package com.example.composetoglance.editor.canvas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,10 +30,10 @@ import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.editor.layout.Layout
 import com.example.composetoglance.editor.layout.LayoutComponent
 import com.example.composetoglance.editor.layout.gridSpec
-import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.GridCell
 import com.example.composetoglance.editor.util.LayoutBounds
+import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.WidgetItem
