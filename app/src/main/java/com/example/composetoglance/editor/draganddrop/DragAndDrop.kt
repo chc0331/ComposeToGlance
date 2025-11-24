@@ -33,7 +33,7 @@ fun DragTarget(
     context: Context,
     modifier: Modifier,
     dataToDrop: Any? = null,
-    content: @Composable (shouldAnimate: Boolean) -> Unit
+    content: @Composable () -> Unit
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDragTargetInfo.current
@@ -52,7 +52,7 @@ fun DragTarget(
                         currentState.isDragging = true
                         currentState.dragPosition = currentPosition
                         currentState.draggableComposable = {
-                            content(false) // render scaled item without animation
+                            content() // render scaled item without animation
                         }
                     }, onDrag = { change, dragAmount ->
                         change.consume()
@@ -67,7 +67,7 @@ fun DragTarget(
                     })
             }, contentAlignment = Alignment.Center
     ) {
-        content(true) // render positioned content with animation
+        content() // render positioned content with animation
     }
 }
 

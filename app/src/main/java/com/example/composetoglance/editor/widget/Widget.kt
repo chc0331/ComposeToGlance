@@ -33,7 +33,7 @@ fun DragTargetWidgetItem(
         modifier = modifier
             .wrapContentSize(),
         dataToDrop = data,
-    ) { shouldAnimate ->
+    ) {
         WidgetItem(data)
     }
 }
@@ -44,7 +44,7 @@ fun WidgetItem(
     modifier: Modifier = Modifier
 ) {
     val (width, height) = data.getSizeInDp()
-    
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -77,7 +77,7 @@ fun WidgetItem(
 }
 
 data class Widget(
-    val name: String, 
+    val name: String,
     val description: String,
     val sizeType: String = "1x1", // "1x1", "2x1", "2x2"
     val categoryId: String? = null // 카테고리 ID
