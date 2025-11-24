@@ -51,6 +51,7 @@ android {
 
 dependencies {
     api("androidx.glance:glance-appwidget:1.2.0-beta01")
+    implementation("androidx.core:core-remoteviews:1.1.0")
     api("androidx.compose.runtime:runtime:1.7.8")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

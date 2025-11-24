@@ -1,9 +1,15 @@
 package com.example.toolkit.glance.renderer
 
+import android.content.res.ColorStateList
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
-import androidx.glance.appwidget.CircularProgressIndicator
+import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressBackgroundTintList
+import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressTintList
+import androidx.glance.LocalContext
+import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.LinearProgressIndicator
+import com.example.toolkit.R
 import com.example.toolkit.builder.color
 import com.example.toolkit.builder.colorProvider
 import com.example.toolkit.glance.GlanceModifierBuilder
@@ -80,7 +86,13 @@ object ProgressRenderer : NodeRenderer {
             progress = progress.coerceIn(0f, 1f),
             modifier = modifier,
             color = ColorConverter.toGlanceColorProvider(colorProvider(color = color(progressColor.toArgb()))),
-            backgroundColor = ColorConverter.toGlanceColorProvider(colorProvider(color = color(backgroundColor.toArgb())))
+            backgroundColor = ColorConverter.toGlanceColorProvider(
+                colorProvider(
+                    color = color(
+                        backgroundColor.toArgb()
+                    )
+                )
+            )
         )
     }
 
@@ -95,8 +107,28 @@ object ProgressRenderer : NodeRenderer {
         } else {
             0f
         }
-//        CircularProgressIndicator(progress = progress.coerceIn(0f, 1f), modifier = modifier)
-        CircularProgressIndicator(modifier = modifier)
+        AndroidRemoteViews(
+            modifier = modifier,
+            remoteViews = RemoteViews(
+                LocalContext.current.packageName,
+                R.layout.circular_progress_component
+            ).apply {
+                setProgressBar(
+                    R.id.progress_bar,
+                    100,
+                    50,
+                    false
+                )
+                setProgressBarProgressTintList(
+                    R.id.progress_bar,
+                    ColorStateList.valueOf(progressProperty.progressColor.color.argb)
+                )
+                setProgressBarProgressBackgroundTintList(
+                    R.id.progress_bar,
+                    ColorStateList.valueOf(progressProperty.backgroundColor.color.argb)
+                )
+            }
+        )
     }
 }
 

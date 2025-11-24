@@ -34,6 +34,7 @@ fun WidgetScope.MusicWidget() {
         horizontalAlignment = H_ALIGN_CENTER,
         backgroundColor = colorProvider(color = color(Color.DarkGray.toArgb()))
     ) {
+        Log.i("heec.choi", "Dsl Size1 : $currentSize")
         // 앨범 아트
         Image(
             drawableResId = R.drawable.ic_media_play,
@@ -71,7 +72,7 @@ fun WidgetScope.MusicWidget() {
         Progress()
         // 컨트롤 버튼
         DslLocalProvider(DslLocalSize provides (currentSize/2)){
-            Log.i("heec.choi","Dsl size : ${getLocal(DslLocalSize)}")
+            Log.i("heec.choi","Dsl size2 : ${getLocal(DslLocalSize)}")
             Controller()
         }
     }
