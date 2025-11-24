@@ -2,7 +2,7 @@ package com.example.widget
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import com.example.toolkit.dsl.WidgetScope
+import com.example.dsl.WidgetScope
 import com.example.widget.content.BatteryComponent
 import com.example.widget.dsl.DslAppWidget
 

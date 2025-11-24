@@ -1,21 +1,19 @@
 package com.example.widget.content
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.glance.state.GlanceState
-import com.example.toolkit.builder.color
-import com.example.toolkit.builder.colorProvider
-import com.example.toolkit.builder.dimensionDp
-import com.example.toolkit.builder.matchParentDimension
-import com.example.toolkit.dsl.Box
-import com.example.toolkit.dsl.DslLocalSize
-import com.example.toolkit.dsl.Progress
-import com.example.toolkit.dsl.Text
-import com.example.toolkit.dsl.WidgetScope
-import com.example.toolkit.proto.AlignmentType
-import com.example.toolkit.proto.ProgressType
+import com.example.dsl.builder.color
+import com.example.dsl.builder.colorProvider
+import com.example.dsl.builder.dimensionDp
+import com.example.dsl.builder.matchParentDimension
+import com.example.dsl.Box
+import com.example.dsl.DslLocalSize
+import com.example.dsl.Progress
+import com.example.dsl.Text
+import com.example.dsl.WidgetScope
+import com.example.dsl.proto.AlignmentType
+import com.example.dsl.proto.ProgressType
 
 
 fun WidgetScope.BatteryComponent() {

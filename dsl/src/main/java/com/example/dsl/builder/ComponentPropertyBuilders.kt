@@ -1,0 +1,70 @@
+package com.example.dsl.builder
+
+import com.example.dsl.proto.ButtonProperty
+import com.example.dsl.proto.Color
+import com.example.dsl.proto.ColorProvider
+import com.example.dsl.proto.ContentScale
+import com.example.dsl.proto.FontWeight
+import com.example.dsl.proto.ImageProperty
+import com.example.dsl.proto.ImageProvider
+import com.example.dsl.proto.ProgressProperty
+import com.example.dsl.proto.ProgressType
+import com.example.dsl.proto.SpacerProperty
+import com.example.dsl.proto.TextAlign
+import com.example.dsl.proto.TextContent
+import com.example.dsl.proto.TextProperty
+import com.example.dsl.proto.ViewProperty
+
+
+fun textProperty(
+    viewProperty: ViewProperty,
+    text: TextContent,
+    fontColor: ColorProvider,
+    fontSize: Float,
+    fontWeight: FontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+    textAlign: TextAlign = TextAlign.TEXT_ALIGN_START,
+    maxLine: Int = 1
+): TextProperty = TextProperty.newBuilder().setViewProperty(viewProperty).setText(text)
+    .setFontColor(fontColor).setFontSize(fontSize).setFontWeight(fontWeight)
+    .setTextAlign(textAlign).setMaxLine(maxLine).build()
+
+fun imageProperty(
+    viewProperty: ViewProperty,
+    provider: ImageProvider,
+    tintColor: Color? = null,
+    alpha: Float = 1f,
+    contentScale: ContentScale = ContentScale.CONTENT_SCALE_FIT
+): ImageProperty =
+    ImageProperty.newBuilder().setViewProperty(viewProperty).setProvider(provider)
+        .setAlpha(alpha).setContentScale(contentScale)
+        .apply { tintColor?.let { setTintColor(it) } }.build()
+
+fun buttonProperty(
+    viewProperty: ViewProperty,
+    text: TextContent,
+    fontColor: ColorProvider,
+    fontSize: Float,
+    fontWeight: FontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+    backgroundColor: ColorProvider? = null,
+    maxLine: Int = 1
+): ButtonProperty = ButtonProperty.newBuilder().setViewProperty(viewProperty).setText(text)
+    .setFontColor(fontColor).setFontSize(fontSize).setFontWeight(fontWeight).setMaxLine(maxLine)
+    .apply { backgroundColor?.let { setBackgroundColor(it) } }.build()
+
+fun progressProperty(
+    viewProperty: ViewProperty,
+    type: ProgressType,
+    maxValue: Float,
+    progressValue: Float,
+    progressColor: ColorProvider,
+    backgroundColor: ColorProvider
+): ProgressProperty =
+    ProgressProperty.newBuilder().setViewProperty(viewProperty).setProgressType(type)
+        .setMaxValue(maxValue).setProgressValue(progressValue).setProgressColor(progressColor)
+        .setBackgroundColor(backgroundColor).build()
+
+
+fun spacerProperty(
+    viewProperty: ViewProperty
+): SpacerProperty = SpacerProperty.newBuilder().setViewProperty(viewProperty).build()
+

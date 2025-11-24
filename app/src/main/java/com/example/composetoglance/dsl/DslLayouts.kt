@@ -1,24 +1,25 @@
 package com.example.composetoglance.dsl
 
+import android.R
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.example.toolkit.builder.color
-import com.example.toolkit.builder.colorProvider
-import com.example.toolkit.builder.dimensionDp
-import com.example.toolkit.dsl.Column
-import com.example.toolkit.dsl.Image
-import com.example.toolkit.dsl.Progress
-import com.example.toolkit.dsl.Row
-import com.example.toolkit.dsl.Spacer
-import com.example.toolkit.dsl.Text
-import com.example.toolkit.dsl.WidgetLayout
-import com.example.toolkit.dsl.padding
-import com.example.toolkit.proto.FontWeight.FONT_WEIGHT_BOLD
-import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_CENTER
-import com.example.toolkit.proto.VerticalAlignment.V_ALIGN_CENTER
-import com.example.toolkit.proto.WidgetLayoutDocument
+import com.example.dsl.builder.color
+import com.example.dsl.builder.colorProvider
+import com.example.dsl.builder.dimensionDp
+import com.example.dsl.Column
+import com.example.dsl.Image
+import com.example.dsl.Progress
+import com.example.dsl.Row
+import com.example.dsl.Spacer
+import com.example.dsl.Text
+import com.example.dsl.WidgetLayout
+import com.example.dsl.padding
+import com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
+import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
+import com.example.dsl.proto.WidgetLayoutDocument
 
 /**
  * DSL을 사용한 간단한 레이아웃 예시들
@@ -39,11 +40,11 @@ fun createMusicPlayerWidgetDsl(): WidgetLayoutDocument {
         ) {
             // 앨범 아트
             Image(
-                drawableResId = android.R.drawable.ic_media_play,
+                drawableResId = R.drawable.ic_media_play,
                 width = dimensionDp(200f),
                 height = dimensionDp(200f),
                 padding = padding(bottom = 16f),
-                contentScale = com.example.toolkit.proto.ContentScale.CONTENT_SCALE_CROP
+                contentScale = com.example.dsl.proto.ContentScale.CONTENT_SCALE_CROP
             )
 
             // 노래 정보
@@ -77,19 +78,19 @@ fun createMusicPlayerWidgetDsl(): WidgetLayoutDocument {
                 horizontalAlignment = H_ALIGN_CENTER
             ) {
                 Image(
-                    drawableResId = android.R.drawable.ic_media_previous,
+                    drawableResId = R.drawable.ic_media_previous,
                     width = dimensionDp(48f),
                     height = dimensionDp(48f)
                 )
                 Spacer(width = dimensionDp(16f))
                 Image(
-                    drawableResId = android.R.drawable.ic_media_pause,
+                    drawableResId = R.drawable.ic_media_pause,
                     width = dimensionDp(64f),
                     height = dimensionDp(64f)
                 )
                 Spacer(width = dimensionDp(16f))
                 Image(
-                    drawableResId = android.R.drawable.ic_media_next,
+                    drawableResId = R.drawable.ic_media_next,
                     width = dimensionDp(48f),
                     height = dimensionDp(48f)
                 )

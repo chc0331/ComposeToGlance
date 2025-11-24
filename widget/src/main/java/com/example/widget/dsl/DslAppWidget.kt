@@ -7,15 +7,14 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.LocalContext
-import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
-import com.example.toolkit.dsl.DslLocalProvider
-import com.example.toolkit.dsl.DslLocalSize
-import com.example.toolkit.dsl.WidgetLayout
-import com.example.toolkit.dsl.WidgetScope
-import com.example.toolkit.glance.GlanceRenderer
+import com.example.dsl.DslLocalProvider
+import com.example.dsl.DslLocalSize
+import com.example.dsl.WidgetLayout
+import com.example.dsl.WidgetScope
+import com.example.dsl.glance.GlanceRenderer
 
 abstract class DslAppWidget : GlanceAppWidget() {
 

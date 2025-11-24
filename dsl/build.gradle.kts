@@ -3,11 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.protobuf)
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+
 }
 
 android {
-    namespace = "com.example.widget"
+    namespace = "com.example.dsl"
     compileSdk = 36
 
     defaultConfig {
@@ -31,33 +31,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
+        freeCompilerArgs = listOf("-Xjvm-default=all")
         jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
-    ktlint {
-        android.set(true)
-        outputToConsole.set(true)
-        enableExperimentalRules.set(true)
-        // This right here
-        additionalEditorconfig.set(
-            mapOf(
-                "function-naming" to "false"
-            )
-        )
-    }
 }
 
 dependencies {
-    api("androidx.glance:glance-appwidget:1.2.0-beta01")
-    api("androidx.core:core-remoteviews:1.1.0")
-    api("androidx.compose.runtime:runtime:1.7.8")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.protobuf.javalite)
-    implementation(project(":dsl"))
+    api("androidx.glance:glance-appwidget:1.2.0-beta01")
+    api("androidx.core:core-remoteviews:1.1.0")
+    api("androidx.compose.runtime:runtime:1.7.8")
+    api("androidx.compose.ui:ui-graphics:1.6.0")
+    api("androidx.compose.ui:ui-unit:1.6.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -5,23 +5,23 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import com.example.toolkit.builder.color
-import com.example.toolkit.builder.colorProvider
-import com.example.toolkit.builder.dimensionDp
-import com.example.toolkit.dsl.Column
-import com.example.toolkit.dsl.DslLocalProvider
-import com.example.toolkit.dsl.DslLocalSize
-import com.example.toolkit.dsl.Image
-import com.example.toolkit.dsl.Progress
-import com.example.toolkit.dsl.Row
-import com.example.toolkit.dsl.Spacer
-import com.example.toolkit.dsl.Text
-import com.example.toolkit.dsl.WidgetScope
-import com.example.toolkit.dsl.padding
-import com.example.toolkit.proto.ContentScale
-import com.example.toolkit.proto.FontWeight.FONT_WEIGHT_BOLD
-import com.example.toolkit.proto.HorizontalAlignment.H_ALIGN_CENTER
-import com.example.toolkit.proto.VerticalAlignment.V_ALIGN_CENTER
+import com.example.dsl.builder.color
+import com.example.dsl.builder.colorProvider
+import com.example.dsl.builder.dimensionDp
+import com.example.dsl.Column
+import com.example.dsl.DslLocalProvider
+import com.example.dsl.DslLocalSize
+import com.example.dsl.Image
+import com.example.dsl.Progress
+import com.example.dsl.Row
+import com.example.dsl.Spacer
+import com.example.dsl.Text
+import com.example.dsl.WidgetScope
+import com.example.dsl.padding
+import com.example.dsl.proto.ContentScale
+import com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
+import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 
 /**
  * 예시 1: 음악 플레이어 위젯
