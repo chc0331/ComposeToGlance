@@ -10,24 +10,36 @@ import com.example.composetoglance.editor.layout.Layout
 import com.example.composetoglance.editor.widget.Category
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
+import com.example.composetoglance.editor.widget.initializeWidgetComponents
 
 class WidgetEditorViewModel : ViewModel() {
     
+    init {
+        // 위젯 컴포넌트 초기화
+        initializeWidgetComponents()
+    }
+    
     // 카테고리 목록
     val categories: List<Category> = listOf(
-        Category("cat1", "카테고리 1"),
-        Category("cat2", "카테고리 2"),
-        Category("cat3", "카테고리 3")
+        Category("basic", "기본"),
+        Category("clock", "시계"),
+        Category("device_info", "디바이스 정보")
     )
     
     // 위젯 목록
     val widgets = mutableStateListOf(
-        Widget("위젯 1", "설명 1", "1x1", "cat1"),
-        Widget("위젯 2", "설명 2", "2x1", "cat1"),
-        Widget("위젯 3", "설명 3", "2x2", "cat2"),
-        Widget("위젯 4", "설명 4", "1x1", "cat2"),
-        Widget("위젯 5", "설명 5", "1x1", "cat3"),
-        Widget("위젯 6", "설명 6", "2x1", "cat3")
+        // 기본 카테고리
+        Widget("텍스트", "텍스트 위젯 컴포넌트", "1x1", "basic", "text"),
+        Widget("이미지", "이미지 위젯 컴포넌트", "1x1", "basic", "image"),
+        Widget("버튼", "버튼 위젯 컴포넌트", "2x1", "basic", "button"),
+        
+        // 시계 카테고리
+        Widget("아날로그 시계", "아날로그 시계 컴포넌트", "2x2", "clock", "analog_clock"),
+        Widget("디지털 시계", "디지털 시계 컴포넌트", "2x1", "clock", "digital_clock"),
+        
+        // 디바이스 정보 카테고리
+        Widget("배터리", "배터리 정보 컴포넌트", "2x2", "device_info", "battery"),
+        Widget("스토리지", "스토리지 정보 컴포넌트", "2x1", "device_info", "storage")
     )
     
     // 선택된 레이아웃
