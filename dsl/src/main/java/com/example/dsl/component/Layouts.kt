@@ -6,7 +6,6 @@ import com.example.dsl.builder.columnLayoutProperty
 import com.example.dsl.builder.matchParentDimension
 import com.example.dsl.builder.rowLayoutProperty
 import com.example.dsl.builder.viewProperty
-import com.example.dsl.builder.wrapContentDimension
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ColorProvider
 import com.example.dsl.proto.Dimension
@@ -25,7 +24,7 @@ import com.example.dsl.proto.WidgetNode
 fun WidgetScope.Column(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
-    height: Dimension = wrapContentDimension,
+    height: Dimension = matchParentDimension,
     padding: Padding? = null,
     horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
     verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
@@ -64,7 +63,7 @@ fun WidgetScope.Column(
 fun WidgetScope.Row(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
-    height: Dimension = wrapContentDimension,
+    height: Dimension = matchParentDimension,
     padding: Padding? = null,
     horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
     verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
@@ -103,7 +102,7 @@ fun WidgetScope.Row(
 fun WidgetScope.Box(
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
-    height: Dimension = wrapContentDimension,
+    height: Dimension = matchParentDimension,
     padding: Padding? = null,
     alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_TOP_START,
     backgroundColor: ColorProvider? = null,
