@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".WidgetForegroundService"
+            android:name=".service.WidgetForegroundService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse">

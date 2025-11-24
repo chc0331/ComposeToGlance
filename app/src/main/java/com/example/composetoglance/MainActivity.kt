@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import com.example.composetoglance.service.WidgetForegroundService
 import com.example.composetoglance.ui.theme.ComposeToGlanceTheme
 
 class MainActivity : ComponentActivity() {
