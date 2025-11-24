@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":toolkit"))
     implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
     implementation("androidx.core:core-remoteviews:1.1.0")
+    implementation(project(":widget"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

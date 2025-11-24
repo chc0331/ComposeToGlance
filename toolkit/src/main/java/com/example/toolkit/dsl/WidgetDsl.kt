@@ -76,6 +76,7 @@ fun WidgetLayout(block: WidgetScope.() -> Unit): WidgetLayoutDocument {
 class WidgetScope {
     private var viewIdCounter = 0
     internal val children = mutableListOf<WidgetNode>()
+    private val locals = mutableMapOf<WidgetLocal<out Any?>, Any?>()
 
     /**
      * 다음 viewId를 생성
@@ -87,6 +88,29 @@ class WidgetScope {
      */
     fun addChild(node: WidgetNode) {
         children.add(node)
+    }
+
+    /**
+     * CompositionLocal 값을 설정.
+     * */
+    fun <T> setLocal(key: WidgetLocal<T>, value: T) {
+        locals[key] = value
+    }
+
+    /**
+     * CompositionLocal 값을 가져옴.
+     * */
+    fun <T> getLocal(key: WidgetLocal<T>): T? {
+        return locals[key] as? T ?: key.getDefaultValue()
+    }
+
+    /**
+     * 부모 스코프의 locals를 복사.
+     * */
+    internal fun copyLocalsFrom(parent: WidgetScope) {
+        parent.locals.forEach { (key, value) ->
+            locals[key as WidgetLocal<out Any?>] = value
+        }
     }
 
     /**
@@ -125,6 +149,7 @@ fun WidgetScope.Column(
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
+    childScope.copyLocalsFrom(this)
     childScope.block()
 
     val columnNode = WidgetNode.newBuilder()
@@ -163,6 +188,7 @@ fun WidgetScope.Row(
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
+    childScope.copyLocalsFrom(this)
     childScope.block()
 
     val rowNode = WidgetNode.newBuilder()
@@ -195,13 +221,13 @@ fun WidgetScope.Box(
     width: Dimension = matchParentDimension,
     height: Dimension = wrapContentDimension,
     padding: Padding? = null,
-    alignment: AlignmentType = ALIGNMENT_TYPE_START,
+    alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_TOP_START,
     backgroundColor: ColorProvider? = null,
     block: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
+    childScope.copyLocalsFrom(this)
     childScope.block()
-
     val boxNode = WidgetNode.newBuilder()
         .setBox(
             boxLayoutProperty(
@@ -375,9 +401,9 @@ fun WidgetScope.Progress(
     progressValue: Float = 0f,
     viewId: Int = nextViewId(),
     width: Dimension = matchParentDimension,
-    height: Dimension = dimensionDp(8f),
+    height: Dimension = matchParentDimension,
     padding: Padding? = null,
-    progressColor: Int = 0xFF4CAF50.toInt(),
+    progressColor: Int = 0xFFFFFFFF.toInt(),
     backgroundColor: Int = 0xFFE0E0E0.toInt()
 ) {
     val progressNode = WidgetNode.newBuilder()

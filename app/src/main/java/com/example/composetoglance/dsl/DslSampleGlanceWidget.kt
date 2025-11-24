@@ -2,11 +2,16 @@ package com.example.composetoglance.dsl
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.layout.Box
+import androidx.glance.layout.fillMaxSize
 import com.example.toolkit.glance.GlanceRenderer
 import com.example.toolkit.proto.WidgetLayoutDocument
 
@@ -21,9 +26,10 @@ class DslSampleGlanceWidget : GlanceAppWidget() {
 
     @Composable
     fun Content() {
-        val context = LocalContext.current
-        val layout = createMusicPlayerWidgetDsl()
-        RenderWidgetLayout(layout, context)
+        Box(modifier = GlanceModifier.fillMaxSize().background(Color.Black)) {  }
+//        val context = LocalContext.current
+//        val layout = createMusicPlayerWidgetDsl()
+//        RenderWidgetLayout(layout, context)
     }
 
     /**
