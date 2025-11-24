@@ -18,14 +18,6 @@ import com.example.dsl.glance.GlanceRenderer
 
 abstract class DslAppWidget : GlanceAppWidget() {
 
-    final override val sizeMode: SizeMode
-        get() = SizeMode.Responsive(
-            setOf(
-                DpSize(150.dp, 100.dp),
-                DpSize(250.dp, 150.dp)
-            )
-        )
-
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             RenderDsl()
