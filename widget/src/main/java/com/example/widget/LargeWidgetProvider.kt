@@ -25,7 +25,7 @@ class LargeAppWidget : DslAppWidget() {
     }
 }
 
-class LargeWidgetReceiver : GlanceAppWidgetReceiver() {
+class LargeWidgetProvider : GlanceAppWidgetReceiver() {
 
     override val glanceAppWidget: GlanceAppWidget
         get() = LargeAppWidget()
