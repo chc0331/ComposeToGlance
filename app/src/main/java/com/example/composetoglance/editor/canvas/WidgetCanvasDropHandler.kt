@@ -58,6 +58,8 @@ fun WidgetDropHandler(
         if (!viewModel.canPlaceWidget(indices)) {
             return@DropTarget
         }
+        // 드롭 처리 시작 시점에 플래그 설정 (페이드아웃 애니메이션을 위해)
+        dragInfo.itemDropped = true
         // 위젯 실제 크기 DP→픽셀 변환
         val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density)
         val adjustedOffset = GridCalculator.calculateWidgetOffset(
@@ -79,6 +81,5 @@ fun WidgetDropHandler(
             startCol = startCol,
             cellIndices = indices
         )
-        dragInfo.itemDropped = true
     }
 }

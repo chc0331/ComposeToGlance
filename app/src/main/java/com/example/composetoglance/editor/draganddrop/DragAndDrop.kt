@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -60,10 +61,18 @@ fun DragTarget(
                         currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
 
                     }, onDragEnd = {
+                        // isDragging을 false로 설정하여 DropTarget이 데이터를 전달할 수 있도록 함
                         currentState.isDragging = false
+                        // dragOffset과 dataToDrop은 DropTarget이 처리할 수 있도록 유지
+                        // 드롭 위치 계산을 위해 dragOffset을 유지해야 함
+                        // itemDropped가 true이면 WidgetEditorContainer에서 페이드아웃 후 초기화
+                        // itemDropped가 false이면 WidgetEditorContainer에서 지연 후 초기화
                     }, onDragCancel = {
                         currentState.isDragging = false
                         currentState.dragOffset = Offset.Zero
+                        currentState.itemDropped = false
+                        currentState.dataToDrop = null
+                        currentState.draggableComposable = null
                     })
             }, contentAlignment = Alignment.Center
     ) {
@@ -84,23 +93,30 @@ fun DropTarget(
     content: @Composable() (BoxScope.(isInBound: Boolean, data: Any?) -> Unit)
 ) {
     val dragInfo = LocalDragTargetInfo.current
+    // isDragging을 명시적으로 읽어서 재구성 트리거
+    val isDragging = dragInfo.isDragging
     val dragPosition = dragInfo.dragPosition
     val dragOffset = dragInfo.dragOffset
-    var isCurrentDropTarget by remember {
-        mutableStateOf(false)
+    val dataToDrop = dragInfo.dataToDrop
+    var dropTargetBounds by remember {
+        mutableStateOf<Rect?>(null)
     }
 
     Box(
         modifier = modifier
             .onGloballyPositioned {
-                it.boundsInWindow().let { rect ->
-                    val currentPos = dragPosition + dragOffset
-                    isCurrentDropTarget = rect.contains(currentPos)
-                }
+                dropTargetBounds = it.boundsInWindow()
             }
     ) {
+        // 매 재구성마다 현재 위치를 확인하여 드롭 여부 판단
+        val currentPos = dragPosition + dragOffset
+        val isCurrentDropTarget = dropTargetBounds?.contains(currentPos) ?: false
         val data =
-            if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop else null
+            if (isCurrentDropTarget && !isDragging && dataToDrop != null) {
+                dataToDrop
+            } else {
+                null
+            }
         content(isCurrentDropTarget, data)
     }
 }

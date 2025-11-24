@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
@@ -42,11 +44,19 @@ fun WidgetEditorContainer(
                     canvasPosition = it.localToWindow(Offset.Zero)
                 }) {
             content()
-            if (state.isDragging) {
+            // 드래그 중이거나 드롭 직후 페이드아웃 중일 때 오버레이 표시
+            if (state.isDragging || state.itemDropped) {
                 var targetSize by remember {
                     mutableStateOf(IntSize.Zero)
                 }
                 val hasValidSize = targetSize != IntSize.Zero
+                
+                // 드롭 시 페이드아웃을 위한 alpha 타겟 값
+                val targetAlpha = when {
+                    !hasValidSize -> 0f
+                    state.itemDropped -> 0f // 드롭되면 페이드아웃
+                    else -> DragAndDropConstants.DRAG_ALPHA
+                }
                 
                 // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대
                 val animatedScale by animateFloatAsState(
@@ -55,12 +65,39 @@ fun WidgetEditorContainer(
                     label = "scale_animation"
                 )
                 
-                // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남
+                // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남, 드롭 시 페이드아웃
+                val fadeOutDuration = if (state.itemDropped) 150 else 200
                 val animatedAlpha by animateFloatAsState(
-                    targetValue = if (hasValidSize) DragAndDropConstants.DRAG_ALPHA else 0f,
-                    animationSpec = tween(durationMillis = 200),
+                    targetValue = targetAlpha,
+                    animationSpec = tween(durationMillis = fadeOutDuration),
                     label = "alpha_animation"
                 )
+                
+                // 페이드아웃 완료 후 상태 초기화
+                LaunchedEffect(state.itemDropped) {
+                    if (state.itemDropped) {
+                        // 페이드아웃 애니메이션 시간만큼 대기
+                        delay(fadeOutDuration.toLong() + 50)
+                        state.itemDropped = false
+                        state.isDragging = false
+                        state.dragOffset = Offset.Zero
+                        state.dataToDrop = null
+                        state.draggableComposable = null
+                    }
+                }
+                
+                // 드롭되지 않은 경우 상태 초기화 (DropTarget이 데이터를 처리할 시간을 주기 위해 약간의 지연)
+                LaunchedEffect(state.isDragging) {
+                    if (!state.isDragging && !state.itemDropped && state.dataToDrop != null) {
+                        // DropTarget이 재구성되어 데이터를 처리할 시간을 줌
+                        delay(100)
+                        if (!state.itemDropped && !state.isDragging) {
+                            state.dragOffset = Offset.Zero
+                            state.dataToDrop = null
+                            state.draggableComposable = null
+                        }
+                    }
+                }
                 
                 Box(
                     modifier = Modifier
