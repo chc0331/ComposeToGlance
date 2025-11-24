@@ -7,11 +7,11 @@ import com.example.dsl.builder.color
 import com.example.dsl.builder.colorProvider
 import com.example.dsl.builder.dimensionDp
 import com.example.dsl.builder.matchParentDimension
-import com.example.dsl.Box
 import com.example.dsl.provider.DslLocalSize
-import com.example.dsl.Progress
-import com.example.dsl.Text
 import com.example.dsl.WidgetScope
+import com.example.dsl.component.Box
+import com.example.dsl.component.Progress
+import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
 
