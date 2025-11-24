@@ -1,4 +1,6 @@
-package com.example.dsl
+package com.example.dsl.provider
+
+import com.example.dsl.WidgetScope
 
 
 /**

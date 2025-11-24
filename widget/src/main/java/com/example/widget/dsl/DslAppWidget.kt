@@ -10,8 +10,8 @@ import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
-import com.example.dsl.DslLocalProvider
-import com.example.dsl.DslLocalSize
+import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.glance.GlanceRenderer

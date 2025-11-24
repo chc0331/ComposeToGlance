@@ -9,8 +9,8 @@ import com.example.dsl.builder.color
 import com.example.dsl.builder.colorProvider
 import com.example.dsl.builder.dimensionDp
 import com.example.dsl.Column
-import com.example.dsl.DslLocalProvider
-import com.example.dsl.DslLocalSize
+import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.Image
 import com.example.dsl.Progress
 import com.example.dsl.Row
