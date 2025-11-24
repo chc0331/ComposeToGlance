@@ -1,5 +1,6 @@
 package com.example.dsl.glance.converter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import com.example.dsl.proto.Color as ProtoColor
@@ -57,6 +58,7 @@ object ColorConverter {
      * @param colorProvider Proto ColorProvider
      * @return Glance ColorProvider
      */
+    @SuppressLint("RestrictedApi")
     fun toGlanceColorProvider(colorProvider: ColorProvider): androidx.glance.unit.ColorProvider {
         if (colorProvider.resId != 0) {
             return androidx.glance.unit.ColorProvider(resId = colorProvider.resId)

@@ -1,9 +1,10 @@
-package com.example.composetoglance.service
+package com.example.composetoglance
 
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -14,7 +15,6 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.composetoglance.R
 import com.example.composetoglance.receiver.BatteryStatusReceiver
 
 class WidgetForegroundService : Service() {
@@ -105,7 +105,7 @@ class WidgetForegroundService : Service() {
             addAction(Intent.ACTION_POWER_CONNECTED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
-
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(batteryReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
@@ -148,9 +148,7 @@ class WidgetForegroundService : Service() {
     }
 
     private fun checkBatteryStatus() {
-        val batteryStatusIntent = registerReceiver(null,
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        )
+        val batteryStatusIntent = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         batteryStatusIntent?.let { intent ->
             val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
             val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)

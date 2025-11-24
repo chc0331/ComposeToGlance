@@ -10,13 +10,13 @@ import androidx.glance.LocalGlanceId
 import androidx.glance.LocalState
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
-import com.example.dsl.provider.DslLocalProvider
-import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalGlanceId
+import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 
 abstract class DslAppWidget : GlanceAppWidget() {
@@ -34,16 +34,18 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val dpSize = androidx.glance.LocalSize.current
         val glanceId = LocalGlanceId.current
         val renderer = remember { GlanceRenderer(context) }
-        renderer.render(WidgetLayout {
-            DslLocalProvider(
-                DslLocalSize provides dpSize,
-                DslLocalContext provides context,
-                DslLocalState provides state,
-                DslLocalGlanceId provides glanceId
-            ) {
-                DslContent()
+        renderer.render(
+            WidgetLayout {
+                DslLocalProvider(
+                    DslLocalSize provides dpSize,
+                    DslLocalContext provides context,
+                    DslLocalState provides state,
+                    DslLocalGlanceId provides glanceId
+                ) {
+                    DslContent()
+                }
             }
-        })
+        )
     }
 
     abstract fun WidgetScope.DslContent()

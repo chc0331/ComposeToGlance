@@ -9,7 +9,6 @@ import com.example.dsl.WidgetScope
 import com.example.widget.content.BatteryComponent
 import com.example.widget.dsl.DslAppWidget
 
-
 class LargeAppWidget : DslAppWidget() {
 
     override val sizeMode: SizeMode

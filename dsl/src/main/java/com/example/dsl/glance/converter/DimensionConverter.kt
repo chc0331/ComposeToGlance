@@ -1,5 +1,6 @@
 package com.example.dsl.glance.converter
 
+import android.annotation.SuppressLint
 import androidx.compose.ui.unit.dp
 import androidx.glance.unit.Dimension
 import com.example.dsl.proto.Dimension as ProtoDimension
@@ -13,6 +14,7 @@ object DimensionConverter {
      * @param protoDimension Proto Dimension
      * @return Glance Dimension 또는 null (wrap_content/match_parent는 null 반환)
      */
+    @SuppressLint("RestrictedApi")
     fun toGlanceDimension(protoDimension: ProtoDimension): Dimension? {
         return when {
             protoDimension.hasDp() -> {
