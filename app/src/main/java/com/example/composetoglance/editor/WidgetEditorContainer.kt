@@ -1,5 +1,7 @@
 package com.example.composetoglance.editor
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,20 +46,35 @@ fun WidgetEditorContainer(
                 var targetSize by remember {
                     mutableStateOf(IntSize.Zero)
                 }
+                val hasValidSize = targetSize != IntSize.Zero
+                
+                // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대
+                val animatedScale by animateFloatAsState(
+                    targetValue = if (hasValidSize) DragAndDropConstants.SCALE_FACTOR else 1f,
+                    animationSpec = tween(durationMillis = 200),
+                    label = "scale_animation"
+                )
+                
+                // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남
+                val animatedAlpha by animateFloatAsState(
+                    targetValue = if (hasValidSize) DragAndDropConstants.DRAG_ALPHA else 0f,
+                    animationSpec = tween(durationMillis = 200),
+                    label = "alpha_animation"
+                )
+                
                 Box(
                     modifier = Modifier
                         .graphicsLayer {
                             val currentTouchWindowPosition = state.dragPosition + state.dragOffset
                             val relativeOffset = currentTouchWindowPosition - canvasPosition
-                            val scaleFactor = DragAndDropConstants.SCALE_FACTOR
-                            val scaledWidth = targetSize.width * scaleFactor
-                            val scaledHeight = targetSize.height * scaleFactor
+                            val scaledWidth = targetSize.width * animatedScale
+                            val scaledHeight = targetSize.height * animatedScale
                             val centerX = relativeOffset.x - scaledWidth / 2
                             val centerY = relativeOffset.y - scaledHeight / 2
 
-                            scaleX = scaleFactor
-                            scaleY = scaleFactor
-                            alpha = if (targetSize == IntSize.Zero) 0f else DragAndDropConstants.DRAG_ALPHA
+                            scaleX = animatedScale
+                            scaleY = animatedScale
+                            alpha = animatedAlpha
                             translationX = centerX
                             translationY = centerY
                         }
