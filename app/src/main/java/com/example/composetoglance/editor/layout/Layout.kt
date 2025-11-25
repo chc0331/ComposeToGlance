@@ -70,16 +70,6 @@ fun ClickableLayoutComponent(
     }
 }
 
-val WidgetLayoutComponentSize = mapOf<String, Pair<Dp, Dp>>(
-    "Small" to Pair(155.dp, 80.dp),
-    "Medium" to Pair(155.dp, 170.dp),
-    "Large" to Pair(320.dp, 170.dp)
-)
-val PreviewLayoutComponentSize = mapOf<String, Pair<Dp, Dp>>(
-    "Small" to Pair(105.dp, 45.dp),
-    "Medium" to Pair(105.dp, 100.dp),
-    "Large" to Pair(210.dp, 100.dp)
-)
 
 @Composable
 fun LayoutComponent(
@@ -88,11 +78,11 @@ fun LayoutComponent(
     showText: Boolean = false,
     isPreview: Boolean = false
 ) {
-    val (width, height) = if (isPreview) PreviewLayoutComponentSize[layoutType] ?: Pair(
-        105.dp,
-        45.dp
-    )
-    else WidgetLayoutComponentSize[layoutType] ?: Pair(180.dp, 80.dp)
+    var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
+    if (isPreview) {
+        width = width * 0.5f
+        height = height * 0.5f
+    }
 
     Box(
         modifier = Modifier
