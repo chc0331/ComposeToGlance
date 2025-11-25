@@ -85,7 +85,6 @@ val PreviewLayoutComponentSize = mapOf<String, Pair<Dp, Dp>>(
 fun LayoutComponent(
     type: String,
     layoutType: String,
-    shouldAnimate: Boolean = false,
     showText: Boolean = false,
     isPreview: Boolean = false
 ) {
