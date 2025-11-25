@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -21,9 +22,11 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.widget.size.LayoutDpSize
+import com.example.widget.util.getSystemBackgroundRadius
 
 data class Layout(val type: String, val sizeType: String)
 
@@ -79,6 +82,7 @@ fun LayoutComponent(
     showText: Boolean = false,
     isPreview: Boolean = false
 ) {
+    val context = LocalContext.current
     var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
     if (isPreview) {
         width = width * 0.5f
@@ -88,6 +92,7 @@ fun LayoutComponent(
     Box(
         modifier = Modifier
             .size(width, height)
+            .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .border(1.dp, MaterialTheme.colorScheme.outline),
         contentAlignment = Alignment.Center
