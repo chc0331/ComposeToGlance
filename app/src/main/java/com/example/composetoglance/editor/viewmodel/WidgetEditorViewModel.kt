@@ -113,6 +113,28 @@ class WidgetEditorViewModel : ViewModel() {
             )
         )
     }
+
+    fun movePositionedWidget(
+        positionedWidget: PositionedWidget,
+        offset: Offset,
+        startRow: Int,
+        startCol: Int,
+        cellIndices: List<Int>
+    ) {
+        val index = positionedWidgets.indexOf(positionedWidget)
+        println("movePositionedWidget: index=$index, oldOffset=${positionedWidget.offset}, newOffset=$offset")
+        if (index != -1) {
+            val updatedWidget = positionedWidget.copy(
+                offset = offset,
+                cellIndex = cellIndices.firstOrNull(),
+                cellIndices = cellIndices
+            )
+            positionedWidgets[index] = updatedWidget
+            println("Widget moved successfully: ${updatedWidget.offset}")
+        } else {
+            println("Widget not found in list!")
+        }
+    }
     
     /**
      * 배치된 위젯 제거
@@ -134,8 +156,10 @@ class WidgetEditorViewModel : ViewModel() {
     /**
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
-    fun getOccupiedCells(): Set<Int> {
-        return positionedWidgets.flatMap { positionedWidget ->
+    fun getOccupiedCells(excluding: PositionedWidget? = null): Set<Int> {
+        return positionedWidgets
+            .filter { it != excluding }
+            .flatMap { positionedWidget ->
             if (positionedWidget.cellIndices.isNotEmpty()) {
                 positionedWidget.cellIndices
             } else {

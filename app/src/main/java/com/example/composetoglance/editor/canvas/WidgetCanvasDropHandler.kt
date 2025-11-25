@@ -12,9 +12,10 @@ import com.example.composetoglance.editor.layout.gridSpec
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.getSizeInCells
-import com.example.composetoglance.editor.canvas.toPixels
+import com.example.composetoglance.editor.widget.toPixels
 
 @Composable
 fun WidgetDropHandler(
@@ -26,18 +27,40 @@ fun WidgetDropHandler(
     dragInfo: DragTargetInfo
 ) {
     DropTarget(modifier = Modifier.fillMaxSize()) { isInBound, droppedItem ->
-        if (!isInBound || droppedItem !is Widget || dragInfo.itemDropped) {
+        // 디버깅용 로그
+        println("DropTarget: isInBound=$isInBound, droppedItem=$droppedItem, itemDropped=${dragInfo.itemDropped}")
+        
+        if ((droppedItem !is Widget && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
             return@DropTarget
         }
-        val widget = droppedItem
+        
+        // 캔버스 밖으로 드래그된 PositionedWidget은 삭제
+        if (!isInBound && droppedItem is PositionedWidget) {
+            dragInfo.itemDropped = true
+            viewModel.removePositionedWidget(droppedItem)
+            return@DropTarget
+        }
+        
+        // 캔버스 밖이거나 새 위젯인 경우 처리하지 않음
+        if (!isInBound) {
+            return@DropTarget
+        }
+
+        val widget = when (droppedItem) {
+            is Widget -> droppedItem
+            is PositionedWidget -> droppedItem.widget
+            else -> return@DropTarget
+        }
         val bounds = layoutBounds
         val spec = selectedLayout?.gridSpec()
         if (bounds == null || spec == null) {
             return@DropTarget
         }
+
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
         val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
         val gridCells = GridCalculator.calculateGridCells(spec, bounds)
+
         val bestStart = GridCalculator.calculateBestCellPosition(
             dropPositionInWindow,
             widgetWidthCells,
@@ -46,6 +69,7 @@ fun WidgetDropHandler(
             spec,
             bounds
         ) ?: return@DropTarget
+
         val (startRow, startCol) = bestStart
         val indices = GridCalculator.calculateCellIndices(
             startRow,
@@ -54,13 +78,19 @@ fun WidgetDropHandler(
             widgetHeightCells,
             spec
         )
-        // ViewModel에서 셀 충돌 검사
-        if (!viewModel.canPlaceWidget(indices)) {
+
+        val occupiedIndices = if (droppedItem is PositionedWidget) {
+            viewModel.getOccupiedCells(excluding = droppedItem)
+        } else {
+            viewModel.getOccupiedCells()
+        }
+
+        if (indices.any { it in occupiedIndices }) {
             return@DropTarget
         }
-        // 드롭 처리 시작 시점에 플래그 설정 (페이드아웃 애니메이션을 위해)
+
         dragInfo.itemDropped = true
-        // 위젯 실제 크기 DP→픽셀 변환
+
         val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density)
         val adjustedOffset = GridCalculator.calculateWidgetOffset(
             startRow,
@@ -73,13 +103,25 @@ fun WidgetDropHandler(
             spec,
             canvasPosition
         )
-        // ViewModel에 위젯 추가
-        viewModel.addPositionedWidget(
-            widget = widget,
-            offset = adjustedOffset,
-            startRow = startRow,
-            startCol = startCol,
-            cellIndices = indices
-        )
+
+        when (droppedItem) {
+            is Widget -> viewModel.addPositionedWidget(
+                widget = widget,
+                offset = adjustedOffset,
+                startRow = startRow,
+                startCol = startCol,
+                cellIndices = indices
+            )
+            is PositionedWidget -> {
+                println("Moving PositionedWidget: from ${droppedItem.offset} to $adjustedOffset")
+                viewModel.movePositionedWidget(
+                    positionedWidget = droppedItem,
+                    offset = adjustedOffset,
+                    startRow = startRow,
+                    startCol = startCol,
+                    cellIndices = indices
+                )
+            }
+        }
     }
 }

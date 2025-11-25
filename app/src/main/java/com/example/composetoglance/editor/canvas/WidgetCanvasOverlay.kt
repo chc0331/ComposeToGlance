@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTargetInfo
 import com.example.composetoglance.editor.layout.Layout
 import com.example.composetoglance.editor.layout.gridSpec
@@ -20,10 +20,11 @@ import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.GridCell
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.getSizeInCells
-import com.example.composetoglance.editor.canvas.toPixels
+import com.example.composetoglance.editor.widget.toPixels
 import kotlin.math.roundToInt
 
 @Composable
@@ -40,15 +41,23 @@ fun DragStateOverlay(
     if (!dragInfo.isDragging || gridCells.isEmpty()) {
         return
     }
-    val draggedWidget = dragInfo.dataToDrop as? Widget ?: return
+
+    val (draggedWidget, draggedPositionedWidget) = when (val item = dragInfo.dataToDrop) {
+        is Widget -> item to null
+        is PositionedWidget -> item.widget to item
+        else -> return
+    }
+
     val hoveredCellIndices = rememberHoveredCellIndices(
         viewModel = viewModel,
         dragInfo = dragInfo,
         draggedWidget = draggedWidget,
+        draggedPositionedWidget = draggedPositionedWidget, // Pass this to the remember function
         gridCells = gridCells,
         selectedLayout = selectedLayout,
         layoutBounds = layoutBounds
     )
+
     if (hoveredCellIndices.isNotEmpty()) {
         WidgetPreview(
             draggedWidget = draggedWidget,
@@ -59,9 +68,16 @@ fun DragStateOverlay(
             density = density
         )
     }
+
+    val currentOccupiedCells = if (draggedPositionedWidget != null) {
+        viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
+    } else {
+        occupiedCells
+    }
+
     GridCellHighlight(
         gridCells = gridCells,
-        occupiedCells = occupiedCells,
+        occupiedCells = currentOccupiedCells,
         hoveredCellIndices = hoveredCellIndices,
         canvasPosition = canvasPosition,
         density = density
@@ -73,26 +89,29 @@ private fun rememberHoveredCellIndices(
     viewModel: WidgetEditorViewModel,
     dragInfo: DragTargetInfo,
     draggedWidget: Widget,
+    draggedPositionedWidget: PositionedWidget?,
     gridCells: List<GridCell>,
     selectedLayout: Layout?,
     layoutBounds: LayoutBounds?
 ): List<Int> {
     return remember(
-        viewModel.positionedWidgets,
         dragInfo.isDragging,
         dragInfo.dragPosition,
         dragInfo.dragOffset,
         draggedWidget,
         gridCells,
         selectedLayout,
-        layoutBounds
+        layoutBounds,
+        viewModel.positionedWidgets.size
     ) {
         if (!dragInfo.isDragging || selectedLayout == null || layoutBounds == null) {
             return@remember emptyList()
         }
+
         val spec = selectedLayout.gridSpec() ?: return@remember emptyList()
         val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
+
         val bestStart = GridCalculator.calculateBestCellPosition(
             dropPositionInWindow,
             widgetWidthCells,
@@ -101,6 +120,7 @@ private fun rememberHoveredCellIndices(
             spec,
             layoutBounds
         ) ?: return@remember emptyList()
+
         val (startRow, startCol) = bestStart
         val indices = GridCalculator.calculateCellIndices(
             startRow,
@@ -109,7 +129,9 @@ private fun rememberHoveredCellIndices(
             widgetHeightCells,
             spec
         )
-        if (viewModel.canPlaceWidget(indices)) indices else emptyList()
+
+        val occupied = viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
+        if (indices.any { it in occupied }) emptyList() else indices
     }
 }
 
@@ -129,6 +151,7 @@ private fun WidgetPreview(
     val startCol = startCellIndex % spec.columns
     val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
     val (widgetWidthPx, widgetHeightPx) = draggedWidget.toPixels(density)
+
     val previewOffset = GridCalculator.calculateWidgetOffset(
         startRow,
         startCol,
@@ -140,14 +163,15 @@ private fun WidgetPreview(
         spec,
         canvasPosition
     )
+
     Box(
-        modifier = androidx.compose.ui.Modifier.offset {
+        modifier = Modifier.offset {
             IntOffset(previewOffset.x.roundToInt(), previewOffset.y.roundToInt())
         }
     ) {
         WidgetItem(
             data = draggedWidget,
-            modifier = androidx.compose.ui.Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
+            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
         )
     }
 }
@@ -163,11 +187,13 @@ private fun GridCellHighlight(
     gridCells.forEach { cell ->
         val isOccupied = occupiedCells.contains(cell.index)
         val isHovered = hoveredCellIndices.contains(cell.index)
+
         if (isHovered) {
             HighlightedCell(
                 cell = cell,
                 canvasPosition = canvasPosition,
-                density = density
+                density = density,
+                isOccupied = isOccupied
             )
         } else if (!isOccupied) {
             EmptyCell(
@@ -183,7 +209,8 @@ private fun GridCellHighlight(
 private fun HighlightedCell(
     cell: GridCell,
     canvasPosition: Offset,
-    density: Density
+    density: Density,
+    isOccupied: Boolean
 ) {
     val offset = IntOffset(
         (cell.rect.left - canvasPosition.x).roundToInt(),
@@ -191,18 +218,25 @@ private fun HighlightedCell(
     )
     val widthDp = with(density) { cell.rect.width.toDp() }
     val heightDp = with(density) { cell.rect.height.toDp() }
+    val backgroundColor = if (isOccupied) {
+        MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
+    } else {
+        MaterialTheme.colorScheme.primary.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
+    }
+    val borderColor = if (isOccupied) {
+        MaterialTheme.colorScheme.error
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
     Box(
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .offset { offset }
             .size(widthDp, heightDp)
-            .background(
-                MaterialTheme.colorScheme.primary.copy(
-                    alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA
-                )
-            )
+            .background(backgroundColor)
             .border(
-                width = WidgetCanvasConstants.HOVERED_CELL_BORDER_WIDTH_DP.dp,
-                color = MaterialTheme.colorScheme.primary
+                width = WidgetCanvasConstants.HOVERED_CELL_BORDER_WIDTH_DP,
+                color = borderColor
             )
     )
 }
@@ -219,8 +253,9 @@ private fun EmptyCell(
     )
     val widthDp = with(density) { cell.rect.width.toDp() }
     val heightDp = with(density) { cell.rect.height.toDp() }
+
     Box(
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .offset { offset }
             .size(widthDp, heightDp)
             .background(
@@ -229,7 +264,7 @@ private fun EmptyCell(
                 )
             )
             .border(
-                width = WidgetCanvasConstants.EMPTY_CELL_BORDER_WIDTH_DP.dp,
+                width = WidgetCanvasConstants.EMPTY_CELL_BORDER_WIDTH_DP,
                 color = MaterialTheme.colorScheme.outline.copy(
                     alpha = WidgetCanvasConstants.EMPTY_CELL_BORDER_ALPHA
                 )

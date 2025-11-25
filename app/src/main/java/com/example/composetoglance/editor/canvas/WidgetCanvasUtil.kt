@@ -16,11 +16,6 @@ import com.example.composetoglance.editor.widget.getSizeInDp
 fun PositionedWidget.getAllCellIndices(): Set<Int> =
     if (cellIndices.isNotEmpty()) cellIndices.toSet() else listOfNotNull(cellIndex).toSet()
 
-// 위젯 DP → 픽셀 변환
-fun Widget.toPixels(density: Density): Pair<Float, Float> {
-    val (widthDp, heightDp) = getSizeInDp()
-    return with(density) { widthDp.toPx() to heightDp.toPx() }
-}
 
 // 여러 PositionedWidget 리스트의 모든 셀 인덱스 반환
 fun List<PositionedWidget>.getOccupiedCells(): Set<Int> =

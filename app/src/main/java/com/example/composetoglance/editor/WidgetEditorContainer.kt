@@ -78,6 +78,7 @@ fun WidgetEditorContainer(
                     if (state.itemDropped) {
                         // 페이드아웃 애니메이션 시간만큼 대기
                         delay(fadeOutDuration.toLong() + 50)
+                        println("Cleaning up drag state - drop completed")
                         state.itemDropped = false
                         state.isDragging = false
                         state.dragOffset = Offset.Zero
@@ -87,11 +88,12 @@ fun WidgetEditorContainer(
                 }
                 
                 // 드롭되지 않은 경우 상태 초기화 (DropTarget이 데이터를 처리할 시간을 주기 위해 약간의 지연)
-                LaunchedEffect(state.isDragging) {
+                LaunchedEffect(state.isDragging, state.itemDropped) {
                     if (!state.isDragging && !state.itemDropped && state.dataToDrop != null) {
                         // DropTarget이 재구성되어 데이터를 처리할 시간을 줌
-                        delay(100)
+                        delay(300)
                         if (!state.itemDropped && !state.isDragging) {
+                            println("Cleaning up drag state - no drop detected")
                             state.dragOffset = Offset.Zero
                             state.dataToDrop = null
                             state.draggableComposable = null

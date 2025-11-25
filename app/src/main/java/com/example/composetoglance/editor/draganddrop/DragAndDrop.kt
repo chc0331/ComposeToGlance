@@ -111,9 +111,11 @@ fun DropTarget(
     val dragPosition = dragInfo.dragPosition
     val dragOffset = dragInfo.dragOffset
     val dataToDrop = dragInfo.dataToDrop
+    val itemDropped = dragInfo.itemDropped
     var dropTargetBounds by remember {
         mutableStateOf<Rect?>(null)
     }
+    var wasInBounds by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -124,12 +126,29 @@ fun DropTarget(
         // 매 재구성마다 현재 위치를 확인하여 드롭 여부 판단
         val currentPos = dragPosition + dragOffset
         val isCurrentDropTarget = dropTargetBounds?.contains(currentPos) ?: false
+        
+        // 드래그 중일 때 경계 내부에 있었는지 기록
+        if (isDragging) {
+            wasInBounds = isCurrentDropTarget
+        }
+        
+        // 드래그가 시작되지 않았거나 데이터가 없으면 wasInBounds 리셋
+        if (dataToDrop == null || (!isDragging && itemDropped)) {
+            wasInBounds = false
+        }
+        
+        // 디버깅용 로그
+        if (dataToDrop != null) {
+            println("DropTarget: isDragging=$isDragging, isCurrentDropTarget=$isCurrentDropTarget, wasInBounds=$wasInBounds, itemDropped=$itemDropped, dataToDrop=$dataToDrop")
+        }
+        
         val data =
-            if (isCurrentDropTarget && !isDragging && dataToDrop != null) {
+            if ((isCurrentDropTarget || wasInBounds) && !isDragging && dataToDrop != null && !itemDropped) {
                 dataToDrop
             } else {
                 null
             }
+        
         content(isCurrentDropTarget, data)
     }
 }

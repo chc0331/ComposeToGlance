@@ -3,9 +3,11 @@ package com.example.composetoglance.editor.canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
+import androidx.compose.ui.draw.alpha
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -16,6 +18,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
+import com.example.composetoglance.editor.draganddrop.Draggable
 import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
@@ -23,7 +26,7 @@ import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.getSizeInCells
-import com.example.composetoglance.editor.canvas.toPixels
+import com.example.composetoglance.editor.widget.toPixels
 import com.example.composetoglance.editor.layout.gridSpec
 import kotlin.math.roundToInt
 
@@ -40,7 +43,7 @@ fun WidgetCanvas(
     var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
     val density = LocalDensity.current
     val dragInfo = LocalDragTargetInfo.current
-    
+
     // 위젯 추가 요청 처리
     LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout, canvasPosition) {
         val widget = widgetToAdd ?: return@LaunchedEffect
@@ -137,13 +140,19 @@ fun WidgetCanvas(
             )
 
             // Display dropped widgets
-            positionedWidgets.forEach { item ->
-                Box(
-                    modifier = Modifier.offset {
-                        IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
+            positionedWidgets.forEachIndexed { index, item ->
+                val isDragging = dragInfo.isDragging && dragInfo.dataToDrop == item
+                key("${item.widget.name}_${item.offset.x}_${item.offset.y}_$index") {
+                    Draggable(
+                        dataToDrop = item,
+                        modifier = Modifier
+                            .offset {
+                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
+                            }
+                            .alpha(if (isDragging) 0f else 1f)
+                    ) {
+                        WidgetItem(data = item.widget)
                     }
-                ) {
-                    WidgetItem(data = item.widget)
                 }
             }
         }
