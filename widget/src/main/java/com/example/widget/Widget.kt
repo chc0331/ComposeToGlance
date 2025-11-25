@@ -15,12 +15,6 @@ enum class SizeType {
     }
 }
 
-data class WidgetCategory(
-    val id: String,
-    val name: String,
-    val icon: Icon? = null
-)
-
 data class Widget(
     val name: String,
     val description: String,

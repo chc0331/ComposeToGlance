@@ -21,5 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ComposeToGlance"
 include(":app")
-include(":dsl")
+include(":widget_dsl")
 include(":widget")
