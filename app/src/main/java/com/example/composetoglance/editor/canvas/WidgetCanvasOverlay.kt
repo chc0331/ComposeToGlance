@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,7 +16,9 @@ import androidx.compose.runtime.setValue
 import android.view.HapticFeedbackConstants
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
@@ -31,6 +34,7 @@ import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.toPixels
 import com.example.widget.Widget
 import com.example.widget.getSizeInCells
+import com.example.widget.util.getSystemBackgroundRadius
 import kotlin.math.roundToInt
 
 @Composable
@@ -206,18 +210,24 @@ private fun GridCellHighlight(
     canvasPosition: Offset,
     density: Density
 ) {
+    // 호버된 셀들이 있으면 전체 영역을 하나로 그리기
+    if (hoveredCellIndices.isNotEmpty()) {
+        val hoveredCells = gridCells.filter { it.index in hoveredCellIndices }
+        val isOccupied = hoveredCells.any { occupiedCells.contains(it.index) }
+        HighlightedArea(
+            cells = hoveredCells,
+            canvasPosition = canvasPosition,
+            density = density,
+            isOccupied = isOccupied
+        )
+    }
+    
+    // 호버되지 않은 빈 셀들만 개별적으로 그리기
     gridCells.forEach { cell ->
         val isOccupied = occupiedCells.contains(cell.index)
         val isHovered = hoveredCellIndices.contains(cell.index)
 
-        if (isHovered) {
-            HighlightedCell(
-                cell = cell,
-                canvasPosition = canvasPosition,
-                density = density,
-                isOccupied = isOccupied
-            )
-        } else if (!isOccupied) {
+        if (!isHovered && !isOccupied) {
             EmptyCell(
                 cell = cell,
                 canvasPosition = canvasPosition,
@@ -228,18 +238,30 @@ private fun GridCellHighlight(
 }
 
 @Composable
-private fun HighlightedCell(
-    cell: GridCell,
+private fun HighlightedArea(
+    cells: List<GridCell>,
     canvasPosition: Offset,
     density: Density,
     isOccupied: Boolean
 ) {
+    if (cells.isEmpty()) return
+    
+    val context = LocalContext.current
+    val cornerRadius = context.getSystemBackgroundRadius()
+    
+    // 전체 영역의 bounds 계산
+    val minLeft = cells.minOf { it.rect.left }
+    val minTop = cells.minOf { it.rect.top }
+    val maxRight = cells.maxOf { it.rect.right }
+    val maxBottom = cells.maxOf { it.rect.bottom }
+    
     val offset = IntOffset(
-        (cell.rect.left - canvasPosition.x).roundToInt(),
-        (cell.rect.top - canvasPosition.y).roundToInt()
+        (minLeft - canvasPosition.x).roundToInt(),
+        (minTop - canvasPosition.y).roundToInt()
     )
-    val widthDp = with(density) { cell.rect.width.toDp() }
-    val heightDp = with(density) { cell.rect.height.toDp() }
+    val widthDp = with(density) { (maxRight - minLeft).toDp() }
+    val heightDp = with(density) { (maxBottom - minTop).toDp() }
+    
     val backgroundColor = if (isOccupied) {
         MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
     } else {
@@ -255,10 +277,12 @@ private fun HighlightedCell(
         modifier = Modifier
             .offset { offset }
             .size(widthDp, heightDp)
+            .clip(RoundedCornerShape(cornerRadius))
             .background(backgroundColor)
             .border(
                 width = WidgetCanvasConstants.HOVERED_CELL_BORDER_WIDTH_DP,
-                color = borderColor
+                color = borderColor,
+                shape = RoundedCornerShape(cornerRadius)
             )
     )
 }

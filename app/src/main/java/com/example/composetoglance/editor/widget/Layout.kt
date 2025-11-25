@@ -1,7 +1,6 @@
 package com.example.composetoglance.editor.widget
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +14,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.widget.LayoutDpSize
@@ -50,9 +51,12 @@ fun ClickableLayoutComponent(
     onComponentClick: () -> Unit,
     onAddClick: (Layout) -> Unit,
 ) {
+    val context = LocalContext.current
+    val cornerRadius = context.getSystemBackgroundRadius()
     Box(
         modifier = modifier
             .wrapContentSize()
+            .clip(RoundedCornerShape(cornerRadius))
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -61,6 +65,7 @@ fun ClickableLayoutComponent(
             Box(
                 modifier = Modifier
                     .matchParentSize()
+                    .clip(RoundedCornerShape(cornerRadius))
                     .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
             ) {
                 Button(
@@ -89,12 +94,12 @@ fun LayoutComponent(
         height = height * 0.5f
     }
 
+    val cornerRadius = context.getSystemBackgroundRadius()
     Box(
         modifier = Modifier
             .size(width, height)
-            .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(1.dp, MaterialTheme.colorScheme.outline),
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
         FullLayoutComponent(layoutType, showText)
@@ -121,7 +126,7 @@ private fun createGridRow(columns: Int, showText: Boolean) {
     Row(Modifier.fillMaxSize()) {
         repeat(columns) { index ->
             if (index > 0) {
-                VerticalDivider(
+                DashedVerticalDivider(
                     Modifier
                         .fillMaxHeight()
                         .width(1.dp),
@@ -149,7 +154,7 @@ private fun createGridLayout(rows: Int, columns: Int, showText: Boolean) {
     Column(Modifier.fillMaxSize()) {
         repeat(rows) { rowIndex ->
             if (rowIndex > 0) {
-                HorizontalDivider(
+                DashedHorizontalDivider(
                     Modifier
                         .fillMaxWidth()
                         .height(1.dp),
@@ -159,7 +164,7 @@ private fun createGridLayout(rows: Int, columns: Int, showText: Boolean) {
             Row(Modifier.weight(1f)) {
                 repeat(columns) { colIndex ->
                     if (colIndex > 0) {
-                        VerticalDivider(
+                        DashedVerticalDivider(
                             Modifier
                                 .fillMaxHeight()
                                 .width(1.dp),
@@ -179,4 +184,56 @@ private fun createGridLayout(rows: Int, columns: Int, showText: Boolean) {
             }
         }
     }
+}
+
+/**
+ * 점선 세로 구분선 컴포넌트
+ */
+@Composable
+private fun DashedVerticalDivider(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.outline
+) {
+    Box(
+        modifier = modifier.drawBehind {
+            val strokeWidth = 0.3.dp.toPx()
+            val dashEffect = PathEffect.dashPathEffect(
+                floatArrayOf(8f, 12f),
+                0f
+            )
+            drawLine(
+                color = color,
+                start = Offset(size.width / 2, 0f),
+                end = Offset(size.width / 2, size.height),
+                strokeWidth = strokeWidth,
+                pathEffect = dashEffect
+            )
+        }
+    )
+}
+
+/**
+ * 점선 가로 구분선 컴포넌트
+ */
+@Composable
+private fun DashedHorizontalDivider(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.outline
+) {
+    Box(
+        modifier = modifier.drawBehind {
+            val strokeWidth = 0.3.dp.toPx()
+            val dashEffect = PathEffect.dashPathEffect(
+                floatArrayOf(8f, 12f),
+                0f
+            )
+            drawLine(
+                color = color,
+                start = Offset(0f, size.height / 2),
+                end = Offset(size.width, size.height / 2),
+                strokeWidth = strokeWidth,
+                pathEffect = dashEffect
+            )
+        }
+    )
 }
