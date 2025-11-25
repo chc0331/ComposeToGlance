@@ -1,10 +1,10 @@
 package com.example.composetoglance.editor.widget
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -28,10 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
+import com.example.dsl.builder.component
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
+import com.example.widget.WidgetComponentRegistry
 import com.example.widget.view.AppWidgetView
 
 @Composable
@@ -117,6 +119,7 @@ private fun WidgetItemContent(
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
             if (data.componentId != null) {
                 val component = remember(key) {
+                    Log.i("heec.choi","Component : ${data.componentId}")
                     WidgetComponentRegistry.getComponent(data.componentId)
                 }
                 if (component != null) {

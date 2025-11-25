@@ -1,4 +1,4 @@
-package com.example.widget.content
+package com.example.widget.component
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -14,11 +14,9 @@ import com.example.dsl.component.Progress
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
-import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.TextAlign
-import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 

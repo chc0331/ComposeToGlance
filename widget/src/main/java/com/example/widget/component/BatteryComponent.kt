@@ -1,4 +1,4 @@
-package com.example.widget.content
+package com.example.widget.component
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb

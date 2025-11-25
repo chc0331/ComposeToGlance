@@ -1,4 +1,4 @@
-package com.example.widget.content
+package com.example.widget.component
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -7,25 +7,18 @@ import com.example.dsl.builder.color
 import com.example.dsl.builder.colorProvider
 import com.example.dsl.builder.matchParentDimension
 import com.example.dsl.component.Box
-import com.example.dsl.component.Button
 import com.example.dsl.proto.AlignmentType
-import com.example.dsl.proto.FontWeight
 
-fun WidgetScope.ButtonComponent() {
+fun WidgetScope.ImageComponent() {
     Box(
         width = matchParentDimension,
         height = matchParentDimension,
         alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
-        backgroundColor = colorProvider(color = color(Color.White.toArgb()))
+        backgroundColor = colorProvider(color = color(Color.LightGray.toArgb()))
     ) {
-        Button(
-            text = "Click Me",
-            fontSize = 16f,
-            fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-            textColor = Color.White.toArgb(),
-            backgroundColor = Color.Blue.toArgb(),
-            cornerRadius = 8f
-        )
+        // Note: 실제 이미지는 drawable 리소스나 URI를 사용해야 합니다.
+        // 예시로는 빈 Box만 표시합니다.
+        // Image(drawableResId = R.drawable.example_image) 형태로 사용 가능
     }
 }
 

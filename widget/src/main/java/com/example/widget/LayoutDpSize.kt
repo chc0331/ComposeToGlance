@@ -1,4 +1,4 @@
-package com.example.widget.size
+package com.example.widget
 
 import androidx.compose.ui.unit.dp
 

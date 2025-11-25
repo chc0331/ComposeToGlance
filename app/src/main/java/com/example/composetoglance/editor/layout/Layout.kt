@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.widget.size.LayoutDpSize
+import com.example.widget.LayoutDpSize
 import com.example.widget.util.getSystemBackgroundRadius
 
 data class Layout(val type: String, val sizeType: String)

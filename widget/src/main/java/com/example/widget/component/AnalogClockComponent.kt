@@ -1,4 +1,4 @@
-package com.example.widget.content
+package com.example.widget.component
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -13,7 +13,6 @@ import com.example.dsl.component.Progress
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.provider.DslLocalSize
-import java.util.Calendar
 
 fun WidgetScope.AnalogClockComponent() {
     Box(

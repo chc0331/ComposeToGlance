@@ -3,7 +3,7 @@
 
     <application>
         <receiver
-            android:name="com.example.widget.LargeWidgetProvider"
+            android:name="com.example.widget.provider.LargeWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

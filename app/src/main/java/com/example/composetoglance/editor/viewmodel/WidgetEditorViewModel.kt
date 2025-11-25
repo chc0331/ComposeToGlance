@@ -11,7 +11,7 @@ import com.example.composetoglance.editor.widget.Category
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.getSizeInCells
-import com.example.composetoglance.editor.widget.initializeWidgetComponents
+import com.example.widget.initializeWidgetComponents
 
 class WidgetEditorViewModel : ViewModel() {
     

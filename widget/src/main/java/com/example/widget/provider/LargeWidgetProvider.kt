@@ -1,4 +1,4 @@
-package com.example.widget
+package com.example.widget.provider
 
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -6,8 +6,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import com.example.dsl.WidgetScope
-import com.example.widget.content.BatteryComponent
-import com.example.widget.dsl.DslAppWidget
+import com.example.widget.component.BatteryComponent
 
 class LargeAppWidget : DslAppWidget() {
 

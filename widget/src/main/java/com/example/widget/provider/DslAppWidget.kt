@@ -1,4 +1,4 @@
-package com.example.widget.dsl
+package com.example.widget.provider
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
 import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
+import androidx.glance.LocalSize
 import androidx.glance.LocalState
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
@@ -31,7 +32,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
     private fun RenderDsl() {
         val state = LocalState.current as Preferences
         val context = LocalContext.current
-        val dpSize = androidx.glance.LocalSize.current
+        val dpSize = LocalSize.current
         val glanceId = LocalGlanceId.current
         val renderer = remember { GlanceRenderer(context) }
         renderer.render(
