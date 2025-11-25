@@ -46,8 +46,8 @@ import com.example.composetoglance.editor.widget.Widget
 fun WidgetsList(
     widgetList: List<Widget>,
     categories: List<Category>,
-    onWidgetSelected: (Widget) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onWidgetSelected: (Widget) -> Unit = {}
 ) {
     var selectedCategoryId by remember { mutableStateOf<String?>(null) }
     var activeWidget by remember { mutableStateOf<Widget?>(null) }
@@ -72,91 +72,91 @@ fun WidgetsList(
             label = "category_transition",
             modifier = Modifier.fillMaxSize()
         ) { categoryId ->
-        if (categoryId == null) {
-            CategoryList(
-                categories = categories,
-                onCategoryClick = { selectedCategoryId = it },
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            val selectedCategory = categories.find { it.id == categoryId }
-            val filteredWidgets = widgetList.filter { it.categoryId == categoryId }
-            val visibleItems = remember { mutableStateListOf<Int>() }
-            
-            // 카테고리 진입 시 위젯들을 순차적으로 표시
-            LaunchedEffect(categoryId) {
-                visibleItems.clear()
-                filteredWidgets.forEachIndexed { index, _ ->
-                    delay(index * 50L)
-                    visibleItems.add(index)
-                }
-            }
-            
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
-            ) {
-                // 헤더 (뒤로가기 버튼과 카테고리 이름) - 즉시 표시
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                ) {
-                    IconButton(
-                        onClick = { selectedCategoryId = null },
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "뒤로가기"
-                        )
+            if (categoryId == null) {
+                CategoryList(
+                    categories = categories,
+                    onCategoryClick = { selectedCategoryId = it },
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                val selectedCategory = categories.find { it.id == categoryId }
+                val filteredWidgets = widgetList.filter { it.categoryId == categoryId }
+                val visibleItems = remember { mutableStateListOf<Int>() }
+
+                // 카테고리 진입 시 위젯들을 순차적으로 표시
+                LaunchedEffect(categoryId) {
+                    visibleItems.clear()
+                    filteredWidgets.forEachIndexed { index, _ ->
+                        delay(index * 50L)
+                        visibleItems.add(index)
                     }
-                    Text(
-                        text = selectedCategory?.name ?: "",
-                        modifier = Modifier.align(Alignment.Center),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
                 }
-                // 위젯 리스트 - 순차적으로 나타나는 애니메이션
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentPadding = PaddingValues(BottomPanelConstants.WIDGET_LIST_PADDING),
-                    horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING),
-                    verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING)
+                        .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    itemsIndexed(filteredWidgets) { index, widget ->
-                        AnimatedVisibility(
-                            visible = visibleItems.contains(index),
-                            enter = fadeIn(
-                                animationSpec = tween(durationMillis = 300)
-                            ),
-                            modifier = Modifier
+                    // 헤더 (뒤로가기 버튼과 카테고리 이름) - 즉시 표시
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        IconButton(
+                            onClick = { selectedCategoryId = null },
+                            modifier = Modifier.align(Alignment.CenterStart)
                         ) {
-                            DragTargetWidgetItem(
-                                data = widget,
-                                isClicked = activeWidget == widget,
-                                onComponentClick = {
-                                    activeWidget = if (activeWidget == widget) null else widget
-                                },
-                                onAddClick = {
-                                    onWidgetSelected(it)
-                                    activeWidget = null
-                                },
-                                onDragStart = {
-                                    activeWidget = null
-                                }
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "뒤로가기"
                             )
+                        }
+                        Text(
+                            text = selectedCategory?.name ?: "",
+                            modifier = Modifier.align(Alignment.Center),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                    }
+                    // 위젯 리스트 - 순차적으로 나타나는 애니메이션
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface),
+                        contentPadding = PaddingValues(BottomPanelConstants.WIDGET_LIST_PADDING),
+                        horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING),
+                        verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING)
+                    ) {
+                        itemsIndexed(filteredWidgets) { index, widget ->
+                            AnimatedVisibility(
+                                visible = visibleItems.contains(index),
+                                enter = fadeIn(
+                                    animationSpec = tween(durationMillis = 300)
+                                ),
+                                modifier = Modifier
+                            ) {
+                                DragTargetWidgetItem(
+                                    data = widget,
+                                    isClicked = activeWidget == widget,
+                                    onComponentClick = {
+                                        activeWidget = if (activeWidget == widget) null else widget
+                                    },
+                                    onAddClick = {
+                                        onWidgetSelected(it)
+                                        activeWidget = null
+                                    },
+                                    onDragStart = {
+                                        activeWidget = null
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
         }
     }
 }

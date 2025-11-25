@@ -35,9 +35,9 @@ import com.example.dsl.provider.DslLocalSize
 
 @Composable
 fun DragTargetWidgetItem(
-    modifier: Modifier = Modifier,
     data: Widget,
     isClicked: Boolean = false,
+    modifier: Modifier = Modifier,
     onComponentClick: () -> Unit = {},
     onAddClick: (Widget) -> Unit = {},
     onDragStart: () -> Unit = {}
@@ -82,7 +82,7 @@ fun WidgetItem(
     val cacheKey = remember(data.componentId, data.sizeType) {
         "${data.componentId}_${data.sizeType}"
     }
-    
+
     // 위젯 아이템 전체를 캐싱하여 깜박임 방지
     WidgetItemContent(
         data = data,
@@ -115,14 +115,14 @@ private fun WidgetItemContent(
         ) {
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
             if (data.componentId != null) {
-                val component = remember(key) { 
-                    WidgetComponentRegistry.getComponent(data.componentId) 
+                val component = remember(key) {
+                    WidgetComponentRegistry.getComponent(data.componentId)
                 }
                 if (component != null) {
                     // DSL 컴포넌트를 AppWidgetView로 렌더링
                     // renderer를 remember로 캐싱하여 재렌더링 방지
                     val renderer = remember(key) { GlanceRenderer(context) }
-                    
+
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
                     val layout = remember(key) {
                         WidgetLayout {
@@ -134,7 +134,7 @@ private fun WidgetItemContent(
                             }
                         }
                     }
-                    
+
                     AppWidgetView(
                         size = size,
                         layout = layout,

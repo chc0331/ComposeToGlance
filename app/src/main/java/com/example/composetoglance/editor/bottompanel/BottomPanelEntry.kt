@@ -39,8 +39,8 @@ fun BottomPanelWithTabs(
     widgets: List<Widget>,
     categories: List<Category>,
     onLayoutSelected: (Layout) -> Unit,
-    onWidgetSelected: (Widget) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onWidgetSelected: (Widget) -> Unit = {}
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
