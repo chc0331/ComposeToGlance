@@ -1,7 +1,6 @@
 package com.example.composetoglance.editor.widget
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,17 +39,19 @@ fun DragTargetWidgetItem(
     data: Widget,
     isClicked: Boolean = false,
     onComponentClick: () -> Unit = {},
-    onAddClick: (Widget) -> Unit = {}
+    onAddClick: (Widget) -> Unit = {},
+    onDragStart: () -> Unit = {}
 ) {
-    Box(
-        modifier = modifier
-            .wrapContentSize()
+    DragTarget(
+        context = LocalContext.current,
+        modifier = modifier.wrapContentSize(),
+        dataToDrop = data,
+        onComponentClick = onComponentClick,
+        onDragStart = onDragStart,
+        dragContent = { WidgetItem(data) }
     ) {
-        // 클릭 가능한 위젯 아이템
         Box(
-            modifier = Modifier
-                .wrapContentSize()
-                .clickable { onComponentClick() },
+            modifier = Modifier.wrapContentSize(),
             contentAlignment = Alignment.Center
         ) {
             WidgetItem(data)
@@ -68,18 +69,6 @@ fun DragTargetWidgetItem(
                     }
                 }
             }
-        }
-        
-        // 롱 프레스 후 드래그를 위한 DragTarget (클릭과 구분하기 위해 투명하게)
-        // matchParentSize는 BoxScope에서만 사용 가능하므로 fillMaxSize 사용
-        DragTarget(
-            context = LocalContext.current,
-            modifier = Modifier
-                .fillMaxSize(),
-            dataToDrop = data,
-        ) {
-            // 빈 콘텐츠 - 실제 위젯은 위의 Box에서 렌더링됨
-            Box {}
         }
     }
 }

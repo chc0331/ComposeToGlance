@@ -147,6 +147,9 @@ fun WidgetsList(
                                 onAddClick = {
                                     onWidgetSelected(it)
                                     activeWidget = null
+                                },
+                                onDragStart = {
+                                    activeWidget = null
                                 }
                             )
                         }

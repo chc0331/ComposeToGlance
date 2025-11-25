@@ -1,8 +1,8 @@
 package com.example.composetoglance.editor.draganddrop
 
 import android.content.Context
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.wrapContentSize
@@ -21,19 +21,24 @@ import androidx.compose.ui.layout.onGloballyPositioned
 
 /**
  * 드래그 가능한 타겟을 생성하는 Composable
- * 롱 프레스 후 드래그 제스처를 감지합니다.
+ * 롱 프레스 후 드래그 제스처와 탭 제스처를 감지합니다.
  *
  * @param context Android Context
  * @param modifier Modifier
- * @param dataToDrop 드롭될 데이터 (현재는 Any? 타입이지만, 향후 제네릭으로 개선 가능)
+ * @param dataToDrop 드롭될 데이터
+ * @param onComponentClick 탭 이벤트 콜백
+ * @param onDragStart 드래그 시작 콜백
+ * @param dragContent 드래그 시 보여줄 콘텐츠. null이면 content를 사용.
  * @param content 드래그 중인 아이템을 렌더링하는 콘텐츠
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DragTarget(
     context: Context,
     modifier: Modifier,
     dataToDrop: Any? = null,
+    onComponentClick: () -> Unit = {},
+    onDragStart: () -> Unit = {},
+    dragContent: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
@@ -46,14 +51,22 @@ fun DragTarget(
                 currentPosition = it.localToWindow(Offset.Zero)
             }
             .pointerInput(Unit) {
+                detectTapGestures(onTap = { onComponentClick() })
+            }
+            .pointerInput(Unit) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = { offset ->
+                        onDragStart()
                         currentState.dragOffset = offset
                         currentState.dataToDrop = dataToDrop
                         currentState.isDragging = true
                         currentState.dragPosition = currentPosition
                         currentState.draggableComposable = {
-                            content() // render scaled item without animation
+                            if (dragContent != null) {
+                                dragContent()
+                            } else {
+                                content()
+                            }
                         }
                     }, onDrag = { change, dragAmount ->
                         change.consume()
@@ -120,4 +133,3 @@ fun DropTarget(
         content(isCurrentDropTarget, data)
     }
 }
-
