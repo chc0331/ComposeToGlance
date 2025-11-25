@@ -37,6 +37,7 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.Widget
 import com.example.widget.WidgetComponentRegistry
+import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.view.AppWidgetView
 
 @Composable
@@ -48,8 +49,11 @@ fun DragTargetWidgetItem(
     onAddClick: (Widget) -> Unit = {},
     onDragStart: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val cornerRadius = context.getSystemBackgroundRadius()
+    
     DragTarget(
-        context = LocalContext.current,
+        context = context,
         modifier = modifier.wrapContentSize(),
         dataToDrop = data,
         onComponentClick = onComponentClick,
@@ -65,6 +69,7 @@ fun DragTargetWidgetItem(
                 Box(
                     modifier = Modifier
                         .matchParentSize()
+                        .clip(RoundedCornerShape(cornerRadius))
                         .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
                         .clickable { onAddClick(data) },
                     contentAlignment = Alignment.Center
