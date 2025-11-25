@@ -1,5 +1,6 @@
 package com.example.composetoglance.editor.canvas
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -7,10 +8,16 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import android.view.HapticFeedbackConstants
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import com.example.composetoglance.editor.draganddrop.DragTargetInfo
@@ -57,6 +64,22 @@ fun DragStateOverlay(
         selectedLayout = selectedLayout,
         layoutBounds = layoutBounds
     )
+
+    // 드롭 가능한 영역이 나타나거나 변경될 때 햅틱 피드백 제공
+    val view = LocalView.current
+    var previousHoveredIndices by remember { mutableStateOf<List<Int>>(emptyList()) }
+    
+    LaunchedEffect(hoveredCellIndices) {
+        // 드롭 가능한 영역이 나타났거나 다른 위치로 변경되었을 때 햅틱 피드백
+        val hasDropZone = hoveredCellIndices.isNotEmpty()
+        val hadDropZone = previousHoveredIndices.isNotEmpty()
+        val dropZoneChanged = hoveredCellIndices != previousHoveredIndices
+        
+        if (hasDropZone && (dropZoneChanged || (!hadDropZone && hasDropZone))) {
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        }
+        previousHoveredIndices = hoveredCellIndices
+    }
 
     if (hoveredCellIndices.isNotEmpty()) {
         WidgetPreview(
