@@ -23,11 +23,11 @@ import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
-import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.WidgetItem
-import com.example.composetoglance.editor.widget.getSizeInCells
 import com.example.composetoglance.editor.widget.toPixels
 import com.example.composetoglance.editor.widget.gridSpec
+import com.example.widget.Widget
+import com.example.widget.getSizeInCells
 import kotlin.math.roundToInt
 
 @Composable

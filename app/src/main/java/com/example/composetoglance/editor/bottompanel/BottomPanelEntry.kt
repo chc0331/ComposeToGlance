@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.widget.Layout
-import com.example.composetoglance.editor.widget.Category
-import com.example.composetoglance.editor.widget.Widget
+import com.example.widget.Widget
+import com.example.widget.WidgetCategory
 
 val DefaultLayouts = listOf(
     Layout("Full", "Small"),
@@ -37,7 +37,7 @@ object BottomPanelConstants {
 @Composable
 fun BottomPanelWithTabs(
     widgets: List<Widget>,
-    categories: List<Category>,
+    categories: List<WidgetCategory>,
     onLayoutSelected: (Layout) -> Unit,
     modifier: Modifier = Modifier,
     onWidgetSelected: (Widget) -> Unit = {}

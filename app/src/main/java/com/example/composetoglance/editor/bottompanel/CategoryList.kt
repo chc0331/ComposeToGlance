@@ -21,11 +21,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.editor.widget.Category
+import com.example.widget.WidgetCategory
 
 @Composable
 fun CategoryList(
-    categories: List<Category>,
+    categories: List<WidgetCategory>,
     onCategoryClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -55,7 +55,7 @@ fun CategoryList(
 
 @Composable
 fun CategoryItem(
-    category: Category,
+    category: WidgetCategory,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

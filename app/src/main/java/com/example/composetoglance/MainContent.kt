@@ -32,7 +32,7 @@ import com.example.composetoglance.editor.WidgetEditorContainer
 import com.example.composetoglance.editor.canvas.CanvasConstants
 import com.example.composetoglance.editor.canvas.canvasBorder
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
-import com.example.composetoglance.editor.widget.Widget
+import com.example.widget.Widget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

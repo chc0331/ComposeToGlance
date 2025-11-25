@@ -22,17 +22,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
-import com.example.dsl.builder.component
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
+import com.example.widget.SizeType
+import com.example.widget.Widget
 import com.example.widget.WidgetComponentRegistry
 import com.example.widget.view.AppWidgetView
 
@@ -119,7 +121,7 @@ private fun WidgetItemContent(
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
             if (data.componentId != null) {
                 val component = remember(key) {
-                    Log.i("heec.choi","Component : ${data.componentId}")
+                    Log.i("heec.choi", "Component : ${data.componentId}")
                     WidgetComponentRegistry.getComponent(data.componentId)
                 }
                 if (component != null) {
@@ -168,26 +170,12 @@ private fun DefaultWidgetContent(data: Widget) {
             color = Color.White // White text for visibility
         )
         Text(
-            text = data.sizeType,
+            text = data.sizeType.toString(),
             style = TextStyle(fontSize = 12.sp),
             color = Color.LightGray
         )
     }
 }
-
-data class Widget(
-    val name: String,
-    val description: String,
-    val sizeType: String = "1x1", // "1x1", "2x1", "2x2"
-    val categoryId: String? = null, // 카테고리 ID
-    val componentId: String? = null // DSL 컴포넌트 ID (WidgetComponentRegistry에 등록된 ID)
-)
-
-data class Category(
-    val id: String,
-    val name: String,
-    val icon: String? = null // 아이콘은 나중에 추가 가능
-)
 
 data class PositionedWidget(
     val widget: Widget,
@@ -197,27 +185,21 @@ data class PositionedWidget(
 )
 
 /**
- * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환
- * @return Pair<width in cells, height in cells>
- */
-fun Widget.getSizeInCells(): Pair<Int, Int> {
-    return when (sizeType) {
-        "1x1" -> 1 to 1
-        "2x1" -> 2 to 1
-        "2x2" -> 2 to 2
-        else -> 1 to 1
-    }
-}
-
-/**
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
  * @return Pair<width in dp, height in dp>
  */
 fun Widget.getSizeInDp(): Pair<Dp, Dp> {
     return when (sizeType) {
-        "1x1" -> 50.dp to 50.dp
-        "2x1" -> 100.dp to 50.dp
-        "2x2" -> 100.dp to 100.dp
+        SizeType.TINY -> 50.dp to 50.dp
+        SizeType.SMALL -> 100.dp to 50.dp
+        SizeType.MEDIUM -> 100.dp to 100.dp
         else -> 50.dp to 50.dp
+    }
+}
+
+fun Widget.toPixels(density: Density): Pair<Float, Float> {
+    return with(density) {
+        val (widthDp, heightDp) = getSizeInDp()
+        widthDp.toPx() to heightDp.toPx()
     }
 }

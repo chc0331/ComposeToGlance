@@ -13,9 +13,9 @@ import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.PositionedWidget
-import com.example.composetoglance.editor.widget.Widget
-import com.example.composetoglance.editor.widget.getSizeInCells
 import com.example.composetoglance.editor.widget.toPixels
+import com.example.widget.Widget
+import com.example.widget.getSizeInCells
 
 @Composable
 fun WidgetDropHandler(

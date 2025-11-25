@@ -38,14 +38,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.editor.widget.Category
 import com.example.composetoglance.editor.widget.DragTargetWidgetItem
-import com.example.composetoglance.editor.widget.Widget
+import com.example.widget.Widget
+import com.example.widget.WidgetCategory
+import kotlin.collections.filter
+import kotlin.collections.find
 
 @Composable
 fun WidgetsList(
     widgetList: List<Widget>,
-    categories: List<Category>,
+    categories: List<WidgetCategory>,
     modifier: Modifier = Modifier,
     onWidgetSelected: (Widget) -> Unit = {}
 ) {
@@ -80,7 +82,7 @@ fun WidgetsList(
                 )
             } else {
                 val selectedCategory = categories.find { it.id == categoryId }
-                val filteredWidgets = widgetList.filter { it.categoryId == categoryId }
+                val filteredWidgets = widgetList.filter { it.category.id == categoryId }
                 val visibleItems = remember { mutableStateListOf<Int>() }
 
                 // 카테고리 진입 시 위젯들을 순차적으로 표시
