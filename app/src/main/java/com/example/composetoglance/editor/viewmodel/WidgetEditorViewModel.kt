@@ -14,6 +14,7 @@ import com.example.widget.Widget
 import com.example.widget.WidgetCategory
 import com.example.widget.getSizeInCells
 import com.example.widget.initializeWidgetComponents
+import com.example.widget.widgets
 
 class WidgetEditorViewModel : ViewModel() {
 
@@ -22,52 +23,8 @@ class WidgetEditorViewModel : ViewModel() {
         initializeWidgetComponents()
     }
 
-    // 카테고리 목록
-    val categories: List<WidgetCategory> = listOf(
-        WidgetCategory("basic", "기본"),
-        WidgetCategory("clock", "시계"),
-        WidgetCategory("device_info", "디바이스 정보")
-    )
-
-    // 위젯 목록
-    val widgets = mutableStateListOf(
-        // 기본 카테고리
-        Widget("텍스트", "텍스트 위젯 컴포넌트", SizeType.TINY, WidgetCategory("basic", "basic"), "text"),
-        Widget("이미지", "이미지 위젯 컴포넌트", SizeType.TINY, WidgetCategory("basic", "basic"), "image"),
-        Widget("버튼", "버튼 위젯 컴포넌트", SizeType.SMALL, WidgetCategory("basic", "basic"), "button"),
-
-        // 시계 카테고리
-        Widget(
-            "아날로그 시계",
-            "아날로그 시계 컴포넌트",
-            SizeType.MEDIUM,
-            WidgetCategory("clock", "clock"),
-            "analog_clock"
-        ),
-        Widget(
-            "디지털 시계",
-            "디지털 시계 컴포넌트",
-            SizeType.SMALL,
-            WidgetCategory("clock", "clock"),
-            "digital_clock"
-        ),
-
-        // 디바이스 정보 카테고리
-        Widget(
-            "배터리",
-            "배터리 정보 컴포넌트",
-            SizeType.MEDIUM,
-            WidgetCategory("device_info", "device_info"),
-            "battery"
-        ),
-        Widget(
-            "스토리지",
-            "스토리지 정보 컴포넌트",
-            SizeType.SMALL,
-            WidgetCategory("device_info", "device_info"),
-            "storage"
-        )
-    )
+    val categories = com.example.widget.categories
+    val widgets = com.example.widget.widgets
 
     // 선택된 레이아웃
     var selectedLayout by mutableStateOf<Layout?>(null)
@@ -84,30 +41,6 @@ class WidgetEditorViewModel : ViewModel() {
         // 레이아웃이 변경되면 배치된 위젯들을 초기화
         if (layout != null) {
             clearPositionedWidgets()
-        }
-    }
-
-    /**
-     * 위젯 추가
-     */
-    fun addWidget(widget: Widget) {
-        widgets.add(widget)
-    }
-
-    /**
-     * 위젯 제거
-     */
-    fun removeWidget(widget: Widget) {
-        widgets.remove(widget)
-    }
-
-    /**
-     * 위젯 업데이트
-     */
-    fun updateWidget(oldWidget: Widget, newWidget: Widget) {
-        val index = widgets.indexOf(oldWidget)
-        if (index != -1) {
-            widgets[index] = newWidget
         }
     }
 
