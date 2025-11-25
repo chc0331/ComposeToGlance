@@ -67,13 +67,14 @@ fun ClickableLayoutComponent(
                     .matchParentSize()
                     .clip(RoundedCornerShape(cornerRadius))
                     .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                    .clickable { onAddClick(data) },
+                contentAlignment = Alignment.Center
             ) {
-                Button(
-                    onClick = { onAddClick(data) },
-                    modifier = Modifier.align(Alignment.Center)
-                ) {
-                    Text("추가")
-                }
+                Text(
+                    text = "추가",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }

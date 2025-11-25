@@ -2,6 +2,7 @@ package com.example.composetoglance.editor.widget
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,13 +66,14 @@ fun DragTargetWidgetItem(
                     modifier = Modifier
                         .matchParentSize()
                         .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                        .clickable { onAddClick(data) },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Button(
-                        onClick = { onAddClick(data) },
-                        modifier = Modifier.align(Alignment.Center)
-                    ) {
-                        Text("추가")
-                    }
+                    Text(
+                        text = "추가",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }
