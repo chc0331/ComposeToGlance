@@ -1,4 +1,4 @@
-package com.example.composetoglance.editor.layout
+package com.example.composetoglance.editor.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

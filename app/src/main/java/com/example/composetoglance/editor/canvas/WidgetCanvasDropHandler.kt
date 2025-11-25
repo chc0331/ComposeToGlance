@@ -7,8 +7,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import com.example.composetoglance.editor.draganddrop.DragTargetInfo
 import com.example.composetoglance.editor.draganddrop.DropTarget
-import com.example.composetoglance.editor.layout.Layout
-import com.example.composetoglance.editor.layout.gridSpec
+import com.example.composetoglance.editor.widget.Layout
+import com.example.composetoglance.editor.widget.gridSpec
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel

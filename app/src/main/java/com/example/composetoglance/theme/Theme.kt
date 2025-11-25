@@ -1,4 +1,4 @@
-package com.example.composetoglance.ui.theme
+package com.example.composetoglance.theme
 
 import android.app.Activity
 import android.os.Build

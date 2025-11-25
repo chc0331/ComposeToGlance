@@ -6,8 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
-import com.example.composetoglance.editor.layout.Layout
+import com.example.composetoglance.editor.widget.Layout
 import com.example.composetoglance.editor.widget.Category
+import com.example.composetoglance.editor.widget.LayoutGridSpec
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
 import com.example.composetoglance.editor.widget.getSizeInCells
@@ -176,7 +177,7 @@ class WidgetEditorViewModel : ViewModel() {
      */
     fun findFirstAvailablePosition(
         widget: Widget,
-        spec: com.example.composetoglance.editor.layout.LayoutGridSpec
+        spec: LayoutGridSpec
     ): Pair<Int, Int>? {
         val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
         val occupiedCells = getOccupiedCells()

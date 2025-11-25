@@ -19,8 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.example.composetoglance.editor.layout.ClickableLayoutComponent
-import com.example.composetoglance.editor.layout.Layout
+import com.example.composetoglance.editor.widget.ClickableLayoutComponent
+import com.example.composetoglance.editor.widget.Layout
 import kotlinx.coroutines.launch
 
 @Composable

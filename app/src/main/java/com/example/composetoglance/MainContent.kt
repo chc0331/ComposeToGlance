@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetoglance.editor.bottompanel.BottomPanelWithTabs
 import com.example.composetoglance.editor.canvas.WidgetCanvas
 import com.example.composetoglance.editor.WidgetEditorContainer
-import com.example.composetoglance.editor.modifier.CanvasConstants
-import com.example.composetoglance.editor.modifier.canvasBorder
+import com.example.composetoglance.editor.canvas.CanvasConstants
+import com.example.composetoglance.editor.canvas.canvasBorder
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.Widget
 

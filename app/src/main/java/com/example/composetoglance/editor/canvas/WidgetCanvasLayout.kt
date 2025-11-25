@@ -7,8 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import com.example.composetoglance.editor.layout.Layout
-import com.example.composetoglance.editor.layout.LayoutComponent
+import com.example.composetoglance.editor.widget.Layout
+import com.example.composetoglance.editor.widget.LayoutComponent
 import com.example.composetoglance.editor.util.LayoutBounds
 
 @Composable

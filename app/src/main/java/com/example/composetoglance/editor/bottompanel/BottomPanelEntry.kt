@@ -12,7 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composetoglance.editor.layout.Layout
+import com.example.composetoglance.editor.widget.Layout
 import com.example.composetoglance.editor.widget.Category
 import com.example.composetoglance.editor.widget.Widget
 
