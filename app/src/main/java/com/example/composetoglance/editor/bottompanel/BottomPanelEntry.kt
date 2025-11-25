@@ -39,6 +39,7 @@ fun BottomPanelWithTabs(
     widgets: List<Widget>,
     categories: List<Category>,
     onLayoutSelected: (Layout) -> Unit,
+    onWidgetSelected: (Widget) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var tabIndex by remember { mutableStateOf(0) }
@@ -58,6 +59,7 @@ fun BottomPanelWithTabs(
             1 -> WidgetsList(
                 widgetList = widgets,
                 categories = categories,
+                onWidgetSelected = onWidgetSelected,
                 modifier = Modifier
             )
         }

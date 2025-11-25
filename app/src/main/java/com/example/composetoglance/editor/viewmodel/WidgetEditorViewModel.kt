@@ -10,6 +10,7 @@ import com.example.composetoglance.editor.layout.Layout
 import com.example.composetoglance.editor.widget.Category
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.Widget
+import com.example.composetoglance.editor.widget.getSizeInCells
 import com.example.composetoglance.editor.widget.initializeWidgetComponents
 
 class WidgetEditorViewModel : ViewModel() {
@@ -141,6 +142,70 @@ class WidgetEditorViewModel : ViewModel() {
                 listOfNotNull(positionedWidget.cellIndex)
             }
         }.toSet()
+    }
+    
+    /**
+     * 위젯을 배치할 수 있는 첫 번째 사용 가능한 위치를 찾음
+     * @param widget 배치할 위젯
+     * @param spec 레이아웃 그리드 스펙
+     * @return Pair<startRow, startCol> 또는 null (배치할 수 없으면 null)
+     */
+    fun findFirstAvailablePosition(
+        widget: Widget,
+        spec: com.example.composetoglance.editor.layout.LayoutGridSpec
+    ): Pair<Int, Int>? {
+        val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
+        val occupiedCells = getOccupiedCells()
+        
+        // 모든 가능한 위치를 순회하면서 첫 번째 사용 가능한 위치 찾기
+        for (row in 0 until spec.rows) {
+            for (col in 0 until spec.columns) {
+                // 위젯이 그리드 범위를 벗어나는지 확인
+                if (row + widgetHeightCells > spec.rows || col + widgetWidthCells > spec.columns) {
+                    continue
+                }
+                
+                // 위젯이 차지할 셀 인덱스 계산
+                val cellIndices = mutableListOf<Int>()
+                for (r in row until row + widgetHeightCells) {
+                    for (c in col until col + widgetWidthCells) {
+                        val index = r * spec.columns + c
+                        cellIndices.add(index)
+                    }
+                }
+                
+                // 모든 셀이 사용 가능한지 확인
+                if (cellIndices.all { !occupiedCells.contains(it) }) {
+                    return row to col
+                }
+            }
+        }
+        
+        return null
+    }
+    
+    /**
+     * 위젯을 첫 번째 사용 가능한 위치에 배치
+     * @param widget 배치할 위젯
+     * @param offset 위젯의 오프셋 (UI에서 계산하여 전달)
+     * @param startRow 시작 행
+     * @param startCol 시작 열
+     * @param cellIndices 위젯이 차지하는 셀 인덱스 리스트
+     */
+    fun addWidgetToFirstAvailablePosition(
+        widget: Widget,
+        offset: Offset,
+        startRow: Int,
+        startCol: Int,
+        cellIndices: List<Int>
+    ) {
+        addPositionedWidget(
+            widget = widget,
+            offset = offset,
+            startRow = startRow,
+            startCol = startCol,
+            cellIndices = cellIndices
+        )
     }
     
     /**

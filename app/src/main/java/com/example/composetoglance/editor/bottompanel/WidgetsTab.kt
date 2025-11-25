@@ -46,9 +46,11 @@ import com.example.composetoglance.editor.widget.Widget
 fun WidgetsList(
     widgetList: List<Widget>,
     categories: List<Category>,
+    onWidgetSelected: (Widget) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var selectedCategoryId by remember { mutableStateOf<String?>(null) }
+    var activeWidget by remember { mutableStateOf<Widget?>(null) }
 
     Box(
         modifier = modifier
@@ -138,6 +140,14 @@ fun WidgetsList(
                         ) {
                             DragTargetWidgetItem(
                                 data = widget,
+                                isClicked = activeWidget == widget,
+                                onComponentClick = {
+                                    activeWidget = if (activeWidget == widget) null else widget
+                                },
+                                onAddClick = {
+                                    onWidgetSelected(it)
+                                    activeWidget = null
+                                }
                             )
                         }
                     }

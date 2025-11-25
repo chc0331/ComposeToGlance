@@ -18,6 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -28,6 +33,7 @@ import com.example.composetoglance.editor.WidgetEditorContainer
 import com.example.composetoglance.editor.modifier.CanvasConstants
 import com.example.composetoglance.editor.modifier.canvasBorder
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.widget.Widget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +71,8 @@ fun MainContent(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = CanvasConstants.HORIZONTAL_PADDING)
             ) {
+                var widgetToAdd by remember { mutableStateOf<Widget?>(null) }
+                
                 WidgetCanvas(
                     modifier = Modifier
                         .weight(CanvasConstants.CANVAS_WEIGHT)
@@ -72,6 +80,8 @@ fun MainContent(
                         .padding(top = CanvasConstants.TOP_PADDING)
                         .canvasBorder(outline),
                     viewModel = viewModel,
+                    widgetToAdd = widgetToAdd,
+                    onWidgetAddProcessed = { widgetToAdd = null }
                 )
 
                 Spacer(modifier = Modifier.size(CanvasConstants.SPACER_SIZE))
@@ -80,6 +90,9 @@ fun MainContent(
                     widgets = viewModel.widgets,
                     categories = viewModel.categories,
                     onLayoutSelected = { viewModel.selectLayout(it) },
+                    onWidgetSelected = { widget ->
+                        widgetToAdd = widget
+                    },
                     modifier = Modifier
                         .weight(CanvasConstants.BOTTOM_PANEL_WEIGHT)
                         .clip(RoundedCornerShape(CanvasConstants.BOTTOM_PANEL_CORNER_RADIUS))

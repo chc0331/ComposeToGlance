@@ -1,13 +1,17 @@
 package com.example.composetoglance.editor.widget
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,15 +37,50 @@ import com.example.dsl.provider.DslLocalSize
 @Composable
 fun DragTargetWidgetItem(
     modifier: Modifier = Modifier,
-    data: Widget
+    data: Widget,
+    isClicked: Boolean = false,
+    onComponentClick: () -> Unit = {},
+    onAddClick: (Widget) -> Unit = {}
 ) {
-    DragTarget(
-        context = LocalContext.current,
+    Box(
         modifier = modifier
-            .wrapContentSize(),
-        dataToDrop = data,
+            .wrapContentSize()
     ) {
-        WidgetItem(data)
+        // 클릭 가능한 위젯 아이템
+        Box(
+            modifier = Modifier
+                .wrapContentSize()
+                .clickable { onComponentClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            WidgetItem(data)
+            if (isClicked) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                ) {
+                    Button(
+                        onClick = { onAddClick(data) },
+                        modifier = Modifier.align(Alignment.Center)
+                    ) {
+                        Text("추가")
+                    }
+                }
+            }
+        }
+        
+        // 롱 프레스 후 드래그를 위한 DragTarget (클릭과 구분하기 위해 투명하게)
+        // matchParentSize는 BoxScope에서만 사용 가능하므로 fillMaxSize 사용
+        DragTarget(
+            context = LocalContext.current,
+            modifier = Modifier
+                .fillMaxSize(),
+            dataToDrop = data,
+        ) {
+            // 빈 콘텐츠 - 실제 위젯은 위의 Box에서 렌더링됨
+            Box {}
+        }
     }
 }
 
