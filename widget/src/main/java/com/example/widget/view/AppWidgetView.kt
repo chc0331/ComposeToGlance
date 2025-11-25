@@ -1,4 +1,4 @@
-package com.example.composetoglance.editor.widget
+package com.example.widget.view
 
 import android.widget.FrameLayout
 import android.widget.RemoteViews
@@ -19,7 +19,6 @@ import androidx.glance.appwidget.GlanceRemoteViews
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.proto.WidgetLayoutDocument
 
-
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Composable
 fun AppWidgetView(
@@ -28,16 +27,16 @@ fun AppWidgetView(
 ) {
     val context = LocalContext.current
     val glanceRemoteViews = remember { GlanceRemoteViews() }
-    
+
     // size를 기반으로 캐시 키 생성 (content는 이미 위에서 캐싱됨)
     val cacheKey = remember(size) {
         "${size.width.value}_${size.height.value}"
     }
-    
+
     // RemoteViews를 캐싱하여 재렌더링 방지
     var renderedViews by remember(cacheKey) { mutableStateOf<RemoteViews?>(null) }
     var isRendering by remember(cacheKey) { mutableStateOf(false) }
-    
+
     LaunchedEffect(cacheKey) {
         // 이미 렌더링 중이거나 완료된 경우 스킵
         if (renderedViews == null && !isRendering) {
@@ -77,15 +76,15 @@ fun AppWidgetView(
 ) {
     val context = LocalContext.current
     val glanceRemoteViews = remember { GlanceRemoteViews() }
-    
+
     // layout을 기반으로 캐시 키 생성
     val cacheKey = remember(size, layout) {
         "${size.width.value}_${size.height.value}_${layout.hashCode()}"
     }
-    
+
     // RemoteViews를 캐싱하여 재렌더링 방지
     var renderedViews by remember(cacheKey) { mutableStateOf<RemoteViews?>(null) }
-    
+
     LaunchedEffect(cacheKey) {
         // 이미 렌더링된 경우 스킵
         if (renderedViews == null) {

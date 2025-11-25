@@ -32,6 +32,7 @@ import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
+import com.example.widget.view.AppWidgetView
 
 @Composable
 fun DragTargetWidgetItem(
