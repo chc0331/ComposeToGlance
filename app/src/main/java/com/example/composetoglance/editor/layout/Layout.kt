@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.widget.size.LayoutDpSize
 
 data class Layout(val type: String, val sizeType: String)
 
