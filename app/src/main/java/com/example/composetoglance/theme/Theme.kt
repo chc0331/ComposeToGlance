@@ -15,41 +15,67 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF6dd58c),
-    secondary = Color(0xFFb7ccb7),
-    tertiary = Color(0xFFa0d0b0)
+    primary = md_theme_dark_primary,
+    onPrimary = md_theme_dark_onPrimary,
+    primaryContainer = md_theme_dark_primaryContainer,
+    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
+    secondary = md_theme_dark_secondary,
+    onSecondary = md_theme_dark_onSecondary,
+    secondaryContainer = md_theme_dark_secondaryContainer,
+    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
+    tertiary = md_theme_dark_tertiary,
+    onTertiary = md_theme_dark_onTertiary,
+    tertiaryContainer = md_theme_dark_tertiaryContainer,
+    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
+    error = md_theme_dark_error,
+    errorContainer = md_theme_dark_errorContainer,
+    onError = md_theme_dark_onError,
+    onErrorContainer = md_theme_dark_onErrorContainer,
+    background = md_theme_dark_background,
+    onBackground = md_theme_dark_onBackground,
+    surface = md_theme_dark_surface,
+    onSurface = md_theme_dark_onSurface,
+    surfaceVariant = md_theme_dark_surfaceVariant,
+    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    outlineVariant = md_theme_dark_outlineVariant,
+    scrim = md_theme_dark_scrim,
+    inverseSurface = md_theme_dark_inverseSurface,
+    inverseOnSurface = md_theme_dark_inverseOnSurface,
+    inversePrimary = md_theme_dark_inversePrimary,
+    surfaceTint = md_theme_dark_surfaceTint,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF006e2c),
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFF8af2a6),
-    onPrimaryContainer = Color(0xFF002108),
-    secondary = Color(0xFF506352),
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFFd3e8d2),
-    onSecondaryContainer = Color(0xFF0e1f12),
-    tertiary = Color(0xFF3a656a),
-    onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFbeebee),
-    onTertiaryContainer = Color(0xFF002022),
-    error = Color(0xFFba1a1a),
-    errorContainer = Color(0xFFffdad6),
-    onError = Color.White,
-    onErrorContainer = Color(0xFF410002),
-    background = Color(0x802C622F),
-    onBackground = Color(0xFF1a1c1a),
-    surface = Color(0xFFfcfdf7),
-    onSurface = Color(0xFF1a1c1a),
-    surfaceVariant = Color(0xFFdee5d9),
-    onSurfaceVariant = Color(0xFF424941),
-    outline = Color(0xFF16420A),
-    inverseOnSurface = Color(0xFFf0f1ec),
-    inverseSurface = Color(0xFF2e312e),
-    inversePrimary = Color(0xFF6dd58c),
-    surfaceTint = Color(0xFF006e2c),
-    outlineVariant = Color(0xFFc2c9be),
-    scrim = Color.Black,
+    primary = md_theme_light_primary,
+    onPrimary = md_theme_light_onPrimary,
+    primaryContainer = md_theme_light_primaryContainer,
+    onPrimaryContainer = md_theme_light_onPrimaryContainer,
+    secondary = md_theme_light_secondary,
+    onSecondary = md_theme_light_onSecondary,
+    secondaryContainer = md_theme_light_secondaryContainer,
+    onSecondaryContainer = md_theme_light_onSecondaryContainer,
+    tertiary = md_theme_light_tertiary,
+    onTertiary = md_theme_light_onTertiary,
+    tertiaryContainer = md_theme_light_tertiaryContainer,
+    onTertiaryContainer = md_theme_light_onTertiaryContainer,
+    error = md_theme_light_error,
+    errorContainer = md_theme_light_errorContainer,
+    onError = md_theme_light_onError,
+    onErrorContainer = md_theme_light_onErrorContainer,
+    background = md_theme_light_background,
+    onBackground = md_theme_light_onBackground,
+    surface = md_theme_light_surface,
+    onSurface = md_theme_light_onSurface,
+    surfaceVariant = md_theme_light_surfaceVariant,
+    onSurfaceVariant = md_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    outlineVariant = md_theme_light_outlineVariant,
+    scrim = md_theme_light_scrim,
+    inverseSurface = md_theme_light_inverseSurface,
+    inverseOnSurface = md_theme_light_inverseOnSurface,
+    inversePrimary = md_theme_light_inversePrimary,
+    surfaceTint = md_theme_light_surfaceTint,
 )
 
 @Composable
@@ -62,7 +88,11 @@ fun ComposeToGlanceTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) DarkColorScheme else LightColorScheme
+            if (darkTheme) {
+                androidx.compose.material3.dynamicDarkColorScheme(context)
+            } else {
+                androidx.compose.material3.dynamicLightColorScheme(context)
+            }
         }
 
         darkTheme -> DarkColorScheme
@@ -72,8 +102,14 @@ fun ComposeToGlanceTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // Set status bar color based on theme
+            window.statusBarColor = if (darkTheme) {
+                md_theme_dark_surface.toArgb()
+            } else {
+                md_theme_light_surface.toArgb()
+            }
+            // Set status bar icon colors (light icons for dark theme, dark icons for light theme)
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

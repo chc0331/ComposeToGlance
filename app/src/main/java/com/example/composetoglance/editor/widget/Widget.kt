@@ -115,7 +115,7 @@ private fun WidgetItemContent(
                 .width(width)
                 .height(height)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color.DarkGray), // Dark Gray background for widget
+                .background(MaterialTheme.colorScheme.surfaceVariant), // Use theme surface variant
             contentAlignment = Alignment.Center
         ) {
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
@@ -166,13 +166,13 @@ private fun DefaultWidgetContent(data: Widget) {
     ) {
         Text(
             text = data.name,
-            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
-            color = Color.White // White text for visibility
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = data.sizeType.toString(),
-            style = TextStyle(fontSize = 12.sp),
-            color = Color.LightGray
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
     }
 }

@@ -1,8 +1,11 @@
 package com.example.composetoglance.editor.bottompanel
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,12 +49,25 @@ fun BottomPanelWithTabs(
     val tabs = listOf("레이아웃", "위젯")
 
     Column(modifier = modifier) {
-        TabRow(selectedTabIndex = tabIndex) {
+        TabRow(
+            selectedTabIndex = tabIndex,
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            indicator = { tabPositions ->
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = tabIndex == index,
                     onClick = { tabIndex = index },
-                    text = { Text(text = title) })
+                    text = { Text(text = title) },
+                    selectedContentColor = MaterialTheme.colorScheme.secondary,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
         when (tabIndex) {

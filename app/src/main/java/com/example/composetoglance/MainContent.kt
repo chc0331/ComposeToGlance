@@ -40,6 +40,9 @@ fun MainContent(
     viewModel: WidgetEditorViewModel = viewModel()
 ) {
     val outline = MaterialTheme.colorScheme.outline
+    val canvasBackgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+        alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA
+    )
 
     Scaffold(
         topBar = {
@@ -52,9 +55,9 @@ fun MainContent(
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSecondary
                 )
             )
         }
@@ -77,7 +80,7 @@ fun MainContent(
                         .weight(CanvasConstants.CANVAS_WEIGHT)
                         .fillMaxWidth()
                         .padding(top = CanvasConstants.TOP_PADDING)
-                        .canvasBorder(outline),
+                        .canvasBorder(outline, canvasBackgroundColor),
                     viewModel = viewModel,
                     widgetToAdd = widgetToAdd,
                     onWidgetAddProcessed = { widgetToAdd = null }

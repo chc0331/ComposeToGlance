@@ -23,15 +23,20 @@ object CanvasConstants {
     val CORNER_RADIUS = 16.dp
     val BOTTOM_PANEL_CORNER_RADIUS = 12.dp
     val BORDER_WIDTH = 1.dp
-    val CANVAS_BACKGROUND_COLOR = Color(80f, 47f, 100f, 0.1f)
     val STROKE_WIDTH = 2.dp
     val DASH_PATTERN = floatArrayOf(20f, 20f)
+    const val CANVAS_BACKGROUND_ALPHA = 0.05f
 }
 
 /**
  * 캔버스 테두리를 그리는 Modifier 확장 함수
+ * @param outline 테두리 색상 (MaterialTheme.colorScheme.outline 권장)
+ * @param backgroundColor 배경 색상 (MaterialTheme.colorScheme.surfaceVariant 권장)
  */
-fun Modifier.canvasBorder(outline: Color): Modifier {
+fun Modifier.canvasBorder(
+    outline: Color,
+    backgroundColor: Color = outline.copy(alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA)
+): Modifier {
     return this.drawBehind {
         val cornerRadius = CanvasConstants.CORNER_RADIUS.toPx()
         val strokeWidth = CanvasConstants.STROKE_WIDTH.toPx()
@@ -51,7 +56,7 @@ fun Modifier.canvasBorder(outline: Color): Modifier {
             )
         )
         drawRoundRect(
-            color = CanvasConstants.CANVAS_BACKGROUND_COLOR,
+            color = backgroundColor,
             topLeft = Offset.Zero,
             size = size,
             cornerRadius = CornerRadius(cornerRadius, cornerRadius)
