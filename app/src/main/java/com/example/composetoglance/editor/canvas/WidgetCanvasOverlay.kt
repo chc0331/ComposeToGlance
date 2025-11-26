@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,11 +96,15 @@ fun DragStateOverlay(
         )
     }
 
-    val currentOccupiedCells = if (draggedPositionedWidget != null) {
-        viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
-    } else {
-        occupiedCells
-    }
+    val currentOccupiedCells = remember(draggedPositionedWidget?.id, occupiedCells, viewModel.positionedWidgets) {
+        derivedStateOf {
+            if (draggedPositionedWidget != null) {
+                viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
+            } else {
+                occupiedCells
+            }
+        }
+    }.value
 
     GridCellHighlight(
         gridCells = gridCells,
@@ -156,6 +161,7 @@ private fun rememberHoveredCellIndices(
             spec
         )
 
+        // remember 블록 안에서는 직접 계산만 수행
         val occupied = viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
         if (indices.any { it in occupied }) emptyList() else indices
     }
@@ -210,10 +216,15 @@ private fun GridCellHighlight(
     canvasPosition: Offset,
     density: Density
 ) {
+    // hoveredCellIndices를 Set으로 변환하여 O(1) 조회 최적화
+    val hoveredCellSet = remember(hoveredCellIndices) {
+        hoveredCellIndices.toSet()
+    }
+    
     // 호버된 셀들이 있으면 전체 영역을 하나로 그리기
     if (hoveredCellIndices.isNotEmpty()) {
-        val hoveredCells = gridCells.filter { it.index in hoveredCellIndices }
-        val isOccupied = hoveredCells.any { occupiedCells.contains(it.index) }
+        val hoveredCells = gridCells.filter { it.index in hoveredCellSet }
+        val isOccupied = hoveredCells.any { it.index in occupiedCells }
         HighlightedArea(
             cells = hoveredCells,
             canvasPosition = canvasPosition,
@@ -224,8 +235,8 @@ private fun GridCellHighlight(
     
     // 호버되지 않은 빈 셀들만 개별적으로 그리기
     gridCells.forEach { cell ->
-        val isOccupied = occupiedCells.contains(cell.index)
-        val isHovered = hoveredCellIndices.contains(cell.index)
+        val isOccupied = cell.index in occupiedCells
+        val isHovered = cell.index in hoveredCellSet
 
         if (!isHovered && !isOccupied) {
             EmptyCell(

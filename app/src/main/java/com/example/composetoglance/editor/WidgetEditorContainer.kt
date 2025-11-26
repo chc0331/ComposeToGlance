@@ -40,8 +40,12 @@ fun WidgetEditorContainer(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .onGloballyPositioned {
-                    canvasPosition = it.localToWindow(Offset.Zero)
+                .onGloballyPositioned { layoutCoordinates ->
+                    val newPosition = layoutCoordinates.localToWindow(Offset.Zero)
+                    // 값이 실제로 변경되었을 때만 상태 업데이트하여 불필요한 재구성 방지
+                    if (newPosition != canvasPosition) {
+                        canvasPosition = newPosition
+                    }
                 }) {
             content()
             // 드래그 중이거나 드롭 직후 페이드아웃 중일 때 오버레이 표시
@@ -84,7 +88,6 @@ fun WidgetEditorContainer(
                     if (state.itemDropped) {
                         // 페이드아웃 애니메이션 시간만큼 대기
                         delay(fadeOutDuration.toLong() + 50)
-                        println("Cleaning up drag state - drop completed")
                         state.itemDropped = false
                         state.isDragging = false
                         state.dragOffset = Offset.Zero
@@ -99,7 +102,6 @@ fun WidgetEditorContainer(
                         // DropTarget이 재구성되어 데이터를 처리할 시간을 줌
                         delay(300)
                         if (!state.itemDropped && !state.isDragging) {
-                            println("Cleaning up drag state - no drop detected")
                             state.dragOffset = Offset.Zero
                             state.dataToDrop = null
                             state.draggableComposable = null
@@ -110,18 +112,17 @@ fun WidgetEditorContainer(
                 Box(
                     modifier = Modifier
                         .graphicsLayer {
+                            // graphicsLayer는 매 프레임마다 호출되므로 최소한의 계산만 수행
                             val currentTouchWindowPosition = state.dragPosition + state.dragOffset
                             val relativeOffset = currentTouchWindowPosition - canvasPosition
                             val scaledWidth = targetSize.width * animatedScale
                             val scaledHeight = targetSize.height * animatedScale
-                            val centerX = relativeOffset.x - scaledWidth / 2
-                            val centerY = relativeOffset.y - scaledHeight / 2
 
                             scaleX = animatedScale
                             scaleY = animatedScale
                             alpha = animatedAlpha
-                            translationX = centerX
-                            translationY = centerY
+                            translationX = relativeOffset.x - scaledWidth / 2
+                            translationY = relativeOffset.y - scaledHeight / 2
                         }
                         .onGloballyPositioned {
                             targetSize = it.size

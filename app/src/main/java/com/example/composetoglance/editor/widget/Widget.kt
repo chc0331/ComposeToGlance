@@ -165,19 +165,35 @@ private fun WidgetItemContent(
 
 @Composable
 private fun DefaultWidgetContent(data: WidgetComponent) {
+    // MaterialTheme을 먼저 읽고, remember 블록 안에서는 복사만 수행
+    val typography = MaterialTheme.typography
+    val colorScheme = MaterialTheme.colorScheme
+    
+    // MaterialTheme 스타일 객체를 remember로 캐싱하여 불필요한 재생성 방지
+    val titleStyle = remember(typography) {
+        typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+    }
+    val bodyStyle = remember(typography) {
+        typography.bodySmall
+    }
+    val titleColor = colorScheme.onSurfaceVariant
+    val bodyColor = remember(colorScheme) {
+        colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+    }
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = data.getName(),
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = titleStyle,
+            color = titleColor
         )
         Text(
             text = data.getSizeType().toString(),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+            style = bodyStyle,
+            color = bodyColor
         )
     }
 }

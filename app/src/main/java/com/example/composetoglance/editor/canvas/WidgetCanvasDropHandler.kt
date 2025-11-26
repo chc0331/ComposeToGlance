@@ -27,9 +27,6 @@ fun WidgetDropHandler(
     dragInfo: DragTargetInfo
 ) {
     DropTarget(modifier = Modifier.fillMaxSize()) { isInBound, droppedItem ->
-        // 디버깅용 로그
-        println("DropTarget: isInBound=$isInBound, droppedItem=$droppedItem, itemDropped=${dragInfo.itemDropped}")
-        
         if ((droppedItem !is WidgetComponent && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
             return@DropTarget
         }
@@ -45,7 +42,6 @@ fun WidgetDropHandler(
                     dropPositionInWindow.y <= bounds.position.y + bounds.size.height
             
             if (!isWithinLayoutBounds) {
-                println("Widget dropped outside layout bounds - removing widget with ID: ${droppedItem.id}")
                 // 즉시 드래그 상태 정리하여 잔상 방지
                 dragInfo.itemDropped = true
                 dragInfo.isDragging = false
@@ -59,7 +55,6 @@ fun WidgetDropHandler(
         
         // 캔버스 밖으로 드래그된 PositionedWidget은 삭제
         if (!isInBound && droppedItem is PositionedWidget) {
-            println("Widget dropped outside canvas bounds - removing widget with ID: ${droppedItem.id}")
             // 즉시 드래그 상태 정리하여 잔상 방지
             dragInfo.itemDropped = true
             dragInfo.isDragging = false
@@ -140,7 +135,6 @@ fun WidgetDropHandler(
                 cellIndices = indices
             )
             is PositionedWidget -> {
-                println("Moving PositionedWidget: from ${droppedItem.offset} to $adjustedOffset")
                 viewModel.movePositionedWidget(
                     positionedWidget = droppedItem,
                     offset = adjustedOffset,

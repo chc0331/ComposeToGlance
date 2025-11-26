@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.draw.alpha
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import com.example.composetoglance.editor.draganddrop.LocalDragTargetInfo
 import com.example.composetoglance.editor.util.GridCalculator
 import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.toPixels
 import com.example.composetoglance.editor.widget.gridSpec
@@ -45,7 +47,7 @@ fun WidgetCanvas(
     val dragInfo = LocalDragTargetInfo.current
 
     // 위젯 추가 요청 처리
-    LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout, canvasPosition) {
+    LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout) {
         val widget = widgetToAdd ?: return@LaunchedEffect
         
         val bounds = layoutBounds
@@ -75,6 +77,8 @@ fun WidgetCanvas(
         
         // 위젯 실제 크기 DP→픽셀 변환
         val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density)
+        // canvasPosition은 LaunchedEffect 내부에서 직접 읽어서 사용
+        val currentCanvasPosition = canvasPosition
         val adjustedOffset = GridCalculator.calculateWidgetOffset(
             startRow,
             startCol,
@@ -84,7 +88,7 @@ fun WidgetCanvas(
             widgetHeightPx,
             bounds,
             spec,
-            canvasPosition
+            currentCanvasPosition
         )
         
         // ViewModel에 위젯 추가
@@ -102,8 +106,12 @@ fun WidgetCanvas(
 
     Box(
         modifier = modifier
-            .onGloballyPositioned {
-                canvasPosition = it.positionInWindow()
+            .onGloballyPositioned { layoutCoordinates ->
+                val newPosition = layoutCoordinates.positionInWindow()
+                // 값이 실제로 변경되었을 때만 상태 업데이트하여 불필요한 재구성 방지
+                if (newPosition != canvasPosition) {
+                    canvasPosition = newPosition
+                }
             }
     ) {
         WidgetDropHandler(
@@ -126,7 +134,11 @@ fun WidgetCanvas(
             )
 
             val gridCells = rememberGridCells(selectedLayout, layoutBounds)
-            val occupiedCells = viewModel.getOccupiedCells()
+            val occupiedCells = remember(viewModel.positionedWidgets) {
+                derivedStateOf {
+                    viewModel.getOccupiedCells()
+                }
+            }.value
 
             DragStateOverlay(
                 viewModel = viewModel,
@@ -140,8 +152,16 @@ fun WidgetCanvas(
             )
 
             // Display dropped widgets
+            val draggedItemId = remember(dragInfo.isDragging, dragInfo.dataToDrop) {
+                if (dragInfo.isDragging && dragInfo.dataToDrop is PositionedWidget) {
+                    (dragInfo.dataToDrop as PositionedWidget).id
+                } else {
+                    null
+                }
+            }
+            
             positionedWidgets.forEach { item ->
-                val isDragging = dragInfo.isDragging && dragInfo.dataToDrop == item
+                val isDragging = item.id == draggedItemId
                 // 고유 ID를 key로 사용하여 위젯 이동 시 재생성되지 않도록 함
                 // 이렇게 하면 위젯이 재배치될 때 기존 컴포저블이 유지되고 offset만 업데이트됨
                 key(item.id) {

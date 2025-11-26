@@ -47,8 +47,12 @@ fun DragTarget(
     Box(
         modifier = modifier
             .wrapContentSize()
-            .onGloballyPositioned {
-                currentPosition = it.localToWindow(Offset.Zero)
+            .onGloballyPositioned { layoutCoordinates ->
+                val newPosition = layoutCoordinates.localToWindow(Offset.Zero)
+                // 값이 실제로 변경되었을 때만 상태 업데이트하여 불필요한 재구성 방지
+                if (newPosition != currentPosition) {
+                    currentPosition = newPosition
+                }
             }
             .pointerInput(Unit) {
                 detectTapGestures(onTap = { onComponentClick() })
@@ -135,11 +139,6 @@ fun DropTarget(
         // 드래그가 시작되지 않았거나 데이터가 없으면 wasInBounds 리셋
         if (dataToDrop == null || (!isDragging && itemDropped)) {
             wasInBounds = false
-        }
-        
-        // 디버깅용 로그
-        if (dataToDrop != null) {
-            println("DropTarget: isDragging=$isDragging, isCurrentDropTarget=$isCurrentDropTarget, wasInBounds=$wasInBounds, itemDropped=$itemDropped, dataToDrop=$dataToDrop")
         }
         
         val data =

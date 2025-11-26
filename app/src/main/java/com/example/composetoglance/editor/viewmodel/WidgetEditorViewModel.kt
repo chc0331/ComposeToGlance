@@ -80,7 +80,6 @@ class WidgetEditorViewModel : ViewModel() {
     ) {
         // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
         val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
-        println("movePositionedWidget: index=$index, id=${positionedWidget.id}, oldOffset=${positionedWidget.offset}, newOffset=$offset")
         if (index != -1) {
             // ID를 유지하면서 offset과 cellIndices만 업데이트
             val updatedWidget = positionedWidget.copy(
@@ -90,9 +89,6 @@ class WidgetEditorViewModel : ViewModel() {
                 id = positionedWidget.id // 기존 ID 명시적으로 유지
             )
             positionedWidgets[index] = updatedWidget
-            println("Widget moved successfully: ${updatedWidget.offset}")
-        } else {
-            println("Widget not found in list! ID=${positionedWidget.id}")
         }
     }
 
@@ -101,12 +97,8 @@ class WidgetEditorViewModel : ViewModel() {
      */
     fun removePositionedWidget(positionedWidget: PositionedWidget) {
         val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
-        println("removePositionedWidget: index=$index, id=${positionedWidget.id}")
         if (index != -1) {
             positionedWidgets.removeAt(index)
-            println("Widget removed successfully")
-        } else {
-            println("Widget not found for removal! ID=${positionedWidget.id}")
         }
     }
 
