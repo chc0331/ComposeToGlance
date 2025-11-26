@@ -34,9 +34,38 @@ fun WidgetDropHandler(
             return@DropTarget
         }
         
+        val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
+        
+        // 레이아웃이 있고 PositionedWidget이 레이아웃 밖으로 드래그된 경우 삭제
+        if (droppedItem is PositionedWidget && layoutBounds != null) {
+            val bounds = layoutBounds
+            val isWithinLayoutBounds = dropPositionInWindow.x >= bounds.position.x &&
+                    dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
+                    dropPositionInWindow.y >= bounds.position.y &&
+                    dropPositionInWindow.y <= bounds.position.y + bounds.size.height
+            
+            if (!isWithinLayoutBounds) {
+                println("Widget dropped outside layout bounds - removing widget with ID: ${droppedItem.id}")
+                // 즉시 드래그 상태 정리하여 잔상 방지
+                dragInfo.itemDropped = true
+                dragInfo.isDragging = false
+                dragInfo.dragOffset = Offset.Zero
+                dragInfo.dataToDrop = null
+                dragInfo.draggableComposable = null
+                viewModel.removePositionedWidget(droppedItem)
+                return@DropTarget
+            }
+        }
+        
         // 캔버스 밖으로 드래그된 PositionedWidget은 삭제
         if (!isInBound && droppedItem is PositionedWidget) {
+            println("Widget dropped outside canvas bounds - removing widget with ID: ${droppedItem.id}")
+            // 즉시 드래그 상태 정리하여 잔상 방지
             dragInfo.itemDropped = true
+            dragInfo.isDragging = false
+            dragInfo.dragOffset = Offset.Zero
+            dragInfo.dataToDrop = null
+            dragInfo.draggableComposable = null
             viewModel.removePositionedWidget(droppedItem)
             return@DropTarget
         }
@@ -56,8 +85,6 @@ fun WidgetDropHandler(
         if (bounds == null || spec == null) {
             return@DropTarget
         }
-
-        val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
         val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
         val gridCells = GridCalculator.calculateGridCells(spec, bounds)
 

@@ -97,10 +97,17 @@ class WidgetEditorViewModel : ViewModel() {
     }
 
     /**
-     * 배치된 위젯 제거
+     * 배치된 위젯 제거 (ID 기반)
      */
     fun removePositionedWidget(positionedWidget: PositionedWidget) {
-        positionedWidgets.remove(positionedWidget)
+        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
+        println("removePositionedWidget: index=$index, id=${positionedWidget.id}")
+        if (index != -1) {
+            positionedWidgets.removeAt(index)
+            println("Widget removed successfully")
+        } else {
+            println("Widget not found for removal! ID=${positionedWidget.id}")
+        }
     }
 
     /**

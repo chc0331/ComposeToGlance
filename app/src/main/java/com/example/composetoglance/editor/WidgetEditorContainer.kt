@@ -45,7 +45,8 @@ fun WidgetEditorContainer(
                 }) {
             content()
             // 드래그 중이거나 드롭 직후 페이드아웃 중일 때 오버레이 표시
-            if (state.isDragging || state.itemDropped) {
+            // 단, dataToDrop이 null이면 즉시 숨김 (삭제 시 잔상 방지)
+            if ((state.isDragging || state.itemDropped) && state.dataToDrop != null) {
                 var targetSize by remember {
                     mutableStateOf(IntSize.Zero)
                 }
