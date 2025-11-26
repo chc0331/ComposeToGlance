@@ -32,7 +32,7 @@ class DigitalClockComponent : WidgetComponent() {
     }
 
     override fun getWidgetTag(): String {
-        return "AnalogClock"
+        return "DigitalClock"
     }
 
     override fun WidgetScope.Content() {

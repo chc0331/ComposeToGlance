@@ -12,15 +12,15 @@ import com.example.widget.WidgetCategory
 
 class ButtonComponent : WidgetComponent() {
     override fun getName(): String {
-        return "AnalogClock"
+        return "Button"
     }
 
     override fun getDescription(): String {
-        return "AnalogClock"
+        return "Button"
     }
 
     override fun getWidgetCategory(): WidgetCategory {
-        return WidgetCategory.CLOCK
+        return WidgetCategory.BASIC
     }
 
     override fun getSizeType(): SizeType {
@@ -28,7 +28,7 @@ class ButtonComponent : WidgetComponent() {
     }
 
     override fun getWidgetTag(): String {
-        return "AnalogClock"
+        return "Button"
     }
 
     override fun WidgetScope.Content() {

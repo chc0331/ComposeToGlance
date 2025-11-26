@@ -32,7 +32,7 @@ class BatteryComponent : WidgetComponent() {
     }
 
     override fun getWidgetTag(): String {
-        return "AnalogClock"
+        return "Battery"
     }
 
     override fun WidgetScope.Content() {

@@ -138,7 +138,10 @@ private fun WidgetItemContent(
                                 DslLocalSize provides size,
                                 DslLocalContext provides context
                             ) {
-                                addChild(component.provideContent())
+                                // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
+                                // this는 DslLocalProvider가 생성한 childScope를 가리킴
+                                // Content()가 생성한 children은 DslLocalProvider가 자동으로 수집함
+                                component.renderContent(this)
                             }
                         }
                     }
