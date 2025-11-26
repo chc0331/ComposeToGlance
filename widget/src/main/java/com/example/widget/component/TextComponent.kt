@@ -3,9 +3,6 @@ package com.example.widget.component
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.color
-import com.example.dsl.builder.colorProvider
-import com.example.dsl.builder.matchParentDimension
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
@@ -38,19 +35,29 @@ class TextComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box(
-            width = matchParentDimension,
-            height = matchParentDimension,
-            alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
-            backgroundColor = colorProvider(color = color(Color.White.toArgb()))
-        ) {
-            Text(
-                text = "Hello World",
-                fontSize = 18f,
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                textColor = Color.Black.toArgb(),
+        Box({
+            viewProperty {
+                width { matchParent = true }
+                height { matchParent = true }
+                backgroundColor {
+                    color {
+                        argb = Color.White.toArgb()
+                    }
+                }
+            }
+            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+        }) {
+            Text({
+                text = "Hello World"
+                fontSize = 18f
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                fontColor {
+                    color {
+                        argb = Color.Black.toArgb()
+                    }
+                }
                 textAlign = TextAlign.TEXT_ALIGN_CENTER
-            )
+            })
         }
     }
 }

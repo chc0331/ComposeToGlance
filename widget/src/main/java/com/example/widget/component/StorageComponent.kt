@@ -4,10 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.color
-import com.example.dsl.builder.colorProvider
-import com.example.dsl.builder.dimensionDp
-import com.example.dsl.builder.matchParentDimension
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
 import com.example.dsl.component.Progress
@@ -46,45 +42,68 @@ class StorageComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box(
-            width = matchParentDimension,
-            height = matchParentDimension,
-            alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
-            backgroundColor = colorProvider(color = color(Color.White.toArgb()))
-        ) {
-            val parentSize = this@Box.getLocal(DslLocalSize) as? DpSize
-            val size = getLocal(DslLocalSize) ?: parentSize
+        Box({
+            viewProperty {
+                width { matchParent = true }
+                height { matchParent = true }
+                backgroundColor {
+                    color {
+                        argb = Color.White.toArgb()
+                    }
+                }
+            }
+            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+        }) {
+            val size = getLocal(DslLocalSize) as? DpSize
             val progressWidth = size?.let { it.width.value * 0.8f } ?: 100f
 
-            Column(
-                horizontalAlignment = H_ALIGN_CENTER,
+            Column({
+                horizontalAlignment = H_ALIGN_CENTER
                 verticalAlignment = V_ALIGN_CENTER
-            ) {
-                Text(
-                    text = "Storage",
-                    fontSize = 16f,
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    textColor = Color.Black.toArgb(),
+            }) {
+                Text({
+                    text = "Storage"
+                    fontSize = 16f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    fontColor {
+                        color {
+                            argb = Color.Black.toArgb()
+                        }
+                    }
                     textAlign = TextAlign.TEXT_ALIGN_CENTER
-                )
+                })
 
-                Progress(
-                    type = ProgressType.PROGRESS_TYPE_LINEAR,
-                    progressValue = 65f,
-                    maxValue = 100f,
-                    width = dimensionDp(progressWidth),
-                    height = dimensionDp(20f),
-                    progressColor = Color.Blue.toArgb(),
-                    backgroundColor = Color.LightGray.toArgb()
-                )
+                Progress({
+                    viewProperty {
+                        width { dp { value = progressWidth } }
+                        height { dp { value = 20f } }
+                    }
+                    progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                    progressValue = 65f
+                    maxValue = 100f
+                    progressColor {
+                        color {
+                            argb = Color.Blue.toArgb()
+                        }
+                    }
+                    backgroundColor {
+                        color {
+                            argb = Color.LightGray.toArgb()
+                        }
+                    }
+                })
 
-                Text(
-                    text = "65%",
-                    fontSize = 14f,
-                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                    textColor = Color.Black.toArgb(),
+                Text({
+                    text = "65%"
+                    fontSize = 14f
+                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL
+                    fontColor {
+                        color {
+                            argb = Color.Black.toArgb()
+                        }
+                    }
                     textAlign = TextAlign.TEXT_ALIGN_CENTER
-                )
+                })
             }
         }
     }

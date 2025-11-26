@@ -1,209 +1,156 @@
 package com.example.dsl.component
 
-import android.graphics.Bitmap
-import androidx.annotation.DrawableRes
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.buttonProperty
-import com.example.dsl.builder.color
-import com.example.dsl.builder.colorProvider
-import com.example.dsl.builder.cornerRadius
-import com.example.dsl.builder.imageProperty
-import com.example.dsl.builder.imageProviderFromBitmap
-import com.example.dsl.builder.imageProviderFromDrawable
-import com.example.dsl.builder.imageProviderFromUri
-import com.example.dsl.builder.matchParentDimension
-import com.example.dsl.builder.progressProperty
-import com.example.dsl.builder.spacerProperty
-import com.example.dsl.builder.textContent
-import com.example.dsl.builder.textProperty
-import com.example.dsl.builder.viewProperty
-import com.example.dsl.builder.wrapContentDimension
-import com.example.dsl.proto.ContentScale
-import com.example.dsl.proto.ContentScale.CONTENT_SCALE_FIT
-import com.example.dsl.proto.Dimension
-import com.example.dsl.proto.FontWeight
-import com.example.dsl.proto.FontWeight.FONT_WEIGHT_NORMAL
-import com.example.dsl.proto.Padding
-import com.example.dsl.proto.ProgressType
-import com.example.dsl.proto.TextAlign
-import com.example.dsl.proto.TextAlign.TEXT_ALIGN_START
 import com.example.dsl.proto.WidgetNode
 
 
-// ==================== 컴포넌트 DSL ====================
+// ==================== 컴포넌트 DSL (중첩 DSL 빌더 패턴) ====================
 
 /**
- * Spacer 컴포넌트
+ * Text 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Text({
+ *     viewProperty {
+ *         width { wrapContent = true }
+ *         height { wrapContent = true }
+ *     }
+ *     text = "Hello World"
+ *     fontSize = 18f
+ *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
+ *     fontColor {
+ *         color {
+ *             argb = Color.Black.toArgb()
+ *         }
+ *     }
+ *     textAlign = TextAlign.TEXT_ALIGN_CENTER
+ * })
+ * ```
  */
-fun WidgetScope.Spacer(
-    viewId: Int = nextViewId(),
-    width: Dimension = wrapContentDimension,
-    height: Dimension = wrapContentDimension
-) {
-    val spacerNode = WidgetNode.newBuilder()
-        .setSpacer(
-            spacerProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height
-                )
-            )
-        )
+fun WidgetScope.Text(block: TextDsl.() -> Unit) {
+    val dsl = TextDsl(this)
+    dsl.block()
+    val textNode = WidgetNode.newBuilder()
+        .setText(dsl.build())
         .build()
-
-    addChild(spacerNode)
+    addChild(textNode)
 }
 
 /**
- * Progress 컴포넌트
+ * Image 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Image({
+ *     viewProperty {
+ *         width { wrapContent = true }
+ *         height { wrapContent = true }
+ *     }
+ *     provider {
+ *         drawableResId = R.drawable.example_image
+ *     }
+ *     contentScale = ContentScale.CONTENT_SCALE_FIT
+ * })
+ * ```
  */
-fun WidgetScope.Progress(
-    type: ProgressType = ProgressType.PROGRESS_TYPE_LINEAR,
-    maxValue: Float = 100f,
-    progressValue: Float = 0f,
-    viewId: Int = nextViewId(),
-    width: Dimension = matchParentDimension,
-    height: Dimension = matchParentDimension,
-    padding: Padding? = null,
-    progressColor: Int = 0xFFFFFFFF.toInt(),
-    backgroundColor: Int = 0xFFE0E0E0.toInt()
-) {
-    val progressNode = WidgetNode.newBuilder()
-        .setProgress(
-            progressProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding
-                ),
-                type = type,
-                maxValue = maxValue,
-                progressValue = progressValue,
-                progressColor = colorProvider(color = color(progressColor)),
-                backgroundColor = colorProvider(color = color(backgroundColor))
-            )
-        )
-        .build()
-
-    addChild(progressNode)
-}
-
-/**
- * Button 컴포넌트
- */
-fun WidgetScope.Button(
-    text: String,
-    viewId: Int = nextViewId(),
-    width: Dimension = wrapContentDimension,
-    height: Dimension = wrapContentDimension,
-    padding: Padding? = null,
-    fontSize: Float = 14f,
-    fontWeight: FontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
-    textColor: Int = 0xFFFFFFFF.toInt(),
-    backgroundColor: Int = 0xFF2196F3.toInt(),
-    cornerRadius: Float? = null,
-    maxLine: Int = 1
-) {
-    val buttonNode = WidgetNode.newBuilder()
-        .setButton(
-            buttonProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding,
-                    cornerRadius = cornerRadius?.let { cornerRadius(it) }
-                ),
-                text = textContent(text),
-                fontColor = colorProvider(color = color(textColor)),
-                fontSize = fontSize,
-                fontWeight = fontWeight,
-                backgroundColor = colorProvider(color = color(backgroundColor)),
-                maxLine = maxLine
-            )
-        )
-        .build()
-
-    addChild(buttonNode)
-}
-
-/**
- * Image 컴포넌트
- */
-fun WidgetScope.Image(
-    @DrawableRes drawableResId: Int? = null,
-    uri: String? = null,
-    bitmap: Bitmap? = null,
-    viewId: Int = nextViewId(),
-    width: Dimension = wrapContentDimension,
-    height: Dimension = wrapContentDimension,
-    padding: Padding? = null,
-    contentScale: ContentScale = CONTENT_SCALE_FIT,
-    tintColor: Int? = null,
-    alpha: Float = 1f
-) {
-    val provider = when {
-        drawableResId != null -> imageProviderFromDrawable(drawableResId)
-        uri != null -> imageProviderFromUri(uri)
-        bitmap != null -> imageProviderFromBitmap(bitmap)
-        else -> throw IllegalArgumentException("Either drawableResId, uri, or bitmap must be provided")
-    }
-
+fun WidgetScope.Image(block: ImageDsl.() -> Unit) {
+    val dsl = ImageDsl(this)
+    dsl.block()
     val imageNode = WidgetNode.newBuilder()
-        .setImage(
-            imageProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding
-                ),
-                provider = provider,
-                tintColor = tintColor?.let { color(it) },
-                alpha = alpha,
-                contentScale = contentScale
-            )
-        )
+        .setImage(dsl.build())
         .build()
-
     addChild(imageNode)
 }
 
 /**
- * Text 컴포넌트
+ * Button 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Button({
+ *     viewProperty {
+ *         width { wrapContent = true }
+ *         height { wrapContent = true }
+ *     }
+ *     text = "Click Me"
+ *     fontSize = 16f
+ *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
+ *     fontColor {
+ *         color {
+ *             argb = Color.White.toArgb()
+ *         }
+ *     }
+ *     backgroundColor {
+ *         color {
+ *             argb = Color.Blue.toArgb()
+ *         }
+ *     }
+ * })
+ * ```
  */
-fun WidgetScope.Text(
-    text: String,
-    viewId: Int = nextViewId(),
-    width: Dimension = wrapContentDimension,
-    height: Dimension = wrapContentDimension,
-    padding: Padding? = null,
-    fontSize: Float = 14f,
-    fontWeight: FontWeight = FONT_WEIGHT_NORMAL,
-    textColor: Int = 0xFF000000.toInt(),
-    textAlign: TextAlign = TEXT_ALIGN_START,
-    maxLine: Int = 1
-) {
-    val textNode = WidgetNode.newBuilder()
-        .setText(
-            textProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding
-                ),
-                text = textContent(text),
-                fontColor = colorProvider(color = color(textColor)),
-                fontSize = fontSize,
-                fontWeight = fontWeight,
-                textAlign = textAlign,
-                maxLine = maxLine
-            )
-        )
+fun WidgetScope.Button(block: ButtonDsl.() -> Unit) {
+    val dsl = ButtonDsl(this)
+    dsl.block()
+    val buttonNode = WidgetNode.newBuilder()
+        .setButton(dsl.build())
         .build()
+    addChild(buttonNode)
+}
 
-    addChild(textNode)
+/**
+ * Progress 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Progress({
+ *     viewProperty {
+ *         width { matchParent = true }
+ *         height { matchParent = true }
+ *     }
+ *     progressType = ProgressType.PROGRESS_TYPE_LINEAR
+ *     maxValue = 100f
+ *     progressValue = 65f
+ *     progressColor {
+ *         color {
+ *             argb = Color.Blue.toArgb()
+ *         }
+ *     }
+ *     backgroundColor {
+ *         color {
+ *             argb = Color.LightGray.toArgb()
+ *         }
+ *     }
+ * })
+ * ```
+ */
+fun WidgetScope.Progress(block: ProgressDsl.() -> Unit) {
+    val dsl = ProgressDsl(this)
+    dsl.block()
+    val progressNode = WidgetNode.newBuilder()
+        .setProgress(dsl.build())
+        .build()
+    addChild(progressNode)
+}
+
+/**
+ * Spacer 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Spacer({
+ *     viewProperty {
+ *         width { wrapContent = true }
+ *         height { wrapContent = true }
+ *     }
+ * })
+ * ```
+ */
+fun WidgetScope.Spacer(block: SpacerDsl.() -> Unit) {
+    val dsl = SpacerDsl(this)
+    dsl.block()
+    val spacerNode = WidgetNode.newBuilder()
+        .setSpacer(dsl.build())
+        .build()
+    addChild(spacerNode)
 }

@@ -1,54 +1,46 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.boxLayoutProperty
-import com.example.dsl.builder.columnLayoutProperty
-import com.example.dsl.builder.matchParentDimension
-import com.example.dsl.builder.rowLayoutProperty
-import com.example.dsl.builder.viewProperty
 import com.example.dsl.proto.AlignmentType
-import com.example.dsl.proto.ColorProvider
-import com.example.dsl.proto.Dimension
-import com.example.dsl.proto.HorizontalAlignment
-import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_START
-import com.example.dsl.proto.Padding
-import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.proto.VerticalAlignment.V_ALIGN_TOP
 import com.example.dsl.proto.WidgetNode
 
 // ==================== 레이아웃 DSL ====================
 
 /**
- * Column 레이아웃
+ * Column 레이아웃 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Column({
+ *     viewProperty {
+ *         viewId = 1
+ *         width { dp { value = 100f } }
+ *         height { matchParent = true }
+ *         padding {
+ *             start = 16f
+ *             top = 16f
+ *         }
+ *     }
+ *     horizontalAlignment = H_ALIGN_CENTER
+ *     verticalAlignment = V_ALIGN_CENTER
+ * }) {
+ *     Text("Hello")
+ * }
+ * ```
  */
 fun WidgetScope.Column(
-    viewId: Int = nextViewId(),
-    width: Dimension = matchParentDimension,
-    height: Dimension = matchParentDimension,
-    padding: Padding? = null,
-    horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
-    verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
-    backgroundColor: ColorProvider? = null,
-    block: WidgetScope.() -> Unit
+    block: ColumnLayoutDsl.() -> Unit,
+    content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
-    childScope.block()
+    childScope.content()
+
+    val dsl = ColumnLayoutDsl(this)
+    dsl.block()
 
     val columnNode = WidgetNode.newBuilder()
-        .setColumn(
-            columnLayoutProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding,
-                    backgroundColor = backgroundColor
-                ),
-                horizontalAlignment = horizontalAlignment,
-                verticalAlignment = verticalAlignment
-            )
-        )
+        .setColumn(dsl.build())
         .apply {
             childScope.children.forEach { addChildren(it) }
         }
@@ -58,36 +50,40 @@ fun WidgetScope.Column(
 }
 
 /**
- * Row 레이아웃
+ * Row 레이아웃 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Row({
+ *     viewProperty {
+ *         viewId = 1
+ *         width { dp { value = 100f } }
+ *         height { matchParent = true }
+ *         padding {
+ *             start = 16f
+ *             top = 16f
+ *         }
+ *     }
+ *     horizontalAlignment = H_ALIGN_CENTER
+ *     verticalAlignment = V_ALIGN_CENTER
+ * }) {
+ *     Text("Hello")
+ * }
+ * ```
  */
 fun WidgetScope.Row(
-    viewId: Int = nextViewId(),
-    width: Dimension = matchParentDimension,
-    height: Dimension = matchParentDimension,
-    padding: Padding? = null,
-    horizontalAlignment: HorizontalAlignment = H_ALIGN_START,
-    verticalAlignment: VerticalAlignment = V_ALIGN_TOP,
-    backgroundColor: ColorProvider? = null,
-    block: WidgetScope.() -> Unit
+    block: RowLayoutDsl.() -> Unit,
+    content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
-    childScope.block()
+    childScope.content()
+
+    val dsl = RowLayoutDsl(this)
+    dsl.block()
 
     val rowNode = WidgetNode.newBuilder()
-        .setRow(
-            rowLayoutProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding,
-                    backgroundColor = backgroundColor
-                ),
-                horizontalAlignment = horizontalAlignment,
-                verticalAlignment = verticalAlignment
-            )
-        )
+        .setRow(dsl.build())
         .apply {
             childScope.children.forEach { addChildren(it) }
         }
@@ -97,33 +93,39 @@ fun WidgetScope.Row(
 }
 
 /**
- * Box 레이아웃
+ * Box 레이아웃 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시:
+ * ```
+ * Box({
+ *     viewProperty {
+ *         viewId = 1
+ *         width { dp { value = 100f } }
+ *         height { matchParent = true }
+ *         padding {
+ *             start = 16f
+ *             top = 16f
+ *         }
+ *     }
+ *     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+ * }) {
+ *     Text("Hello")
+ * }
+ * ```
  */
 fun WidgetScope.Box(
-    viewId: Int = nextViewId(),
-    width: Dimension = matchParentDimension,
-    height: Dimension = matchParentDimension,
-    padding: Padding? = null,
-    alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_TOP_START,
-    backgroundColor: ColorProvider? = null,
-    block: WidgetScope.() -> Unit
+    block: BoxLayoutDsl.() -> Unit,
+    content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
-    childScope.block()
+    childScope.content()
+
+    val dsl = BoxLayoutDsl(this)
+    dsl.block()
+
     val boxNode = WidgetNode.newBuilder()
-        .setBox(
-            boxLayoutProperty(
-                viewProperty = viewProperty(
-                    viewId = viewId,
-                    width = width,
-                    height = height,
-                    padding = padding,
-                    backgroundColor = backgroundColor
-                ),
-                alignment = alignment
-            )
-        )
+        .setBox(dsl.build())
         .apply {
             childScope.children.forEach { addChildren(it) }
         }
