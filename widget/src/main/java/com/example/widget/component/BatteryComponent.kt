@@ -14,24 +14,49 @@ import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.provider.DslLocalSize
+import com.example.widget.SizeType
+import com.example.widget.WidgetCategory
 
-fun WidgetScope.BatteryComponent() {
-    Box(
-        width = matchParentDimension,
-        height = matchParentDimension,
-        alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
-        backgroundColor = colorProvider(color = color(Color.Black.toArgb()))
-    ) {
-        val parentSize = this@Box.getLocal(DslLocalSize) as? DpSize
-        val size = getLocal(DslLocalSize) ?: parentSize
-        val progressSize = size?.let { (it * 0.6f).height.value } ?: 60f
-        Progress(
-            type = ProgressType.PROGRESS_TYPE_CIRCULAR,
-            progressValue = 50f,
-            width = dimensionDp(progressSize),
-            height = dimensionDp(progressSize),
-            progressColor = Color.Green.toArgb()
-        )
-        Text(text = "50%", textColor = Color.White.toArgb())
+
+class BatteryComponent : WidgetComponent() {
+    override fun getName(): String {
+        return "Battery"
+    }
+
+    override fun getDescription(): String {
+        return "Battery"
+    }
+
+    override fun getWidgetCategory(): WidgetCategory {
+        return WidgetCategory.DEVICE_INFO
+    }
+
+    override fun getSizeType(): SizeType {
+        return SizeType.TINY
+    }
+
+    override fun getWidgetTag(): String {
+        return "AnalogClock"
+    }
+
+    override fun WidgetScope.Content() {
+        Box(
+            width = matchParentDimension,
+            height = matchParentDimension,
+            alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
+            backgroundColor = colorProvider(color = color(Color.Black.toArgb()))
+        ) {
+            val parentSize = this@Box.getLocal(DslLocalSize) as? DpSize
+            val size = getLocal(DslLocalSize) ?: parentSize
+            val progressSize = size?.let { (it * 0.6f).height.value } ?: 60f
+            Progress(
+                type = ProgressType.PROGRESS_TYPE_CIRCULAR,
+                progressValue = 50f,
+                width = dimensionDp(progressSize),
+                height = dimensionDp(progressSize),
+                progressColor = Color.Green.toArgb()
+            )
+            Text(text = "50%", textColor = Color.White.toArgb())
+        }
     }
 }

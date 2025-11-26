@@ -39,20 +39,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.widget.DragTargetWidgetItem
-import com.example.widget.Widget
 import com.example.widget.WidgetCategory
+import com.example.widget.component.WidgetComponent
 import kotlin.collections.filter
 import kotlin.collections.find
 
 @Composable
 fun WidgetsList(
-    widgetList: List<Widget>,
+    widgetList: List<WidgetComponent>,
     categories: List<WidgetCategory>,
     modifier: Modifier = Modifier,
-    onWidgetSelected: (Widget) -> Unit = {}
+    onWidgetSelected: (WidgetComponent) -> Unit = {}
 ) {
     var selectedCategoryId by remember { mutableStateOf<String?>(null) }
-    var activeWidget by remember { mutableStateOf<Widget?>(null) }
+    var activeWidget by remember { mutableStateOf<WidgetComponent?>(null) }
 
     Box(
         modifier = modifier
@@ -73,20 +73,20 @@ fun WidgetsList(
             },
             label = "category_transition",
             modifier = Modifier.fillMaxSize()
-        ) { categoryId ->
-            if (categoryId == null) {
+        ) { categoryName ->
+            if (categoryName == null) {
                 CategoryList(
                     categories = categories,
                     onCategoryClick = { selectedCategoryId = it },
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
-                val selectedCategory = categories.find { it.id == categoryId }
-                val filteredWidgets = widgetList.filter { it.category.id == categoryId }
+                val selectedCategory = categories.find { it.name == categoryName }
+                val filteredWidgets = widgetList.filter { it.getWidgetCategory().name == categoryName }
                 val visibleItems = remember { mutableStateListOf<Int>() }
 
                 // 카테고리 진입 시 위젯들을 순차적으로 표시
-                LaunchedEffect(categoryId) {
+                LaunchedEffect(categoryName) {
                     visibleItems.clear()
                     filteredWidgets.forEachIndexed { index, _ ->
                         delay(index * 50L)

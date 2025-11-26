@@ -9,12 +9,10 @@ import androidx.lifecycle.ViewModel
 import com.example.composetoglance.editor.widget.Layout
 import com.example.composetoglance.editor.widget.LayoutGridSpec
 import com.example.composetoglance.editor.widget.PositionedWidget
-import com.example.widget.SizeType
-import com.example.widget.Widget
 import com.example.widget.WidgetCategory
+import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
-import com.example.widget.initializeWidgetComponents
-import com.example.widget.widgets
+import initializeWidgetComponents
 
 class WidgetEditorViewModel : ViewModel() {
 
@@ -23,8 +21,8 @@ class WidgetEditorViewModel : ViewModel() {
         initializeWidgetComponents()
     }
 
-    val categories = com.example.widget.categories
-    val widgets = com.example.widget.widgets
+    val categories = WidgetCategory.entries.toList()
+    val widgets = WidgetComponentRegistry.getAllComponents()
 
     // 선택된 레이아웃
     var selectedLayout by mutableStateOf<Layout?>(null)
@@ -56,7 +54,7 @@ class WidgetEditorViewModel : ViewModel() {
      * offset은 UI에서 계산하여 전달받음
      */
     fun addPositionedWidget(
-        widget: Widget,
+        widget: WidgetComponent,
         offset: Offset,
         startRow: Int,
         startCol: Int,
@@ -134,7 +132,7 @@ class WidgetEditorViewModel : ViewModel() {
      * @return Pair<startRow, startCol> 또는 null (배치할 수 없으면 null)
      */
     fun findFirstAvailablePosition(
-        widget: Widget,
+        widget: WidgetComponent,
         spec: LayoutGridSpec
     ): Pair<Int, Int>? {
         val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
@@ -176,7 +174,7 @@ class WidgetEditorViewModel : ViewModel() {
      * @param cellIndices 위젯이 차지하는 셀 인덱스 리스트
      */
     fun addWidgetToFirstAvailablePosition(
-        widget: Widget,
+        widget: WidgetComponent,
         offset: Offset,
         startRow: Int,
         startCol: Int,

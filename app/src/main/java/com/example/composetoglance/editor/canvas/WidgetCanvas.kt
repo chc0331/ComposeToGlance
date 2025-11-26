@@ -26,7 +26,7 @@ import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.toPixels
 import com.example.composetoglance.editor.widget.gridSpec
-import com.example.widget.Widget
+import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
 import kotlin.math.roundToInt
 
@@ -34,7 +34,7 @@ import kotlin.math.roundToInt
 fun WidgetCanvas(
     viewModel: WidgetEditorViewModel,
     modifier: Modifier = Modifier,
-    widgetToAdd: Widget? = null,
+    widgetToAdd: WidgetComponent? = null,
     onWidgetAddProcessed: () -> Unit = {}
 ) {
     val selectedLayout = viewModel.selectedLayout
@@ -142,7 +142,7 @@ fun WidgetCanvas(
             // Display dropped widgets
             positionedWidgets.forEachIndexed { index, item ->
                 val isDragging = dragInfo.isDragging && dragInfo.dataToDrop == item
-                key("${item.widget.name}_${item.offset.x}_${item.offset.y}_$index") {
+                key("${item.widget.getName()}_${item.offset.x}_${item.offset.y}_$index") {
                     Draggable(
                         dataToDrop = item,
                         modifier = Modifier

@@ -47,7 +47,7 @@ fun CategoryList(
         items(categories) { category ->
             CategoryItem(
                 category = category,
-                onClick = { onCategoryClick(category.id) }
+                onClick = { onCategoryClick(category.name) }
             )
         }
     }

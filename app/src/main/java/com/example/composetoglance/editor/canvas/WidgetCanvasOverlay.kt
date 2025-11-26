@@ -32,7 +32,7 @@ import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.toPixels
-import com.example.widget.Widget
+import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
 import com.example.widget.util.getSystemBackgroundRadius
 import kotlin.math.roundToInt
@@ -53,7 +53,7 @@ fun DragStateOverlay(
     }
 
     val (draggedWidget, draggedPositionedWidget) = when (val item = dragInfo.dataToDrop) {
-        is Widget -> item to null
+        is WidgetComponent -> item to null
         is PositionedWidget -> item.widget to item
         else -> return
     }
@@ -114,7 +114,7 @@ fun DragStateOverlay(
 private fun rememberHoveredCellIndices(
     viewModel: WidgetEditorViewModel,
     dragInfo: DragTargetInfo,
-    draggedWidget: Widget,
+    draggedWidget: WidgetComponent,
     draggedPositionedWidget: PositionedWidget?,
     gridCells: List<GridCell>,
     selectedLayout: Layout?,
@@ -163,7 +163,7 @@ private fun rememberHoveredCellIndices(
 
 @Composable
 private fun WidgetPreview(
-    draggedWidget: Widget,
+    draggedWidget: WidgetComponent,
     hoveredCellIndices: List<Int>,
     layoutBounds: LayoutBounds?,
     selectedLayout: Layout?,

@@ -1,6 +1,6 @@
 package com.example.composetoglance.editor.widget
 
-import android.util.Log
+import WidgetComponentRegistry
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,13 +20,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
 import com.example.dsl.glance.GlanceRenderer
@@ -35,23 +32,22 @@ import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
-import com.example.widget.Widget
-import com.example.widget.WidgetComponentRegistry
+import com.example.widget.component.WidgetComponent
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.view.AppWidgetView
 
 @Composable
 fun DragTargetWidgetItem(
-    data: Widget,
+    data: WidgetComponent,
     isClicked: Boolean = false,
     modifier: Modifier = Modifier,
     onComponentClick: () -> Unit = {},
-    onAddClick: (Widget) -> Unit = {},
+    onAddClick: (WidgetComponent) -> Unit = {},
     onDragStart: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val cornerRadius = context.getSystemBackgroundRadius()
-    
+
     DragTarget(
         context = context,
         modifier = modifier.wrapContentSize(),
@@ -87,12 +83,12 @@ fun DragTargetWidgetItem(
 
 @Composable
 fun WidgetItem(
-    data: Widget,
+    data: WidgetComponent,
     modifier: Modifier = Modifier
 ) {
     // 위젯 데이터를 기반으로 캐시 키 생성하여 재렌더링 방지
-    val cacheKey = remember(data.componentId, data.sizeType) {
-        "${data.componentId}_${data.sizeType}"
+    val cacheKey = remember(data.getWidgetTag(), data.getSizeType()) {
+        "${data.getWidgetTag()}_${data.getSizeType()}"
     }
 
     // 위젯 아이템 전체를 캐싱하여 깜박임 방지
@@ -105,7 +101,7 @@ fun WidgetItem(
 
 @Composable
 private fun WidgetItemContent(
-    data: Widget,
+    data: WidgetComponent,
     modifier: Modifier,
     key: String
 ) {
@@ -126,10 +122,9 @@ private fun WidgetItemContent(
             contentAlignment = Alignment.Center
         ) {
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
-            if (data.componentId != null) {
+            if (data.getWidgetTag() != null) {
                 val component = remember(key) {
-                    Log.i("heec.choi", "Component : ${data.componentId}")
-                    WidgetComponentRegistry.getComponent(data.componentId)
+                    WidgetComponentRegistry.getComponent(data.getWidgetTag())
                 }
                 if (component != null) {
                     // DSL 컴포넌트를 AppWidgetView로 렌더링
@@ -143,7 +138,7 @@ private fun WidgetItemContent(
                                 DslLocalSize provides size,
                                 DslLocalContext provides context
                             ) {
-                                component()
+                                addChild(component.provideContent())
                             }
                         }
                     }
@@ -166,18 +161,18 @@ private fun WidgetItemContent(
 }
 
 @Composable
-private fun DefaultWidgetContent(data: Widget) {
+private fun DefaultWidgetContent(data: WidgetComponent) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = data.name,
+            text = data.getName(),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
-            text = data.sizeType.toString(),
+            text = data.getSizeType().toString(),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
@@ -185,7 +180,7 @@ private fun DefaultWidgetContent(data: Widget) {
 }
 
 data class PositionedWidget(
-    val widget: Widget,
+    val widget: WidgetComponent,
     val offset: Offset,
     val cellIndex: Int? = null,
     val cellIndices: List<Int> = emptyList() // 여러 셀을 차지하는 경우
@@ -195,8 +190,8 @@ data class PositionedWidget(
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
  * @return Pair<width in dp, height in dp>
  */
-fun Widget.getSizeInDp(): Pair<Dp, Dp> {
-    return when (sizeType) {
+fun WidgetComponent.getSizeInDp(): Pair<Dp, Dp> {
+    return when (getSizeType()) {
         SizeType.TINY -> 50.dp to 50.dp
         SizeType.SMALL -> 100.dp to 50.dp
         SizeType.MEDIUM -> 100.dp to 100.dp
@@ -204,7 +199,7 @@ fun Widget.getSizeInDp(): Pair<Dp, Dp> {
     }
 }
 
-fun Widget.toPixels(density: Density): Pair<Float, Float> {
+fun WidgetComponent.toPixels(density: Density): Pair<Float, Float> {
     return with(density) {
         val (widthDp, heightDp) = getSizeInDp()
         widthDp.toPx() to heightDp.toPx()

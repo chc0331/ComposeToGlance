@@ -32,7 +32,7 @@ import com.example.composetoglance.editor.WidgetEditorContainer
 import com.example.composetoglance.editor.canvas.CanvasConstants
 import com.example.composetoglance.editor.canvas.canvasBorder
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
-import com.example.widget.Widget
+import com.example.widget.component.WidgetComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +73,7 @@ fun MainContent(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = CanvasConstants.HORIZONTAL_PADDING)
             ) {
-                var widgetToAdd by remember { mutableStateOf<Widget?>(null) }
+                var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
                 
                 WidgetCanvas(
                     modifier = Modifier

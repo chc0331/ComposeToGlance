@@ -11,21 +11,47 @@ import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
+import com.example.widget.SizeType
+import com.example.widget.WidgetCategory
 
-fun WidgetScope.TextComponent() {
-    Box(
-        width = matchParentDimension,
-        height = matchParentDimension,
-        alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
-        backgroundColor = colorProvider(color = color(Color.White.toArgb()))
-    ) {
-        Text(
-            text = "Hello World",
-            fontSize = 18f,
-            fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-            textColor = Color.Black.toArgb(),
-            textAlign = TextAlign.TEXT_ALIGN_CENTER
-        )
+
+class TextComponent : WidgetComponent() {
+
+    override fun getName(): String {
+        return "Text"
+    }
+
+    override fun getDescription(): String {
+        return "Text"
+    }
+
+    override fun getWidgetCategory(): WidgetCategory {
+        return WidgetCategory.BASIC
+    }
+
+    override fun getSizeType(): SizeType {
+        return SizeType.TINY
+    }
+
+    override fun getWidgetTag(): String {
+        return "Text"
+    }
+
+    override fun WidgetScope.Content() {
+        Box(
+            width = matchParentDimension,
+            height = matchParentDimension,
+            alignment = AlignmentType.ALIGNMENT_TYPE_CENTER,
+            backgroundColor = colorProvider(color = color(Color.White.toArgb()))
+        ) {
+            Text(
+                text = "Hello World",
+                fontSize = 18f,
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                textColor = Color.Black.toArgb(),
+                textAlign = TextAlign.TEXT_ALIGN_CENTER
+            )
+        }
     }
 }
 

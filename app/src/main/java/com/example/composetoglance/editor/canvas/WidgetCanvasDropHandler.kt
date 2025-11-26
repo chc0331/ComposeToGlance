@@ -14,7 +14,7 @@ import com.example.composetoglance.editor.util.LayoutBounds
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.toPixels
-import com.example.widget.Widget
+import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
 
 @Composable
@@ -30,7 +30,7 @@ fun WidgetDropHandler(
         // 디버깅용 로그
         println("DropTarget: isInBound=$isInBound, droppedItem=$droppedItem, itemDropped=${dragInfo.itemDropped}")
         
-        if ((droppedItem !is Widget && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
+        if ((droppedItem !is WidgetComponent && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
             return@DropTarget
         }
         
@@ -47,7 +47,7 @@ fun WidgetDropHandler(
         }
 
         val widget = when (droppedItem) {
-            is Widget -> droppedItem
+            is WidgetComponent -> droppedItem
             is PositionedWidget -> droppedItem.widget
             else -> return@DropTarget
         }
@@ -105,7 +105,7 @@ fun WidgetDropHandler(
         )
 
         when (droppedItem) {
-            is Widget -> viewModel.addPositionedWidget(
+            is WidgetComponent -> viewModel.addPositionedWidget(
                 widget = widget,
                 offset = adjustedOffset,
                 startRow = startRow,
