@@ -1,5 +1,6 @@
 package com.example.composetoglance.editor.widget
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -52,7 +53,7 @@ fun ClickableLayoutComponent(
     onAddClick: (Layout) -> Unit,
 ) {
     val context = LocalContext.current
-    val cornerRadius = context.getSystemBackgroundRadius()
+    val cornerRadius = context.getSystemBackgroundRadius() / 2
     Box(
         modifier = modifier
             .wrapContentSize()
@@ -90,12 +91,12 @@ fun LayoutComponent(
 ) {
     val context = LocalContext.current
     var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
+    var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
         width = width * 0.5f
         height = height * 0.5f
+        cornerRadius = cornerRadius / 2
     }
-
-    val cornerRadius = context.getSystemBackgroundRadius()
     Box(
         modifier = Modifier
             .size(width, height)
