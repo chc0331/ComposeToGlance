@@ -58,15 +58,20 @@ fun WidgetEditorContainer(
                     else -> DragAndDropConstants.DRAG_ALPHA
                 }
                 
-                // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대
+                // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대, 드롭 시 즉시 축소
+                val targetScale = when {
+                    !hasValidSize -> 1f
+                    state.itemDropped -> 1f // 드롭되면 즉시 원래 크기로
+                    else -> DragAndDropConstants.SCALE_FACTOR
+                }
                 val animatedScale by animateFloatAsState(
-                    targetValue = if (hasValidSize) DragAndDropConstants.SCALE_FACTOR else 1f,
-                    animationSpec = tween(durationMillis = 200),
+                    targetValue = targetScale,
+                    animationSpec = tween(durationMillis = if (state.itemDropped) 100 else 200),
                     label = "scale_animation"
                 )
                 
-                // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남, 드롭 시 페이드아웃
-                val fadeOutDuration = if (state.itemDropped) 150 else 200
+                // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남, 드롭 시 빠르게 페이드아웃
+                val fadeOutDuration = if (state.itemDropped) 100 else 200
                 val animatedAlpha by animateFloatAsState(
                     targetValue = targetAlpha,
                     animationSpec = tween(durationMillis = fadeOutDuration),

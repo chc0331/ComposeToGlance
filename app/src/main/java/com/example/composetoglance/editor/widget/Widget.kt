@@ -186,7 +186,8 @@ data class PositionedWidget(
     val widget: WidgetComponent,
     val offset: Offset,
     val cellIndex: Int? = null,
-    val cellIndices: List<Int> = emptyList() // 여러 셀을 차지하는 경우
+    val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
+    val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
 )
 
 /**

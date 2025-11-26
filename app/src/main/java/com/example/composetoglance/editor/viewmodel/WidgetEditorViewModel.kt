@@ -78,18 +78,21 @@ class WidgetEditorViewModel : ViewModel() {
         startCol: Int,
         cellIndices: List<Int>
     ) {
-        val index = positionedWidgets.indexOf(positionedWidget)
-        println("movePositionedWidget: index=$index, oldOffset=${positionedWidget.offset}, newOffset=$offset")
+        // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
+        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
+        println("movePositionedWidget: index=$index, id=${positionedWidget.id}, oldOffset=${positionedWidget.offset}, newOffset=$offset")
         if (index != -1) {
+            // ID를 유지하면서 offset과 cellIndices만 업데이트
             val updatedWidget = positionedWidget.copy(
                 offset = offset,
                 cellIndex = cellIndices.firstOrNull(),
-                cellIndices = cellIndices
+                cellIndices = cellIndices,
+                id = positionedWidget.id // 기존 ID 명시적으로 유지
             )
             positionedWidgets[index] = updatedWidget
             println("Widget moved successfully: ${updatedWidget.offset}")
         } else {
-            println("Widget not found in list!")
+            println("Widget not found in list! ID=${positionedWidget.id}")
         }
     }
 

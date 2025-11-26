@@ -140,9 +140,11 @@ fun WidgetCanvas(
             )
 
             // Display dropped widgets
-            positionedWidgets.forEachIndexed { index, item ->
+            positionedWidgets.forEach { item ->
                 val isDragging = dragInfo.isDragging && dragInfo.dataToDrop == item
-                key("${item.widget.getName()}_${item.offset.x}_${item.offset.y}_$index") {
+                // 고유 ID를 key로 사용하여 위젯 이동 시 재생성되지 않도록 함
+                // 이렇게 하면 위젯이 재배치될 때 기존 컴포저블이 유지되고 offset만 업데이트됨
+                key(item.id) {
                     Draggable(
                         dataToDrop = item,
                         modifier = Modifier
