@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.protobuf)
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,6 +64,9 @@ dependencies {
     implementation(libs.protobuf.javalite)
     implementation(project(":widget_dsl"))
     implementation("androidx.datastore:datastore-preferences:1.2.0")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
