@@ -10,6 +10,16 @@ import com.google.protobuf.ByteString
 import java.io.ByteArrayOutputStream
 
 /**
+ * Content 관련 DSL 클래스 및 DSL 빌더 함수
+ * 
+ * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
+ * - DSL 클래스: ColorDsl, ColorProviderDsl, TextContentDsl, ImageProviderDsl
+ * - DSL 빌더 함수: Color(block), ColorProvider(block), TextContent(block), ImageProvider(block)
+ * 
+ * 간단한 빌더 함수(파라미터를 직접 받는)는 ContentBuilders.kt를 참조하세요.
+ */
+
+/**
  * Color DSL
  */
 class ColorDsl(private val builder: Color.Builder) {

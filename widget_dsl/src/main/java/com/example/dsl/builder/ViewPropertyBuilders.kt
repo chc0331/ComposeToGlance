@@ -13,8 +13,14 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.ViewProperty
 
 /**
- * ViewProperty, Alignment
- * */
+ * ViewProperty 및 Alignment 관련 간단한 빌더 함수
+ * 
+ * 이 파일은 파라미터를 직접 받는 간단한 빌더 함수를 포함합니다.
+ * - ViewProperty(viewId, width, height, padding, cornerRadius, semantics, clickAction, backgroundColor)
+ * - Alignment(alignment, horizontal, vertical)
+ * 
+ * DSL 클래스 및 block을 받는 DSL 빌더 함수는 ViewPropertyDsl.kt를 참조하세요.
+ */
 
 fun ViewProperty(
     viewId: Int,

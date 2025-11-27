@@ -6,6 +6,16 @@ import com.example.dsl.proto.Dp
 import com.example.dsl.proto.Padding
 
 /**
+ * Dimension 관련 DSL 클래스 및 DSL 빌더 함수
+ * 
+ * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
+ * - DSL 클래스: DpDsl, CornerRadiusDsl, PaddingDsl, DimensionDsl
+ * - DSL 빌더 함수: Dp(block), CornerRadius(block), Padding(block), Dimension(block)
+ * 
+ * 간단한 빌더 함수(파라미터를 직접 받는)는 DimensionBuilders.kt를 참조하세요.
+ */
+
+/**
  * Dp DSL
  */
 class DpDsl(private val builder: Dp.Builder) {

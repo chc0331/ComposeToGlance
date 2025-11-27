@@ -9,6 +9,16 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.ViewProperty
 
 /**
+ * LayoutProperty 관련 DSL 클래스 및 DSL 빌더 함수
+ * 
+ * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
+ * - DSL 클래스: BoxLayoutPropertyDsl, RowLayoutPropertyDsl, ColumnLayoutPropertyDsl
+ * - DSL 빌더 함수: BoxLayoutProperty(block), RowLayoutProperty(block), ColumnLayoutProperty(block)
+ * 
+ * 간단한 빌더 함수(파라미터를 직접 받는)는 LayoutBuilders.kt를 참조하세요.
+ */
+
+/**
  * BoxLayoutProperty DSL
  */
 class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {

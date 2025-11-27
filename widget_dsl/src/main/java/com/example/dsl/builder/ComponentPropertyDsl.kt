@@ -16,6 +16,16 @@ import com.example.dsl.proto.TextProperty
 import com.example.dsl.proto.ViewProperty
 
 /**
+ * ComponentProperty 관련 DSL 클래스 및 DSL 빌더 함수
+ * 
+ * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
+ * - DSL 클래스: TextPropertyDsl, ImagePropertyDsl, ButtonPropertyDsl, ProgressPropertyDsl, SpacerPropertyDsl
+ * - DSL 빌더 함수: TextProperty(block), ImageProperty(block), ButtonProperty(block), ProgressProperty(block), SpacerProperty(block)
+ * 
+ * 간단한 빌더 함수(파라미터를 직접 받는)는 ComponentPropertyBuilders.kt를 참조하세요.
+ */
+
+/**
  * TextProperty DSL
  */
 class TextPropertyDsl(private val builder: TextProperty.Builder) {

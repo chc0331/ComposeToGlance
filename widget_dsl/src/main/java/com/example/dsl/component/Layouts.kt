@@ -4,6 +4,17 @@ import com.example.dsl.WidgetScope
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.WidgetNode
 
+/**
+ * 레이아웃 최상위 DSL 함수
+ * 
+ * 이 파일은 WidgetScope에 대한 확장 함수로, 최상위 레이아웃 DSL 함수를 포함합니다.
+ * - Column(block, content): Column 레이아웃 생성
+ * - Row(block, content): Row 레이아웃 생성
+ * - Box(block, content): Box 레이아웃 생성
+ * 
+ * 각 레이아웃의 DSL 클래스는 LayoutDsl.kt를 참조하세요.
+ */
+
 // ==================== 레이아웃 DSL ====================
 
 /**

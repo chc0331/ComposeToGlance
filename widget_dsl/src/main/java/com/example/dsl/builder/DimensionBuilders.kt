@@ -6,8 +6,18 @@ import com.example.dsl.proto.Dp
 import com.example.dsl.proto.Padding
 
 /**
- * Dp / Dimension / Padding / CornerRadius
- * */
+ * Dimension 관련 간단한 빌더 함수
+ * 
+ * 이 파일은 파라미터를 직접 받는 간단한 빌더 함수를 포함합니다.
+ * - Dp(value: Float)
+ * - DimensionDp(value: Float)
+ * - DimensionWeight(weight: Float)
+ * - Padding(start, top, end, bottom)
+ * - CornerRadius(all: Float)
+ * - wrapContentDimension, matchParentDimension (상수)
+ * 
+ * DSL 클래스 및 block을 받는 DSL 빌더 함수는 DimensionDsl.kt를 참조하세요.
+ */
 fun Dp(value: Float): Dp = Dp.newBuilder().setValue(value).build()
 
 fun DimensionDp(value: Float): Dimension = Dimension.newBuilder().setDp(Dp(value)).build()

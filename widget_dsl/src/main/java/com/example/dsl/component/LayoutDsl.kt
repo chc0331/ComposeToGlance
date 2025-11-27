@@ -15,6 +15,17 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_TOP
 
 /**
+ * 레이아웃 DSL 클래스
+ * 
+ * 이 파일은 각 레이아웃의 DSL 클래스를 포함합니다.
+ * - ColumnLayoutDsl: Column 레이아웃의 DSL 클래스
+ * - RowLayoutDsl: Row 레이아웃의 DSL 클래스
+ * - BoxLayoutDsl: Box 레이아웃의 DSL 클래스
+ * 
+ * 최상위 레이아웃 DSL 함수는 Layouts.kt를 참조하세요.
+ */
+
+/**
  * Column 레이아웃 DSL
  */
 class ColumnLayoutDsl(

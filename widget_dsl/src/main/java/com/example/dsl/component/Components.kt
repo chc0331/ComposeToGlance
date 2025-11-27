@@ -3,6 +3,18 @@ package com.example.dsl.component
 import com.example.dsl.WidgetScope
 import com.example.dsl.proto.WidgetNode
 
+/**
+ * 컴포넌트 최상위 DSL 함수
+ * 
+ * 이 파일은 WidgetScope에 대한 확장 함수로, 최상위 컴포넌트 DSL 함수를 포함합니다.
+ * - Text(block): Text 컴포넌트 생성
+ * - Image(block): Image 컴포넌트 생성
+ * - Button(block): Button 컴포넌트 생성
+ * - Progress(block): Progress 컴포넌트 생성
+ * - Spacer(block): Spacer 컴포넌트 생성
+ * 
+ * 각 컴포넌트의 DSL 클래스는 ComponentDsl.kt를 참조하세요.
+ */
 
 // ==================== 컴포넌트 DSL (중첩 DSL 빌더 패턴) ====================
 

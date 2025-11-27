@@ -8,6 +8,17 @@ import com.example.dsl.proto.RowLayoutProperty
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.ViewProperty
 
+/**
+ * LayoutProperty 관련 간단한 빌더 함수
+ * 
+ * 이 파일은 파라미터를 직접 받는 간단한 빌더 함수를 포함합니다.
+ * - BoxLayoutProperty(viewProperty, alignment)
+ * - RowLayoutProperty(viewProperty, horizontalAlignment, verticalAlignment)
+ * - ColumnLayoutProperty(viewProperty, horizontalAlignment, verticalAlignment)
+ * 
+ * DSL 클래스 및 block을 받는 DSL 빌더 함수는 LayoutPropertyDsl.kt를 참조하세요.
+ */
+
 fun BoxLayoutProperty(
     viewProperty: ViewProperty, alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_START
 ): BoxLayoutProperty = BoxLayoutProperty.newBuilder().setViewProperty(viewProperty)
