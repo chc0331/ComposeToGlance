@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.widget.LayoutDpSize
 import com.example.widget.util.getSystemBackgroundRadius
 
-data class Layout(val type: String, val sizeType: String)
+data class Layout(val sizeType: String)
 
 data class LayoutGridSpec(val rows: Int, val columns: Int)
 
@@ -60,7 +60,7 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data.type, data.sizeType, isPreview = true)
+        LayoutComponent(data.sizeType, isPreview = true)
         if (isClicked) {
             Box(
                 modifier = Modifier
@@ -83,7 +83,6 @@ fun ClickableLayoutComponent(
 
 @Composable
 fun LayoutComponent(
-    type: String,
     layoutType: String,
     showText: Boolean = false,
     isPreview: Boolean = false

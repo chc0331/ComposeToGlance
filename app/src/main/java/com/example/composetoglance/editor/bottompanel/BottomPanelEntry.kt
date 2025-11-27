@@ -26,9 +26,9 @@ import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 
 val DefaultLayouts = listOf(
-    Layout("Full", "Small"),
-    Layout("Full", "Medium"),
-    Layout("Full", "Large")
+    Layout("Small"),
+    Layout("Medium"),
+    Layout("Large")
 )
 
 object BottomPanelConstants {
