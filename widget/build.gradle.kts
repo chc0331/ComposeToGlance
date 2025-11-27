@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.protobuf.javalite)
     implementation(project(":widget_dsl"))
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

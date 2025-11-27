@@ -13,6 +13,26 @@ enum class SizeType {
             else -> "Large"
         }
     }
+
+    fun toProto(): com.example.widget.proto.SizeType {
+        return when (this) {
+            TINY -> com.example.widget.proto.SizeType.SIZE_TYPE_TINY
+            SMALL -> com.example.widget.proto.SizeType.SIZE_TYPE_SMALL
+            MEDIUM -> com.example.widget.proto.SizeType.SIZE_TYPE_MEDIUM
+            else -> com.example.widget.proto.SizeType.SIZE_TYPE_LARGE
+        }
+    }
+
+    companion object {
+        fun getSizeType(value: String): SizeType {
+            return when (value) {
+                "Tiny" -> TINY
+                "Small" -> SMALL
+                "Medium" -> MEDIUM
+                else -> LARGE
+            }
+        }
+    }
 }
 
 /**

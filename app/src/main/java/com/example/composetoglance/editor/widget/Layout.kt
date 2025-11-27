@@ -67,7 +67,7 @@ fun ClickableLayoutComponent(
                 modifier = Modifier
                     .matchParentSize()
                     .clip(RoundedCornerShape(cornerRadius))
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.15f))
                     .clickable { onAddClick(data) },
                 contentAlignment = Alignment.Center
             ) {
@@ -93,8 +93,8 @@ fun LayoutComponent(
     var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
     var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
-        width = width * 0.5f
-        height = height * 0.5f
+        width = width * 0.45f
+        height = height * 0.45f
         cornerRadius = cornerRadius / 2
     }
     Box(

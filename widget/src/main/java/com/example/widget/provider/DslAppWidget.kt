@@ -1,18 +1,29 @@
 package com.example.widget.provider
 
+import android.R.attr.height
 import android.content.Context
+import android.graphics.Color.argb
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
 import androidx.glance.LocalSize
 import androidx.glance.LocalState
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.fillMaxSize
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
+import com.example.dsl.builder.dp
+import com.example.dsl.builder.viewProperty
+import com.example.dsl.component.Box
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalGlanceId
@@ -24,7 +35,13 @@ abstract class DslAppWidget : GlanceAppWidget() {
 
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            RenderDsl()
+            val size = LocalSize.current
+            androidx.glance.layout.Box(
+                modifier = GlanceModifier.fillMaxSize().background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                RenderDsl()
+            }
         }
     }
 
@@ -43,7 +60,15 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     DslLocalState provides state,
                     DslLocalGlanceId provides glanceId
                 ) {
-                    DslContent()
+                    Box({
+                        viewProperty {
+                            width { dp { value = dpSize.width.value } }
+                            height { dp { value = dpSize.height.value } }
+                            backgroundColor { color { argb = Color.LightGray.toArgb() } }
+                        }
+                    }) {
+                        DslContent()
+                    }
                 }
             }
         )

@@ -33,6 +33,7 @@ import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.component.WidgetComponent
+import com.example.widget.proto.PositionedWidget
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.view.AppWidgetView
 
@@ -168,7 +169,7 @@ private fun DefaultWidgetContent(data: WidgetComponent) {
     // MaterialTheme을 먼저 읽고, remember 블록 안에서는 복사만 수행
     val typography = MaterialTheme.typography
     val colorScheme = MaterialTheme.colorScheme
-    
+
     // MaterialTheme 스타일 객체를 remember로 캐싱하여 불필요한 재생성 방지
     val titleStyle = remember(typography) {
         typography.titleMedium.copy(fontWeight = FontWeight.Bold)
@@ -180,7 +181,7 @@ private fun DefaultWidgetContent(data: WidgetComponent) {
     val bodyColor = remember(colorScheme) {
         colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
     }
-    
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -204,7 +205,22 @@ data class PositionedWidget(
     val cellIndex: Int? = null,
     val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
     val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
-)
+) {
+    fun toProto(): PositionedWidget {
+        val (row, col) = when (cellIndices.size) {
+            1 -> Pair(1, 1)
+            2 -> Pair(1, 2)
+            else -> Pair(2, 2)
+        }
+        return PositionedWidget.newBuilder()
+            .setGridIndex((cellIndex?.plus(1)) ?: 1)
+            .setRowSpan(row)
+            .setColSpan(col)
+            .setWidgetTag(widget.getWidgetTag())
+            .setWidgetCategory(widget.getWidgetCategory().toProto())
+            .build()
+    }
+}
 
 /**
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환

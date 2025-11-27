@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetoglance.editor.bottompanel.BottomPanelWithTabs
@@ -43,6 +44,7 @@ fun MainContent(
     val canvasBackgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(
         alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA
     )
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -50,7 +52,7 @@ fun MainContent(
                 title = { Text("위젯 편집") },
                 modifier = Modifier.height(64.dp),
                 actions = {
-                    TextButton(onClick = { viewModel.save() }) {
+                    TextButton(onClick = { viewModel.save(context) }) {
                         Text("저장")
                     }
                 },

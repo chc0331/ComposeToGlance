@@ -11,11 +11,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
+import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModelFactory
 import com.example.composetoglance.service.WidgetForegroundService
 import com.example.composetoglance.theme.ComposeToGlanceTheme
+import com.example.widget.repository.WidgetLayoutRepository
 
 class MainActivity : ComponentActivity() {
-    
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -28,11 +32,12 @@ class MainActivity : ComponentActivity() {
             startWidgetForegroundServiceIfNeeded()
         }
     }
+    private lateinit var viewModel: WidgetEditorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         // Android 13+ 알림 권한 확인 및 요청
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -47,10 +52,15 @@ class MainActivity : ComponentActivity() {
         } else {
             startWidgetForegroundServiceIfNeeded()
         }
-        
+        viewModel =
+            ViewModelProvider(
+                this,
+                WidgetEditorViewModelFactory(WidgetLayoutRepository(this))
+            )[WidgetEditorViewModel::class.java]
+
         setContent {
             ComposeToGlanceTheme {
-                MainContent()
+                MainContent(viewModel)
             }
         }
     }

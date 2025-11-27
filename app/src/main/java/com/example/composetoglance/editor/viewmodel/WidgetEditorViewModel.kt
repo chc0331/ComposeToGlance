@@ -1,20 +1,30 @@
 package com.example.composetoglance.editor.viewmodel
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.composetoglance.editor.widget.Layout
 import com.example.composetoglance.editor.widget.LayoutGridSpec
 import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
+import com.example.widget.proto.SizeType
+import com.example.widget.provider.LargeWidgetProvider
+import com.example.widget.repository.WidgetLayoutRepository
 import initializeWidgetComponents
+import kotlinx.coroutines.launch
 
-class WidgetEditorViewModel : ViewModel() {
+class WidgetEditorViewModel(
+    private val repository: WidgetLayoutRepository
+) : ViewModel() {
 
     init {
         // 위젯 컴포넌트 초기화
@@ -194,8 +204,23 @@ class WidgetEditorViewModel : ViewModel() {
     /**
      * 저장 기능 (나중에 구현)
      */
-    fun save() {
-        // TODO: 저장 기능 구현
+    fun save(context: Context) {
+        viewModelScope.launch {
+            repository.updateData(
+                sizeType = com.example.widget.SizeType.getSizeType(
+                    selectedLayout?.sizeType ?: "Large"
+                )?.toProto() ?: SizeType.SIZE_TYPE_LARGE,
+                positionedWidgets = positionedWidgets.map {
+                    it.toProto()
+                }
+            )
+            AppWidgetManager.getInstance(context).requestPinAppWidget(
+                ComponentName(
+                    context.packageName,
+                    LargeWidgetProvider::class.java.name
+                ), null, null
+            )
+        }
     }
 }
 
