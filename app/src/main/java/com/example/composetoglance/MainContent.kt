@@ -49,11 +49,11 @@ fun MainContent(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("위젯 편집") },
-                modifier = Modifier.height(64.dp),
+                title = { Text("위젯 편집", style = MaterialTheme.typography.titleLarge) },
+                modifier = Modifier.height(72.dp),
                 actions = {
                     TextButton(onClick = { viewModel.save(context) }) {
-                        Text("저장")
+                        Text("저장", style = MaterialTheme.typography.titleMedium)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
