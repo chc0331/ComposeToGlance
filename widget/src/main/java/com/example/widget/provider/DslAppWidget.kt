@@ -1,8 +1,6 @@
 package com.example.widget.provider
 
-import android.R.attr.height
 import android.content.Context
-import android.graphics.Color.argb
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -21,8 +19,6 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.fillMaxSize
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.dp
-import com.example.dsl.builder.viewProperty
 import com.example.dsl.component.Box
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
@@ -62,9 +58,9 @@ abstract class DslAppWidget : GlanceAppWidget() {
                 ) {
                     Box({
                         viewProperty {
-                            width { dp { value = dpSize.width.value } }
-                            height { dp { value = dpSize.height.value } }
-                            backgroundColor { color { argb = Color.LightGray.toArgb() } }
+                            Width { dp { value = dpSize.width.value } }
+                            Height { dp { value = dpSize.height.value } }
+                            BackgroundColor { color { argb = Color.LightGray.toArgb() } }
                         }
                     }) {
                         DslContent()

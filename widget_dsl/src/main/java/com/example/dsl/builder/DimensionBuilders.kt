@@ -8,19 +8,19 @@ import com.example.dsl.proto.Padding
 /**
  * Dp / Dimension / Padding / CornerRadius
  * */
-fun dp(value: Float): Dp = Dp.newBuilder().setValue(value).build()
+fun Dp(value: Float): Dp = Dp.newBuilder().setValue(value).build()
 
-fun dimensionDp(value: Float): Dimension = Dimension.newBuilder().setDp(dp(value)).build()
+fun DimensionDp(value: Float): Dimension = Dimension.newBuilder().setDp(Dp(value)).build()
 
-fun dimensionWeight(weight: Float): Dimension = Dimension.newBuilder().setWeight(weight).build()
+fun DimensionWeight(weight: Float): Dimension = Dimension.newBuilder().setWeight(weight).build()
 
 val wrapContentDimension: Dimension = Dimension.newBuilder().setWrapContent(true).build()
 val matchParentDimension: Dimension = Dimension.newBuilder().setMatchParent(true).build()
 
-fun padding(
+fun Padding(
     start: Float = 0f, top: Float = 0f, end: Float = 0f, bottom: Float = 0f
-): Padding = Padding.newBuilder().setStart(dp(start)).setTop(dp(top)).setEnd(dp(end))
-    .setBottom(dp(bottom)).build()
+): Padding = Padding.newBuilder().setStart(Dp(start)).setTop(Dp(top)).setEnd(Dp(end))
+    .setBottom(Dp(bottom)).build()
 
-fun cornerRadius(all: Float): CornerRadius = CornerRadius.newBuilder().setRadius(all).build()
+fun CornerRadius(all: Float): CornerRadius = CornerRadius.newBuilder().setRadius(all).build()
 

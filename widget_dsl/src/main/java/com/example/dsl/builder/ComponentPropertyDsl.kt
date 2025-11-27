@@ -157,7 +157,7 @@ class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
             builder.setFontWeight(value)
         }
 
-    fun backgroundColor(block: ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setBackgroundColor(colorProviderBuilder.build())
@@ -208,7 +208,7 @@ class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
         builder.setProgressColor(colorProviderBuilder.build())
     }
 
-    fun backgroundColor(block: ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setBackgroundColor(colorProviderBuilder.build())

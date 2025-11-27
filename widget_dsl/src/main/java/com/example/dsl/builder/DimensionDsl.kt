@@ -19,7 +19,7 @@ class DpDsl(private val builder: Dp.Builder) {
 /**
  * Dp DSL 빌더 함수
  */
-fun dp(block: DpDsl.() -> Unit): Dp {
+fun Dp(block: DpDsl.() -> Unit): Dp {
     val builder = Dp.newBuilder()
     val dsl = DpDsl(builder)
     dsl.block()
@@ -40,7 +40,7 @@ class CornerRadiusDsl(private val builder: CornerRadius.Builder) {
 /**
  * CornerRadius DSL 빌더 함수
  */
-fun cornerRadius(block: CornerRadiusDsl.() -> Unit): CornerRadius {
+fun CornerRadius(block: CornerRadiusDsl.() -> Unit): CornerRadius {
     val builder = CornerRadius.newBuilder()
     val dsl = CornerRadiusDsl(builder)
     dsl.block()
@@ -79,32 +79,32 @@ class PaddingDsl(private val builder: Padding.Builder) {
     var start: Float
         get() = if (builder.hasStart()) builder.start.value else 0f
         set(value) {
-            builder.setStart(dp { this.value = value })
+            builder.setStart(Dp { this.value = value })
         }
 
     var top: Float
         get() = if (builder.hasTop()) builder.top.value else 0f
         set(value) {
-            builder.setTop(dp { this.value = value })
+            builder.setTop(Dp { this.value = value })
         }
 
     var end: Float
         get() = if (builder.hasEnd()) builder.end.value else 0f
         set(value) {
-            builder.setEnd(dp { this.value = value })
+            builder.setEnd(Dp { this.value = value })
         }
 
     var bottom: Float
         get() = if (builder.hasBottom()) builder.bottom.value else 0f
         set(value) {
-            builder.setBottom(dp { this.value = value })
+            builder.setBottom(Dp { this.value = value })
         }
 }
 
 /**
  * Padding DSL 빌더 함수
  */
-fun padding(block: PaddingDsl.() -> Unit): Padding {
+fun Padding(block: PaddingDsl.() -> Unit): Padding {
     val builder = Padding.newBuilder()
     val dsl = PaddingDsl(builder)
     dsl.block()
@@ -149,7 +149,7 @@ class DimensionDsl(private val builder: Dimension.Builder) {
 /**
  * Dimension DSL 빌더 함수
  */
-fun dimension(block: DimensionDsl.() -> Unit): Dimension {
+fun Dimension(block: DimensionDsl.() -> Unit): Dimension {
     val builder = Dimension.newBuilder()
     val dsl = DimensionDsl(builder)
     dsl.block()

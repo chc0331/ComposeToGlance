@@ -32,9 +32,9 @@ class ImageComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box({
             viewProperty {
-                width { matchParent = true }
-                height { matchParent = true }
-                backgroundColor {
+                Width { matchParent = true }
+                Height { matchParent = true }
+                BackgroundColor {
                     color {
                         argb = Color.LightGray.toArgb()
                     }

@@ -38,9 +38,9 @@ class AnalogClockComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box({
             viewProperty {
-                width { matchParent = true }
-                height { matchParent = true }
-                backgroundColor {
+                Width { matchParent = true }
+                Height { matchParent = true }
+                BackgroundColor {
                     color {
                         argb = Color.Black.toArgb()
                     }
@@ -55,8 +55,8 @@ class AnalogClockComponent : WidgetComponent() {
             // 시계 원형 배경 (Progress를 원형으로 사용)
             Progress({
                 viewProperty {
-                    width { dp { value = clockSize } }
-                    height { dp { value = clockSize } }
+                    Width { dp { value = clockSize } }
+                    Height { dp { value = clockSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 100f
@@ -76,8 +76,8 @@ class AnalogClockComponent : WidgetComponent() {
             val centerSize = clockSize * 0.1f
             Progress({
                 viewProperty {
-                    width { dp { value = centerSize } }
-                    height { dp { value = centerSize } }
+                    Width { dp { value = centerSize } }
+                    Height { dp { value = centerSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 100f

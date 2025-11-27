@@ -9,7 +9,7 @@ import com.example.dsl.proto.Padding
  * Padding을 간단하게 생성하는 확장 함수
  * WidgetScope에서 사용할 수 있는 편의 함수
  */
-fun WidgetScope.padding(
+fun WidgetScope.Padding(
     all: Float? = null,
     horizontal: Float? = null,
     vertical: Float? = null,
@@ -23,7 +23,7 @@ fun WidgetScope.padding(
     val finalEnd = all ?: horizontal ?: end
     val finalBottom = all ?: vertical ?: bottom
 
-    return padding(
+    return Padding(
         start = finalStart,
         top = finalTop,
         end = finalEnd,

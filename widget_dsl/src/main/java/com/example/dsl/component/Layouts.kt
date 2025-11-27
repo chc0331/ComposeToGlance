@@ -14,9 +14,9 @@ import com.example.dsl.proto.WidgetNode
  * Column({
  *     viewProperty {
  *         viewId = 1
- *         width { dp { value = 100f } }
- *         height { matchParent = true }
- *         padding {
+ *         Width { dp { value = 100f } }
+ *         Height { matchParent = true }
+ *         Padding {
  *             start = 16f
  *             top = 16f
  *         }
@@ -57,9 +57,9 @@ fun WidgetScope.Column(
  * Row({
  *     viewProperty {
  *         viewId = 1
- *         width { dp { value = 100f } }
- *         height { matchParent = true }
- *         padding {
+ *         Width { dp { value = 100f } }
+ *         Height { matchParent = true }
+ *         Padding {
  *             start = 16f
  *             top = 16f
  *         }
@@ -100,9 +100,9 @@ fun WidgetScope.Row(
  * Box({
  *     viewProperty {
  *         viewId = 1
- *         width { dp { value = 100f } }
- *         height { matchParent = true }
- *         padding {
+ *         Width { dp { value = 100f } }
+ *         Height { matchParent = true }
+ *         Padding {
  *             start = 16f
  *             top = 16f
  *         }

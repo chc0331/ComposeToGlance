@@ -8,19 +8,19 @@ import com.example.dsl.proto.RowLayoutProperty
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.ViewProperty
 
-fun boxLayoutProperty(
+fun BoxLayoutProperty(
     viewProperty: ViewProperty, alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_START
 ): BoxLayoutProperty = BoxLayoutProperty.newBuilder().setViewProperty(viewProperty)
     .setContentAlignment(alignment).build()
 
-fun rowLayoutProperty(
+fun RowLayoutProperty(
     viewProperty: ViewProperty,
     horizontalAlignment: HorizontalAlignment = HorizontalAlignment.H_ALIGN_START,
     verticalAlignment: VerticalAlignment = VerticalAlignment.V_ALIGN_TOP
 ): RowLayoutProperty = RowLayoutProperty.newBuilder().setViewProperty(viewProperty)
     .setHorizontalAlignment(horizontalAlignment).setVerticalAlignment(verticalAlignment).build()
 
-fun columnLayoutProperty(
+fun ColumnLayoutProperty(
     viewProperty: ViewProperty,
     horizontalAlignment: HorizontalAlignment = HorizontalAlignment.H_ALIGN_START,
     verticalAlignment: VerticalAlignment = VerticalAlignment.V_ALIGN_TOP

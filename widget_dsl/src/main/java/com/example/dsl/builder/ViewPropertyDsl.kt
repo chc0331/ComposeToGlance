@@ -22,61 +22,61 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
             builder.setViewId(value)
         }
 
-    fun width(block: DimensionDsl.() -> Unit) {
+    fun Width(block: DimensionDsl.() -> Unit) {
         val dimensionBuilder = Dimension.newBuilder()
         DimensionDsl(dimensionBuilder).block()
         builder.setWidth(dimensionBuilder.build())
     }
 
-    fun width(dimension: Dimension) {
+    fun Width(dimension: Dimension) {
         builder.setWidth(dimension)
     }
 
-    fun height(block: DimensionDsl.() -> Unit) {
+    fun Height(block: DimensionDsl.() -> Unit) {
         val dimensionBuilder = Dimension.newBuilder()
         DimensionDsl(dimensionBuilder).block()
         builder.setHeight(dimensionBuilder.build())
     }
 
-    fun height(dimension: Dimension) {
+    fun Height(dimension: Dimension) {
         builder.setHeight(dimension)
     }
 
-    fun padding(block: PaddingDsl.() -> Unit) {
+    fun Padding(block: PaddingDsl.() -> Unit) {
         val paddingBuilder = Padding.newBuilder()
         PaddingDsl(paddingBuilder).block()
         builder.setPadding(paddingBuilder.build())
     }
 
-    fun padding(padding: Padding?) {
+    fun Padding(padding: Padding?) {
         padding?.let { builder.setPadding(it) }
     }
 
-    fun cornerRadius(block: CornerRadiusDsl.() -> Unit) {
+    fun CornerRadius(block: CornerRadiusDsl.() -> Unit) {
         val cornerRadiusBuilder = CornerRadius.newBuilder()
         CornerRadiusDsl(cornerRadiusBuilder).block()
         builder.setCornerRadius(cornerRadiusBuilder.build())
     }
 
-    fun semantics(block: SemanticsDsl.() -> Unit) {
+    fun Semantics(block: SemanticsDsl.() -> Unit) {
         val semanticsBuilder = com.example.dsl.proto.Semantics.newBuilder()
         SemanticsDsl(semanticsBuilder).block()
         builder.setSemantics(semanticsBuilder.build())
     }
 
-    fun clickAction(block: ActionDsl.() -> Unit) {
+    fun ClickAction(block: ActionDsl.() -> Unit) {
         val actionBuilder = Action.newBuilder()
         ActionDsl(actionBuilder).block()
         builder.setClickAction(actionBuilder.build())
     }
 
-    fun backgroundColor(block: ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setBackgroundColor(colorProviderBuilder.build())
     }
 
-    fun backgroundColor(colorProvider: ColorProvider?) {
+    fun BackgroundColor(colorProvider: ColorProvider?) {
         colorProvider?.let { builder.setBackgroundColor(it) }
     }
 }
@@ -84,7 +84,7 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
 /**
  * ViewProperty DSL 빌더 함수
  */
-fun viewProperty(block: ViewPropertyDsl.() -> Unit): ViewProperty {
+fun ViewProperty(block: ViewPropertyDsl.() -> Unit): ViewProperty {
     val builder = ViewProperty.newBuilder()
     val dsl = ViewPropertyDsl(builder)
     dsl.block()
@@ -117,7 +117,7 @@ class AlignmentDsl(private val builder: Alignment.Builder) {
 /**
  * Alignment DSL 빌더 함수
  */
-fun alignment(block: AlignmentDsl.() -> Unit): Alignment {
+fun Alignment(block: AlignmentDsl.() -> Unit): Alignment {
     val builder = Alignment.newBuilder()
     val dsl = AlignmentDsl(builder)
     dsl.block()

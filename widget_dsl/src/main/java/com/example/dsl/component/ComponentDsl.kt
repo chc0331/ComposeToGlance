@@ -294,7 +294,7 @@ class ButtonDsl(
      * 배경 색상 설정 블록
      */
     fun backgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
-        propertyDsl.backgroundColor(block)
+        propertyDsl.BackgroundColor(block)
     }
 
     /**
@@ -392,7 +392,7 @@ class ProgressDsl(
      */
     fun backgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         backgroundColorSet = true
-        propertyDsl.backgroundColor(block)
+        propertyDsl.BackgroundColor(block)
     }
 
     /**
@@ -412,7 +412,7 @@ class ProgressDsl(
             }
         }
         if (!backgroundColorSet) {
-            propertyDsl.backgroundColor {
+            propertyDsl.BackgroundColor {
                 color {
                     argb = 0xFFE0E0E0.toInt()
                 }

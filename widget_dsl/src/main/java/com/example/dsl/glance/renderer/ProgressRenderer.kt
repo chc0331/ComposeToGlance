@@ -10,8 +10,8 @@ import androidx.glance.LocalContext
 import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.LinearProgressIndicator
 import com.example.dsl.R
-import com.example.dsl.builder.color
-import com.example.dsl.builder.colorProvider
+import com.example.dsl.builder.Color
+import com.example.dsl.builder.ColorProvider
 import com.example.dsl.glance.GlanceModifierBuilder
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.RenderContext
@@ -85,10 +85,10 @@ object ProgressRenderer : NodeRenderer {
         LinearProgressIndicator(
             progress = progress.coerceIn(0f, 1f),
             modifier = modifier,
-            color = ColorConverter.toGlanceColorProvider(colorProvider(color = color(progressColor.toArgb()))),
+            color = ColorConverter.toGlanceColorProvider(ColorProvider(color = Color(progressColor.toArgb()))),
             backgroundColor = ColorConverter.toGlanceColorProvider(
-                colorProvider(
-                    color = color(
+                ColorProvider(
+                    color = Color(
                         backgroundColor.toArgb()
                     )
                 )

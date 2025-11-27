@@ -9,13 +9,13 @@ import com.example.dsl.proto.Semantics
  * Component / Action / Semantics
  * */
 
-fun semantics(contentDescription: String): Semantics =
+fun Semantics(contentDescription: String): Semantics =
     Semantics.newBuilder().setContentDescription(contentDescription).build()
 
-fun component(packageName: String, className: String): Component =
+fun Component(packageName: String, className: String): Component =
     Component.newBuilder().setPackageName(packageName).setClassName(className).build()
 
-fun action(
+fun Action(
     activity: Boolean = false,
     service: Boolean = false,
     broadcastReceiver: Boolean = false,
@@ -37,7 +37,7 @@ class SemanticsDsl(private val builder: Semantics.Builder) {
 /**
  * Semantics DSL 빌더 함수
  */
-fun semantics(block: SemanticsDsl.() -> Unit): Semantics {
+fun Semantics(block: SemanticsDsl.() -> Unit): Semantics {
     val builder = Semantics.newBuilder()
     val dsl = SemanticsDsl(builder)
     dsl.block()
@@ -64,7 +64,7 @@ class ComponentDsl(private val builder: Component.Builder) {
 /**
  * Component DSL 빌더 함수
  */
-fun component(block: ComponentDsl.() -> Unit): Component {
+fun Component(block: ComponentDsl.() -> Unit): Component {
     val builder = Component.newBuilder()
     val dsl = ComponentDsl(builder)
     dsl.block()
@@ -103,7 +103,7 @@ class ActionDsl(private val builder: Action.Builder) {
 /**
  * Action DSL 빌더 함수
  */
-fun action(block: ActionDsl.() -> Unit): Action {
+fun Action(block: ActionDsl.() -> Unit): Action {
     val builder = Action.newBuilder()
     val dsl = ActionDsl(builder)
     dsl.block()

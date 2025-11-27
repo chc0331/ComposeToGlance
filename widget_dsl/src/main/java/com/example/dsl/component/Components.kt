@@ -13,8 +13,8 @@ import com.example.dsl.proto.WidgetNode
  * ```
  * Text({
  *     viewProperty {
- *         width { wrapContent = true }
- *         height { wrapContent = true }
+ *         Width { wrapContent = true }
+ *         Height { wrapContent = true }
  *     }
  *     text = "Hello World"
  *     fontSize = 18f
@@ -44,8 +44,8 @@ fun WidgetScope.Text(block: TextDsl.() -> Unit) {
  * ```
  * Image({
  *     viewProperty {
- *         width { wrapContent = true }
- *         height { wrapContent = true }
+ *         Width { wrapContent = true }
+ *         Height { wrapContent = true }
  *     }
  *     provider {
  *         drawableResId = R.drawable.example_image
@@ -70,8 +70,8 @@ fun WidgetScope.Image(block: ImageDsl.() -> Unit) {
  * ```
  * Button({
  *     viewProperty {
- *         width { wrapContent = true }
- *         height { wrapContent = true }
+ *         Width { wrapContent = true }
+ *         Height { wrapContent = true }
  *     }
  *     text = "Click Me"
  *     fontSize = 16f
@@ -105,8 +105,8 @@ fun WidgetScope.Button(block: ButtonDsl.() -> Unit) {
  * ```
  * Progress({
  *     viewProperty {
- *         width { matchParent = true }
- *         height { matchParent = true }
+ *         Width { matchParent = true }
+ *         Height { matchParent = true }
  *     }
  *     progressType = ProgressType.PROGRESS_TYPE_LINEAR
  *     maxValue = 100f
@@ -140,8 +140,8 @@ fun WidgetScope.Progress(block: ProgressDsl.() -> Unit) {
  * ```
  * Spacer({
  *     viewProperty {
- *         width { wrapContent = true }
- *         height { wrapContent = true }
+ *         Width { wrapContent = true }
+ *         Height { wrapContent = true }
  *     }
  * })
  * ```

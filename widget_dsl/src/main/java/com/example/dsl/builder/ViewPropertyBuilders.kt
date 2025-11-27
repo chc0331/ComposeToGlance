@@ -16,7 +16,7 @@ import com.example.dsl.proto.ViewProperty
  * ViewProperty, Alignment
  * */
 
-fun viewProperty(
+fun ViewProperty(
     viewId: Int,
     width: Dimension = wrapContentDimension,
     height: Dimension = wrapContentDimension,
@@ -32,7 +32,7 @@ fun viewProperty(
     .apply { clickAction?.let { setClickAction(it) } }
     .apply { backgroundColor?.let { setBackgroundColor(it) } }.build()
 
-fun alignment(
+fun Alignment(
     alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_UNSPECIFIED,
     horizontal: HorizontalAlignment = HorizontalAlignment.H_ALIGN_UNSPECIFIED,
     vertical: VerticalAlignment = VerticalAlignment.V_ALIGN_UNSPECIFIED

@@ -23,7 +23,7 @@ class ColorDsl(private val builder: Color.Builder) {
 /**
  * Color DSL 빌더 함수
  */
-fun color(block: ColorDsl.() -> Unit): Color {
+fun Color(block: ColorDsl.() -> Unit): Color {
     val builder = Color.newBuilder()
     val dsl = ColorDsl(builder)
     dsl.block()
@@ -58,7 +58,7 @@ class ColorProviderDsl(private val builder: ColorProvider.Builder) {
 /**
  * ColorProvider DSL 빌더 함수
  */
-fun colorProvider(block: ColorProviderDsl.() -> Unit): ColorProvider {
+fun ColorProvider(block: ColorProviderDsl.() -> Unit): ColorProvider {
     val builder = ColorProvider.newBuilder()
     val dsl = ColorProviderDsl(builder)
     dsl.block()
@@ -87,7 +87,7 @@ class TextContentDsl(private val builder: TextContent.Builder) {
 /**
  * TextContent DSL 빌더 함수
  */
-fun textContent(block: TextContentDsl.() -> Unit): TextContent {
+fun TextContent(block: TextContentDsl.() -> Unit): TextContent {
     val builder = TextContent.newBuilder()
     val dsl = TextContentDsl(builder)
     dsl.block()
@@ -133,7 +133,7 @@ class ImageProviderDsl(private val builder: ImageProvider.Builder) {
 /**
  * ImageProvider DSL 빌더 함수
  */
-fun imageProvider(block: ImageProviderDsl.() -> Unit): ImageProvider {
+fun ImageProvider(block: ImageProviderDsl.() -> Unit): ImageProvider {
     val builder = ImageProvider.newBuilder()
     val dsl = ImageProviderDsl(builder)
     dsl.block()

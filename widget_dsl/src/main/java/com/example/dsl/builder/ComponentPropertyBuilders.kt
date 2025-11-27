@@ -16,7 +16,7 @@ import com.example.dsl.proto.TextProperty
 import com.example.dsl.proto.ViewProperty
 
 
-fun textProperty(
+fun TextProperty(
     viewProperty: ViewProperty,
     text: TextContent,
     fontColor: ColorProvider,
@@ -28,7 +28,7 @@ fun textProperty(
     .setFontColor(fontColor).setFontSize(fontSize).setFontWeight(fontWeight)
     .setTextAlign(textAlign).setMaxLine(maxLine).build()
 
-fun imageProperty(
+fun ImageProperty(
     viewProperty: ViewProperty,
     provider: ImageProvider,
     tintColor: Color? = null,
@@ -39,7 +39,7 @@ fun imageProperty(
         .setAlpha(alpha).setContentScale(contentScale)
         .apply { tintColor?.let { setTintColor(it) } }.build()
 
-fun buttonProperty(
+fun ButtonProperty(
     viewProperty: ViewProperty,
     text: TextContent,
     fontColor: ColorProvider,
@@ -51,7 +51,7 @@ fun buttonProperty(
     .setFontColor(fontColor).setFontSize(fontSize).setFontWeight(fontWeight).setMaxLine(maxLine)
     .apply { backgroundColor?.let { setBackgroundColor(it) } }.build()
 
-fun progressProperty(
+fun ProgressProperty(
     viewProperty: ViewProperty,
     type: ProgressType,
     maxValue: Float,
@@ -64,7 +64,7 @@ fun progressProperty(
         .setBackgroundColor(backgroundColor).build()
 
 
-fun spacerProperty(
+fun SpacerProperty(
     viewProperty: ViewProperty
 ): SpacerProperty = SpacerProperty.newBuilder().setViewProperty(viewProperty).build()
 

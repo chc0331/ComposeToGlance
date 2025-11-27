@@ -38,9 +38,9 @@ class BatteryComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box({
             viewProperty {
-                width { matchParent = true }
-                height { matchParent = true }
-                backgroundColor {
+                Width { matchParent = true }
+                Height { matchParent = true }
+                BackgroundColor {
                     color {
                         argb = Color.Black.toArgb()
                     }
@@ -52,8 +52,8 @@ class BatteryComponent : WidgetComponent() {
             val progressSize = size?.let { it.height.value * 0.6f } ?: 60f
             Progress({
                 viewProperty {
-                    width { dp { value = progressSize } }
-                    height { dp { value = progressSize } }
+                    Width { dp { value = progressSize } }
+                    Height { dp { value = progressSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 50f

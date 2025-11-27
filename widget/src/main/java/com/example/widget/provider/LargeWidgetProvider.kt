@@ -1,13 +1,8 @@
 package com.example.widget.provider
 
-import android.R.attr.height
-import android.R.attr.text
-import android.R.attr.top
-import android.R.attr.value
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color.argb
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -21,7 +16,6 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.viewProperty
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
@@ -30,7 +24,6 @@ import com.example.dsl.provider.DslLocalCellWidth
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
-import com.example.widget.component.BatteryComponent
 import com.example.widget.proto.PositionedWidget
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
@@ -61,8 +54,8 @@ class LargeAppWidget : DslAppWidget() {
         ) {
             Box({
                 viewProperty {
-                    width { matchParent = true }
-                    height { matchParent = true }
+                    Width { matchParent = true }
+                    Height { matchParent = true }
                 }
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
             }) {
@@ -87,9 +80,9 @@ class LargeAppWidget : DslAppWidget() {
 
         Box({
             viewProperty {
-                width { matchParent = true }
-                height { matchParent = true }
-                padding {
+                Width { matchParent = true }
+                Height { matchParent = true }
+                Padding {
                     start = leftMargin.value
                     top = topMargin.value
                 }
@@ -99,17 +92,17 @@ class LargeAppWidget : DslAppWidget() {
             val componentHeight = cellHeight?.times(widget.rowSpan) ?: 0.dp
             Box({
                 viewProperty {
-                    width {
+                    Width {
                         dp {
                             value = componentWidth.value
                         }
                     }
-                    height {
+                    Height {
                         dp {
                             value = componentHeight.value
                         }
                     }
-                    backgroundColor {
+                    BackgroundColor {
                         color {
                             argb = Color.Black.toArgb()
                         }

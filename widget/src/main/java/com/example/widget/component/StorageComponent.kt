@@ -44,9 +44,9 @@ class StorageComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box({
             viewProperty {
-                width { matchParent = true }
-                height { matchParent = true }
-                backgroundColor {
+                Width { matchParent = true }
+                Height { matchParent = true }
+                BackgroundColor {
                     color {
                         argb = Color.White.toArgb()
                     }
@@ -75,8 +75,8 @@ class StorageComponent : WidgetComponent() {
 
                 Progress({
                     viewProperty {
-                        width { dp { value = progressWidth } }
-                        height { dp { value = 20f } }
+                        Width { dp { value = progressWidth } }
+                        Height { dp { value = 20f } }
                     }
                     progressType = ProgressType.PROGRESS_TYPE_LINEAR
                     progressValue = 65f
