@@ -27,7 +27,7 @@ import com.example.dsl.provider.DslLocalCellWidth
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
-import com.example.widget.proto.PositionedWidget
+import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
 import kotlinx.coroutines.CoroutineScope
@@ -62,15 +62,14 @@ class LargeAppWidget : DslAppWidget() {
                 }
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
             }) {
-                currentLayout.positionedWidgetsList.forEach {
+                currentLayout.placedWidgetComponentList.forEach {
                     GridItem(it)
                 }
-//                BatteryComponent().renderContent(this)
             }
         }
     }
 
-    private fun WidgetScope.GridItem(widget: PositionedWidget) {
+    private fun WidgetScope.GridItem(widget: PlacedWidgetComponent) {
         val widgetSize = getLocal(DslLocalSize) ?: DpSize(0.dp, 0.dp)
         val cellWidth = getLocal(DslLocalCellWidth)
         val cellHeight = getLocal(DslLocalCellHeight)

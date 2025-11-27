@@ -23,7 +23,7 @@ enum WidgetCategory {
 }
 
 // 그리드에 배치된 위젯 정보
-message PositionedWidget {
+message PlacedWidgetComponent {
   // 그리드에서의 인덱스값
   int32 grid_index = 1;
   
@@ -46,6 +46,6 @@ message WidgetLayout {
   SizeType size_type = 1;
   
   // 배치된 위젯들의 리스트
-  repeated PositionedWidget positioned_widgets = 2;
+  repeated PlacedWidgetComponent placed_widget_component = 2;
 }
 

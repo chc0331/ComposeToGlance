@@ -5,7 +5,7 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
-import com.example.widget.proto.PositionedWidget
+import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.SizeType
 import com.example.widget.proto.WidgetLayout
 import kotlinx.coroutines.flow.Flow
@@ -34,13 +34,13 @@ class WidgetLayoutRepository(private val context: Context) {
         }
     }
 
-    suspend fun updateData(sizeType: SizeType, positionedWidgets: List<PositionedWidget>) {
+    suspend fun updateData(sizeType: SizeType, positionedWidgets: List<PlacedWidgetComponent>) {
         with(context.layoutDataStore) {
             updateData { it.toBuilder().clear().build() }
             updateData {
                 val builder = it.toBuilder()
                 builder.setSizeType(sizeType)
-                builder.addAllPositionedWidgets(positionedWidgets)
+                builder.addAllPlacedWidgetComponent(positionedWidgets)
                 builder.build()
             }
         }

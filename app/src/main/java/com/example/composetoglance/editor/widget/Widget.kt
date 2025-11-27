@@ -33,7 +33,7 @@ import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.component.WidgetComponent
-import com.example.widget.proto.PositionedWidget
+import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.view.AppWidgetView
 
@@ -206,13 +206,13 @@ data class PositionedWidget(
     val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
     val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
 ) {
-    fun toProto(): PositionedWidget {
+    fun toProto(): PlacedWidgetComponent {
         val (row, col) = when (cellIndices.size) {
             1 -> Pair(1, 1)
             2 -> Pair(1, 2)
             else -> Pair(2, 2)
         }
-        return PositionedWidget.newBuilder()
+        return PlacedWidgetComponent.newBuilder()
             .setGridIndex((cellIndex?.plus(1)) ?: 1)
             .setRowSpan(row)
             .setColSpan(col)
