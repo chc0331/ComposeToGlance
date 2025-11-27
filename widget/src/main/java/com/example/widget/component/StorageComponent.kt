@@ -1,5 +1,7 @@
 package com.example.widget.component
 
+import android.R.attr.value
+import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -34,7 +36,7 @@ class StorageComponent : WidgetComponent() {
     }
 
     override fun getSizeType(): SizeType {
-        return SizeType.TINY
+        return SizeType.MEDIUM
     }
 
     override fun getWidgetTag(): String {
@@ -43,11 +45,11 @@ class StorageComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 BackgroundColor {
-                    color {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }
@@ -65,8 +67,8 @@ class StorageComponent : WidgetComponent() {
                     text = "Storage"
                     fontSize = 16f
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                    fontColor {
-                        color {
+                    FontColor {
+                        Color {
                             argb = Color.Black.toArgb()
                         }
                     }
@@ -74,20 +76,20 @@ class StorageComponent : WidgetComponent() {
                 })
 
                 Progress({
-                    viewProperty {
-                        Width { dp { value = progressWidth } }
-                        Height { dp { value = 20f } }
+                    ViewProperty {
+                        Width { Dp { value = progressWidth } }
+                        Height { Dp { value = 20f } }
                     }
                     progressType = ProgressType.PROGRESS_TYPE_LINEAR
                     progressValue = 65f
                     maxValue = 100f
-                    progressColor {
-                        color {
+                    ProgressColor {
+                        Color {
                             argb = Color.Blue.toArgb()
                         }
                     }
-                    backgroundColor {
-                        color {
+                    BackgroundColor {
+                        Color {
                             argb = Color.LightGray.toArgb()
                         }
                     }
@@ -97,8 +99,8 @@ class StorageComponent : WidgetComponent() {
                     text = "65%"
                     fontSize = 14f
                     fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                    fontColor {
-                        color {
+                    FontColor {
+                        Color {
                             argb = Color.Black.toArgb()
                         }
                     }

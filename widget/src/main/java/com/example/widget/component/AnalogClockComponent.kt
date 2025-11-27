@@ -1,5 +1,7 @@
 package com.example.widget.component
 
+import android.R.attr.value
+import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -28,7 +30,7 @@ class AnalogClockComponent : WidgetComponent() {
     }
 
     override fun getSizeType(): SizeType {
-        return SizeType.TINY
+        return SizeType.MEDIUM
     }
 
     override fun getWidgetTag(): String {
@@ -37,11 +39,11 @@ class AnalogClockComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 BackgroundColor {
-                    color {
+                    Color {
                         argb = Color.Black.toArgb()
                     }
                 }
@@ -54,19 +56,19 @@ class AnalogClockComponent : WidgetComponent() {
 
             // 시계 원형 배경 (Progress를 원형으로 사용)
             Progress({
-                viewProperty {
-                    Width { dp { value = clockSize } }
-                    Height { dp { value = clockSize } }
+                ViewProperty {
+                    Width { Dp { value = clockSize } }
+                    Height { Dp { value = clockSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 100f
-                progressColor {
-                    color {
+                ProgressColor {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }
-                backgroundColor {
-                    color {
+                BackgroundColor {
+                    Color {
                         argb = Color.DarkGray.toArgb()
                     }
                 }
@@ -75,14 +77,14 @@ class AnalogClockComponent : WidgetComponent() {
             // 시계 중심점 (간단한 원)
             val centerSize = clockSize * 0.1f
             Progress({
-                viewProperty {
-                    Width { dp { value = centerSize } }
-                    Height { dp { value = centerSize } }
+                ViewProperty {
+                    Width { Dp { value = centerSize } }
+                    Height { Dp { value = centerSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 100f
-                progressColor {
-                    color {
+                ProgressColor {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }

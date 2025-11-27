@@ -1,5 +1,6 @@
 package com.example.widget.component
 
+import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
@@ -36,11 +37,11 @@ class TextComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 BackgroundColor {
-                    color {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }
@@ -51,8 +52,8 @@ class TextComponent : WidgetComponent() {
                 text = "Hello World"
                 fontSize = 18f
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                fontColor {
-                    color {
+                FontColor {
+                    Color {
                         argb = Color.Black.toArgb()
                     }
                 }

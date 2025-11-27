@@ -52,13 +52,13 @@ class ColorProviderDsl(private val builder: ColorProvider.Builder) {
             }
         }
 
-    fun color(block: ColorDsl.() -> Unit) {
+    fun Color(block: ColorDsl.() -> Unit) {
         val colorBuilder = Color.newBuilder()
         ColorDsl(colorBuilder).block()
         builder.setColor(colorBuilder.build())
     }
 
-    fun darkColor(block: ColorDsl.() -> Unit) {
+    fun DarkColor(block: ColorDsl.() -> Unit) {
         val colorBuilder = Color.newBuilder()
         ColorDsl(colorBuilder).block()
         builder.setDarkColor(colorBuilder.build())

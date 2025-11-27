@@ -1,5 +1,7 @@
 package com.example.widget.component
 
+import android.R.attr.radius
+import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
@@ -33,11 +35,11 @@ class ButtonComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 BackgroundColor {
-                    color {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }
@@ -48,17 +50,17 @@ class ButtonComponent : WidgetComponent() {
                 text = "Click Me"
                 fontSize = 16f
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                fontColor {
-                    color {
+                FontColor {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }
-                backgroundColor {
-                    color {
+                BackgroundColor {
+                    Color {
                         argb = Color.Blue.toArgb()
                     }
                 }
-                viewProperty {
+                ViewProperty {
                     CornerRadius {
                         radius = 8f
                     }

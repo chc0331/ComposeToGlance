@@ -125,7 +125,7 @@ fun Padding(block: PaddingDsl.() -> Unit): Padding {
  * Dimension DSL
  */
 class DimensionDsl(private val builder: Dimension.Builder) {
-    fun dp(block: DpDsl.() -> Unit) {
+    fun Dp(block: DpDsl.() -> Unit) {
         val dpBuilder = Dp.newBuilder()
         DpDsl(dpBuilder).block()
         builder.setDp(dpBuilder.build())

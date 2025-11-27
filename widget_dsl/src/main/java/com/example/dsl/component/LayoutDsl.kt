@@ -173,7 +173,7 @@ class BoxLayoutDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
         propertyDsl.viewProperty {
             // viewId가 설정되지 않았으면 기본값 사용

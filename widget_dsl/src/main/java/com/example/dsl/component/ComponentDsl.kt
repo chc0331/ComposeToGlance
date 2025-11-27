@@ -1,6 +1,7 @@
 package com.example.dsl.component
 
 import android.graphics.Bitmap
+import android.graphics.Color.argb
 import androidx.annotation.DrawableRes
 import com.example.dsl.WidgetScope
 import com.example.dsl.builder.ButtonPropertyDsl
@@ -93,7 +94,7 @@ class TextDsl(
     /**
      * 폰트 색상 설정 블록
      */
-    fun fontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         fontColorSet = true
         propertyDsl.fontColor(block)
     }
@@ -141,7 +142,7 @@ class TextDsl(
         }
         if (!fontColorSet) {
             propertyDsl.fontColor {
-                color {
+                Color {
                     argb = 0xFF000000.toInt()
                 }
             }
@@ -238,7 +239,7 @@ class ButtonDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
         propertyDsl.viewProperty {
             if (viewId == 0) {
@@ -251,7 +252,7 @@ class ButtonDsl(
     /**
      * 텍스트 내용 설정 블록
      */
-    fun text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
+    fun Text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
         textSet = true
         propertyDsl.text(block)
     }
@@ -280,7 +281,7 @@ class ButtonDsl(
     /**
      * 폰트 색상 설정 블록
      */
-    fun fontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         fontColorSet = true
         propertyDsl.fontColor(block)
     }
@@ -306,7 +307,7 @@ class ButtonDsl(
     /**
      * 배경 색상 설정 블록
      */
-    fun backgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         propertyDsl.BackgroundColor(block)
     }
 
@@ -324,7 +325,7 @@ class ButtonDsl(
         }
         if (!fontColorSet) {
             propertyDsl.fontColor {
-                color {
+                Color {
                     argb = 0xFFFFFFFF.toInt()
                 }
             }
@@ -355,7 +356,7 @@ class ProgressDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
         propertyDsl.viewProperty {
             if (viewId == 0) {
@@ -395,7 +396,7 @@ class ProgressDsl(
     /**
      * 진행률 색상 설정 블록
      */
-    fun progressColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun ProgressColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         progressColorSet = true
         propertyDsl.progressColor(block)
     }
@@ -403,7 +404,7 @@ class ProgressDsl(
     /**
      * 배경 색상 설정 블록
      */
-    fun backgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         backgroundColorSet = true
         propertyDsl.BackgroundColor(block)
     }
@@ -419,14 +420,14 @@ class ProgressDsl(
         }
         if (!progressColorSet) {
             propertyDsl.progressColor {
-                color {
+                Color {
                     argb = 0xFFFFFFFF.toInt()
                 }
             }
         }
         if (!backgroundColorSet) {
             propertyDsl.BackgroundColor {
-                color {
+                Color {
                     argb = 0xFFE0E0E0.toInt()
                 }
             }
@@ -448,7 +449,7 @@ class SpacerDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
         propertyDsl.viewProperty {
             if (viewId == 0) {

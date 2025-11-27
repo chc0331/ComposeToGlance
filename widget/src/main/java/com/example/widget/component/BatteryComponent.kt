@@ -1,5 +1,7 @@
 package com.example.widget.component
 
+import android.R.attr.value
+import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -37,11 +39,11 @@ class BatteryComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 BackgroundColor {
-                    color {
+                    Color {
                         argb = Color.Black.toArgb()
                     }
                 }
@@ -51,22 +53,22 @@ class BatteryComponent : WidgetComponent() {
             val size = getLocal(DslLocalSize) as? DpSize
             val progressSize = size?.let { it.height.value * 0.6f } ?: 60f
             Progress({
-                viewProperty {
-                    Width { dp { value = progressSize } }
-                    Height { dp { value = progressSize } }
+                ViewProperty {
+                    Width { Dp { value = progressSize } }
+                    Height { Dp { value = progressSize } }
                 }
                 progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
                 progressValue = 50f
-                progressColor {
-                    color {
+                ProgressColor {
+                    Color {
                         argb = Color.Green.toArgb()
                     }
                 }
             })
             Text({
                 text = "50%"
-                fontColor {
-                    color {
+                FontColor {
+                    Color {
                         argb = Color.White.toArgb()
                     }
                 }

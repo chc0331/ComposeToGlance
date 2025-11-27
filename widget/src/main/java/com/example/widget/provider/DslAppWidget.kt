@@ -1,6 +1,8 @@
 package com.example.widget.provider
 
+import android.R.attr.value
 import android.content.Context
+import android.graphics.Color.argb
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -57,10 +59,10 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     DslLocalGlanceId provides glanceId
                 ) {
                     Box({
-                        viewProperty {
-                            Width { dp { value = dpSize.width.value } }
-                            Height { dp { value = dpSize.height.value } }
-                            BackgroundColor { color { argb = Color.LightGray.toArgb() } }
+                        ViewProperty {
+                            Width { Dp { value = dpSize.width.value } }
+                            Height { Dp { value = dpSize.height.value } }
+                            BackgroundColor { Color { argb = Color.LightGray.toArgb() } }
                         }
                     }) {
                         DslContent()

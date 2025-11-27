@@ -1,8 +1,11 @@
 package com.example.widget.provider
 
+import android.R.attr.top
+import android.R.attr.value
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color.argb
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -53,7 +56,7 @@ class LargeAppWidget : DslAppWidget() {
             DslLocalCellHeight provides (widgetSize.height / 2)
         ) {
             Box({
-                viewProperty {
+                ViewProperty {
                     Width { matchParent = true }
                     Height { matchParent = true }
                 }
@@ -79,7 +82,7 @@ class LargeAppWidget : DslAppWidget() {
         Log.i("heec.choi", "GridItem / $topMargin $leftMargin $gridIndex")
 
         Box({
-            viewProperty {
+            ViewProperty {
                 Width { matchParent = true }
                 Height { matchParent = true }
                 Padding {
@@ -91,19 +94,19 @@ class LargeAppWidget : DslAppWidget() {
             val componentWidth = cellWidth?.times(widget.colSpan) ?: 0.dp
             val componentHeight = cellHeight?.times(widget.rowSpan) ?: 0.dp
             Box({
-                viewProperty {
+                ViewProperty {
                     Width {
-                        dp {
+                        Dp {
                             value = componentWidth.value
                         }
                     }
                     Height {
-                        dp {
+                        Dp {
                             value = componentHeight.value
                         }
                     }
                     BackgroundColor {
-                        color {
+                        Color {
                             argb = Color.Black.toArgb()
                         }
                     }
