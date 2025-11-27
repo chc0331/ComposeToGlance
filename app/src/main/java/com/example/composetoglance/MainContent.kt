@@ -53,7 +53,11 @@ fun MainContent(
                 modifier = Modifier.height(72.dp),
                 actions = {
                     TextButton(onClick = { viewModel.save(context) }) {
-                        Text("저장", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "저장",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
