@@ -2,6 +2,7 @@ package com.example.composetoglance.editor.canvas
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.draw.alpha
 import androidx.compose.runtime.Composable
@@ -124,7 +125,11 @@ fun WidgetCanvas(
         )
 
         if (selectedLayout == null && positionedWidgets.isEmpty()) {
-            Text("위젯 캔버스", modifier = Modifier.align(Alignment.Center))
+            Text(
+                "위젯 캔버스",
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colorScheme.primary
+            )
         } else {
             LayoutDisplay(
                 selectedLayout = selectedLayout,

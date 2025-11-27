@@ -73,7 +73,7 @@ fun BottomPanelWithTabs(
                         modifier = Modifier
                             .width(BottomPanelConstants.TAB_INDICATOR_WIDTH)
                             .height(BottomPanelConstants.TAB_INDICATOR_HEIGHT)
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(MaterialTheme.colorScheme.primary)
                     )
                 }
             }
@@ -83,8 +83,8 @@ fun BottomPanelWithTabs(
                     selected = tabIndex == index,
                     onClick = { tabIndex = index },
                     text = { Text(text = title) },
-                    selectedContentColor = MaterialTheme.colorScheme.secondary,
-                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.primary
                 )
             }
         }

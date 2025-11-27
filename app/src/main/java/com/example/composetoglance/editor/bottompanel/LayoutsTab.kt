@@ -51,7 +51,8 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
                 Text(
                     text = layout.sizeType,
                     fontWeight = FontWeight.Bold,
-                    fontSize = BottomPanelConstants.LAYOUT_TEXT_SIZE
+                    fontSize = BottomPanelConstants.LAYOUT_TEXT_SIZE,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 ClickableLayoutComponent(
                     data = layout,

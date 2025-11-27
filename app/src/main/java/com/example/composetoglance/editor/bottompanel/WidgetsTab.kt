@@ -103,7 +103,7 @@ fun WidgetsList(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp)
+                            .height(44.dp)
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
                         IconButton(
@@ -112,14 +112,16 @@ fun WidgetsList(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "뒤로가기"
+                                contentDescription = "뒤로가기",
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         Text(
                             text = selectedCategory?.name ?: "",
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션

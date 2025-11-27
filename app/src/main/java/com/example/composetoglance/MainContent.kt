@@ -40,7 +40,7 @@ import com.example.widget.component.WidgetComponent
 fun MainContent(
     viewModel: WidgetEditorViewModel = viewModel()
 ) {
-    val outline = MaterialTheme.colorScheme.outline
+    val outline = MaterialTheme.colorScheme.primary
     val canvasBackgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(
         alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA
     )
