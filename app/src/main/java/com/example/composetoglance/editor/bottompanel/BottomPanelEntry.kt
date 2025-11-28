@@ -1,5 +1,10 @@
 package com.example.composetoglance.editor.bottompanel
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -88,14 +93,20 @@ fun BottomPanelWithTabs(
                 )
             }
         }
-        when (tabIndex) {
-            0 -> LayoutsTabContent(onLayoutSelected)
-            1 -> WidgetsList(
-                widgetList = widgets,
-                categories = categories,
-                onWidgetSelected = onWidgetSelected,
-                modifier = Modifier
-            )
+        AnimatedContent(
+            targetState = tabIndex,
+            transitionSpec = {
+                fadeIn(tween(durationMillis = 400)) togetherWith fadeOut(tween(durationMillis = 200))
+            }) { tabIndex ->
+            when (tabIndex) {
+                0 -> LayoutsTabContent(onLayoutSelected)
+                1 -> WidgetsList(
+                    widgetList = widgets,
+                    categories = categories,
+                    onWidgetSelected = onWidgetSelected,
+                    modifier = Modifier
+                )
+            }
         }
     }
 }

@@ -2,8 +2,10 @@ package com.example.widget.component
 
 import com.example.dsl.WidgetScope
 import com.example.dsl.proto.WidgetNode
+import com.example.dsl.provider.DslLocalProvider
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.localprovider.DslLocalSizeType
 
 abstract class WidgetComponent {
 
@@ -21,6 +23,12 @@ abstract class WidgetComponent {
      */
     fun renderContent(scope: WidgetScope) {
         scope.Content()
+    }
+
+    private fun WidgetScope.WidgetContent() {
+        DslLocalProvider(DslLocalSizeType provides getSizeType()) {
+            Content()
+        }
     }
 
     /**

@@ -3,8 +3,10 @@ import com.example.widget.component.BatteryComponent
 import com.example.widget.component.ButtonComponent
 import com.example.widget.component.DigitalClockComponent
 import com.example.widget.component.ImageComponent
+import com.example.widget.component.SmallBattery
 import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
+import com.example.widget.component.TinyBattery
 import com.example.widget.component.WidgetComponent
 
 fun initializeWidgetComponents() {
@@ -15,7 +17,8 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(AnalogClockComponent())
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
-    WidgetComponentRegistry.registerComponent(BatteryComponent())
+    WidgetComponentRegistry.registerComponent(TinyBattery())
+    WidgetComponentRegistry.registerComponent(SmallBattery())
     WidgetComponentRegistry.registerComponent(StorageComponent())
 }
 

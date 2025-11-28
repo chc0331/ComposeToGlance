@@ -2,6 +2,7 @@ package com.example.composetoglance.editor.bottompanel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,8 +30,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    LazyRow(
-        state = scrollState,
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
@@ -39,35 +39,40 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
                 start = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
                 end = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
                 bottom = BottomPanelConstants.TAB_PADDING_BOTTOM
-            ),
-        horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING),
-        verticalAlignment = Alignment.CenterVertically
+            ), contentAlignment = Alignment.Center
     ) {
-        itemsIndexed(DefaultLayouts) { index, layout ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_ITEM_SPACING)
-            ) {
-                Text(
-                    text = layout.sizeType,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelLarge
-                )
-                ClickableLayoutComponent(
-                    data = layout,
-                    isClicked = activeLayout == layout,
-                    onComponentClick = {
-                        activeLayout = if (activeLayout == layout) null else layout
-                        // 클릭한 레이아웃의 위치로 스크롤
-                        coroutineScope.launch {
-                            scrollState.animateScrollToItem(index)
+        LazyRow(
+            state = scrollState,
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+            horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            itemsIndexed(DefaultLayouts) { index, layout ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_ITEM_SPACING)
+                ) {
+                    Text(
+                        text = layout.sizeType,
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    ClickableLayoutComponent(
+                        data = layout,
+                        isClicked = activeLayout == layout,
+                        onComponentClick = {
+                            activeLayout = if (activeLayout == layout) null else layout
+                            // 클릭한 레이아웃의 위치로 스크롤
+                            coroutineScope.launch {
+                                scrollState.animateScrollToItem(index)
+                            }
+                        },
+                        onAddClick = {
+                            onLayoutSelected(it)
+                            activeLayout = null
                         }
-                    },
-                    onAddClick = {
-                        onLayoutSelected(it)
-                        activeLayout = null
-                    }
-                )
+                    )
+                }
             }
         }
     }
