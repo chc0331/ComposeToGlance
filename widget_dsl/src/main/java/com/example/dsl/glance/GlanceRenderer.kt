@@ -2,20 +2,16 @@ package com.example.dsl.glance
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import com.example.dsl.glance.renderer.BoxRenderer
-import com.example.dsl.glance.renderer.ButtonRenderer
-import com.example.dsl.glance.renderer.ColumnRenderer
-import com.example.dsl.glance.renderer.ImageRenderer
 import com.example.dsl.glance.renderer.NodeRenderer
-import com.example.dsl.glance.renderer.ProgressRenderer
-import com.example.dsl.glance.renderer.RowRenderer
-import com.example.dsl.glance.renderer.SpacerRenderer
-import com.example.dsl.glance.renderer.TextRenderer
+import com.example.dsl.glance.renderer.NodeRendererRegistry
 import com.example.dsl.proto.WidgetLayoutDocument
 import com.example.dsl.proto.WidgetNode
 
 /**
  * Proto WidgetLayoutDocument를 Jetpack Glance Composable로 렌더링하는 메인 렌더러
+ * 
+ * 이 클래스는 NodeRendererRegistry를 사용하여 등록된 Renderer를 조회합니다.
+ * 새로운 컴포넌트를 추가할 때는 NodeRendererRegistry에 해당 Renderer를 등록하면 됩니다.
  */
 class GlanceRenderer(private val context: Context) {
     /**
@@ -47,19 +43,13 @@ class GlanceRenderer(private val context: Context) {
 
     /**
      * 노드 타입에 따라 적절한 렌더러 반환
+     * NodeRendererRegistry를 사용하여 등록된 Renderer를 조회합니다.
+     * 
+     * @param node WidgetNode
+     * @return 해당 노드 타입의 NodeRenderer 또는 null
      */
     private fun getRenderer(node: WidgetNode): NodeRenderer? {
-        return when {
-            node.hasBox() -> BoxRenderer
-            node.hasColumn() -> ColumnRenderer
-            node.hasRow() -> RowRenderer
-            node.hasText() -> TextRenderer
-            node.hasImage() -> ImageRenderer
-            node.hasButton() -> ButtonRenderer
-            node.hasProgress() -> ProgressRenderer
-            node.hasSpacer() -> SpacerRenderer
-            else -> null
-        }
+        return NodeRendererRegistry.getRendererForNode(node)
     }
 }
 
