@@ -56,7 +56,7 @@ class DigitalClockComponent : WidgetComponent() {
             val currentTime = timeFormat.format(Date())
 
             Text({
-                Text {
+                TextContent {
                     text = currentTime
                 }
                 fontSize = 32f

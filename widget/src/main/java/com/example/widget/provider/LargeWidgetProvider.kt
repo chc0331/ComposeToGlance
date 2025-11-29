@@ -114,7 +114,7 @@ class LargeAppWidget : DslAppWidget() {
             })
             {
                 Text {
-                    Text {
+                    TextContent {
                         text = widget.widgetTag
                     }
                 }

@@ -50,7 +50,7 @@ class TextComponent : WidgetComponent() {
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
             Text({
-                Text {
+                TextContent {
                     text = "Hello World"
                 }
                 fontSize = 18f

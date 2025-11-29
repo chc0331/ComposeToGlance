@@ -66,22 +66,10 @@ class TextDsl(
     /**
      * 텍스트 내용 설정 블록
      */
-    fun Text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
+    fun TextContent(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
         textSet = true
         propertyDsl.Text(block)
     }
-
-//    /**
-//     * 텍스트 내용 직접 설정
-//     */
-//    var text: String
-//        get() = if (propertyBuilder.hasText()) propertyBuilder.text.text else ""
-//        set(value) {
-//            textSet = true
-//            propertyDsl.text {
-//                this.text = value
-//            }
-//        }
 
     /**
      * 최대 줄 수

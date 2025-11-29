@@ -66,7 +66,7 @@ class StorageComponent : WidgetComponent() {
                 verticalAlignment = V_ALIGN_CENTER
             }) {
                 Text({
-                    Text{
+                    TextContent{
                         text = "Storage"
                     }
                     fontSize = 16f
@@ -100,7 +100,7 @@ class StorageComponent : WidgetComponent() {
                 })
 
                 Text({
-                    Text {
+                    TextContent {
                         text = "65%"
                     }
                     fontSize = 14f
