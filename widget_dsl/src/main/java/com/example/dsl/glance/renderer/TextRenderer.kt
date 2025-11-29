@@ -1,18 +1,20 @@
 package com.example.dsl.glance.renderer
 
 
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
-import androidx.glance.text.FontWeight
+import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.text.Text
-import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.example.dsl.proto.WidgetNode
 import com.example.dsl.glance.GlanceModifierBuilder
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.RenderContext
 import com.example.dsl.glance.converter.ColorConverter
-import com.example.dsl.proto.TextAlign as ProtoTextAlign
+import com.example.dsl.glance.renderer.remoteviews.renderToRemoteViews
+import com.example.dsl.proto.FontWeight
+import com.example.dsl.proto.TextAlign
 
 /**
  * Text 노드 렌더러
@@ -26,6 +28,12 @@ object TextRenderer : NodeRenderer {
     ) {
         if (!node.hasText()) {
             androidx.glance.layout.Box {}
+            return
+        }
+        if (node.text.viewProperty.partiallyUpdate) {
+            createRemoteViews(node, context)?.let {
+                AndroidRemoteViews(remoteViews = it)
+            }
             return
         }
 
@@ -42,6 +50,7 @@ object TextRenderer : NodeRenderer {
             textProperty.text.resId != 0 -> {
                 context.context.resources.getString(textProperty.text.resId)
             }
+
             else -> ""
         }
 
@@ -55,8 +64,8 @@ object TextRenderer : NodeRenderer {
         val textStyle = TextStyle(
             color = androidx.glance.unit.ColorProvider(textColor),
             fontSize = textProperty.fontSize.sp,
-            fontWeight = toGlanceFontWeight(textProperty.fontWeight),
-            textAlign = toGlanceTextAlign(textProperty.textAlign)
+            fontWeight = textProperty.fontWeight.toGlanceFontWeight(),
+            textAlign = textProperty.textAlign.toGlanceTextAlign()
         )
 
         // 최대 라인 수 (Glance는 maxLines를 직접 지원하지 않으므로 제한적으로 처리)
@@ -69,22 +78,30 @@ object TextRenderer : NodeRenderer {
         )
     }
 
-    private fun toGlanceFontWeight(protoWeight: com.example.dsl.proto.FontWeight): FontWeight {
-        return when (protoWeight) {
-            com.example.dsl.proto.FontWeight.FONT_WEIGHT_NORMAL -> FontWeight.Normal
-            com.example.dsl.proto.FontWeight.FONT_WEIGHT_MEDIUM -> FontWeight.Medium
-            com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD -> FontWeight.Bold
-            else -> FontWeight.Normal
+    private fun FontWeight.toGlanceFontWeight(): androidx.glance.text.FontWeight {
+        return when (this) {
+            FontWeight.FONT_WEIGHT_NORMAL -> androidx.glance.text.FontWeight.Normal
+            FontWeight.FONT_WEIGHT_MEDIUM -> androidx.glance.text.FontWeight.Medium
+            FontWeight.FONT_WEIGHT_BOLD -> androidx.glance.text.FontWeight.Bold
+            else -> androidx.glance.text.FontWeight.Normal
         }
     }
 
-    private fun toGlanceTextAlign(protoAlign: ProtoTextAlign): TextAlign {
-        return when (protoAlign) {
-            ProtoTextAlign.TEXT_ALIGN_START -> TextAlign.Start
-            ProtoTextAlign.TEXT_ALIGN_CENTER -> TextAlign.Center
-            ProtoTextAlign.TEXT_ALIGN_END -> TextAlign.End
-            else -> TextAlign.Start
+    private fun TextAlign.toGlanceTextAlign(): androidx.glance.text.TextAlign {
+        return when (this) {
+            TextAlign.TEXT_ALIGN_START -> androidx.glance.text.TextAlign.Start
+            TextAlign.TEXT_ALIGN_CENTER -> androidx.glance.text.TextAlign.Center
+            TextAlign.TEXT_ALIGN_END -> androidx.glance.text.TextAlign.End
+            else -> androidx.glance.text.TextAlign.Start
         }
+    }
+
+    private fun createRemoteViews(
+        node: WidgetNode,
+        context: RenderContext
+    ): RemoteViews? {
+        val remoteViews = renderToRemoteViews(node, context.context)
+        return remoteViews
     }
 }
 
