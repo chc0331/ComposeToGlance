@@ -1,8 +1,10 @@
 package com.example.dsl.glance
 
 import android.content.Context
+import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -65,6 +67,9 @@ object GlanceModifierBuilder {
         // Background color
         modifier =
             modifier.background(ColorConverter.toGlanceColorProvider(viewProperty.backgroundColor))
+
+        // Coner radius
+        modifier = modifier.cornerRadius(viewProperty.cornerRadius.radius.dp)
 
         return modifier
     }

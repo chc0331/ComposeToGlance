@@ -2,7 +2,7 @@ package com.example.widget.provider
 
 import android.R.attr.value
 import android.content.Context
-import android.graphics.Color.argb
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -23,19 +23,22 @@ import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.provider.DslLocalBackgroundRadius
+import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalGlanceId
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
+import com.example.widget.util.getSystemBackgroundRadius
+import com.example.widget.util.getSystemContentRadius
 
 abstract class DslAppWidget : GlanceAppWidget() {
 
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            val size = LocalSize.current
             androidx.glance.layout.Box(
-                modifier = GlanceModifier.fillMaxSize().background(Color.White),
+                modifier = GlanceModifier.fillMaxSize().background(Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
                 RenderDsl()
@@ -50,19 +53,26 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val dpSize = LocalSize.current
         val glanceId = LocalGlanceId.current
         val renderer = remember { GlanceRenderer(context) }
+        val backgroundRadius = remember { context.getSystemBackgroundRadius() }
+        val contentRadius = remember { context.getSystemContentRadius() }
         renderer.render(
             WidgetLayout {
                 DslLocalProvider(
                     DslLocalSize provides dpSize,
                     DslLocalContext provides context,
                     DslLocalState provides state,
-                    DslLocalGlanceId provides glanceId
+                    DslLocalGlanceId provides glanceId,
+                    DslLocalBackgroundRadius provides backgroundRadius,
+                    DslLocalContentRadius provides contentRadius
                 ) {
                     Box({
                         ViewProperty {
                             Width { Dp { value = dpSize.width.value } }
                             Height { Dp { value = dpSize.height.value } }
                             BackgroundColor { Color { argb = Color.LightGray.toArgb() } }
+                            CornerRadius {
+                                radius = backgroundRadius.value
+                            }
                         }
                     }) {
                         DslContent()

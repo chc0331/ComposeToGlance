@@ -42,8 +42,9 @@ class LargeAppWidget : DslAppWidget() {
     override val sizeMode: SizeMode
         get() = SizeMode.Responsive(
             setOf(
-                DpSize(300.dp, 150.dp),
-                DpSize(250.dp, 120.dp)
+                DpSize(400.dp, 250.dp),
+                DpSize(350.dp, 200.dp),
+                DpSize(330.dp, 180.dp)
             )
         )
 
@@ -62,6 +63,7 @@ class LargeAppWidget : DslAppWidget() {
                     Height { matchParent = true }
                 }
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
+
             }) {
                 currentLayout.placedWidgetComponentList.forEach {
                     GridItem(it)
@@ -71,16 +73,12 @@ class LargeAppWidget : DslAppWidget() {
     }
 
     private fun WidgetScope.GridItem(widget: PlacedWidgetComponent) {
-        val widgetSize = getLocal(DslLocalSize) ?: DpSize(0.dp, 0.dp)
         val cellWidth = getLocal(DslLocalCellWidth)
         val cellHeight = getLocal(DslLocalCellHeight)
         val gridIndex = widget.gridIndex
 
         val topMargin = cellHeight?.times((gridIndex - 1) / 4) ?: 0.dp
         val leftMargin = cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp
-
-        Log.i("heec.choi", "GridItem / $topMargin $leftMargin $gridIndex")
-
         Box({
             ViewProperty {
                 Width { matchParent = true }
@@ -88,6 +86,11 @@ class LargeAppWidget : DslAppWidget() {
                 Padding {
                     start = leftMargin.value
                     top = topMargin.value
+                }
+                BackgroundColor {
+                    Color {
+                        argb = Color.Transparent.toArgb()
+                    }
                 }
             }
         }) {
@@ -105,17 +108,12 @@ class LargeAppWidget : DslAppWidget() {
                             value = componentHeight.value
                         }
                     }
-                    BackgroundColor {
-                        Color {
-                            argb = Color.Black.toArgb()
-                        }
-                    }
                 }
             })
             {
-                Text {
-                    TextContent {
-                        text = widget.widgetTag
+                DslLocalProvider(DslLocalSize provides DpSize(componentWidth, componentHeight)) {
+                    WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
+                        it.renderContent(this)
                     }
                 }
             }
