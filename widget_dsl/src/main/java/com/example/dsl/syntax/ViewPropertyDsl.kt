@@ -1,15 +1,10 @@
-package com.example.dsl.builder
+package com.example.dsl.syntax
 
 import com.example.dsl.proto.Action
-import com.example.dsl.proto.Alignment
-import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ColorProvider
 import com.example.dsl.proto.CornerRadius
 import com.example.dsl.proto.Dimension
-import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.Padding
-import com.example.dsl.proto.Semantics
-import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.ViewProperty
 
 /**

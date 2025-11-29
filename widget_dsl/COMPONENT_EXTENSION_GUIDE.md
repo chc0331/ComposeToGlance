@@ -57,7 +57,7 @@ message NewComponentProperty {
 복잡한 속성이 있는 경우 `builder/NewComponentPropertyDsl.kt` 파일을 생성합니다.
 
 ```kotlin
-package com.example.dsl.builder
+package com.example.dsl.syntax
 
 import com.example.dsl.proto.NewComponentProperty
 
@@ -67,11 +67,13 @@ class NewComponentPropertyDsl(
     fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
         // ViewProperty 설정
     }
-    
+
     var customProperty: String
         get() = builder.customProperty
-        set(value) { builder.customProperty = value }
-    
+        set(value) {
+            builder.customProperty = value
+        }
+
     fun build(): NewComponentProperty = builder.build()
 }
 ```

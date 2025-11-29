@@ -1,7 +1,9 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.proto.AlignmentType
+import com.example.dsl.syntax.BoxLayoutDsl
+import com.example.dsl.syntax.ColumnLayoutDsl
+import com.example.dsl.syntax.RowLayoutDsl
 import com.example.dsl.proto.WidgetNode
 
 /**

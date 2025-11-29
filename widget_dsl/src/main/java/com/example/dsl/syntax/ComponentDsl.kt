@@ -1,28 +1,15 @@
-package com.example.dsl.component
+package com.example.dsl.syntax
 
-import android.R.attr.text
-import android.graphics.Bitmap
-import android.graphics.Color.argb
-import androidx.annotation.DrawableRes
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.ButtonPropertyDsl
-import com.example.dsl.builder.ImagePropertyDsl
-import com.example.dsl.builder.ProgressPropertyDsl
-import com.example.dsl.builder.SpacerPropertyDsl
-import com.example.dsl.builder.TextPropertyDsl
-import com.example.dsl.builder.ViewPropertyDsl
 import com.example.dsl.proto.ButtonProperty
 import com.example.dsl.proto.ContentScale
-import com.example.dsl.proto.ContentScale.CONTENT_SCALE_FIT
 import com.example.dsl.proto.FontWeight
-import com.example.dsl.proto.FontWeight.FONT_WEIGHT_NORMAL
 import com.example.dsl.proto.ImageProperty
 import com.example.dsl.proto.ProgressProperty
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.ProgressType.PROGRESS_TYPE_LINEAR
 import com.example.dsl.proto.SpacerProperty
 import com.example.dsl.proto.TextAlign
-import com.example.dsl.proto.TextAlign.TEXT_ALIGN_START
 import com.example.dsl.proto.TextProperty
 
 /**
@@ -66,7 +53,7 @@ class TextDsl(
     /**
      * 텍스트 내용 설정 블록
      */
-    fun TextContent(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
+    fun TextContent(block: TextContentDsl.() -> Unit) {
         textSet = true
         propertyDsl.Text(block)
     }
@@ -83,7 +70,7 @@ class TextDsl(
     /**
      * 폰트 색상 설정 블록
      */
-    fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: ColorProviderDsl.() -> Unit) {
         fontColorSet = true
         propertyDsl.FontColor(block)
     }
@@ -167,7 +154,7 @@ class ImageDsl(
     /**
      * 이미지 제공자 설정 블록
      */
-    fun Provider(block: com.example.dsl.builder.ImageProviderDsl.() -> Unit) {
+    fun Provider(block: ImageProviderDsl.() -> Unit) {
         providerSet = true
         propertyDsl.Provider(block)
     }
@@ -175,7 +162,7 @@ class ImageDsl(
     /**
      * 틴트 색상 설정 블록
      */
-    fun TintColor(block: com.example.dsl.builder.ColorDsl.() -> Unit) {
+    fun TintColor(block: ColorDsl.() -> Unit) {
         propertyDsl.TintColor(block)
     }
 
@@ -241,7 +228,7 @@ class ButtonDsl(
     /**
      * 텍스트 내용 설정 블록
      */
-    fun Text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
+    fun Text(block: TextContentDsl.() -> Unit) {
         textSet = true
         propertyDsl.Text(block)
     }
@@ -270,7 +257,7 @@ class ButtonDsl(
     /**
      * 폰트 색상 설정 블록
      */
-    fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: ColorProviderDsl.() -> Unit) {
         fontColorSet = true
         propertyDsl.FontColor(block)
     }
@@ -296,7 +283,7 @@ class ButtonDsl(
     /**
      * 배경 색상 설정 블록
      */
-    fun BackgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: ColorProviderDsl.() -> Unit) {
         propertyDsl.BackgroundColor(block)
     }
 
@@ -385,7 +372,7 @@ class ProgressDsl(
     /**
      * 진행률 색상 설정 블록
      */
-    fun ProgressColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun ProgressColor(block: ColorProviderDsl.() -> Unit) {
         progressColorSet = true
         propertyDsl.ProgressColor(block)
     }
@@ -393,7 +380,7 @@ class ProgressDsl(
     /**
      * 배경 색상 설정 블록
      */
-    fun BackgroundColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
+    fun BackgroundColor(block: ColorProviderDsl.() -> Unit) {
         backgroundColorSet = true
         propertyDsl.BackgroundColor(block)
     }

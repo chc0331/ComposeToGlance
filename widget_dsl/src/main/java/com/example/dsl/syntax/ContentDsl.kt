@@ -1,7 +1,6 @@
-package com.example.dsl.builder
+package com.example.dsl.syntax
 
 import android.graphics.Bitmap
-import androidx.annotation.DrawableRes
 import com.example.dsl.proto.Color
 import com.example.dsl.proto.ColorProvider
 import com.example.dsl.proto.ImageProvider

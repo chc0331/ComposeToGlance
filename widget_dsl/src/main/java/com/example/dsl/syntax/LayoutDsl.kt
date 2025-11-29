@@ -1,10 +1,6 @@
-package com.example.dsl.component
+package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.builder.ColumnLayoutPropertyDsl
-import com.example.dsl.builder.RowLayoutPropertyDsl
-import com.example.dsl.builder.BoxLayoutPropertyDsl
-import com.example.dsl.builder.ViewPropertyDsl
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ColumnLayoutProperty
 import com.example.dsl.proto.RowLayoutProperty

@@ -1,4 +1,4 @@
-package com.example.dsl.builder
+package com.example.dsl.syntax
 
 import com.example.dsl.proto.CornerRadius
 import com.example.dsl.proto.Dimension

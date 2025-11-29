@@ -1,4 +1,4 @@
-package com.example.dsl.builder
+package com.example.dsl.syntax
 
 import com.example.dsl.proto.Action
 import com.example.dsl.proto.Component
