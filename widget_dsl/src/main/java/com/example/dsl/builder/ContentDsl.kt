@@ -11,11 +11,11 @@ import java.io.ByteArrayOutputStream
 
 /**
  * Content 관련 DSL 클래스 및 DSL 빌더 함수
- * 
+ *
  * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
  * - DSL 클래스: ColorDsl, ColorProviderDsl, TextContentDsl, ImageProviderDsl
  * - DSL 빌더 함수: Color(block), ColorProvider(block), TextContent(block), ImageProvider(block)
- * 
+ *
  * 간단한 빌더 함수(파라미터를 직접 받는)는 ContentBuilders.kt를 참조하세요.
  */
 
@@ -28,16 +28,6 @@ class ColorDsl(private val builder: Color.Builder) {
         set(value) {
             builder.setArgb(value)
         }
-}
-
-/**
- * Color DSL 빌더 함수
- */
-fun Color(block: ColorDsl.() -> Unit): Color {
-    val builder = Color.newBuilder()
-    val dsl = ColorDsl(builder)
-    dsl.block()
-    return builder.build()
 }
 
 /**
@@ -66,16 +56,6 @@ class ColorProviderDsl(private val builder: ColorProvider.Builder) {
 }
 
 /**
- * ColorProvider DSL 빌더 함수
- */
-fun ColorProvider(block: ColorProviderDsl.() -> Unit): ColorProvider {
-    val builder = ColorProvider.newBuilder()
-    val dsl = ColorProviderDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
-/**
  * TextContent DSL
  */
 class TextContentDsl(private val builder: TextContent.Builder) {
@@ -92,16 +72,6 @@ class TextContentDsl(private val builder: TextContent.Builder) {
                 builder.setResId(value)
             }
         }
-}
-
-/**
- * TextContent DSL 빌더 함수
- */
-fun TextContent(block: TextContentDsl.() -> Unit): TextContent {
-    val builder = TextContent.newBuilder()
-    val dsl = TextContentDsl(builder)
-    dsl.block()
-    return builder.build()
 }
 
 /**
@@ -138,15 +108,5 @@ class ImageProviderDsl(private val builder: ImageProvider.Builder) {
                 builder.setIconResource(value)
             }
         }
-}
-
-/**
- * ImageProvider DSL 빌더 함수
- */
-fun ImageProvider(block: ImageProviderDsl.() -> Unit): ImageProvider {
-    val builder = ImageProvider.newBuilder()
-    val dsl = ImageProviderDsl(builder)
-    dsl.block()
-    return builder.build()
 }
 

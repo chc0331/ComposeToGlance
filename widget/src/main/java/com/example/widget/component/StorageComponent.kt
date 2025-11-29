@@ -1,5 +1,6 @@
 package com.example.widget.component
 
+import android.R.attr.text
 import android.R.attr.value
 import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,7 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.TextAlign
+import com.example.dsl.proto.TextContent
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
@@ -64,7 +66,9 @@ class StorageComponent : WidgetComponent() {
                 verticalAlignment = V_ALIGN_CENTER
             }) {
                 Text({
-                    text = "Storage"
+                    Text{
+                        text = "Storage"
+                    }
                     fontSize = 16f
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD
                     FontColor {
@@ -96,7 +100,9 @@ class StorageComponent : WidgetComponent() {
                 })
 
                 Text({
-                    text = "65%"
+                    Text {
+                        text = "65%"
+                    }
                     fontSize = 14f
                     fontWeight = FontWeight.FONT_WEIGHT_NORMAL
                     FontColor {

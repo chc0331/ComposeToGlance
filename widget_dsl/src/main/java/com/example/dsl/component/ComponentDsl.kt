@@ -1,5 +1,6 @@
 package com.example.dsl.component
 
+import android.R.attr.text
 import android.graphics.Bitmap
 import android.graphics.Color.argb
 import androidx.annotation.DrawableRes
@@ -52,9 +53,9 @@ class TextDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             if (viewId == 0) {
                 viewId = scope.nextViewId()
             }
@@ -65,22 +66,22 @@ class TextDsl(
     /**
      * 텍스트 내용 설정 블록
      */
-    fun text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
+    fun Text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
         textSet = true
-        propertyDsl.text(block)
+        propertyDsl.Text(block)
     }
 
-    /**
-     * 텍스트 내용 직접 설정
-     */
-    var text: String
-        get() = if (propertyBuilder.hasText()) propertyBuilder.text.text else ""
-        set(value) {
-            textSet = true
-            propertyDsl.text {
-                this.text = value
-            }
-        }
+//    /**
+//     * 텍스트 내용 직접 설정
+//     */
+//    var text: String
+//        get() = if (propertyBuilder.hasText()) propertyBuilder.text.text else ""
+//        set(value) {
+//            textSet = true
+//            propertyDsl.text {
+//                this.text = value
+//            }
+//        }
 
     /**
      * 최대 줄 수
@@ -96,7 +97,7 @@ class TextDsl(
      */
     fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         fontColorSet = true
-        propertyDsl.fontColor(block)
+        propertyDsl.FontColor(block)
     }
 
     /**
@@ -131,17 +132,17 @@ class TextDsl(
      */
     internal fun build(): TextProperty {
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
         if (!textSet) {
-            propertyDsl.text {
+            propertyDsl.Text {
                 text = ""
             }
         }
         if (!fontColorSet) {
-            propertyDsl.fontColor {
+            propertyDsl.FontColor {
                 Color {
                     argb = 0xFF000000.toInt()
                 }
@@ -165,9 +166,9 @@ class ImageDsl(
     /**
      * ViewProperty 설정 블록
      */
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             if (viewId == 0) {
                 viewId = scope.nextViewId()
             }
@@ -178,16 +179,16 @@ class ImageDsl(
     /**
      * 이미지 제공자 설정 블록
      */
-    fun provider(block: com.example.dsl.builder.ImageProviderDsl.() -> Unit) {
+    fun Provider(block: com.example.dsl.builder.ImageProviderDsl.() -> Unit) {
         providerSet = true
-        propertyDsl.provider(block)
+        propertyDsl.Provider(block)
     }
 
     /**
      * 틴트 색상 설정 블록
      */
-    fun tintColor(block: com.example.dsl.builder.ColorDsl.() -> Unit) {
-        propertyDsl.tintColor(block)
+    fun TintColor(block: com.example.dsl.builder.ColorDsl.() -> Unit) {
+        propertyDsl.TintColor(block)
     }
 
     /**
@@ -213,7 +214,7 @@ class ImageDsl(
      */
     internal fun build(): ImageProperty {
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
@@ -241,7 +242,7 @@ class ButtonDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             if (viewId == 0) {
                 viewId = scope.nextViewId()
             }
@@ -254,20 +255,20 @@ class ButtonDsl(
      */
     fun Text(block: com.example.dsl.builder.TextContentDsl.() -> Unit) {
         textSet = true
-        propertyDsl.text(block)
+        propertyDsl.Text(block)
     }
 
     /**
      * 텍스트 내용 직접 설정
      */
-    var text: String
-        get() = if (propertyBuilder.hasText()) propertyBuilder.text.text else ""
-        set(value) {
-            textSet = true
-            propertyDsl.text {
-                this.text = value
-            }
-        }
+//    var text: String
+//        get() = if (propertyBuilder.hasText()) propertyBuilder.text.text else ""
+//        set(value) {
+//            textSet = true
+//            propertyDsl.text {
+//                this.text = value
+//            }
+//        }
 
     /**
      * 최대 줄 수
@@ -283,7 +284,7 @@ class ButtonDsl(
      */
     fun FontColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         fontColorSet = true
-        propertyDsl.fontColor(block)
+        propertyDsl.FontColor(block)
     }
 
     /**
@@ -316,7 +317,7 @@ class ButtonDsl(
      */
     internal fun build(): ButtonProperty {
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
@@ -324,7 +325,7 @@ class ButtonDsl(
             throw IllegalArgumentException("Button text must be set")
         }
         if (!fontColorSet) {
-            propertyDsl.fontColor {
+            propertyDsl.FontColor {
                 Color {
                     argb = 0xFFFFFFFF.toInt()
                 }
@@ -358,7 +359,7 @@ class ProgressDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             if (viewId == 0) {
                 viewId = scope.nextViewId()
             }
@@ -398,7 +399,7 @@ class ProgressDsl(
      */
     fun ProgressColor(block: com.example.dsl.builder.ColorProviderDsl.() -> Unit) {
         progressColorSet = true
-        propertyDsl.progressColor(block)
+        propertyDsl.ProgressColor(block)
     }
 
     /**
@@ -414,12 +415,12 @@ class ProgressDsl(
      */
     internal fun build(): ProgressProperty {
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
         if (!progressColorSet) {
-            propertyDsl.progressColor {
+            propertyDsl.ProgressColor {
                 Color {
                     argb = 0xFFFFFFFF.toInt()
                 }
@@ -451,7 +452,7 @@ class SpacerDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             if (viewId == 0) {
                 viewId = scope.nextViewId()
             }
@@ -464,7 +465,7 @@ class SpacerDsl(
      */
     internal fun build(): SpacerProperty {
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }

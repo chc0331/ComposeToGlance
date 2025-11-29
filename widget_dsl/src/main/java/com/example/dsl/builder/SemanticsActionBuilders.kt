@@ -14,19 +14,19 @@ import com.example.dsl.proto.Semantics
 /**
  * Semantics 간단한 빌더 함수 (파라미터를 직접 받는)
  */
-fun Semantics(contentDescription: String): Semantics =
+internal fun Semantics(contentDescription: String): Semantics =
     Semantics.newBuilder().setContentDescription(contentDescription).build()
 
 /**
  * Component 간단한 빌더 함수 (파라미터를 직접 받는)
  */
-fun Component(packageName: String, className: String): Component =
+internal fun Component(packageName: String, className: String): Component =
     Component.newBuilder().setPackageName(packageName).setClassName(className).build()
 
 /**
  * Action 간단한 빌더 함수 (파라미터를 직접 받는)
  */
-fun Action(
+internal fun Action(
     activity: Boolean = false,
     service: Boolean = false,
     broadcastReceiver: Boolean = false,

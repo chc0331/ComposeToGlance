@@ -1,5 +1,6 @@
 package com.example.widget.provider
 
+import android.R.attr.text
 import android.R.attr.top
 import android.R.attr.value
 import android.appwidget.AppWidgetManager
@@ -113,7 +114,7 @@ class LargeAppWidget : DslAppWidget() {
             })
             {
                 Text {
-                    text {
+                    Text {
                         text = widget.widgetTag
                     }
                 }

@@ -14,11 +14,11 @@ import com.example.dsl.proto.ViewProperty
 
 /**
  * ViewProperty 및 Alignment 관련 DSL 클래스 및 DSL 빌더 함수
- * 
+ *
  * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
  * - DSL 클래스: ViewPropertyDsl, AlignmentDsl
  * - DSL 빌더 함수: ViewProperty(block), Alignment(block)
- * 
+ *
  * 간단한 빌더 함수(파라미터를 직접 받는)는 ViewPropertyBuilders.kt를 참조하세요.
  */
 
@@ -38,28 +38,16 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
         builder.setWidth(dimensionBuilder.build())
     }
 
-    fun Width(dimension: Dimension) {
-        builder.setWidth(dimension)
-    }
-
     fun Height(block: DimensionDsl.() -> Unit) {
         val dimensionBuilder = Dimension.newBuilder()
         DimensionDsl(dimensionBuilder).block()
         builder.setHeight(dimensionBuilder.build())
     }
 
-    fun Height(dimension: Dimension) {
-        builder.setHeight(dimension)
-    }
-
     fun Padding(block: PaddingDsl.() -> Unit) {
         val paddingBuilder = Padding.newBuilder()
         PaddingDsl(paddingBuilder).block()
         builder.setPadding(paddingBuilder.build())
-    }
-
-    fun Padding(padding: Padding?) {
-        padding?.let { builder.setPadding(it) }
     }
 
     fun CornerRadius(block: CornerRadiusDsl.() -> Unit) {
@@ -85,52 +73,5 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setBackgroundColor(colorProviderBuilder.build())
     }
-
-    fun BackgroundColor(colorProvider: ColorProvider?) {
-        colorProvider?.let { builder.setBackgroundColor(it) }
-    }
-}
-
-/**
- * ViewProperty DSL 빌더 함수
- */
-fun ViewProperty(block: ViewPropertyDsl.() -> Unit): ViewProperty {
-    val builder = ViewProperty.newBuilder()
-    val dsl = ViewPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
-/**
- * Alignment DSL
- */
-class AlignmentDsl(private val builder: Alignment.Builder) {
-    var alignment: AlignmentType
-        get() = builder.alignment
-        set(value) {
-            builder.setAlignment(value)
-        }
-
-    var horizontal: HorizontalAlignment
-        get() = builder.horizontal
-        set(value) {
-            builder.setHorizontal(value)
-        }
-
-    var vertical: VerticalAlignment
-        get() = builder.vertical
-        set(value) {
-            builder.setVertical(value)
-        }
-}
-
-/**
- * Alignment DSL 빌더 함수
- */
-fun Alignment(block: AlignmentDsl.() -> Unit): Alignment {
-    val builder = Alignment.newBuilder()
-    val dsl = AlignmentDsl(builder)
-    dsl.block()
-    return builder.build()
 }
 

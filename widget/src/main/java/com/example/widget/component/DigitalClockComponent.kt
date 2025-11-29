@@ -1,5 +1,6 @@
 package com.example.widget.component
 
+import android.R.attr.text
 import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -55,7 +56,9 @@ class DigitalClockComponent : WidgetComponent() {
             val currentTime = timeFormat.format(Date())
 
             Text({
-                text = currentTime
+                Text {
+                    text = currentTime
+                }
                 fontSize = 32f
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {

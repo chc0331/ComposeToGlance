@@ -1,6 +1,7 @@
 package com.example.widget.component
 
 import android.R.attr.radius
+import android.R.attr.text
 import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -47,7 +48,9 @@ class ButtonComponent : WidgetComponent() {
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
             Button({
-                text = "Click Me"
+                Text {
+                    text = "Click Me"
+                }
                 fontSize = 16f
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {

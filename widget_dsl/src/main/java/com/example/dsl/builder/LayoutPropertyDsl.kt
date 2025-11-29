@@ -10,11 +10,11 @@ import com.example.dsl.proto.ViewProperty
 
 /**
  * LayoutProperty 관련 DSL 클래스 및 DSL 빌더 함수
- * 
+ *
  * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
  * - DSL 클래스: BoxLayoutPropertyDsl, RowLayoutPropertyDsl, ColumnLayoutPropertyDsl
  * - DSL 빌더 함수: BoxLayoutProperty(block), RowLayoutProperty(block), ColumnLayoutProperty(block)
- * 
+ *
  * 간단한 빌더 함수(파라미터를 직접 받는)는 LayoutBuilders.kt를 참조하세요.
  */
 
@@ -22,7 +22,7 @@ import com.example.dsl.proto.ViewProperty
  * BoxLayoutProperty DSL
  */
 class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
@@ -36,20 +36,10 @@ class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {
 }
 
 /**
- * BoxLayoutProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun BoxLayoutProperty(block: BoxLayoutPropertyDsl.() -> Unit): BoxLayoutProperty {
-    val builder = BoxLayoutProperty.newBuilder()
-    val dsl = BoxLayoutPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
-/**
  * RowLayoutProperty DSL
  */
 class RowLayoutPropertyDsl(private val builder: RowLayoutProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
@@ -66,23 +56,13 @@ class RowLayoutPropertyDsl(private val builder: RowLayoutProperty.Builder) {
         set(value) {
             builder.setVerticalAlignment(value)
         }
-}
-
-/**
- * RowLayoutProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun RowLayoutProperty(block: RowLayoutPropertyDsl.() -> Unit): RowLayoutProperty {
-    val builder = RowLayoutProperty.newBuilder()
-    val dsl = RowLayoutPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
 }
 
 /**
  * ColumnLayoutProperty DSL
  */
 class ColumnLayoutPropertyDsl(private val builder: ColumnLayoutProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
@@ -100,14 +80,3 @@ class ColumnLayoutPropertyDsl(private val builder: ColumnLayoutProperty.Builder)
             builder.setVerticalAlignment(value)
         }
 }
-
-/**
- * ColumnLayoutProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun ColumnLayoutProperty(block: ColumnLayoutPropertyDsl.() -> Unit): ColumnLayoutProperty {
-    val builder = ColumnLayoutProperty.newBuilder()
-    val dsl = ColumnLayoutPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-

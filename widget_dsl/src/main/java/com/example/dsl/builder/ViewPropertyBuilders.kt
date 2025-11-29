@@ -14,15 +14,15 @@ import com.example.dsl.proto.ViewProperty
 
 /**
  * ViewProperty 및 Alignment 관련 간단한 빌더 함수
- * 
+ *
  * 이 파일은 파라미터를 직접 받는 간단한 빌더 함수를 포함합니다.
  * - ViewProperty(viewId, width, height, padding, cornerRadius, semantics, clickAction, backgroundColor)
  * - Alignment(alignment, horizontal, vertical)
- * 
+ *
  * DSL 클래스 및 block을 받는 DSL 빌더 함수는 ViewPropertyDsl.kt를 참조하세요.
  */
 
-fun ViewProperty(
+internal fun ViewProperty(
     viewId: Int,
     width: Dimension = wrapContentDimension,
     height: Dimension = wrapContentDimension,
@@ -38,7 +38,7 @@ fun ViewProperty(
     .apply { clickAction?.let { setClickAction(it) } }
     .apply { backgroundColor?.let { setBackgroundColor(it) } }.build()
 
-fun Alignment(
+internal fun Alignment(
     alignment: AlignmentType = AlignmentType.ALIGNMENT_TYPE_UNSPECIFIED,
     horizontal: HorizontalAlignment = HorizontalAlignment.H_ALIGN_UNSPECIFIED,
     vertical: VerticalAlignment = VerticalAlignment.V_ALIGN_UNSPECIFIED

@@ -29,13 +29,13 @@ import com.example.dsl.proto.ViewProperty
  * TextProperty DSL
  */
 class TextPropertyDsl(private val builder: TextProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
     }
 
-    fun text(block: TextContentDsl.() -> Unit) {
+    fun Text(block: TextContentDsl.() -> Unit) {
         val textContentBuilder = TextContent.newBuilder()
         TextContentDsl(textContentBuilder).block()
         builder.setText(textContentBuilder.build())
@@ -47,7 +47,7 @@ class TextPropertyDsl(private val builder: TextProperty.Builder) {
             builder.setMaxLine(value)
         }
 
-    fun fontColor(block: ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setFontColor(colorProviderBuilder.build())
@@ -86,19 +86,19 @@ fun TextProperty(block: TextPropertyDsl.() -> Unit): TextProperty {
  * ImageProperty DSL
  */
 class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
     }
 
-    fun provider(block: ImageProviderDsl.() -> Unit) {
+    fun Provider(block: ImageProviderDsl.() -> Unit) {
         val imageProviderBuilder = ImageProvider.newBuilder()
         ImageProviderDsl(imageProviderBuilder).block()
         builder.setProvider(imageProviderBuilder.build())
     }
 
-    fun tintColor(block: ColorDsl.() -> Unit) {
+    fun TintColor(block: ColorDsl.() -> Unit) {
         val colorBuilder = Color.newBuilder()
         ColorDsl(colorBuilder).block()
         builder.setTintColor(colorBuilder.build())
@@ -131,13 +131,13 @@ fun ImageProperty(block: ImagePropertyDsl.() -> Unit): ImageProperty {
  * ButtonProperty DSL
  */
 class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
     }
 
-    fun text(block: TextContentDsl.() -> Unit) {
+    fun Text(block: TextContentDsl.() -> Unit) {
         val textContentBuilder = TextContent.newBuilder()
         TextContentDsl(textContentBuilder).block()
         builder.setText(textContentBuilder.build())
@@ -149,7 +149,7 @@ class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
             builder.setMaxLine(value)
         }
 
-    fun fontColor(block: ColorProviderDsl.() -> Unit) {
+    fun FontColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setFontColor(colorProviderBuilder.build())
@@ -188,7 +188,7 @@ fun ButtonProperty(block: ButtonPropertyDsl.() -> Unit): ButtonProperty {
  * ProgressProperty DSL
  */
 class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
@@ -212,7 +212,7 @@ class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
             builder.setProgressValue(value)
         }
 
-    fun progressColor(block: ColorProviderDsl.() -> Unit) {
+    fun ProgressColor(block: ColorProviderDsl.() -> Unit) {
         val colorProviderBuilder = ColorProvider.newBuilder()
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setProgressColor(colorProviderBuilder.build())
@@ -239,7 +239,7 @@ fun ProgressProperty(block: ProgressPropertyDsl.() -> Unit): ProgressProperty {
  * SpacerProperty DSL
  */
 class SpacerPropertyDsl(private val builder: SpacerProperty.Builder) {
-    fun viewProperty(block: ViewPropertyDsl.() -> Unit) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())

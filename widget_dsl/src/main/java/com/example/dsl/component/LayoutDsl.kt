@@ -42,7 +42,7 @@ class ColumnLayoutDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             // viewId가 설정되지 않았으면 기본값 사용
             if (viewId == 0) {
                 viewId = scope.nextViewId()
@@ -77,7 +77,7 @@ class ColumnLayoutDsl(
     internal fun build(): ColumnLayoutProperty {
         // viewProperty가 설정되지 않았으면 기본값으로 설정
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
@@ -109,7 +109,7 @@ class RowLayoutDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             // viewId가 설정되지 않았으면 기본값 사용
             if (viewId == 0) {
                 viewId = scope.nextViewId()
@@ -144,7 +144,7 @@ class RowLayoutDsl(
     internal fun build(): RowLayoutProperty {
         // viewProperty가 설정되지 않았으면 기본값으로 설정
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
@@ -175,7 +175,7 @@ class BoxLayoutDsl(
      */
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         viewPropertySet = true
-        propertyDsl.viewProperty {
+        propertyDsl.ViewProperty {
             // viewId가 설정되지 않았으면 기본값 사용
             if (viewId == 0) {
                 viewId = scope.nextViewId()
@@ -200,7 +200,7 @@ class BoxLayoutDsl(
     internal fun build(): BoxLayoutProperty {
         // viewProperty가 설정되지 않았으면 기본값으로 설정
         if (!viewPropertySet) {
-            propertyDsl.viewProperty {
+            propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }

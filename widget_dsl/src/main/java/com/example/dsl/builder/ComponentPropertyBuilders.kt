@@ -17,18 +17,18 @@ import com.example.dsl.proto.ViewProperty
 
 /**
  * ComponentProperty 관련 간단한 빌더 함수
- * 
+ *
  * 이 파일은 파라미터를 직접 받는 간단한 빌더 함수를 포함합니다.
  * - TextProperty(viewProperty, text, fontColor, fontSize, fontWeight, textAlign, maxLine)
  * - ImageProperty(viewProperty, provider, tintColor, alpha, contentScale)
  * - ButtonProperty(viewProperty, text, fontColor, fontSize, fontWeight, backgroundColor, maxLine)
  * - ProgressProperty(viewProperty, type, maxValue, progressValue, progressColor, backgroundColor)
  * - SpacerProperty(viewProperty)
- * 
+ *
  * DSL 클래스 및 block을 받는 DSL 빌더 함수는 ComponentPropertyDsl.kt를 참조하세요.
  */
 
-fun TextProperty(
+internal fun TextProperty(
     viewProperty: ViewProperty,
     text: TextContent,
     fontColor: ColorProvider,
@@ -40,7 +40,7 @@ fun TextProperty(
     .setFontColor(fontColor).setFontSize(fontSize).setFontWeight(fontWeight)
     .setTextAlign(textAlign).setMaxLine(maxLine).build()
 
-fun ImageProperty(
+internal fun ImageProperty(
     viewProperty: ViewProperty,
     provider: ImageProvider,
     tintColor: Color? = null,
