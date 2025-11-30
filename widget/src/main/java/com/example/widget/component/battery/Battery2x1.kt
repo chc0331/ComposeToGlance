@@ -7,18 +7,13 @@ import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
 import com.example.dsl.component.Image
-import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
-import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
-import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.TextAlign
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
-import com.example.dsl.proto.ViewProperty
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.R
 import com.example.widget.SizeType
@@ -43,9 +38,6 @@ class Battery2x1 : BatteryComponent() {
             }
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
-            val size = getLocal(DslLocalSize) as? DpSize
-            val progressSize =
-                size?.let { min(it.width.value, it.height.value) * 0.6f } ?: 80f
             val batteryLevel = 50f // TODO: Get actual battery level
 
             Row({
@@ -56,18 +48,7 @@ class Battery2x1 : BatteryComponent() {
                     Height { matchParent = true }
                 }
             }) {
-                Image {
-                    ViewProperty {
-                        Width { Dp { value = progressSize } }
-                        Height { Dp { value = progressSize } }
-                    }
-                    Provider {
-                        drawableResId = R.layout.battery_charging_avd
-                    }
-
-                    animation = true
-                    infiniteLoop = true
-                }
+                BatteryIcon(BatteryState.CHARGING)
                 Row({
                     ViewProperty {
                         Width {
@@ -89,7 +70,8 @@ class Battery2x1 : BatteryComponent() {
                         horizontalAlignment = HorizontalAlignment.H_ALIGN_END
 
                     }) {
-                        val mainTextSize = size?.let { it.height.value * 0.25f } ?: 24f
+                        val size = getLocal(DslLocalSize) as DpSize
+                        val mainTextSize = size.height.value * 0.25f
                         Text {
                             TextContent {
                                 text = "75%"
@@ -99,8 +81,7 @@ class Battery2x1 : BatteryComponent() {
                             }
                             textAlign = TextAlign.TEXT_ALIGN_END
                         }
-                        val subTextSize = size?.let { it.height.value * 0.14f } ?: 16f
-
+                        val subTextSize = size.height.value * 0.14f
                         Text {
                             TextContent {
                                 text = "≈ 3h 20m"
@@ -119,9 +100,7 @@ class Battery2x1 : BatteryComponent() {
                             }
                             textAlign = TextAlign.TEXT_ALIGN_END
                         }
-
                     }
-
                 }
             }
         }
