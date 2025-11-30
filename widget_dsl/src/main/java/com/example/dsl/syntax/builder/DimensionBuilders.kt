@@ -1,4 +1,4 @@
-package com.example.dsl.syntax
+package com.example.dsl.syntax.builder
 
 import com.example.dsl.proto.Dimension
 import com.example.dsl.proto.Dp

@@ -10,8 +10,8 @@ import androidx.glance.LocalContext
 import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.LinearProgressIndicator
 import com.example.dsl.R
-import com.example.dsl.syntax.Color
-import com.example.dsl.syntax.ColorProvider
+import com.example.dsl.syntax.builder.Color
+import com.example.dsl.syntax.builder.ColorProvider
 import com.example.dsl.glance.GlanceModifierBuilder
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.RenderContext

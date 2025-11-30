@@ -69,25 +69,25 @@ class PaddingDsl(private val builder: Padding.Builder) {
     var start: Float
         get() = if (builder.hasStart()) builder.start.value else 0f
         set(value) {
-            builder.setStart(Dp(value))
+            builder.setStart(com.example.dsl.syntax.builder.Dp(value))
         }
 
     var top: Float
         get() = if (builder.hasTop()) builder.top.value else 0f
         set(value) {
-            builder.setTop(Dp(value))
+            builder.setTop(com.example.dsl.syntax.builder.Dp(value))
         }
 
     var end: Float
         get() = if (builder.hasEnd()) builder.end.value else 0f
         set(value) {
-            builder.setEnd(Dp(value))
+            builder.setEnd(com.example.dsl.syntax.builder.Dp(value))
         }
 
     var bottom: Float
         get() = if (builder.hasBottom()) builder.bottom.value else 0f
         set(value) {
-            builder.setBottom(Dp(value))
+            builder.setBottom(com.example.dsl.syntax.builder.Dp(value))
         }
 }
 
