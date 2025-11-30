@@ -1,13 +1,9 @@
 package com.example.widget.provider
 
-import android.R.attr.text
-import android.R.attr.top
-import android.R.attr.value
+import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color.argb
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -21,10 +17,10 @@ import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.provider.DslLocalCellHeight
 import com.example.dsl.provider.DslLocalCellWidth
+import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
@@ -108,12 +104,27 @@ class LargeAppWidget : DslAppWidget() {
                             value = componentHeight.value
                         }
                     }
+                    Padding {
+                        start = 6f
+                        end = 6f
+                        bottom = 6f
+                        top = 6f
+                    }
                 }
             })
             {
                 DslLocalProvider(DslLocalSize provides DpSize(componentWidth, componentHeight)) {
+                    val contentRadius = getLocal(DslLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
-                        it.renderContent(this)
+                        Box({
+                            ViewProperty {
+                                CornerRadius {
+                                    radius = contentRadius.value
+                                }
+                            }
+                        }){
+                            it.renderContent(this)
+                        }
                     }
                 }
             }

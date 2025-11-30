@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="36dp"
+    android:viewportWidth="32"
+    android:viewportHeight="24">
+
+    <!-- 외곽 본체 -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="
+            M10,4
+            C10,2.9 11,2 12.3,2
+            L19.7,2
+            C21,2 22,2.9 22,4
+            L22,19.8
+            C22,20.9 21,21.8 19.7,21.8
+            L12.3,21.8
+            C11,21.8 10,20.9 10,19.8
+            Z" />
+
+    <!-- 흰색 영역 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M12,3.5
+            H20
+            C21,3.5 21.6,4.2 21.6,5.4
+            V14.5
+            H10.4
+            V5.4
+            C10.4,4.2 11,3.5 12,3.5
+            Z" />
+
+    <!-- 파란 영역 -->
+    <path
+        android:fillColor="#3BA4F9"
+        android:pathData="
+            M10.4,14.5
+            H21.6
+            V19.2
+            C21.6,20.3 20.8,21.1 19.6,21.1
+            H12.4
+            C11.2,21.1 10.4,20.3 10.4,19.2
+            Z" />
+
+    <!-- 단자 -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="
+            M12.4,0.5
+            L12.4,2
+            L19.6,2
+            L19.6,0.5
+            Z" />
+
+</vector>
