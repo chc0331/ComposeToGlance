@@ -21,6 +21,22 @@ object RemoteViewsBuilder {
         viewProperty: ViewProperty,
         context: Context
     ) {
+
+        if (viewProperty.width.dp.value != 0f) {
+            remoteViews.setViewLayoutWidth(
+                viewId,
+                viewProperty.width.dp.value,
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+        }
+        if(viewProperty.height.dp.value != 0f){
+            remoteViews.setViewLayoutHeight(
+                viewId,
+                viewProperty.width.dp.value,
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+        }
+
         // Padding
         if (viewProperty.hasPadding() && !PaddingConverter.isEmpty(viewProperty.padding)) {
             val padding = PaddingConverter.toGlancePaddingValues(viewProperty.padding)

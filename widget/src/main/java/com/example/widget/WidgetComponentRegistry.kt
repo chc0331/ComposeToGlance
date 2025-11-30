@@ -1,13 +1,12 @@
 import com.example.widget.component.AnalogClockComponent
-import com.example.widget.component.BatteryComponent
 import com.example.widget.component.ButtonComponent
 import com.example.widget.component.DigitalClockComponent
 import com.example.widget.component.ImageComponent
-import com.example.widget.component.SmallBattery
 import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
-import com.example.widget.component.TinyBattery
 import com.example.widget.component.WidgetComponent
+import com.example.widget.component.battery.Battery1x1
+import com.example.widget.component.battery.Battery2x1
 
 fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(TextComponent())
@@ -17,8 +16,8 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(AnalogClockComponent())
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
-    WidgetComponentRegistry.registerComponent(TinyBattery())
-    WidgetComponentRegistry.registerComponent(SmallBattery())
+    WidgetComponentRegistry.registerComponent(Battery1x1())
+    WidgetComponentRegistry.registerComponent(Battery2x1())
     WidgetComponentRegistry.registerComponent(StorageComponent())
 }
 
