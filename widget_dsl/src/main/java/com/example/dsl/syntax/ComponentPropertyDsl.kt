@@ -73,16 +73,6 @@ class TextPropertyDsl(private val builder: TextProperty.Builder) {
 }
 
 /**
- * TextProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun TextProperty(block: TextPropertyDsl.() -> Unit): TextProperty {
-    val builder = TextProperty.newBuilder()
-    val dsl = TextPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
-/**
  * ImageProperty DSL
  */
 class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
@@ -179,16 +169,6 @@ class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
 }
 
 /**
- * ButtonProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun ButtonProperty(block: ButtonPropertyDsl.() -> Unit): ButtonProperty {
-    val builder = ButtonProperty.newBuilder()
-    val dsl = ButtonPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
-/**
  * ProgressProperty DSL
  */
 class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
@@ -229,15 +209,6 @@ class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
     }
 }
 
-/**
- * ProgressProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun ProgressProperty(block: ProgressPropertyDsl.() -> Unit): ProgressProperty {
-    val builder = ProgressProperty.newBuilder()
-    val dsl = ProgressPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
 
 /**
  * SpacerProperty DSL
@@ -249,14 +220,3 @@ class SpacerPropertyDsl(private val builder: SpacerProperty.Builder) {
         builder.setViewProperty(viewPropertyBuilder.build())
     }
 }
-
-/**
- * SpacerProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun SpacerProperty(block: SpacerPropertyDsl.() -> Unit): SpacerProperty {
-    val builder = SpacerProperty.newBuilder()
-    val dsl = SpacerPropertyDsl(builder)
-    dsl.block()
-    return builder.build()
-}
-
