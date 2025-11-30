@@ -2,6 +2,7 @@ package com.example.dsl.glance.renderer.remoteviews
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.widget.RemoteViews
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.converter.ColorConverter
@@ -25,6 +26,10 @@ fun ImageRenderer.renderToRemoteViews(
     val imageProperty = node.image
     val viewProperty = imageProperty.viewProperty
 
+    if (imageProperty.animation) {
+        return renderToAnimationRemoteViews(node, context)
+    }
+
     // RemoteViews 생성 (ImageView를 위한 간단한 레이아웃)
     // RemoteViews는 단일 뷰를 직접 생성할 수 없으므로 레이아웃이 필요
     // simple_list_item_1을 사용하고 text1을 ImageView로 사용
@@ -36,14 +41,20 @@ fun ImageRenderer.renderToRemoteViews(
         imageProperty.provider.hasDrawableResId() -> {
             remoteViews.setImageViewResource(imageViewId, imageProperty.provider.drawableResId)
         }
+
         imageProperty.provider.hasUri() -> {
-            remoteViews.setImageViewUri(imageViewId, android.net.Uri.parse(imageProperty.provider.uri))
+            remoteViews.setImageViewUri(
+                imageViewId,
+                android.net.Uri.parse(imageProperty.provider.uri)
+            )
         }
+
         imageProperty.provider.hasBitmap() -> {
             val byteArray = imageProperty.provider.bitmap.toByteArray()
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             remoteViews.setImageViewBitmap(imageViewId, bitmap)
         }
+
         else -> {
             // 기본 이미지
             remoteViews.setImageViewResource(imageViewId, android.R.drawable.ic_menu_gallery)

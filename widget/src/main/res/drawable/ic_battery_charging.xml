@@ -1,0 +1,120 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="48dp"
+            android:height="36dp"
+            android:viewportWidth="32"
+            android:viewportHeight="24">
+
+            <!-- 1. 외곽 본체 -->
+            <path
+                android:fillColor="#000000"
+                android:pathData="
+                    M10,5
+                    C10,3.9 11,3 12.3,3
+                    L19.7,3
+                    C21,3 22,3.9 22,5
+                    L22,21
+                    C22,22.1 21,23 19.7,23
+                    L12.3,23
+                    C11,23 10,22.1 10,21
+                    Z" />
+
+            <!-- 2. 흰색 배경 -->
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="
+                    M13,3.8 H19
+                    C20.8,3.8 21.6,5.2 21.6,7
+                    V20.5
+                    C21.6,21.8 20.8,22.6 19.6,22.6
+                    H12.4
+                    C11.2,22.6 10.4,21.8 10.4,20.5
+                    V7
+                    C10.4,5.2 11.2,3.8 13,3.8
+                    Z" />
+
+            <!-- 3. 마스킹 및 무한 흐름 그라데이션 -->
+            <group android:name="mask_group">
+                <!-- 배터리 내부 모양 -->
+                <clip-path
+                    android:pathData="
+                        M13,3.8 H19
+                        C20.8,3.8 21.6,5.2 21.6,7
+                        V20.5
+                        C21.6,21.8 20.8,22.6 19.6,22.6
+                        H12.4
+                        C11.2,22.6 10.4,21.8 10.4,20.5
+                        V7
+                        C10.4,5.2 11.2,3.8 13,3.8
+                        Z" />
+
+                <!-- 3-1. 2세트 반복 그라데이션 -->
+                <group android:name="seamless_flow_group">
+                    <path android:pathData="M0,0 H32 V48 H0 Z">
+                        <aapt:attr name="android:fillColor">
+                            <gradient
+                                android:startY="0"
+                                android:endY="48"
+                                android:type="linear">
+                                <!-- 1 Cycle -->
+                                <item android:offset="0.0" android:color="#4CD964" />
+                                <item android:offset="0.25" android:color="#99F2A6" />
+                                <item android:offset="0.5" android:color="#4CD964" />
+                                <!-- 2 Cycle -->
+                                <item android:offset="0.75" android:color="#99F2A6" />
+                                <item android:offset="1.0" android:color="#4CD964" />
+                            </gradient>
+                        </aapt:attr>
+                    </path>
+                </group>
+            </group>
+
+            <!-- 4. 번개 아이콘 (추가됨) -->
+            <!-- fillColor: 투명 (#00000000) -->
+            <!-- strokeColor: 검정 (#000000) -->
+            <path
+                android:fillColor="#00000000"
+                android:strokeColor="#000000"
+                android:strokeWidth="1.2"
+                android:strokeLineJoin="round"
+                android:pathData="
+                    M16.8,8
+                    L14.2,13.5
+                    H16
+                    L15,19.5
+                    L17.8,13.5
+                    H16
+                    L16.8,8
+                    Z" />
+
+            <!-- 5. 단자 -->
+            <path
+                android:fillColor="#000000"
+                android:pathData="
+                    M12.4,1
+                    L12.4,3
+                    L19.6,3
+                    L19.6,1
+                    Z" />
+        </vector>
+    </aapt:attr>
+
+    <!-- 애니메이션 설정 (속도 유지: 3000ms) -->
+    <target android:name="seamless_flow_group">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="translateY"
+                android:valueFrom="0"
+                android:valueTo="-24"
+                android:valueType="floatType"
+                android:duration="2400"
+                android:repeatCount="infinite"
+                android:repeatMode="restart"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+
+</animated-vector>

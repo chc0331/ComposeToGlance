@@ -17,6 +17,7 @@ import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.TextAlign
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
+import com.example.dsl.proto.ViewProperty
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
@@ -25,8 +26,8 @@ import com.example.widget.R
 
 abstract class BatteryComponent : WidgetComponent() {
 
-    fun getCellType():String{
-        return if(getSizeType() == SizeType.TINY) "1x1" else "2x1"
+    fun getCellType(): String {
+        return if (getSizeType() == SizeType.TINY) "1x1" else "2x1"
     }
 
     override fun getName(): String {
@@ -46,14 +47,13 @@ abstract class BatteryComponent : WidgetComponent() {
     }
 }
 
-class TinyBattery: BatteryComponent(){
+class TinyBattery : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.TINY
     }
 
     override fun WidgetScope.Content() {
         val widgetSize = getLocal(DslLocalSize)
-        Log.i("heec.choi","Widget size : $widgetSize")
         Box({
             ViewProperty {
                 Width { matchParent = true }
@@ -67,9 +67,11 @@ class TinyBattery: BatteryComponent(){
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
             val size = getLocal(DslLocalSize) as? DpSize
-            val progressSize = size?.let { kotlin.math.min(it.width.value, it.height.value) * 0.6f } ?: 60f
+            val progressSize =
+                size?.let { kotlin.math.min(it.width.value, it.height.value) * 0.7f } ?: 60f
+            val textSize = size?.let { it.height.value * 0.2f } ?: 12f
             val batteryLevel = 50f // TODO: Get actual battery level
-            
+
             Column({
                 horizontalAlignment = H_ALIGN_CENTER
                 verticalAlignment = V_ALIGN_CENTER
@@ -78,20 +80,30 @@ class TinyBattery: BatteryComponent(){
                     ViewProperty {
                         Width { Dp { value = progressSize } }
                         Height { Dp { value = progressSize } }
+                        BackgroundColor {
+                            Color {
+                                argb = Color.Black.toArgb()
+                            }
+                        }
+
                     }
                     Provider {
-                        drawableResId = R.drawable.ic_battery
+                        drawableResId = R.layout.battery_charging_avd
                     }
+
+                    animation = true
+                    infiniteLoop = true
                 }
+
                 Text({
                     TextContent {
                         text = "${batteryLevel.toInt()}%"
                     }
-                    fontSize = 12f
-                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL
+                    fontSize = textSize
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
                     FontColor {
                         Color {
-                            argb = Color.White.toArgb()
+                            argb = Color.Black.toArgb()
                         }
                     }
                     textAlign = TextAlign.TEXT_ALIGN_CENTER
@@ -101,7 +113,7 @@ class TinyBattery: BatteryComponent(){
     }
 }
 
-class SmallBattery: BatteryComponent(){
+class SmallBattery : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.SMALL
     }
@@ -120,9 +132,10 @@ class SmallBattery: BatteryComponent(){
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
             val size = getLocal(DslLocalSize) as? DpSize
-            val progressSize = size?.let { kotlin.math.min(it.width.value, it.height.value) * 0.65f } ?: 80f
+            val progressSize =
+                size?.let { kotlin.math.min(it.width.value, it.height.value) * 0.65f } ?: 80f
             val batteryLevel = 50f // TODO: Get actual battery level
-            
+
             Column({
                 horizontalAlignment = H_ALIGN_CENTER
                 verticalAlignment = V_ALIGN_CENTER
@@ -146,7 +159,7 @@ class SmallBattery: BatteryComponent(){
                         }
                     }
                 })
-                
+
                 Text({
                     TextContent {
                         text = "${batteryLevel.toInt()}%"

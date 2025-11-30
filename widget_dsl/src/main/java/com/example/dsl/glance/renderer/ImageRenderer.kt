@@ -2,16 +2,26 @@ package com.example.dsl.glance.renderer
 
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.background
 import androidx.glance.layout.ContentScale
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.wrapContentSize
 import com.example.dsl.proto.ContentScale as ProtoContentScale
 import com.example.dsl.proto.WidgetNode
 import com.example.dsl.glance.GlanceModifierBuilder
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.RenderContext
 import com.example.dsl.glance.converter.ColorConverter
+import com.example.dsl.glance.renderer.remoteviews.renderToAnimationRemoteViews
+import com.example.dsl.glance.renderer.remoteviews.renderToRemoteViews
 
 /**
  * Image 노드 렌더러
@@ -30,6 +40,15 @@ object ImageRenderer : NodeRenderer {
 
         val imageProperty = node.image
         val viewProperty = imageProperty.viewProperty
+
+        if (node.image.animation) {
+            createRemoteViews(node, context)?.let {
+                AndroidRemoteViews(
+                    modifier = GlanceModifier.wrapContentSize(),
+                    remoteViews = it)
+            }
+            return
+        }
 
         // Modifier 생성
         val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
@@ -97,6 +116,14 @@ object ImageRenderer : NodeRenderer {
             ProtoContentScale.CONTENT_SCALE_FILL_BOUNDS -> ContentScale.FillBounds
             else -> ContentScale.Fit
         }
+    }
+
+    private fun createRemoteViews(
+        node: WidgetNode,
+        context: RenderContext
+    ): RemoteViews? {
+        val remoteViews = renderToAnimationRemoteViews(node, context.context)
+        return remoteViews
     }
 }
 

@@ -14,14 +14,14 @@ import com.example.dsl.proto.TextProperty
 
 /**
  * 컴포넌트 DSL 클래스
- * 
+ *
  * 이 파일은 각 컴포넌트의 DSL 클래스를 포함합니다.
  * - TextDsl: Text 컴포넌트의 DSL 클래스
  * - ImageDsl: Image 컴포넌트의 DSL 클래스
  * - ButtonDsl: Button 컴포넌트의 DSL 클래스
  * - ProgressDsl: Progress 컴포넌트의 DSL 클래스
  * - SpacerDsl: Spacer 컴포넌트의 DSL 클래스
- * 
+ *
  * 최상위 컴포넌트 DSL 함수는 Components.kt를 참조하세요.
  */
 
@@ -182,6 +182,18 @@ class ImageDsl(
         get() = propertyDsl.contentScale
         set(value) {
             propertyDsl.contentScale = value
+        }
+
+    var animation: Boolean
+        get() = propertyDsl.animation
+        set(value) {
+            propertyDsl.animation = value
+        }
+
+    var infiniteLoop: Boolean
+        get() = propertyDsl.infiniteLoop
+        set(value) {
+            propertyDsl.infiniteLoop = value
         }
 
     /**

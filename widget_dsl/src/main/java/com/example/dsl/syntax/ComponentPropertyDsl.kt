@@ -17,11 +17,11 @@ import com.example.dsl.proto.ViewProperty
 
 /**
  * ComponentProperty 관련 DSL 클래스 및 DSL 빌더 함수
- * 
+ *
  * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
  * - DSL 클래스: TextPropertyDsl, ImagePropertyDsl, ButtonPropertyDsl, ProgressPropertyDsl, SpacerPropertyDsl
  * - DSL 빌더 함수: TextProperty(block), ImageProperty(block), ButtonProperty(block), ProgressProperty(block), SpacerProperty(block)
- * 
+ *
  * 간단한 빌더 함수(파라미터를 직접 받는)는 ComponentPropertyBuilders.kt를 참조하세요.
  */
 
@@ -115,16 +115,20 @@ class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
         set(value) {
             builder.setContentScale(value)
         }
-}
 
-/**
- * ImageProperty DSL 빌더 함수 (대문자로 시작)
- */
-fun ImageProperty(block: ImagePropertyDsl.() -> Unit): ImageProperty {
-    val builder = ImageProperty.newBuilder()
-    val dsl = ImagePropertyDsl(builder)
-    dsl.block()
-    return builder.build()
+    var animation: Boolean
+        get() = builder.animation
+        set(value) {
+            builder.setAnimation(value)
+        }
+
+    var infiniteLoop: Boolean
+        get() = builder.infiniteLoop
+        set(value) {
+            builder.setInfiniteLoop(value)
+        }
+
+
 }
 
 /**

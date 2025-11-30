@@ -220,6 +220,8 @@ message ImageProperty {
   Color tint_color = 3;
   float alpha = 4;
   ContentScale content_scale = 5;
+  bool animation = 6;
+  bool infinite_loop = 7;
 }
 
 message ButtonProperty {
