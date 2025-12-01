@@ -29,6 +29,7 @@ import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
+import com.example.dsl.provider.DslLocalPreview
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
@@ -136,6 +137,7 @@ private fun WidgetItemContent(
                     val layout = remember(key) {
                         WidgetLayout {
                             DslLocalProvider(
+                                DslLocalPreview provides true,
                                 DslLocalSize provides size,
                                 DslLocalContext provides context
                             ) {

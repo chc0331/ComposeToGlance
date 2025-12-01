@@ -15,7 +15,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.composetoglance.R
-import com.example.composetoglance.receiver.BatteryStatusReceiver
+import com.example.widget.component.battery.BatteryStatusReceiver
 
 class WidgetForegroundService : Service() {
     companion object {
@@ -34,7 +34,7 @@ class WidgetForegroundService : Service() {
         Log.d(TAG, "Service onCreate called")
         createNotificationChannel()
         registerBatteryReceiver()
-        startBatteryMonitoring()
+//        startBatteryMonitoring()
     }
 
     override fun onDestroy() {
@@ -104,6 +104,7 @@ class WidgetForegroundService : Service() {
             addAction(Intent.ACTION_BATTERY_OKAY)
             addAction(Intent.ACTION_POWER_CONNECTED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
+            addAction(Intent.ACTION_BATTERY_CHANGED)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -163,7 +164,7 @@ class WidgetForegroundService : Service() {
             // 배터리 레벨이 변경된 경우에만 처리
             if (batteryPct.toInt() != lastBatteryLevel) {
                 lastBatteryLevel = batteryPct.toInt()
-                batteryReceiver?.handleBatteryIntent(intent)
+//                batteryReceiver?.handleBatteryIntent(intent)
             }
         }
     }

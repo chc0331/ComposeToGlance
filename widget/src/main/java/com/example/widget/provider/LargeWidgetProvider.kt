@@ -104,12 +104,6 @@ class LargeAppWidget : DslAppWidget() {
                             value = componentHeight.value
                         }
                     }
-                    Padding {
-                        start = 6f
-                        end = 6f
-                        bottom = 6f
-                        top = 6f
-                    }
                 }
             })
             {
@@ -122,7 +116,7 @@ class LargeAppWidget : DslAppWidget() {
                                     radius = contentRadius.value
                                 }
                             }
-                        }){
+                        }) {
                             it.renderContent(this)
                         }
                     }

@@ -3,8 +3,14 @@ package com.example.dsl.glance.renderer.remoteviews
 import android.R.attr.typeface
 import android.content.Context
 import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
+import android.util.Log
 import android.util.TypedValue
 import android.widget.RemoteViews
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.R
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.converter.ColorConverter
@@ -42,7 +48,7 @@ fun TextRenderer.renderToRemoteViews(
         remoteViews.setTextViewText(viewId, textContent)
         remoteViews.setTextColor(
             viewId,
-            ColorConverter.toGlanceColor(fontColor, context).value.toInt()
+            ColorConverter.toGlanceColor(fontColor, context).toArgb()
         )
         remoteViews.setTextViewTextSize(viewId, TypedValue.COMPLEX_UNIT_SP, fontSize)
         // 텍스트 정렬
@@ -53,16 +59,16 @@ fun TextRenderer.renderToRemoteViews(
             else -> android.view.Gravity.START
         }
         remoteViews.setInt(viewId, "setGravity", gravity)
-        // Font Weight (Typeface)
-        val typeface = when (fontWeight) {
-            FontWeight.FONT_WEIGHT_BOLD -> Typeface.DEFAULT_BOLD
-            FontWeight.FONT_WEIGHT_MEDIUM -> Typeface.create(
-                Typeface.DEFAULT, Typeface.NORMAL
-            )
-
-            else -> Typeface.DEFAULT
-        }
-        remoteViews.setInt(viewId, "setTypeface", typeface.style)
+//        // Font Weight (Typeface)
+//        val typeface = when (fontWeight) {
+//            FontWeight.FONT_WEIGHT_BOLD -> Typeface.DEFAULT_BOLD
+//            FontWeight.FONT_WEIGHT_MEDIUM -> Typeface.create(
+//                Typeface.DEFAULT, Typeface.NORMAL
+//            )
+//
+//            else -> Typeface.DEFAULT
+//        }
+//        remoteViews.setInt(viewId, "setTypeface", typeface.style)
         if (maxLine > 0) {
             remoteViews.setInt(viewId, "setMaxLines", maxLine)
         }

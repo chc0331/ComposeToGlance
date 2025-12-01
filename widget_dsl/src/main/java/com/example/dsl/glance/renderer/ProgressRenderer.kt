@@ -1,6 +1,7 @@
 package com.example.dsl.glance.renderer
 
 import android.content.res.ColorStateList
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
@@ -102,11 +103,12 @@ object ProgressRenderer : NodeRenderer {
         modifier: androidx.glance.GlanceModifier,
         context: RenderContext
     ) {
-        val progress = if (progressProperty.maxValue > 0) {
-            progressProperty.progressValue / progressProperty.maxValue
-        } else {
-            0f
-        }
+        val progressColor = if (progressProperty.progressColor.resId != 0) {
+            context.context.getColor(progressProperty.progressColor.resId)
+        } else progressProperty.progressColor.color.argb
+        val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+            context.context.getColor(progressProperty.backgroundColor.resId)
+        } else progressProperty.backgroundColor.color.argb
         AndroidRemoteViews(
             modifier = modifier,
             remoteViews = RemoteViews(
@@ -115,17 +117,17 @@ object ProgressRenderer : NodeRenderer {
             ).apply {
                 setProgressBar(
                     R.id.progress_bar,
-                    100,
-                    50,
+                    progressProperty.maxValue.toInt(),
+                    progressProperty.progressValue.toInt(),
                     false
                 )
                 setProgressBarProgressTintList(
                     R.id.progress_bar,
-                    ColorStateList.valueOf(progressProperty.progressColor.color.argb)
+                    ColorStateList.valueOf(progressColor)
                 )
                 setProgressBarProgressBackgroundTintList(
                     R.id.progress_bar,
-                    ColorStateList.valueOf(progressProperty.backgroundColor.color.argb)
+                    ColorStateList.valueOf(backgroundColor)
                 )
             }
         )

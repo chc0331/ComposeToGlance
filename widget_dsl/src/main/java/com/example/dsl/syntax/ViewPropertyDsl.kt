@@ -68,5 +68,11 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
         ColorProviderDsl(colorProviderBuilder).block()
         builder.setBackgroundColor(colorProviderBuilder.build())
     }
+
+    var partiallyUpdate: Boolean
+        get() = builder.partiallyUpdate
+        set(value) {
+            builder.setPartiallyUpdate(value)
+        }
 }
 

@@ -7,13 +7,13 @@
         android:name="android:background"
         android:pathData="M 75 12 A 63 63 0 1 1 74 12"
         android:strokeWidth="24"
-        android:strokeColor="#FFFFFFFF"
+        android:strokeColor="#30FFFFFF"
         android:strokeLineCap="round" />
     <path
         android:name="android:progress"
         android:pathData="M 75 12 A 63 63 0 1 1 74 12"
         android:strokeWidth="24"
-        android:strokeColor="#FFFFFFFF"
+        android:strokeColor="#30FFFFFF"
         android:strokeLineCap="round"
         android:trimPathEnd="0" />
 </vector>

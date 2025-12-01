@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <id name="widgetRoot" />
+    <id name="batteryIcon" />
+    <id name="batteryValue" />
+    <id name="batteryTime" />
+    <id name="chargingState" />
+    <id name="chargingAnimation" />
+
+</resources>

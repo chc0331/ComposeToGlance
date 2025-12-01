@@ -1,0 +1,35 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 배터리 몸체 외곽선 (진한 파란색, 두꺼운 테두리) - 수직 중앙 정렬, 더 둥근 모서리 -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:fillType="nonZero"
+        android:pathData="M7,4 C7,2.3431 8.3431,1 10,1 L14,1 C15.6569,1 17,2.3431 17,4 L17,20 C17,21.6569 15.6569,23 14,23 L10,23 C8.3431,23 7,21.6569 7,20 Z" />
+
+    <!-- 배터리 몸체 내부 (흰색 배경, 얇은 테두리, 더 둥근 모서리) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M7.5,4.5 C7.5,3.3954 8.3954,2.5 9.5,2.5 L14.5,2.5 C15.6046,2.5 16.5,3.3954 16.5,4.5 L16.5,19.5 C16.5,20.6046 15.6046,21.5 14.5,21.5 L9.5,21.5 C8.3954,21.5 7.5,20.6046 7.5,19.5 Z" />
+
+    <!-- 배터리 내부 채움 (밝은 파란색, 75% - 아래에서 위로, 아래 공간 줄임) -->
+    <!-- 내부 배경: x: 7.5~16.5, y: 4.5~19.5 -->
+    <!-- 옆 여백: 2 (9.5-7.5=2, 16.5-14.5=2), 아래 여백: 3.5 (19.5-16=3.5) -->
+    <path
+        android:fillColor="#60A5FA"
+        android:fillType="nonZero"
+        android:pathData="M9.5,6.5 L9.5,16 L14.5,16 L14.5,6.5 L9.5,6.5 Z" />
+
+    <!-- 배터리 위쪽 캡 (양극 단자) - 배터리 몸체 위쪽에 위치 -->
+    <!-- 배터리 몸체 너비: 17-7=10, 절반=5, 중앙: (7+17)/2 = 12 -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:fillType="nonZero"
+        android:pathData="M9.5,0 L9.5,1.5 L14.5,1.5 L14.5,0 L9.5,0 Z" />
+
+</vector>
+

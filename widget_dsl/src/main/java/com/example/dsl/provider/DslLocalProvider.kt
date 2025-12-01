@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
 
+val DslLocalPreview = WidgetLocal.of(false)
 val DslLocalSize = WidgetLocal.of<DpSize>()
 val DslLocalContext = WidgetLocal.of<Context>()
 val DslLocalState = WidgetLocal.of<Preferences>()

@@ -1,11 +1,13 @@
 package com.example.dsl.glance
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -40,7 +42,7 @@ object GlanceModifierBuilder {
         // Height
         val height = DimensionConverter.toGlanceDimension(viewProperty.height)
         modifier = when {
-            height == Dimension.Expand -> modifier.fillMaxSize() // Glance는 fillMaxHeight가 없으므로 fillMaxSize 사용
+            height == Dimension.Expand -> modifier.fillMaxHeight() // Glance는 fillMaxHeight가 없으므로 fillMaxSize 사용
             height is Dimension.Dp -> modifier.height(height.dp)
             else -> modifier // Wrap
         }

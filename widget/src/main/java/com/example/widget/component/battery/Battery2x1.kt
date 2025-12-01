@@ -1,23 +1,20 @@
 package com.example.widget.component.battery
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
-import com.example.dsl.component.Image
 import com.example.dsl.component.Row
-import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
-import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
-import com.example.dsl.proto.TextAlign
+import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.VerticalAlignment
+import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
-import com.example.widget.R
 import com.example.widget.SizeType
-import kotlin.math.min
 
 class Battery2x1 : BatteryComponent() {
     override fun getSizeType(): SizeType {
@@ -25,7 +22,6 @@ class Battery2x1 : BatteryComponent() {
     }
 
     override fun WidgetScope.Content() {
-
         Box({
             ViewProperty {
                 Width { matchParent = true }
@@ -38,71 +34,79 @@ class Battery2x1 : BatteryComponent() {
             }
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
-            val batteryLevel = 50f // TODO: Get actual battery level
-
             Row({
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 ViewProperty {
                     Width { matchParent = true }
                     Height { matchParent = true }
                 }
             }) {
-                BatteryIcon(BatteryState.CHARGING)
-                Row({
+                val size = getLocal(DslLocalSize) as DpSize
+                Box({
                     ViewProperty {
                         Width {
-                            matchParent = true
+                            Dp {
+                                value = size.width.value / 2
+                            }
                         }
-                        Height {
-                            matchParent = true
-                        }
+                        Height { matchParent = true }
                     }
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }) {
-                    Column({
-                        ViewProperty {
-                            Padding {
-                                end = 16f
+                    LeftContent()
+                }
+                Box({
+                    ViewProperty {
+                        Width {
+                            Dp {
+                                value = size.width.value / 2
                             }
                         }
-                        horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-
-                    }) {
-                        val size = getLocal(DslLocalSize) as DpSize
-                        val mainTextSize = size.height.value * 0.25f
-                        Text {
-                            TextContent {
-                                text = "75%"
-                                FontColor { Color { argb = Color.Black.toArgb() } }
-                                fontSize = mainTextSize
-                                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                            }
-                            textAlign = TextAlign.TEXT_ALIGN_END
-                        }
-                        val subTextSize = size.height.value * 0.14f
-                        Text {
-                            TextContent {
-                                text = "≈ 3h 20m"
-                                FontColor { Color { argb = Color.Gray.toArgb() } }
-                                fontSize = subTextSize
-                                fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                            }
-                            textAlign = TextAlign.TEXT_ALIGN_END
-                        }
-                        Text {
-                            TextContent {
-                                text = "충전됨"
-                                FontColor { Color { argb = Color.Gray.toArgb() } }
-                                fontSize = subTextSize
-                                fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                            }
-                            textAlign = TextAlign.TEXT_ALIGN_END
-                        }
+                        Height { matchParent = true }
                     }
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                }) {
+                    RightContent()
                 }
             }
+        }
+    }
+
+    private fun WidgetScope.LeftContent() {
+        Column({
+            horizontalAlignment = H_ALIGN_CENTER
+            verticalAlignment = V_ALIGN_CENTER
+        }) {
+            // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
+            Box({
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }) {
+                CircularProgress()
+                MobileDevice()
+            }
+            // 프로그레스 밑에 배터리 용량 텍스트
+            BatteryText()
+        }
+    }
+
+    private fun WidgetScope.RightContent() {
+        Column({
+            horizontalAlignment = H_ALIGN_CENTER
+            verticalAlignment = V_ALIGN_CENTER
+        }) {
+            // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
+            Box({
+                ViewProperty {
+
+                }
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }) {
+                CircularProgress()
+                MobileDevice()
+            }
+            // 프로그레스 밑에 배터리 용량 텍스트
+            BatteryText()
         }
     }
 }

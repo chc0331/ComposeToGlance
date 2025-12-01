@@ -3,6 +3,7 @@ package com.example.widget.provider
 import android.R.attr.value
 import android.content.Context
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,7 @@ import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
 import androidx.glance.LocalSize
 import androidx.glance.LocalState
+import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -30,6 +32,7 @@ import com.example.dsl.provider.DslLocalGlanceId
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
+import com.example.widget.R
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.util.getSystemContentRadius
 
@@ -41,7 +44,17 @@ abstract class DslAppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.fillMaxSize().background(Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
-                RenderDsl()
+                val remoteviews = remember {
+                    RemoteViews(
+                        context.packageName,
+                        R.layout.root_layout
+                    )
+                }
+                AndroidRemoteViews(
+                    remoteViews = remoteviews, containerViewId = R.id.widgetRoot
+                ) {
+                    RenderDsl()
+                }
             }
         }
     }

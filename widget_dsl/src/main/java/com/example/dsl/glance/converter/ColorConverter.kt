@@ -2,6 +2,7 @@ package com.example.dsl.glance.converter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.example.dsl.proto.Color as ProtoColor
 import com.example.dsl.proto.ColorProvider
