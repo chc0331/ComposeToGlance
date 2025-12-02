@@ -210,4 +210,55 @@ abstract class BatteryComponent : WidgetComponent() {
 //            currentValue ?: false
 //        } ?: false
 //    }
+    
+    // Bluetooth Device Helper Functions
+    protected fun WidgetScope.getFirstBluetoothDevice(): BatteryData? {
+        val currentState = getLocal(DslLocalState)
+        val isPreview = getLocal(DslLocalPreview) ?: false
+        if (isPreview) {
+            // Show preview data
+            return BatteryData(
+                level = 75f,
+                charging = false,
+                deviceType = DeviceType.BLUETOOTH_HEADPHONES,
+                deviceName = "Headphones",
+                deviceAddress = "00:00:00:00:00:00"
+            )
+        }
+        
+        return currentState?.let { state ->
+            val addresses = state[BatteryPreferenceKey.Bluetooth.DeviceAddresses] ?: emptySet()
+            addresses.firstOrNull()?.let { address ->
+                val level = state[BatteryPreferenceKey.Bluetooth.levelKey(address)] ?: return@let null
+                val charging = state[BatteryPreferenceKey.Bluetooth.chargingKey(address)] ?: false
+                val name = state[BatteryPreferenceKey.Bluetooth.nameKey(address)] ?: "Unknown"
+                val typeString = state[BatteryPreferenceKey.Bluetooth.typeKey(address)] ?: DeviceType.BLUETOOTH_UNKNOWN.name
+                val deviceType = try {
+                    DeviceType.valueOf(typeString)
+                } catch (e: IllegalArgumentException) {
+                    DeviceType.BLUETOOTH_UNKNOWN
+                }
+                
+                BatteryData(
+                    level = level,
+                    charging = charging,
+                    deviceType = deviceType,
+                    deviceName = name,
+                    deviceAddress = address
+                )
+            }
+        }
+    }
+    
+    protected fun getBluetoothDeviceIcon(deviceType: DeviceType): Int {
+        return when (deviceType) {
+            DeviceType.BLUETOOTH_HEADSET -> R.drawable.ic_bluetooth_headphones
+            DeviceType.BLUETOOTH_HEADPHONES -> R.drawable.ic_bluetooth_headphones
+            DeviceType.BLUETOOTH_WATCH -> R.drawable.ic_bluetooth_watch
+            DeviceType.BLUETOOTH_SPEAKER -> R.drawable.ic_bluetooth_speaker
+            DeviceType.BLUETOOTH_HEARING_AID -> R.drawable.ic_bluetooth_headphones
+            DeviceType.BLUETOOTH_UNKNOWN -> R.drawable.ic_bluetooth_device
+            else -> R.drawable.ic_bluetooth_device
+        }
+    }
 }

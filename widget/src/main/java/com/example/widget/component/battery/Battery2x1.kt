@@ -1,5 +1,11 @@
 package com.example.widget.component.battery
 
+import android.R.attr.animation
+import android.R.attr.bottom
+import android.R.attr.fontWeight
+import android.R.attr.text
+import android.R.attr.value
+import android.graphics.Color.argb
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -7,13 +13,19 @@ import androidx.compose.ui.unit.DpSize
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
+import com.example.dsl.component.Image
+import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
+import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
+import com.example.dsl.proto.ProgressType
+import com.example.dsl.proto.TextContent
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
+import com.example.widget.R
 import com.example.widget.SizeType
 
 class Battery2x1 : BatteryComponent() {
@@ -91,22 +103,176 @@ class Battery2x1 : BatteryComponent() {
     }
 
     private fun WidgetScope.RightContent() {
-        Column({
-            horizontalAlignment = H_ALIGN_CENTER
-            verticalAlignment = V_ALIGN_CENTER
-        }) {
-            // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
-            Box({
-                ViewProperty {
+        val bluetoothDevice = getFirstBluetoothDevice()
 
-                }
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+        if (bluetoothDevice != null) {
+            // Show Bluetooth device battery
+            Column({
+                horizontalAlignment = H_ALIGN_CENTER
+                verticalAlignment = V_ALIGN_CENTER
             }) {
-                CircularProgress()
-                MobileDevice()
+                Box({
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                }) {
+                    BluetoothCircularProgress(bluetoothDevice.level)
+                    BluetoothDeviceIcon(bluetoothDevice.deviceType)
+                }
+                BluetoothBatteryText(bluetoothDevice.level)
             }
-            // 프로그레스 밑에 배터리 용량 텍스트
-            BatteryText()
+        } else {
+            // No Bluetooth device, show duplicate phone battery or empty
+            Column({
+                horizontalAlignment = H_ALIGN_CENTER
+                verticalAlignment = V_ALIGN_CENTER
+            }) {
+                Box({
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                }) {
+                    CircularProgress(getBatteryValue())
+                    MobileDevice()
+                }
+                BatteryText()
+            }
+        }
+    }
+
+    private fun WidgetScope.BluetoothCircularProgress(batteryLevel: Float) {
+        fun WidgetScope.getProgressSize(): Float {
+            val size = getLocal(DslLocalSize) as DpSize
+            return size.height.value * 0.58f
+        }
+
+        Progress({
+            ViewProperty {
+                Width {
+                    Dp {
+                        value = getProgressSize()
+                    }
+                }
+                Height {
+                    Dp {
+                        value = getProgressSize()
+                    }
+                }
+            }
+            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
+            progressValue = batteryLevel
+            maxValue = 100f
+            ProgressColor {
+                Color {
+                    resId = R.color.battery_gauge_sufficient_color
+                }
+            }
+            BackgroundColor {
+                Color {
+                    argb = androidx.compose.ui.graphics.Color.LightGray.toArgb()
+                }
+            }
+        })
+    }
+
+    private fun WidgetScope.CircularProgress(batteryLevel: Float) {
+        fun WidgetScope.getProgressSize(): Float {
+            val size = getLocal(DslLocalSize) as DpSize
+            return size.height.value * 0.58f
+        }
+
+        Progress({
+            ViewProperty {
+                Width {
+                    Dp {
+                        value = getProgressSize()
+                    }
+                }
+                Height {
+                    Dp {
+                        value = getProgressSize()
+                    }
+                }
+            }
+            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
+            progressValue = batteryLevel
+            maxValue = 100f
+            ProgressColor {
+                Color {
+                    resId =
+                        R.color.battery_gauge_sufficient_color
+                }
+            }
+            BackgroundColor {
+                Color {
+                    argb = androidx.compose.ui.graphics.Color.LightGray.toArgb()
+                }
+            }
+        })
+    }
+
+    private fun WidgetScope.BluetoothDeviceIcon(deviceType: DeviceType) {
+        fun WidgetScope.getIconSize(): Float {
+            val size = getLocal(DslLocalSize) as DpSize
+            return size.height.value * 0.22f
+        }
+
+        Image({
+            ViewProperty {
+                Width { Dp { value = getIconSize() } }
+                Height { Dp { value = getIconSize() } }
+            }
+            Provider {
+                drawableResId = getBluetoothDeviceIcon(deviceType)
+            }
+            animation = false
+            infiniteLoop = false
+        })
+    }
+
+    private fun WidgetScope.BluetoothBatteryText(batteryLevel: Float) {
+        val batteryValueText = "${batteryLevel.toInt()}"
+        val size = getLocal(DslLocalSize) as DpSize
+        val textSize = size.height.value * 0.18f
+        Row({
+            ViewProperty {
+                Width { wrapContent = true }
+                Height { wrapContent = true }
+            }
+            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+            verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
+        }) {
+            Text({
+                ViewProperty {
+                    Width { wrapContent = true }
+                    Height { wrapContent = true }
+                }
+                TextContent {
+                    text = batteryValueText
+                }
+                fontSize = textSize
+                fontWeight = com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+                FontColor {
+                    Color {
+                        argb = androidx.compose.ui.graphics.Color.Black.toArgb()
+                    }
+                }
+            })
+            Text({
+                ViewProperty {
+                    Width { wrapContent = true }
+                    Height { wrapContent = true }
+                    Padding {
+                        bottom = 2f
+                    }
+                }
+                TextContent {
+                    text = "%"
+                }
+                fontSize = textSize * 0.65f
+                FontColor {
+                    Color {
+                        argb = androidx.compose.ui.graphics.Color.Black.toArgb()
+                    }
+                }
+                fontWeight = com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+            })
         }
     }
 }
