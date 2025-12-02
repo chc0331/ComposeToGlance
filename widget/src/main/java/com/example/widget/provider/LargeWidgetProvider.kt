@@ -2,8 +2,10 @@ package com.example.widget.provider
 
 import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -24,25 +26,23 @@ import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
+import com.example.widget.component.battery.BatteryData
+import com.example.widget.component.battery.BatteryUpdateManager
+import com.example.widget.component.battery.checkBatteryComponentExist
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 val layoutKey = byteArrayPreferencesKey("layout_key")
 
 class LargeAppWidget : DslAppWidget() {
 
     override val sizeMode: SizeMode
-        get() = SizeMode.Responsive(
-            setOf(
-                DpSize(400.dp, 250.dp),
-                DpSize(350.dp, 200.dp),
-                DpSize(330.dp, 180.dp)
-            )
-        )
+        get() = SizeMode.Exact
 
     override fun WidgetScope.DslContent() {
         val currentState = getLocal(DslLocalState) as Preferences?
@@ -136,19 +136,37 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
         get() = LargeAppWidget()
 
     override fun onReceive(context: Context, intent: Intent) {
+        Log.i(TAG, "onReceive / ${intent.action}")
+        if (intent.action == "com.example.widget.test") {
+            AppWidgetManager.getInstance(context).getAppWidgetIds(
+                ComponentName(
+                    context,
+                    LargeWidgetProvider::class.java.name
+                )
+            ).forEach {
+                val randomInt = Random.nextInt(100)
+                val tempData = BatteryData(randomInt.toFloat(), false)
+                BatteryUpdateManager.updateAppWidget(context, it, tempData)
+            }
+        } else if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
+            initData(context, intent)
+        }
         super.onReceive(context, intent)
+    }
 
-        if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
-            CoroutineScope(Dispatchers.Default).launch {
-                val repository = WidgetLayoutRepository(context)
-                val widgetLayoutData = repository.fetchData()
-                val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
-                val glanceManager = GlanceAppWidgetManager(context)
-                appWidgetIds?.forEach {
-                    val glanceId = glanceManager.getGlanceIdBy(it)
-                    updateAppWidgetState(context, glanceId) {
-                        it[layoutKey] = widgetLayoutData.toByteArray()
-                    }
+    private fun initData(context: Context, intent: Intent) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val repository = WidgetLayoutRepository(context)
+            val widgetLayoutData = repository.fetchData()
+            val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+            val glanceManager = GlanceAppWidgetManager(context)
+            appWidgetIds?.forEach {
+                val glanceId = glanceManager.getGlanceIdBy(it)
+                updateAppWidgetState(context, glanceId) {
+                    it[layoutKey] = widgetLayoutData.toByteArray()
+                }
+                if (widgetLayoutData.checkBatteryComponentExist()) {
+                    BatteryUpdateManager.syncBatteryWidgetState(context)
                 }
             }
         }

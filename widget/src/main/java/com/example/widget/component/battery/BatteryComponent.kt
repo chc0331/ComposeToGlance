@@ -1,22 +1,19 @@
 package com.example.widget.component.battery
 
-import android.R.attr.textSize
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Image
 import com.example.dsl.component.Progress
+import com.example.dsl.component.Row
 import com.example.dsl.component.Text
 import com.example.dsl.proto.FontWeight
+import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
-import com.example.dsl.proto.TextAlign
+import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.provider.DslLocalPreview
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
@@ -56,7 +53,7 @@ abstract class BatteryComponent : WidgetComponent() {
     protected fun WidgetScope.CircularProgress() {
         fun WidgetScope.getProgressSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
-            return size.height.value * 0.55f
+            return size.height.value * 0.58f
         }
 
         val batteryValue = getBatteryValue()
@@ -93,7 +90,7 @@ abstract class BatteryComponent : WidgetComponent() {
     protected fun WidgetScope.MobileDevice() {
         fun WidgetScope.getBatteryIconSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
-            return size.height.value * 0.24f
+            return size.height.value * 0.22f
         }
         Image {
             ViewProperty {
@@ -104,33 +101,64 @@ abstract class BatteryComponent : WidgetComponent() {
                 drawableResId = R.drawable.ic_mobile_device
             }
 
-            animation = getChargingState()
-            infiniteLoop = getChargingState()
+//            animation = getChargingState()
+//            infiniteLoop = getChargingState()
+            animation = false
+            infiniteLoop = false
         }
     }
 
     protected fun WidgetScope.BatteryText() {
-        // 배터리 값에서 숫자 추출 (예: "50%" -> 50)
-        val batteryValueText = "${getBatteryValue()}%"
+        // 배터리 값에서 숫자만 반환 (예: "50")
+        val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(DslLocalSize) as DpSize
-        val textSize = size.height.value * 0.2f
-        Text({
+        val textSize = size.height.value * 0.18f
+        Row({
             ViewProperty {
-                viewId = R.id.batteryValue
-                partiallyUpdate = true
+                Width { wrapContent = true }
+                Height { wrapContent = true }
             }
-            TextContent {
-                text = batteryValueText
-            }
-            fontSize = textSize
-            fontWeight = FontWeight.FONT_WEIGHT_BOLD
-            FontColor {
-                Color {
-                    argb = Color.Black.toArgb()
+            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+            verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
+        }) {
+            Text({
+                ViewProperty {
+                    viewId = R.id.batteryValue
+                    partiallyUpdate = true
+                    Width { wrapContent = true }
+                    Height { wrapContent = true }
                 }
+                TextContent {
+                    text = batteryValueText
+                }
+                fontSize = textSize
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                FontColor {
+                    Color {
+                        argb = Color.Black.toArgb()
+                    }
+                }
+            })
+            Text {
+                ViewProperty {
+                    Width { wrapContent = true }
+                    Height { wrapContent = true }
+                    Padding {
+                        bottom = 2f
+                    }
+                }
+                TextContent {
+                    text = "%"
+                }
+                fontSize = textSize * 0.65f
+                FontColor {
+                    Color {
+                        argb = Color.Black.toArgb()
+                    }
+                }
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
             }
-            textAlign = TextAlign.TEXT_ALIGN_CENTER
-        })
+        }
     }
 
 //    protected fun WidgetScope.getBatteryIcon(): Int {
@@ -152,7 +180,7 @@ abstract class BatteryComponent : WidgetComponent() {
             return 50f
         }
         val value = currentState?.let { state ->
-            val currentValue = state[batteryValueKey]
+            val currentValue = state[BatteryPreferenceKey.Phone.Level]
             currentValue ?: 0f
         } ?: 0f
 
@@ -166,7 +194,7 @@ abstract class BatteryComponent : WidgetComponent() {
             return false
         }
         return currentState?.let { state ->
-            val currentValue = state[chargingStateKey]
+            val currentValue = state[BatteryPreferenceKey.Phone.Charging]
             currentValue ?: false
         } ?: false
     }

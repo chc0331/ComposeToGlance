@@ -43,7 +43,16 @@ class Battery1x1 : BatteryComponent() {
                     MobileDevice()
                 }
                 // 프로그레스 밑에 배터리 용량 텍스트
-                BatteryText()
+                Box({
+                    ViewProperty {
+                        Width { matchParent = true }
+                        Height { wrapContent = true }
+                    }
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                })
+                {
+                    BatteryText()
+                }
             }
         }
     }

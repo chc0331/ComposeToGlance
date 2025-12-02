@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.util.Log
+import com.example.widget.receiver.goAsync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -82,7 +83,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
             else -> "Unknown"
         }
         val batteryData = BatteryData(
-            batteryPct, statusString, healthString, isCharging
+            batteryPct, isCharging
         ).apply {
             Log.d(TAG, "Battery Status Update:")
             Log.d(TAG, " Data: $this")
@@ -103,8 +104,8 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
         context: Context,
         batteryData: BatteryData
     ) {
-        CoroutineScope(Dispatchers.Default).launch {
-            BatteryUpdateManager.updateBatteryWidgetState(
+        goAsync {
+            BatteryUpdateManager.updateBatteryWidget(
                 context,
                 data = batteryData
             )

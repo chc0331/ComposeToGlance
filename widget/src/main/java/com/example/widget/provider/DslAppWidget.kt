@@ -1,8 +1,6 @@
 package com.example.widget.provider
 
-import android.R.attr.value
 import android.content.Context
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

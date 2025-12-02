@@ -6,6 +6,7 @@
             android:name="com.example.widget.provider.LargeWidgetProvider"
             android:exported="true">
             <intent-filter>
+                <action android:name="com.example.widget.test" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data

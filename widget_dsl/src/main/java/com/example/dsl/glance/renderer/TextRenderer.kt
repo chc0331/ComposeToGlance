@@ -4,7 +4,9 @@ package com.example.dsl.glance.renderer
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.sp
+import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.layout.wrapContentSize
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.example.dsl.proto.WidgetNode
@@ -32,7 +34,7 @@ object TextRenderer : NodeRenderer {
         }
         if (node.text.viewProperty.partiallyUpdate) {
             createRemoteViews(node, context)?.let {
-                AndroidRemoteViews(remoteViews = it)
+                AndroidRemoteViews(modifier = GlanceModifier.wrapContentSize(), remoteViews = it)
             }
             return
         }
