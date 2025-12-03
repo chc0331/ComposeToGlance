@@ -14,11 +14,13 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
+import com.example.dsl.provider.DslLocalGridIndex
 import com.example.dsl.provider.DslLocalPreview
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
+import com.example.widget.ViewKey
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 
@@ -50,15 +52,18 @@ abstract class BatteryComponent : WidgetComponent() {
         return "${getSizeType()}-Battery"
     }
 
-    protected fun WidgetScope.CircularProgress() {
+    protected fun WidgetScope.BatteryProgress() {
         fun WidgetScope.getProgressSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.58f
         }
 
+        val gridIndex = getLocal(DslLocalGridIndex) as Int
         val batteryValue = getBatteryValue()
         Progress({
             ViewProperty {
+                viewId = ViewKey.Battery.getBatteryProgressId(gridIndex)
+                partiallyUpdate = true
                 Width {
                     Dp {
                         value = getProgressSize()
@@ -87,7 +92,7 @@ abstract class BatteryComponent : WidgetComponent() {
 
     }
 
-    protected fun WidgetScope.MobileDevice() {
+    protected fun WidgetScope.BatteryIcon(deviceType: DeviceType = DeviceType.PHONE) {
         fun WidgetScope.getBatteryIconSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.22f
@@ -98,18 +103,13 @@ abstract class BatteryComponent : WidgetComponent() {
                 Height { Dp { value = getBatteryIconSize() } }
             }
             Provider {
-                drawableResId = R.drawable.ic_mobile_device
+                drawableResId = getDeviceIcon(deviceType)
             }
-
-//            animation = getChargingState()
-//            infiniteLoop = getChargingState()
-            animation = false
-            infiniteLoop = false
         }
     }
 
     protected fun WidgetScope.BatteryText() {
-        // 배터리 값에서 숫자만 반환 (예: "50")
+        val gridIndex = getLocal(DslLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
@@ -123,7 +123,7 @@ abstract class BatteryComponent : WidgetComponent() {
         }) {
             Text({
                 ViewProperty {
-                    viewId = R.id.batteryValue
+                    viewId = ViewKey.Battery.getBatteryTextId(gridIndex)
                     partiallyUpdate = true
                     Width { wrapContent = true }
                     Height { wrapContent = true }
@@ -150,7 +150,7 @@ abstract class BatteryComponent : WidgetComponent() {
                 TextContent {
                     text = "%"
                 }
-                fontSize = textSize * 0.65f
+                fontSize = textSize * 0.6f
                 FontColor {
                     Color {
                         argb = Color.Black.toArgb()
@@ -161,17 +161,28 @@ abstract class BatteryComponent : WidgetComponent() {
         }
     }
 
-//    protected fun WidgetScope.getBatteryIcon(): Int {
-//        val currentState = getLocal(DslLocalState) as Preferences? ?: null
-//        val isPreview = getLocal(DslLocalPreview) as Boolean? ?: false
-//        if (isPreview) {
-//            return R.drawable.ic_mobile_device
-//        }
-//        return currentState?.let { state ->
-//            val currentValue = state[batteryIconKey] as Int?
-//            currentValue ?: 0
-//        } ?: 0
-//    }
+    protected fun WidgetScope.ChargingIcon() {
+        fun WidgetScope.getChargingIconSize(): Float {
+            val size = getLocal(DslLocalSize) as DpSize
+            return size.height.value * 0.2f
+        }
+
+        val iconSize = getChargingIconSize()
+        val gridIndex = getLocal(DslLocalGridIndex) as Int
+        Image {
+            ViewProperty {
+                viewId = ViewKey.Battery.getChargingIconId(gridIndex)
+                Width { Dp { value = iconSize * 0.6f } }
+                Height { Dp { value = iconSize } }
+                hide = !getChargingState()
+            }
+            Provider {
+                drawableResId = R.layout.battery_charging_avd
+            }
+            animation = true
+            infiniteLoop = true
+        }
+    }
 
     protected fun WidgetScope.getBatteryValue(): Float {
         val currentState = getLocal(DslLocalState)
@@ -210,7 +221,7 @@ abstract class BatteryComponent : WidgetComponent() {
 //            currentValue ?: false
 //        } ?: false
 //    }
-    
+
     // Bluetooth Device Helper Functions
     protected fun WidgetScope.getFirstBluetoothDevice(): BatteryData? {
         val currentState = getLocal(DslLocalState)
@@ -225,20 +236,22 @@ abstract class BatteryComponent : WidgetComponent() {
                 deviceAddress = "00:00:00:00:00:00"
             )
         }
-        
+
         return currentState?.let { state ->
             val addresses = state[BatteryPreferenceKey.Bluetooth.DeviceAddresses] ?: emptySet()
             addresses.firstOrNull()?.let { address ->
-                val level = state[BatteryPreferenceKey.Bluetooth.levelKey(address)] ?: return@let null
+                val level =
+                    state[BatteryPreferenceKey.Bluetooth.levelKey(address)] ?: return@let null
                 val charging = state[BatteryPreferenceKey.Bluetooth.chargingKey(address)] ?: false
                 val name = state[BatteryPreferenceKey.Bluetooth.nameKey(address)] ?: "Unknown"
-                val typeString = state[BatteryPreferenceKey.Bluetooth.typeKey(address)] ?: DeviceType.BLUETOOTH_UNKNOWN.name
+                val typeString = state[BatteryPreferenceKey.Bluetooth.typeKey(address)]
+                    ?: DeviceType.BLUETOOTH_UNKNOWN.name
                 val deviceType = try {
                     DeviceType.valueOf(typeString)
                 } catch (e: IllegalArgumentException) {
                     DeviceType.BLUETOOTH_UNKNOWN
                 }
-                
+
                 BatteryData(
                     level = level,
                     charging = charging,
@@ -249,16 +262,17 @@ abstract class BatteryComponent : WidgetComponent() {
             }
         }
     }
-    
-    protected fun getBluetoothDeviceIcon(deviceType: DeviceType): Int {
+
+    protected fun getDeviceIcon(deviceType: DeviceType): Int {
         return when (deviceType) {
+            DeviceType.PHONE -> R.drawable.ic_mobile_device
             DeviceType.BLUETOOTH_HEADSET -> R.drawable.ic_bluetooth_headphones
             DeviceType.BLUETOOTH_HEADPHONES -> R.drawable.ic_bluetooth_headphones
             DeviceType.BLUETOOTH_WATCH -> R.drawable.ic_bluetooth_watch
             DeviceType.BLUETOOTH_SPEAKER -> R.drawable.ic_bluetooth_speaker
             DeviceType.BLUETOOTH_HEARING_AID -> R.drawable.ic_bluetooth_headphones
             DeviceType.BLUETOOTH_UNKNOWN -> R.drawable.ic_bluetooth_device
-            else -> R.drawable.ic_bluetooth_device
+            else -> R.drawable.ic_mobile_device
         }
     }
 }

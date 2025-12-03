@@ -17,6 +17,9 @@ import androidx.core.app.NotificationCompat
 import com.example.composetoglance.R
 import com.example.widget.component.battery.BatteryStatusReceiver
 import com.example.widget.component.battery.BluetoothBatteryMonitor
+import com.example.widget.component.battery.bluetooth.BluetoothDeviceReceiver
+import com.example.widget.component.battery.bluetooth.register
+import com.example.widget.component.battery.bluetooth.unregister
 
 class WidgetForegroundService : Service() {
     companion object {
@@ -26,6 +29,7 @@ class WidgetForegroundService : Service() {
     }
 
     private var batteryReceiver: BatteryStatusReceiver? = null
+    private var bluetoothReceiver:BluetoothDeviceReceiver?=null
     private var bluetoothBatteryMonitor: BluetoothBatteryMonitor? = null
     private val handler = Handler(Looper.getMainLooper())
     private var batteryCheckRunnable: Runnable? = null
@@ -36,6 +40,9 @@ class WidgetForegroundService : Service() {
         Log.d(TAG, "Service onCreate called")
         createNotificationChannel()
         registerBatteryReceiver()
+
+        bluetoothReceiver = BluetoothDeviceReceiver()
+        bluetoothReceiver?.register(this)
         
         // Start Bluetooth battery monitoring
         bluetoothBatteryMonitor = BluetoothBatteryMonitor(this)
@@ -50,6 +57,8 @@ class WidgetForegroundService : Service() {
         unregisterBatteryReceiver()
         bluetoothBatteryMonitor?.stopMonitoring()
         bluetoothBatteryMonitor = null
+        bluetoothReceiver?.unregister(this)
+        bluetoothReceiver = null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

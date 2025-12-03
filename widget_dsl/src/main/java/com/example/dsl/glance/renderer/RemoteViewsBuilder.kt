@@ -3,6 +3,7 @@ package com.example.dsl.glance.renderer
 import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
+import android.view.View
 import android.widget.RemoteViews
 import com.example.dsl.glance.converter.ColorConverter
 import com.example.dsl.glance.converter.PaddingConverter
@@ -92,6 +93,8 @@ object RemoteViewsBuilder {
                 remoteViews.setOnClickPendingIntent(viewId, pendingIntent)
             }
         }
+
+        if (viewProperty.hide) remoteViews.setViewVisibility(viewId, View.GONE)
     }
 
     /**

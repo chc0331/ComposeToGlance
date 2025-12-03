@@ -1,0 +1,75 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+
+            <!-- 1. 배경 (베이스) 번개: 어두운 노란색 -->
+            <path
+                android:fillColor="#F9A825"
+                android:pathData="M13,2 L3,14 h7 l-2,8 11,-12 h-7 L13,2 z" />
+
+            <!-- 2. 마스킹 영역 (번개 모양 창문) -->
+            <clip-path
+                android:name="mask_path"
+                android:pathData="M13,2 L3,14 h7 l-2,8 11,-12 h-7 L13,2 z" />
+
+            <!-- 3. 흐르는 빛 그룹 -->
+            <!--
+                핵심 변경 사항:
+                rotation="-45": 그룹 자체를 반시계 방향으로 45도 돌립니다.
+                이 상태에서 Y축 이동을 하면 시각적으로 '왼쪽 아래 -> 오른쪽 위'로 이동하게 됩니다.
+            -->
+            <group
+                android:name="flow_group"
+                android:pivotX="12"
+                android:pivotY="12"
+                android:rotation="-45">
+
+                <!-- 빛이 지나갈 충분히 큰 영역 -->
+                <path
+                    android:pathData="M-12,-25 h48 v74 h-48 z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient
+                            android:startY="-25"
+                            android:endY="49"
+                            android:startX="0"
+                            android:endX="0"
+                            android:type="linear">
+                            <!-- 부드러운 빛의 흐름 (투명 -> 노랑 -> 흰색 -> 노랑 -> 투명) -->
+                            <item android:offset="0.0" android:color="#00FFEB3B" />
+                            <item android:offset="0.35" android:color="#40FFEB3B" />
+                            <item android:offset="0.5" android:color="#FFFFFFFF" />
+                            <item android:offset="0.65" android:color="#40FFEB3B" />
+                            <item android:offset="1.0" android:color="#00FFEB3B" />
+                        </gradient>
+                    </aapt:attr>
+                </path>
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <!-- 4. 애니메이션 -->
+    <!--
+         그룹이 -45도 회전된 상태이므로,
+         translateY 값이 양수(+)면 화면의 '왼쪽 아래',
+         음수(-)면 화면의 '오른쪽 위'가 됩니다.
+    -->
+    <target android:name="flow_group">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="translateY"
+                android:valueFrom="40"
+                android:valueTo="-40"
+                android:duration="3000"
+                android:repeatCount="infinite"
+                android:interpolator="@android:interpolator/accelerate_decelerate"
+                android:valueType="floatType" />
+        </aapt:attr>
+    </target>
+
+</animated-vector>

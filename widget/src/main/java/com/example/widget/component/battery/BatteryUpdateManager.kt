@@ -4,11 +4,13 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.R
+import com.example.widget.ViewKey
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeWidgetProvider
 
@@ -24,11 +26,25 @@ object BatteryUpdateManager {
         val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
         batteryRepo.updateBatterInfo(data)
 
-//        val manager = AppWidgetManager.getInstance(context)
-//        manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java)).forEach {
-//            updateAppWidgetState(context, it, data)
-//            updateAppWidget(context, it, data)
-//        }
+        val manager = AppWidgetManager.getInstance(context)
+        manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java))
+            .forEach { widgetId ->
+                val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
+                //todo : Current is brute force, need to refactoring
+                (0 until 9).forEach {
+                    remoteViews.setTextViewText(
+                        ViewKey.Battery.getBatteryTextId(it),
+                        "${data.level.toInt()}"
+                    )
+                    remoteViews.setViewVisibility(
+                        ViewKey.Battery.getChargingIconId(it),
+                        if (data.charging) View.VISIBLE else View.GONE
+                    )
+                }
+                Log.i(TAG, "partially update : $widgetId ${data.charging} ${R.id.batteryValue}")
+                AppWidgetManager.getInstance(context)
+                    .partiallyUpdateAppWidget(widgetId, remoteViews)
+            }
     }
 
     suspend fun syncBatteryWidgetState(context: Context) {
@@ -69,5 +85,5 @@ object BatteryUpdateManager {
     }
 }
 
-fun WidgetLayout.checkBatteryComponentExist(): Boolean =
+internal fun WidgetLayout.checkBatteryComponentExist(): Boolean =
     this.placedWidgetComponentList.find { it.widgetTag.contains("Battery") } != null

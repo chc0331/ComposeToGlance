@@ -74,5 +74,11 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
         set(value) {
             builder.setPartiallyUpdate(value)
         }
+
+    var hide: Boolean
+        get() = builder.hide
+        set(value) {
+            builder.setHide(value)
+        }
 }
 

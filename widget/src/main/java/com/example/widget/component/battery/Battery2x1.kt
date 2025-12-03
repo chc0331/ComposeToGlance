@@ -94,8 +94,8 @@ class Battery2x1 : BatteryComponent() {
             Box({
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
-                CircularProgress()
-                MobileDevice()
+                BatteryProgress()
+                BatteryIcon()
             }
             // 프로그레스 밑에 배터리 용량 텍스트
             BatteryText()
@@ -129,7 +129,7 @@ class Battery2x1 : BatteryComponent() {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }) {
                     CircularProgress(getBatteryValue())
-                    MobileDevice()
+                    BatteryIcon()
                 }
                 BatteryText()
             }
@@ -219,7 +219,7 @@ class Battery2x1 : BatteryComponent() {
                 Height { Dp { value = getIconSize() } }
             }
             Provider {
-                drawableResId = getBluetoothDeviceIcon(deviceType)
+                drawableResId = getDeviceIcon(deviceType)
             }
             animation = false
             infiniteLoop = false

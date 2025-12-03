@@ -23,6 +23,7 @@ import com.example.dsl.proto.AlignmentType
 import com.example.dsl.provider.DslLocalCellHeight
 import com.example.dsl.provider.DslLocalCellWidth
 import com.example.dsl.provider.DslLocalContentRadius
+import com.example.dsl.provider.DslLocalGridIndex
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
@@ -107,7 +108,8 @@ class LargeAppWidget : DslAppWidget() {
                 }
             })
             {
-                DslLocalProvider(DslLocalSize provides DpSize(componentWidth, componentHeight)) {
+                DslLocalProvider(DslLocalSize provides DpSize(componentWidth, componentHeight),
+                    DslLocalGridIndex provides gridIndex) {
                     val contentRadius = getLocal(DslLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
                         Box({
