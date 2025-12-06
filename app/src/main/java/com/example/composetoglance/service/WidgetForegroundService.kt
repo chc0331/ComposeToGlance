@@ -16,7 +16,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.composetoglance.R
 import com.example.widget.component.battery.BatteryStatusReceiver
-import com.example.widget.component.battery.BluetoothBatteryMonitor
 import com.example.widget.component.battery.bluetooth.BluetoothDeviceReceiver
 import com.example.widget.component.battery.bluetooth.register
 import com.example.widget.component.battery.bluetooth.unregister
@@ -30,7 +29,6 @@ class WidgetForegroundService : Service() {
 
     private var batteryReceiver: BatteryStatusReceiver? = null
     private var bluetoothReceiver:BluetoothDeviceReceiver?=null
-    private var bluetoothBatteryMonitor: BluetoothBatteryMonitor? = null
     private val handler = Handler(Looper.getMainLooper())
     private var batteryCheckRunnable: Runnable? = null
     private var lastBatteryLevel = -1
@@ -43,10 +41,6 @@ class WidgetForegroundService : Service() {
 
         bluetoothReceiver = BluetoothDeviceReceiver()
         bluetoothReceiver?.register(this)
-        
-        // Start Bluetooth battery monitoring
-        bluetoothBatteryMonitor = BluetoothBatteryMonitor(this)
-        bluetoothBatteryMonitor?.startMonitoring()
 //        startBatteryMonitoring()
     }
 
@@ -55,8 +49,6 @@ class WidgetForegroundService : Service() {
         Log.d(TAG, "Service onDestroy called")
         stopBatteryMonitoring()
         unregisterBatteryReceiver()
-        bluetoothBatteryMonitor?.stopMonitoring()
-        bluetoothBatteryMonitor = null
         bluetoothReceiver?.unregister(this)
         bluetoothReceiver = null
     }
