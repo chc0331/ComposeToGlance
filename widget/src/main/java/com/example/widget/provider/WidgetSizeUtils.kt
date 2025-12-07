@@ -6,10 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.SizeF
-import androidx.compose.ui.unit.DpSize
 import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 fun getExactWidgetSizeInDp(context: Context, appWidgetOptions: Bundle): SizeF {
     // 1. 기존 방식(Min/Max + Orientation)으로 '예상 타겟 크기' 계산
@@ -70,4 +67,3 @@ private fun findClosestSize(targetW: Float, targetH: Float, sizes: List<SizeF>):
 
     return bestMatch
 }
-

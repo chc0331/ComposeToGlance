@@ -26,7 +26,7 @@ class BluetoothDeviceManager(private val context: Context) {
     private val TAG = "BluetoothDeviceManager"
     private val mainHandler = Handler(Looper.getMainLooper())
     private val PROFILE_TIMEOUT_MS = 3000L // 3초 타임아웃
-    
+
     private var callbackInvoked = false
 
     fun findDevices(callback: (List<ConnectedDevice>) -> Unit) {
@@ -68,7 +68,7 @@ class BluetoothDeviceManager(private val context: Context) {
     ) {
         val rawList = mutableListOf<BluetoothDevice>()
         callbackInvoked = false
-        
+
         // 로드할 프로파일 목록 결정
         val profilesToLoad = mutableListOf(
             BluetoothProfile.A2DP,
@@ -103,7 +103,6 @@ class BluetoothDeviceManager(private val context: Context) {
 
             // 4. 각 프로파일에서 연결된 기기 가져오기
             loadProfileDevices(adapter, profilesToLoad, 0, rawList, callback)
-
         } catch (e: Exception) {
             Log.e(TAG, "Error scanning devices", e)
             invokeCallback(callback, emptyList())
@@ -130,31 +129,35 @@ class BluetoothDeviceManager(private val context: Context) {
 
         try {
             val success =
-                adapter.getProfileProxy(context, object : BluetoothProfile.ServiceListener {
-                    override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
-                        try {
-                            val devices = proxy.connectedDevices ?: emptyList()
-                            Log.i(TAG, "$profileName connected devices: ${devices.size}")
-                            rawList.addAll(devices)
-                            adapter.closeProfileProxy(profile, proxy)
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error getting $profileName devices", e)
-                        } finally {
-                            // 다음 프로파일 로드
-                            loadProfileDevices(
-                                adapter,
-                                profiles,
-                                currentIndex + 1,
-                                rawList,
-                                callback
-                            )
+                adapter.getProfileProxy(
+                    context,
+                    object : BluetoothProfile.ServiceListener {
+                        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
+                            try {
+                                val devices = proxy.connectedDevices ?: emptyList()
+                                Log.i(TAG, "$profileName connected devices: ${devices.size}")
+                                rawList.addAll(devices)
+                                adapter.closeProfileProxy(profile, proxy)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error getting $profileName devices", e)
+                            } finally {
+                                // 다음 프로파일 로드
+                                loadProfileDevices(
+                                    adapter,
+                                    profiles,
+                                    currentIndex + 1,
+                                    rawList,
+                                    callback
+                                )
+                            }
                         }
-                    }
 
-                    override fun onServiceDisconnected(profile: Int) {
-                        Log.d(TAG, "$profileName service disconnected")
-                    }
-                }, profileType)
+                        override fun onServiceDisconnected(profile: Int) {
+                            Log.d(TAG, "$profileName service disconnected")
+                        }
+                    },
+                    profileType
+                )
 
             if (!success) {
                 Log.w(TAG, "Failed to get $profileName profile proxy")
@@ -325,7 +328,7 @@ class BluetoothDeviceManager(private val context: Context) {
             }
 
             val savedPrefix = saved.address.substring(0, 15) // 앞 5바이트
-            val targetPrefix = target.address.substring(0, 15)   // 앞 5바이트
+            val targetPrefix = target.address.substring(0, 15) // 앞 5바이트
 
             val isSame = savedPrefix == targetPrefix
             if (isSame) {

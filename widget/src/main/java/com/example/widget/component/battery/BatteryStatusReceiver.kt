@@ -60,7 +60,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
         }
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL
+            status == BatteryManager.BATTERY_STATUS_FULL
 
         val health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)
         val healthString = when (health) {
@@ -81,7 +81,8 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
             else -> "Unknown"
         }
         val batteryData = BatteryData(
-            batteryPct, isCharging
+            batteryPct,
+            isCharging
         ).apply {
             Log.d(TAG, "Battery Status Update:")
             Log.d(TAG, " Data: $this")
@@ -98,10 +99,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
      * 배터리 상태가 변경되었을 때 호출되는 콜백
      * 필요에 따라 오버라이드하거나 인터페이스로 분리 가능
      */
-    protected open fun onBatteryStatusChanged(
-        context: Context,
-        batteryData: BatteryData
-    ) {
+    protected open fun onBatteryStatusChanged(context: Context, batteryData: BatteryData) {
         goAsync {
             BatteryUpdateManager.updateBatteryWidget(
                 context,

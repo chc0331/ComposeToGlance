@@ -38,7 +38,6 @@ class Battery1x1 : BatteryComponent() {
                 // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
                 Box({
                     ViewProperty {
-
                     }
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }) {
@@ -53,8 +52,7 @@ class Battery1x1 : BatteryComponent() {
                     }
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                })
-                {
+                }) {
                     ChargingIcon()
                     BatteryText()
                 }

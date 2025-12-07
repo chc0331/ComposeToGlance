@@ -22,7 +22,6 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 
-
 class StorageComponent : WidgetComponent() {
 
     override fun getName(): String {
@@ -66,7 +65,7 @@ class StorageComponent : WidgetComponent() {
                 verticalAlignment = V_ALIGN_CENTER
             }) {
                 Text({
-                    TextContent{
+                    TextContent {
                         text = "Storage"
                     }
                     fontSize = 16f
@@ -116,4 +115,3 @@ class StorageComponent : WidgetComponent() {
         }
     }
 }
-

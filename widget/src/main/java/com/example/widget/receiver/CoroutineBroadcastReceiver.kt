@@ -3,21 +3,20 @@ package com.example.widget.receiver
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.util.Log
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "CoroutineBroadcastReceiver"
-
 
 @SuppressLint("LongLogTag")
 internal fun BroadcastReceiver.goAsync(
     coroutineContext: CoroutineContext = Dispatchers.Default,
-    block: suspend CoroutineScope.() -> Unit,
+    block: suspend CoroutineScope.() -> Unit
 ) {
     val coroutineScope = CoroutineScope(SupervisorJob() + coroutineContext)
     val pendingResult = goAsync()

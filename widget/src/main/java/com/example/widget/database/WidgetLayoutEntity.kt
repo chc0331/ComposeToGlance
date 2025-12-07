@@ -11,22 +11,22 @@ import com.example.dsl.proto.WidgetLayoutDocument
 data class WidgetLayoutEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    
+
     /**
      * WidgetLayoutDocument를 바이트 배열로 변환하여 저장
      */
     val documentBytes: ByteArray?,
-    
+
     /**
      * 레이아웃 이름 (선택사항)
      */
     val name: String? = null,
-    
+
     /**
      * 생성 시간 (밀리초)
      */
     val createdAt: Long = System.currentTimeMillis(),
-    
+
     /**
      * 수정 시간 (밀리초)
      */
@@ -72,4 +72,3 @@ data class WidgetLayoutEntity(
         return result
     }
 }
-

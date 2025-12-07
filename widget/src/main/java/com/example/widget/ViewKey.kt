@@ -1,6 +1,5 @@
 package com.example.widget
 
-
 private const val START_VIEW_ID = 280
 private const val MAX_COUNT = 8
 

@@ -1,19 +1,15 @@
 package com.example.widget.repository
 
 import android.content.Context
-import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.SizeType
 import com.example.widget.proto.WidgetLayout
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 
 private const val WIDGET_LAYOUT = "widget_layout"
 private const val DATA_STORE_FILE_NAME = "widget_layout.pb"

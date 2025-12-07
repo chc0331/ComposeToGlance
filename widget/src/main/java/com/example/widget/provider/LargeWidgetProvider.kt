@@ -27,16 +27,16 @@ import com.example.dsl.provider.DslLocalGridIndex
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
-import com.example.widget.component.battery.datastore.BatteryData
 import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.checkBatteryComponentExist
+import com.example.widget.component.battery.datastore.BatteryData
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
+import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 val layoutKey = byteArrayPreferencesKey("layout_key")
 
@@ -60,7 +60,6 @@ class LargeAppWidget : DslAppWidget() {
                     Height { matchParent = true }
                 }
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
-
             }) {
                 currentLayout.placedWidgetComponentList.forEach {
                     GridItem(it)
@@ -106,10 +105,11 @@ class LargeAppWidget : DslAppWidget() {
                         }
                     }
                 }
-            })
-            {
-                DslLocalProvider(DslLocalSize provides DpSize(componentWidth, componentHeight),
-                    DslLocalGridIndex provides gridIndex) {
+            }) {
+                DslLocalProvider(
+                    DslLocalSize provides DpSize(componentWidth, componentHeight),
+                    DslLocalGridIndex provides gridIndex
+                ) {
                     val contentRadius = getLocal(DslLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
                         Box({

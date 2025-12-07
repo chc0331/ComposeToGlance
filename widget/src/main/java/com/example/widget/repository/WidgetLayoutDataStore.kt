@@ -18,7 +18,6 @@ object WidgetLayoutProtoSerializer : Serializer<WidgetLayout> {
         throw CorruptionException("Cannot read proto.", exception)
     }
 
-
     override suspend fun writeTo(t: WidgetLayout, output: OutputStream) {
         t.writeTo(output)
     }

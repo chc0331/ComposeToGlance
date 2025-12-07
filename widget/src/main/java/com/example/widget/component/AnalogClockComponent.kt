@@ -14,7 +14,6 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 
-
 class AnalogClockComponent : WidgetComponent() {
 
     override fun getName(): String {
@@ -92,4 +91,3 @@ class AnalogClockComponent : WidgetComponent() {
         }
     }
 }
-

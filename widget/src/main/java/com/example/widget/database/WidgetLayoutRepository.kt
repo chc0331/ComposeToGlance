@@ -7,19 +7,15 @@ import kotlinx.coroutines.flow.map
 
 /**
  * WidgetLayoutDocument를 Room DB에 저장하고 관리하는 Repository
- * 
- * 사용 예시:
+ * * 사용 예시:
  * ```
  * val repository = WidgetLayoutRepository(context)
- * 
- * // 문서 저장
+ * * // 문서 저장
  * val document = WidgetLayout { ... }
  * val id = repository.insertDocument(document, "My Layout")
- * 
- * // 문서 조회
+ * * // 문서 조회
  * val savedDocument = repository.getDocumentById(id)
- * 
- * // 모든 문서 Flow로 조회
+ * * // 모든 문서 Flow로 조회
  * repository.getAllDocuments().collect { documents ->
  *     // 처리
  * }
@@ -121,4 +117,3 @@ class WidgetLayoutRepository(context: Context) {
         return dao.getLayoutCountFlow()
     }
 }
-

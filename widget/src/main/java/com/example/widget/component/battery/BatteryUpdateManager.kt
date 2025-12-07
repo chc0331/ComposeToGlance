@@ -33,7 +33,7 @@ object BatteryUpdateManager {
         manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java))
             .forEach { widgetId ->
                 val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
-                //todo : Current is brute force, need to refactoring
+                // todo : Current is brute force, need to refactoring
                 (0 until 9).forEach {
                     remoteViews.setTextViewText(
                         ViewKey.Battery.getBatteryTextId(it),
@@ -56,7 +56,8 @@ object BatteryUpdateManager {
 
         val widgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(
             ComponentName(
-                context, LargeWidgetProvider::class.java
+                context,
+                LargeWidgetProvider::class.java
             )
         )
         widgetIds.forEach {
@@ -64,7 +65,6 @@ object BatteryUpdateManager {
             updateBatteryWidgetState(context, it, batteryData)
         }
     }
-
 
     private suspend fun updateBatteryWidgetState(
         context: Context,
@@ -83,7 +83,7 @@ object BatteryUpdateManager {
         val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
         remoteViews.setTextViewText(R.id.batteryValue, "${data.level.toInt()}%")
         Log.i(TAG, "update : $widgetId ${data.charging} ${R.id.batteryValue}")
-        //todo : partiallyUpdate 확인
+        // todo : partiallyUpdate 확인
         AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetId, remoteViews)
     }
 }

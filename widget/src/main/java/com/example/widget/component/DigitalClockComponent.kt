@@ -8,7 +8,6 @@ import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
-import com.example.dsl.proto.BoxLayoutProperty
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
 import com.example.widget.SizeType
@@ -71,4 +70,3 @@ class DigitalClockComponent : WidgetComponent() {
         }
     }
 }
-

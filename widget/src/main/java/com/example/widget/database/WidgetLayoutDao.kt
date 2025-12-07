@@ -47,7 +47,10 @@ interface WidgetLayoutDao {
     /**
      * WidgetLayoutDocument를 직접 삽입
      */
-    suspend fun insertDocument(document: com.example.dsl.proto.WidgetLayoutDocument, name: String? = null): Long {
+    suspend fun insertDocument(
+        document: com.example.dsl.proto.WidgetLayoutDocument,
+        name: String? = null
+    ): Long {
         val entity = WidgetLayoutEntity(
             documentBytes = document.toByteArray(),
             name = name,
@@ -105,4 +108,3 @@ interface WidgetLayoutDao {
     @Query("SELECT COUNT(*) FROM widget_layouts")
     fun getLayoutCountFlow(): Flow<Int>
 }
-

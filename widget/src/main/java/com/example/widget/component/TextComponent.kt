@@ -13,7 +13,6 @@ import com.example.dsl.proto.TextAlign
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 
-
 class TextComponent : WidgetComponent() {
 
     override fun getName(): String {
@@ -65,4 +64,3 @@ class TextComponent : WidgetComponent() {
         }
     }
 }
-

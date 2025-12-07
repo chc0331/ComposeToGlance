@@ -21,10 +21,7 @@ import com.example.dsl.proto.WidgetLayoutDocument
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Composable
-fun AppWidgetView(
-    size: DpSize,
-    content: @Composable @GlanceComposable () -> Unit
-) {
+fun AppWidgetView(size: DpSize, content: @Composable @GlanceComposable () -> Unit) {
     val context = LocalContext.current
     val glanceRemoteViews = remember { GlanceRemoteViews() }
 
@@ -69,11 +66,7 @@ fun AppWidgetView(
  */
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Composable
-fun AppWidgetView(
-    size: DpSize,
-    layout: WidgetLayoutDocument,
-    renderer: GlanceRenderer
-) {
+fun AppWidgetView(size: DpSize, layout: WidgetLayoutDocument, renderer: GlanceRenderer) {
     val context = LocalContext.current
     val glanceRemoteViews = remember { GlanceRemoteViews() }
 
@@ -109,10 +102,7 @@ fun AppWidgetView(
 }
 
 @Composable
-internal fun RemoteViewsContent(
-    modifier: Modifier = Modifier,
-    remoteViews: RemoteViews?
-) {
+internal fun RemoteViewsContent(modifier: Modifier = Modifier, remoteViews: RemoteViews?) {
     val context = LocalContext.current
     AndroidView(
         modifier = modifier,
@@ -125,5 +115,6 @@ internal fun RemoteViewsContent(
                 val content = rv.apply(context, view)
                 view.addView(content)
             }
-        })
+        }
+    )
 }

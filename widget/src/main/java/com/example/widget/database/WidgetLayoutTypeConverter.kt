@@ -27,4 +27,3 @@ class WidgetLayoutTypeConverter {
         return document?.toByteArray()
     }
 }
-

@@ -27,7 +27,6 @@ import com.example.widget.component.battery.datastore.BatteryData
 import com.example.widget.component.battery.datastore.BatteryPreferenceKey
 import com.example.widget.component.battery.datastore.DeviceType
 
-
 abstract class BatteryComponent : WidgetComponent() {
 
     companion object {
@@ -92,7 +91,6 @@ abstract class BatteryComponent : WidgetComponent() {
                 }
             }
         })
-
     }
 
     protected fun WidgetScope.BatteryIcon(deviceType: DeviceType = DeviceType.PHONE) {
@@ -234,8 +232,8 @@ abstract class BatteryComponent : WidgetComponent() {
             return BatteryData(
                 level = 75f,
                 charging = false,
-                deviceType = DeviceType.BLUETOOTH_HEADPHONES,
-                deviceName = "Headphones",
+                deviceType = DeviceType.BLUETOOTH_EARBUDS, // 무선 이어폰 예시
+                deviceName = "Galaxy Buds2 Pro",
                 deviceAddress = "00:00:00:00:00:00"
             )
         }
@@ -269,8 +267,9 @@ abstract class BatteryComponent : WidgetComponent() {
     protected fun getDeviceIcon(deviceType: DeviceType): Int {
         return when (deviceType) {
             DeviceType.PHONE -> R.drawable.ic_mobile_device
-            DeviceType.BLUETOOTH_HEADSET -> R.drawable.ic_bluetooth_headphones
+            DeviceType.BLUETOOTH_EARBUDS -> R.drawable.ic_bluetooth_earbuds // 무선 이어폰 아이콘
             DeviceType.BLUETOOTH_HEADPHONES -> R.drawable.ic_bluetooth_headphones
+            DeviceType.BLUETOOTH_HEADSET -> R.drawable.ic_bluetooth_headset
             DeviceType.BLUETOOTH_WATCH -> R.drawable.ic_bluetooth_watch
             DeviceType.BLUETOOTH_SPEAKER -> R.drawable.ic_bluetooth_speaker
             DeviceType.BLUETOOTH_HEARING_AID -> R.drawable.ic_bluetooth_headphones

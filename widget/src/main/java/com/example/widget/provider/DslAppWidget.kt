@@ -49,7 +49,8 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     )
                 }
                 AndroidRemoteViews(
-                    remoteViews = remoteviews, containerViewId = R.id.widgetRoot
+                    remoteViews = remoteviews,
+                    containerViewId = R.id.widgetRoot
                 ) {
                     RenderDsl()
                 }
