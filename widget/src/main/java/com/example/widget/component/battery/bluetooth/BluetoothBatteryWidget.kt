@@ -22,7 +22,7 @@ import com.example.widget.component.battery.BatteryComponent
 import com.example.widget.component.battery.DeviceType
 import com.example.widget.component.battery.getDeviceIcon
 
-class BtBatteryWidget : BatteryComponent() {
+class BluetoothBatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.SMALL
     }

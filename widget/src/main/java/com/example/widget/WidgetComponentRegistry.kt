@@ -6,7 +6,7 @@ import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.battery.BatteryWidget
-import com.example.widget.component.battery.bluetooth.BtBatteryWidget
+import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget
 
 fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(TextComponent())
@@ -17,7 +17,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
     WidgetComponentRegistry.registerComponent(BatteryWidget())
-    WidgetComponentRegistry.registerComponent(BtBatteryWidget())
+    WidgetComponentRegistry.registerComponent(BluetoothBatteryWidget())
     WidgetComponentRegistry.registerComponent(StorageComponent())
 }
 
