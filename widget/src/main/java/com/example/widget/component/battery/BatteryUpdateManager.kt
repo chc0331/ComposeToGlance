@@ -1,5 +1,6 @@
 package com.example.widget.component.battery
 
+import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -8,11 +9,14 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import com.example.widget.R
-import com.example.widget.ViewKey
+import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeWidgetProvider
+import com.example.widget.provider.layoutKey
 
 private const val BATTERY_PREFERENCES_NAME = "battery_info_pf"
 internal val Context.batteryDataStore by preferencesDataStore(name = BATTERY_PREFERENCES_NAME)
@@ -26,24 +30,45 @@ object BatteryUpdateManager {
         val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
         batteryRepo.updateBatterInfo(data)
 
+        val glanceManager = GlanceAppWidgetManager(context)
         val manager = AppWidgetManager.getInstance(context)
         manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java))
             .forEach { widgetId ->
-                val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
-                // todo : Current is brute force, need to refactoring
-                (0 until 9).forEach {
+                val glanceId = glanceManager.getGlanceIdBy(widgetId)
+                val currentState =
+                    getAppWidgetState(context, PreferencesGlanceStateDefinition, glanceId)
+                val currentLayout: WidgetLayout = WidgetLayout.parseFrom(currentState[layoutKey])
+
+                // 실제 배치된 Battery 컴포넌트만 필터링
+                val batteryComponents = currentLayout.placedWidgetComponentList
+                    .filter { it.widgetTag.contains("Battery") && !it.widgetTag.contains("Bluetooth") }
+                // Battery 컴포넌트 인스턴스 조회
+                val batteryComponent =
+                    batteryComponents.firstOrNull()?.let { placed: PlacedWidgetComponent ->
+                        WidgetComponentRegistry.getComponent(placed.widgetTag) as? BatteryComponent
+                    }
+
+                if (batteryComponent == null) return
+
+                batteryComponents.forEach { component ->
+                    val gridIndex = component.gridIndex
+                    val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
+                    remoteViews.setProgressBar(
+                        batteryComponent.getBatteryProgressId(gridIndex),
+                        100, data.level.toInt(), false
+                    )
                     remoteViews.setTextViewText(
-                        ViewKey.Battery.getBatteryTextId(it),
+                        batteryComponent.getBatteryTextId(gridIndex),
                         "${data.level.toInt()}"
                     )
                     remoteViews.setViewVisibility(
-                        ViewKey.Battery.getChargingIconId(it),
+                        batteryComponent.getChargingIconId(gridIndex),
                         if (data.charging) View.VISIBLE else View.GONE
                     )
+                    Log.i(TAG, "partially update : $widgetId ${data.charging} ${R.id.batteryValue}")
+                    AppWidgetManager.getInstance(context)
+                        .partiallyUpdateAppWidget(widgetId, remoteViews)
                 }
-                Log.i(TAG, "partially update : $widgetId ${data.charging} ${R.id.batteryValue}")
-                AppWidgetManager.getInstance(context)
-                    .partiallyUpdateAppWidget(widgetId, remoteViews)
             }
     }
 

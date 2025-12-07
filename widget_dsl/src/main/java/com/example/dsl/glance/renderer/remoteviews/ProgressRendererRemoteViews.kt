@@ -1,8 +1,9 @@
 package com.example.dsl.glance.renderer.remoteviews
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.widget.RemoteViews
-import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.R
 import com.example.dsl.glance.converter.ColorConverter
 import com.example.dsl.glance.renderer.ProgressRenderer
 import com.example.dsl.glance.renderer.RemoteViewsBuilder
@@ -15,8 +16,7 @@ import com.example.dsl.proto.WidgetNode
  */
 fun ProgressRenderer.renderToRemoteViews(
     node: WidgetNode,
-    context: Context,
-    renderer: GlanceRenderer
+    context: Context
 ): RemoteViews? {
     if (!node.hasProgress()) {
         return null
@@ -79,30 +79,31 @@ private fun renderCircularProgressToRemoteViews(
     context: Context
 ): RemoteViews {
     // progress_horizontal 레이아웃이 없으므로 simple_list_item_1 사용
-    val remoteViews = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
-    val progressBarId = android.R.id.text1
-
+    val viewId = viewProperty.viewId
+    val remoteViews = RemoteViews(context.packageName, R.layout.circular_progress_component, viewId)
     val max = progressProperty.maxValue.toInt()
     val progress = progressProperty.progressValue.toInt()
 
-    remoteViews.setProgressBar(progressBarId, max, progress, false)
+    remoteViews.setProgressBar(viewId, max, progress, false)
 
-    // Progress color
-    val progressColor = ColorConverter.toGlanceColor(
-        progressProperty.progressColor,
-        context
+    val progressColor = if (progressProperty.progressColor.resId != 0) {
+        context.getColor(progressProperty.progressColor.resId)
+    } else progressProperty.progressColor.color.argb
+    val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+        context.getColor(progressProperty.backgroundColor.resId)
+    } else progressProperty.backgroundColor.color.argb
+
+    remoteViews.setColorStateList(
+        viewId,
+        "setProgressTintList",
+        ColorStateList.valueOf(progressColor)
     )
-    remoteViews.setInt(progressBarId, "setProgressTint", progressColor.value.toInt())
-
-    // Background color
-    val backgroundColor = ColorConverter.toGlanceColor(
-        progressProperty.backgroundColor,
-        context
+    remoteViews.setColorStateList(
+        viewId, "setProgressBackgroundTintList",
+        ColorStateList.valueOf(backgroundColor)
     )
-    remoteViews.setInt(progressBarId, "setProgressBackgroundTint", backgroundColor.value.toInt())
-
     // ViewProperty 속성 적용
-    RemoteViewsBuilder.applyViewProperties(remoteViews, progressBarId, viewProperty, context)
+    RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context)
 
     return remoteViews
 }

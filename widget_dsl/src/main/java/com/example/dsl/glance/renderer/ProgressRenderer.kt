@@ -1,15 +1,16 @@
 package com.example.dsl.glance.renderer
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressBackgroundTintList
 import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressTintList
+import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.LinearProgressIndicator
+import androidx.glance.layout.wrapContentSize
 import com.example.dsl.R
 import com.example.dsl.syntax.builder.Color
 import com.example.dsl.syntax.builder.ColorProvider
@@ -17,6 +18,7 @@ import com.example.dsl.glance.GlanceModifierBuilder
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.RenderContext
 import com.example.dsl.glance.converter.ColorConverter
+import com.example.dsl.glance.renderer.remoteviews.renderToRemoteViews
 import com.example.dsl.proto.ProgressProperty
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.WidgetNode
@@ -33,6 +35,12 @@ object ProgressRenderer : NodeRenderer {
     ) {
         if (!node.hasProgress()) {
             androidx.glance.layout.Box {}
+            return
+        }
+        if (node.progress.viewProperty.partiallyUpdate) {
+            createRemoteViews(node, context)?.let {
+                AndroidRemoteViews(modifier = GlanceModifier.wrapContentSize(), remoteViews = it)
+            }
             return
         }
 
@@ -131,6 +139,14 @@ object ProgressRenderer : NodeRenderer {
                 )
             }
         )
+    }
+
+    private fun createRemoteViews(
+        node: WidgetNode,
+        context: RenderContext
+    ): RemoteViews? {
+        val remoteViews = renderToRemoteViews(node, context.context)
+        return remoteViews
     }
 }
 

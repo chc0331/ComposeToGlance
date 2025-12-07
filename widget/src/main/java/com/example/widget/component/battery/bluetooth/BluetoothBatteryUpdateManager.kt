@@ -4,39 +4,20 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
-import android.util.Log.d
-import android.view.View
 import android.widget.RemoteViews
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.R
 import com.example.widget.ViewKey
-import com.example.widget.ViewKey.Battery.getBatteryTextId
 import com.example.widget.component.battery.BatteryData
-import com.example.widget.component.battery.BatteryPreferenceKey
-import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.DeviceType
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice1AddressKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice1BatteryKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice1ConnectedKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice1NameKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice1TypeKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice2AddressKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice2BatteryKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice2ConnectedKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice2NameKey
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget.Companion.btDevice2TypeKey
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeAppWidget
 import com.example.widget.provider.LargeWidgetProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.collections.getOrNull
 
 private const val BLUETOOTH_BATTERY_PREFERENCES_NAME = "bluetooth_battery_info_pf"
 internal val Context.bluetoothBatteryDataStore by preferencesDataStore(name = BLUETOOTH_BATTERY_PREFERENCES_NAME)

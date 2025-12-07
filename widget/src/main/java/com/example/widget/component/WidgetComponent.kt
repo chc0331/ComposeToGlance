@@ -5,9 +5,11 @@ import com.example.dsl.proto.WidgetNode
 import com.example.dsl.provider.DslLocalProvider
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.viewid.ViewIdProvider
+import com.example.widget.component.viewid.ViewIdType
 import com.example.widget.localprovider.DslLocalSizeType
 
-abstract class WidgetComponent {
+abstract class WidgetComponent : ViewIdProvider {
 
     abstract fun getName(): String
     abstract fun getDescription(): String
@@ -48,5 +50,40 @@ abstract class WidgetComponent {
         val scope = WidgetScope()
         scope.Content()
         return scope.build()
+    }
+
+    override fun getViewIdTypes(): List<ViewIdType> = emptyList()
+
+    override fun generateViewId(viewIdType: ViewIdType, gridIndex: Int): Int {
+        val baseId = getBaseViewIdInternal()
+        val typeIndex = getViewIdTypes().indexOf(viewIdType)
+
+        if (typeIndex == -1) {
+            throw IllegalArgumentException(
+                "ViewIdType $viewIdType not found in ${getWidgetTag()}'s viewIdTypes"
+            )
+        }
+        return baseId + typeIndex * getMaxGridCount() + (gridIndex - 1)
+    }
+
+    override fun getMaxGridCount(): Int {
+        return 8
+    }
+
+    /**
+     * Registry로부터 Base View ID를 가져옵니다.
+     * 외부에서 주입받도록 하기 위한 내부 메서드
+     */
+    private fun getBaseViewIdInternal(): Int {
+        // WidgetComponentRegistry를 통해 조회
+        // 순환 참조를 피하기 위해 lazy하게 조회
+        return try {
+            WidgetComponentRegistry.getBaseViewId(getWidgetTag())
+        } catch (e: Exception) {
+            throw IllegalStateException(
+                "Component ${getWidgetTag()} not registered in WidgetComponentRegistry",
+                e
+            )
+        }
     }
 }

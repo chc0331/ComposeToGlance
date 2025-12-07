@@ -20,9 +20,9 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
-import com.example.widget.ViewKey
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.widget.component.viewid.ViewIdType
 
 abstract class BatteryComponent : WidgetComponent() {
 
@@ -61,7 +61,7 @@ abstract class BatteryComponent : WidgetComponent() {
         val batteryValue = getBatteryValue()
         Progress({
             ViewProperty {
-                viewId = ViewKey.Battery.getBatteryProgressId(gridIndex)
+                viewId = getBatteryProgressId(gridIndex)
                 partiallyUpdate = true
                 Width {
                     Dp {
@@ -121,7 +121,7 @@ abstract class BatteryComponent : WidgetComponent() {
         }) {
             Text({
                 ViewProperty {
-                    viewId = ViewKey.Battery.getBatteryTextId(gridIndex)
+                    viewId = getBatteryTextId(gridIndex)
                     partiallyUpdate = true
                     Width { wrapContent = true }
                     Height { wrapContent = true }
@@ -169,7 +169,7 @@ abstract class BatteryComponent : WidgetComponent() {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         Image {
             ViewProperty {
-                viewId = ViewKey.Battery.getChargingIconId(gridIndex)
+                viewId = getChargingIconId(gridIndex)
                 Width { Dp { value = iconSize * 0.6f } }
                 Height { Dp { value = iconSize } }
                 hide = !getChargingState()
@@ -208,15 +208,70 @@ abstract class BatteryComponent : WidgetComponent() {
         } ?: false
     }
 
-//    protected fun WidgetScope.getChargingAnimation(): Boolean {
-//        val currentState = getLocal(DslLocalState) as Preferences? ?: null
-//        val isPreview = getLocal(DslLocalPreview) as Boolean? ?: false
-//        if (isPreview) {
-//            return false
-//        }
-//        return currentState?.let { state ->
-//            val currentValue = state[chargingAnimationKey] as Boolean?
-//            currentValue ?: false
-//        } ?: false
-//    }
+    // ViewIdProvider 구현
+    override fun getViewIdTypes(): List<ViewIdType> {
+        return BatteryViewIdType.all()
+    }
+
+    // View ID Helper 메서드들
+    /**
+     * 배터리 텍스트 View ID 조회
+     */
+    fun getBatteryTextId(gridIndex: Int): Int {
+        return generateViewId(BatteryViewIdType.Text, gridIndex)
+    }
+
+    /**
+     * 배터리 프로그레스 View ID 조회
+     */
+    fun getBatteryProgressId(gridIndex: Int): Int {
+        return generateViewId(BatteryViewIdType.Progress, gridIndex)
+    }
+
+    /**
+     * 배터리 아이콘 View ID 조회
+     */
+    fun getBatteryIconId(gridIndex: Int): Int {
+        return generateViewId(BatteryViewIdType.Icon, gridIndex)
+    }
+
+    /**
+     * 충전 아이콘 View ID 조회
+     */
+    fun getChargingIconId(gridIndex: Int): Int {
+        return generateViewId(BatteryViewIdType.ChargingIcon, gridIndex)
+    }
+
+}
+
+/**
+ * Battery 컴포넌트가 사용하는 View ID 타입들
+ */
+sealed class BatteryViewIdType(override val typeName: String) : ViewIdType() {
+    /**
+     * 배터리 텍스트 뷰 (퍼센트 표시)
+     */
+    object Text : BatteryViewIdType("battery_text")
+
+    /**
+     * 배터리 프로그레스 뷰 (원형 게이지)
+     */
+    object Progress : BatteryViewIdType("battery_progress")
+
+    /**
+     * 배터리 아이콘 뷰
+     */
+    object Icon : BatteryViewIdType("battery_icon")
+
+    /**
+     * 충전 중 아이콘 뷰
+     */
+    object ChargingIcon : BatteryViewIdType("charging_icon")
+
+    companion object {
+        /**
+         * 모든 View ID 타입 반환
+         */
+        fun all(): List<BatteryViewIdType> = listOf(Text, Progress, Icon, ChargingIcon)
+    }
 }
