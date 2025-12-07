@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.util.Log
-import com.example.widget.component.battery.datastore.BatteryData
 import com.example.widget.receiver.goAsync
 
 open class BatteryStatusReceiver : BroadcastReceiver() {

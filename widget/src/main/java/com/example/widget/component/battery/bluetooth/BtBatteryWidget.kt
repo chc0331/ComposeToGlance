@@ -1,4 +1,4 @@
-package com.example.widget.component.battery.ui
+package com.example.widget.component.battery.bluetooth
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -13,17 +13,15 @@ import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
-import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.component.battery.BatteryComponent
-import com.example.widget.component.battery.datastore.DeviceType
+import com.example.widget.component.battery.DeviceType
 
-class Battery2x1 : BatteryComponent() {
+class BtBatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.SMALL
     }
@@ -35,7 +33,7 @@ class Battery2x1 : BatteryComponent() {
                 Height { matchParent = true }
                 BackgroundColor {
                     Color {
-                        argb = Color.White.toArgb()
+                        argb = Color.Companion.White.toArgb()
                     }
                 }
             }
@@ -82,8 +80,8 @@ class Battery2x1 : BatteryComponent() {
 
     private fun WidgetScope.LeftContent() {
         Column({
-            horizontalAlignment = H_ALIGN_CENTER
-            verticalAlignment = V_ALIGN_CENTER
+            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+            verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
             // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
             Box({
@@ -103,8 +101,8 @@ class Battery2x1 : BatteryComponent() {
         if (bluetoothDevice != null) {
             // Show Bluetooth device battery
             Column({
-                horizontalAlignment = H_ALIGN_CENTER
-                verticalAlignment = V_ALIGN_CENTER
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
                 Box({
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
@@ -117,8 +115,8 @@ class Battery2x1 : BatteryComponent() {
         } else {
             // No Bluetooth device, show duplicate phone battery or empty
             Column({
-                horizontalAlignment = H_ALIGN_CENTER
-                verticalAlignment = V_ALIGN_CENTER
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
                 Box({
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
@@ -160,7 +158,7 @@ class Battery2x1 : BatteryComponent() {
             }
             BackgroundColor {
                 Color {
-                    argb = Color.LightGray.toArgb()
+                    argb = Color.Companion.LightGray.toArgb()
                 }
             }
         })
@@ -196,7 +194,7 @@ class Battery2x1 : BatteryComponent() {
             }
             BackgroundColor {
                 Color {
-                    argb = Color.LightGray.toArgb()
+                    argb = Color.Companion.LightGray.toArgb()
                 }
             }
         })
@@ -245,7 +243,7 @@ class Battery2x1 : BatteryComponent() {
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {
                     Color {
-                        argb = Color.Black.toArgb()
+                        argb = Color.Companion.Black.toArgb()
                     }
                 }
             })
@@ -263,7 +261,7 @@ class Battery2x1 : BatteryComponent() {
                 fontSize = textSize * 0.65f
                 FontColor {
                     Color {
-                        argb = Color.Black.toArgb()
+                        argb = Color.Companion.Black.toArgb()
                     }
                 }
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD

@@ -29,7 +29,7 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.checkBatteryComponentExist
-import com.example.widget.component.battery.datastore.BatteryData
+import com.example.widget.component.battery.BatteryData
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository

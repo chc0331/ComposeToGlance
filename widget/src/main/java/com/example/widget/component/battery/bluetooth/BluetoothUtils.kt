@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import com.example.widget.component.battery.datastore.DeviceType
+import com.example.widget.component.battery.DeviceType
 
 private const val EXTRA_BATTERY_LEVEL = "android.bluetooth.device.extra.BATTERY_LEVEL"
 private const val TAG = "BluetoothDeviceUtils"
