@@ -13,12 +13,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.widget.component.battery.DeviceType
 
 data class ConnectedDevice(
     val name: String,
     val address: String, // 대표 주소 (주로 Classic 주소 사용)
     val types: MutableList<String> = mutableListOf(), // [Classic, BLE] 등 연결 타입 저장
-    val bluetoothDevice: BluetoothDevice
+    val bluetoothDevice: BluetoothDevice,
+    val deviceType: DeviceType // 디바이스 타입 (이어폰, 헤드폰, 워치 등)
 )
 
 class BluetoothDeviceManager(private val context: Context) {
@@ -266,26 +268,30 @@ class BluetoothDeviceManager(private val context: Context) {
                         // 기존 디바이스를 업데이트된 것으로 교체
                         val index = mergedList.indexOf(existing)
                         if (index >= 0) {
+                            val detectedDeviceType = device.getDeviceType()
                             mergedList[index] = ConnectedDevice(
                                 name = deviceName,
                                 address = deviceAddress,
                                 types = existing.types,
-                                bluetoothDevice = device
+                                bluetoothDevice = device,
+                                deviceType = detectedDeviceType
                             )
-                            Log.d(TAG, "Updated device with Classic/Dual address: $deviceName")
+                            Log.d(TAG, "Updated device with Classic/Dual address: $deviceName, Type: $detectedDeviceType")
                         }
                     }
                 } else {
                     // 3. 없으면 -> 새로 추가
+                    val detectedDeviceType = device.getDeviceType()
                     mergedList.add(
                         ConnectedDevice(
                             name = deviceName,
                             address = deviceAddress,
                             types = mutableListOf(deviceType),
-                            bluetoothDevice = device
+                            bluetoothDevice = device,
+                            deviceType = detectedDeviceType
                         )
                     )
-                    Log.d(TAG, "Added new device: $deviceName ($deviceAddress)")
+                    Log.d(TAG, "Added new device: $deviceName ($deviceAddress), Type: $detectedDeviceType")
                 }
 
                 processedAddresses.add(deviceAddress)
@@ -296,7 +302,7 @@ class BluetoothDeviceManager(private val context: Context) {
 
         Log.i(TAG, "Merged result: ${mergedList.size} unique devices")
         mergedList.forEach { device ->
-            Log.d(TAG, "  - ${device.name} (${device.address}): ${device.types.joinToString()}")
+            Log.d(TAG, "  - ${device.name} (${device.address}): ${device.types.joinToString()}, Type: ${device.deviceType}")
         }
 
         return mergedList
