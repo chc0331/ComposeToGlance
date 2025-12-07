@@ -30,21 +30,6 @@ import com.example.widget.component.battery.getDeviceIcon
 
 class BluetoothBatteryWidget : BatteryComponent() {
 
-    companion object {
-        // 블루투스 디바이스 연결 상태 키
-        val btDevice1ConnectedKey = stringPreferencesKey("bt_device_1_connected")
-        val btDevice1NameKey = stringPreferencesKey("bt_device_1_name")
-        val btDevice1BatteryKey = stringPreferencesKey("bt_device_1_battery")
-        val btDevice1TypeKey = stringPreferencesKey("bt_device_1_type")
-        val btDevice1AddressKey = stringPreferencesKey("bt_device_1_address")
-
-        val btDevice2ConnectedKey = stringPreferencesKey("bt_device_2_connected")
-        val btDevice2NameKey = stringPreferencesKey("bt_device_2_name")
-        val btDevice2BatteryKey = stringPreferencesKey("bt_device_2_battery")
-        val btDevice2TypeKey = stringPreferencesKey("bt_device_2_type")
-        val btDevice2AddressKey = stringPreferencesKey("bt_device_2_address")
-    }
-
     override fun getSizeType(): SizeType {
         return SizeType.SMALL
     }
@@ -355,85 +340,5 @@ class BluetoothBatteryWidget : BatteryComponent() {
                 }
             }
         })
-    }
-
-    /**
-     * 디바이스 연결 상태 확인
-     */
-    private fun WidgetScope.getDeviceConnected(deviceIndex: Int): Boolean {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
-
-        if (isPreview) {
-            // 프리뷰 모드에서는 1번 디바이스만 연결된 것으로 표시
-            return deviceIndex == 1
-        }
-
-        val key = if (deviceIndex == 1) btDevice1ConnectedKey else btDevice2ConnectedKey
-
-        return currentState?.let { state ->
-            val connected = state[key]
-            connected == "true"
-        } ?: false
-    }
-
-    /**
-     * 디바이스 이름 가져오기
-     */
-    private fun WidgetScope.getDeviceName(deviceIndex: Int): String {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
-
-        if (isPreview) {
-            return "Preview Device"
-        }
-
-        val key = if (deviceIndex == 1) btDevice1NameKey else btDevice2NameKey
-
-        return currentState?.let { state ->
-            state[key] ?: "Unknown"
-        } ?: "Unknown"
-    }
-
-    /**
-     * 디바이스 배터리 레벨 가져오기
-     */
-    private fun WidgetScope.getDeviceBattery(deviceIndex: Int): Float {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
-
-        if (isPreview) {
-            return 75f
-        }
-
-        val key = if (deviceIndex == 1) btDevice1BatteryKey else btDevice2BatteryKey
-
-        return currentState?.let { state ->
-            val batteryStr = state[key]
-            batteryStr?.toFloatOrNull() ?: 0f
-        } ?: 0f
-    }
-
-    /**
-     * 디바이스 타입 가져오기
-     */
-    private fun WidgetScope.getDeviceType(deviceIndex: Int): DeviceType {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
-
-        if (isPreview) {
-            return DeviceType.BLUETOOTH_EARBUDS
-        }
-
-        val key = if (deviceIndex == 1) btDevice1TypeKey else btDevice2TypeKey
-
-        return currentState?.let { state ->
-            val typeStr = state[key]
-            try {
-                DeviceType.valueOf(typeStr ?: "BLUETOOTH_UNKNOWN")
-            } catch (e: Exception) {
-                DeviceType.BLUETOOTH_UNKNOWN
-            }
-        } ?: DeviceType.BLUETOOTH_UNKNOWN
     }
 }
