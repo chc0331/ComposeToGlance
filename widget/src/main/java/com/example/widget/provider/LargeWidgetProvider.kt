@@ -142,15 +142,10 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(TAG, "onReceive / ${intent.action}")
         if (intent.action == "com.example.widget.test") {
-            AppWidgetManager.getInstance(context).getAppWidgetIds(
-                ComponentName(
-                    context,
-                    LargeWidgetProvider::class.java.name
-                )
-            ).forEach {
+            CoroutineScope(Dispatchers.IO).launch {
                 val randomInt = Random.nextInt(100)
                 val tempData = BatteryData(randomInt.toFloat(), false)
-                BatteryUpdateManager.updateAppWidget(context, it, tempData)
+                BatteryUpdateManager.updateBatteryWidget(context, tempData)
             }
         } else if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             initData(context, intent)

@@ -23,7 +23,8 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
-import com.example.widget.ViewKey
+import com.example.widget.component.ViewIdType
+import com.example.widget.component.BluetoothBatteryViewIdType
 import com.example.widget.component.battery.BatteryComponent
 import com.example.widget.component.battery.DeviceType
 import com.example.widget.component.battery.getDeviceIcon
@@ -36,6 +37,28 @@ class BluetoothBatteryWidget : BatteryComponent() {
 
     override fun getWidgetTag(): String {
         return "BluetoothBattery"
+    }
+    
+    // ViewIdProvider 구현 - BatteryComponent의 기본 구현을 override
+    override fun getViewIdTypes(): List<ViewIdType> {
+        return BluetoothBatteryViewIdType.all()
+    }
+    
+    // View ID Helper 메서드들
+    fun getEarBudsTextId(gridIndex: Int): Int {
+        return generateViewId(BluetoothBatteryViewIdType.EarBudsText, gridIndex)
+    }
+    
+    fun getEarBudsProgressId(gridIndex: Int): Int {
+        return generateViewId(BluetoothBatteryViewIdType.EarBudsProgress, gridIndex)
+    }
+    
+    fun getWatchTextId(gridIndex: Int): Int {
+        return generateViewId(BluetoothBatteryViewIdType.WatchText, gridIndex)
+    }
+    
+    fun getWatchProgressId(gridIndex: Int): Int {
+        return generateViewId(BluetoothBatteryViewIdType.WatchProgress, gridIndex)
     }
 
     override fun WidgetScope.Content() {
@@ -119,10 +142,16 @@ class BluetoothBatteryWidget : BatteryComponent() {
      */
     private fun WidgetScope.ConnectedDeviceContent(level: Float, deviceType: DeviceType) {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
-        val viewId =
-            if (deviceType == DeviceType.BLUETOOTH_EARBUDS)
-                ViewKey.Bluetooth.getEarBudsTextId(gridIndex)
-            else 0
+        val textViewId = when (deviceType) {
+            DeviceType.BLUETOOTH_EARBUDS -> getEarBudsTextId(gridIndex)
+            DeviceType.BLUETOOTH_WATCH -> getWatchTextId(gridIndex)
+            else -> 0
+        }
+        val progressViewId = when (deviceType) {
+            DeviceType.BLUETOOTH_EARBUDS -> getEarBudsProgressId(gridIndex)
+            DeviceType.BLUETOOTH_WATCH -> getWatchProgressId(gridIndex)
+            else -> 0
+        }
 
         Column({
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
@@ -132,11 +161,11 @@ class BluetoothBatteryWidget : BatteryComponent() {
             Box({
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
-                CircularProgress(level, viewId)
+                CircularProgress(level, progressViewId)
                 BatteryIcon(deviceType)
             }
             // 프로그레스 밑에 배터리 용량 텍스트
-            DeviceBatteryText(level, viewId)
+            DeviceBatteryText(level, textViewId)
         }
     }
 
