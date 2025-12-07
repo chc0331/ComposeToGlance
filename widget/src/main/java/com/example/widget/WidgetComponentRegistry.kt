@@ -5,7 +5,7 @@ import com.example.widget.component.ImageComponent
 import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
-import com.example.widget.component.battery.ui.BatteryWidget
+import com.example.widget.component.battery.BatteryWidget
 import com.example.widget.component.battery.ui.Battery2x1
 
 fun initializeWidgetComponents() {

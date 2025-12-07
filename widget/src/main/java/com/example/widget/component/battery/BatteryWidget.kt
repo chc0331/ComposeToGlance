@@ -1,4 +1,4 @@
-package com.example.widget.component.battery.ui
+package com.example.widget.component.battery
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -8,11 +8,8 @@ import com.example.dsl.component.Column
 import com.example.dsl.component.Row
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.HorizontalAlignment
-import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.widget.SizeType
-import com.example.widget.component.battery.BatteryComponent
 
 class BatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
@@ -26,15 +23,15 @@ class BatteryWidget : BatteryComponent() {
                 Height { matchParent = true }
                 BackgroundColor {
                     Color {
-                        argb = Color.White.toArgb()
+                        argb = Color.Companion.White.toArgb()
                     }
                 }
             }
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }) {
             Column({
-                horizontalAlignment = H_ALIGN_CENTER
-                verticalAlignment = V_ALIGN_CENTER
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
                 // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
                 Box({
