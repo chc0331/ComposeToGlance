@@ -5,8 +5,8 @@ import com.example.widget.component.ImageComponent
 import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
-import com.example.widget.component.battery.Battery1x1
-import com.example.widget.component.battery.Battery2x1
+import com.example.widget.component.battery.ui.Battery1x1
+import com.example.widget.component.battery.ui.Battery2x1
 
 fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(TextComponent())

@@ -1,4 +1,4 @@
-package com.example.widget.component.battery
+package com.example.widget.component.battery.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb

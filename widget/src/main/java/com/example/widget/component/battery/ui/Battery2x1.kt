@@ -1,12 +1,5 @@
-package com.example.widget.component.battery
+package com.example.widget.component.battery.ui
 
-import android.R.attr.animation
-import android.R.attr.bottom
-import android.R.attr.fontWeight
-import android.R.attr.text
-import android.R.attr.value
-import android.graphics.Color.argb
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -18,15 +11,16 @@ import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Text
 import com.example.dsl.proto.AlignmentType
+import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.ProgressType
-import com.example.dsl.proto.TextContent
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.R
 import com.example.widget.SizeType
+import com.example.widget.component.battery.datastore.DeviceType
 
 class Battery2x1 : BatteryComponent() {
     override fun getSizeType(): SizeType {
@@ -165,7 +159,7 @@ class Battery2x1 : BatteryComponent() {
             }
             BackgroundColor {
                 Color {
-                    argb = androidx.compose.ui.graphics.Color.LightGray.toArgb()
+                    argb = Color.LightGray.toArgb()
                 }
             }
         })
@@ -201,7 +195,7 @@ class Battery2x1 : BatteryComponent() {
             }
             BackgroundColor {
                 Color {
-                    argb = androidx.compose.ui.graphics.Color.LightGray.toArgb()
+                    argb = Color.LightGray.toArgb()
                 }
             }
         })
@@ -247,10 +241,10 @@ class Battery2x1 : BatteryComponent() {
                     text = batteryValueText
                 }
                 fontSize = textSize
-                fontWeight = com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {
                     Color {
-                        argb = androidx.compose.ui.graphics.Color.Black.toArgb()
+                        argb = Color.Black.toArgb()
                     }
                 }
             })
@@ -268,10 +262,10 @@ class Battery2x1 : BatteryComponent() {
                 fontSize = textSize * 0.65f
                 FontColor {
                     Color {
-                        argb = androidx.compose.ui.graphics.Color.Black.toArgb()
+                        argb = Color.Black.toArgb()
                     }
                 }
-                fontWeight = com.example.dsl.proto.FontWeight.FONT_WEIGHT_BOLD
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
             })
         }
     }

@@ -11,6 +11,9 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.R
 import com.example.widget.ViewKey
+import com.example.widget.component.battery.datastore.BatteryData
+import com.example.widget.component.battery.datastore.BatteryInfoPreferencesRepository
+import com.example.widget.component.battery.datastore.BatteryPreferenceKey
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeWidgetProvider
 

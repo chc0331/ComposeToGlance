@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.util.Log
+import com.example.widget.component.battery.datastore.BatteryData
 import com.example.widget.receiver.goAsync
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 open class BatteryStatusReceiver : BroadcastReceiver() {
     companion object {

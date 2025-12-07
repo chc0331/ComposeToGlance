@@ -1,4 +1,4 @@
-package com.example.widget.component.battery
+package com.example.widget.component.battery.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

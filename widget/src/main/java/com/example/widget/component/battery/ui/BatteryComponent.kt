@@ -1,4 +1,4 @@
-package com.example.widget.component.battery
+package com.example.widget.component.battery.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -23,6 +23,9 @@ import com.example.widget.SizeType
 import com.example.widget.ViewKey
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.widget.component.battery.datastore.BatteryData
+import com.example.widget.component.battery.datastore.BatteryPreferenceKey
+import com.example.widget.component.battery.datastore.DeviceType
 
 
 abstract class BatteryComponent : WidgetComponent() {
