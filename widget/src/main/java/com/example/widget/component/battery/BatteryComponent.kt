@@ -219,18 +219,4 @@ abstract class BatteryComponent : WidgetComponent() {
 //            currentValue ?: false
 //        } ?: false
 //    }
-
-    protected fun getDeviceIcon(deviceType: DeviceType): Int {
-        return when (deviceType) {
-            DeviceType.PHONE -> R.drawable.ic_mobile_device
-            DeviceType.BLUETOOTH_EARBUDS -> R.drawable.ic_bluetooth_earbuds // 무선 이어폰 아이콘
-            DeviceType.BLUETOOTH_HEADPHONES -> R.drawable.ic_bluetooth_headphones
-            DeviceType.BLUETOOTH_HEADSET -> R.drawable.ic_bluetooth_headset
-            DeviceType.BLUETOOTH_WATCH -> R.drawable.ic_bluetooth_watch
-            DeviceType.BLUETOOTH_SPEAKER -> R.drawable.ic_bluetooth_speaker
-            DeviceType.BLUETOOTH_HEARING_AID -> R.drawable.ic_bluetooth_headphones
-            DeviceType.BLUETOOTH_UNKNOWN -> R.drawable.ic_bluetooth_device
-            else -> R.drawable.ic_mobile_device
-        }
-    }
 }

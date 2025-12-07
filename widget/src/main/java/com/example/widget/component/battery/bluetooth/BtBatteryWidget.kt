@@ -20,6 +20,7 @@ import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.component.battery.BatteryComponent
 import com.example.widget.component.battery.DeviceType
+import com.example.widget.component.battery.getDeviceIcon
 
 class BtBatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
