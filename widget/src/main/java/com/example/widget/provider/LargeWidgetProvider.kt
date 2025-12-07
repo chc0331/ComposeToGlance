@@ -30,6 +30,8 @@ import com.example.dsl.provider.DslLocalState
 import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.checkBatteryComponentExist
 import com.example.widget.component.battery.BatteryData
+import com.example.widget.component.battery.bluetooth.BluetoothBatteryUpdateManager
+import com.example.widget.component.battery.bluetooth.checkBluetoothBatteryComponentExist
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
@@ -166,6 +168,9 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                 val glanceId = glanceManager.getGlanceIdBy(it)
                 updateAppWidgetState(context, glanceId) {
                     it[layoutKey] = widgetLayoutData.toByteArray()
+                }
+                if (widgetLayoutData.checkBluetoothBatteryComponentExist()) {
+                    BluetoothBatteryUpdateManager.syncBluetoothDeviceState(context)
                 }
                 if (widgetLayoutData.checkBatteryComponentExist()) {
                     BatteryUpdateManager.syncBatteryWidgetState(context)

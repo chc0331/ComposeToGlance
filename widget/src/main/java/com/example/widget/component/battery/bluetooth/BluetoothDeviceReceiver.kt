@@ -1,6 +1,7 @@
 package com.example.widget.component.battery.bluetooth
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,10 +11,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.example.widget.component.battery.BatteryData
 import com.example.widget.receiver.goAsync
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private val TAG = "BluetoothDeviceReceiver"
 
+@SuppressLint("UnspecifiedRegisterReceiverFlag")
 fun BluetoothDeviceReceiver.register(context: Context) {
     val connectionFilter = IntentFilter().apply {
         addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
@@ -53,6 +59,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
         private const val EXTRA_BATTERY_LEVEL = "android.bluetooth.device.extra.BATTERY_LEVEL"
     }
 
+    @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         // 권한 체크
         val hasPermission = hasBluetoothPermissions(context)
@@ -63,7 +70,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
 
         val device: BluetoothDevice? = intent.getBluetoothDevice()
 
-        Log.i(TAG, "onReceive / ${intent.action}")
+        Log.i("heec.choi", "onReceive / ${intent.action}")
 
         when (intent.action) {
             BluetoothDevice.ACTION_ACL_CONNECTED -> {
@@ -77,27 +84,40 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                             Log.i(TAG, "${it.name} Battery from intent: $batteryFromIntent%")
                         }
 
-                        // 모든 연결된 기기 스캔
+                        // 모든 연결된 기기 스캔하여 위젯 업데이트
                         val bluetoothDeviceManager = BluetoothDeviceManager(context)
                         bluetoothDeviceManager.findDevices { connectedDevices ->
                             Log.i(TAG, "Connected devices: ${connectedDevices.size}")
-                            connectedDevices.forEach { connectedDevice ->
+
+                            // 블루투스 디바이스 정보 리스트 생성
+                            val deviceInfoList = connectedDevices.mapNotNull { connectedDevice ->
                                 val bluetoothDevice = connectedDevice.bluetoothDevice
                                 val batteryLevel = bluetoothDevice.getDeviceBatteryLevel()
                                 val deviceName = connectedDevice.name
                                 val deviceType = bluetoothDevice.getDeviceType()
+
                                 Log.i(
                                     TAG,
-                                    "Connected device : $deviceName $batteryLevel $deviceType"
+                                    "Connected device: $deviceName, Battery: $batteryLevel%, Type: $deviceType"
                                 )
 
-                                if (batteryLevel >= 0) {
-                                    // TODO: 배터리 정보를 위젯에 업데이트
-                                    Log.d(
-                                        TAG,
-                                        "Valid battery level found for ${connectedDevice.name}"
-                                    )
-                                }
+                                // 배터리 정보가 없어도 연결된 디바이스는 표시 (0%로)
+                                BatteryData(
+                                    level = batteryLevel.toFloat(),
+                                    charging = false,
+                                    deviceType = deviceType,
+                                    deviceName = deviceName,
+                                    deviceAddress = connectedDevice.address,
+                                    isConnect = true
+                                )
+                            }
+
+                            // 위젯 업데이트
+                            CoroutineScope(Dispatchers.Default).launch {
+                                BluetoothBatteryUpdateManager.syncAndUpdateBluetoothBatteryWidgetState(
+                                    context,
+                                    deviceInfoList
+                                )
                             }
                         }
                     }
@@ -108,7 +128,10 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                 goAsync {
                     device?.let {
                         Log.d(TAG, "Device disconnected: ${it.name} (${it.address})")
-                        // TODO: 위젯에서 해당 기기 제거
+
+                        // 위젯에서 해당 기기 제거
+                        kotlinx.coroutines.runBlocking {
+                        }
                     }
                 }
             }
@@ -118,12 +141,28 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                 goAsync {
                     device?.let {
                         val batteryLevel = intent.getBatteryLevel()
-                        Log.i(TAG, "Battery level changed for ${it.name}: $batteryLevel%" +
-                                "" +
-                                "${it.getDeviceType()}")
+                        val deviceType = it.getDeviceType()
+
+                        Log.i(
+                            "heec.choi",
+                            "Battery level changed for ${it.name}: $batteryLevel%, Type: $deviceType"
+                        )
 
                         if (batteryLevel >= 0) {
-                            // TODO: 배터리 정보를 위젯에 업데이트
+                            // 배터리 정보를 위젯에 업데이트
+                            val data = BatteryData(
+                                level = batteryLevel.toFloat(),
+                                charging = false,
+                                deviceType = deviceType,
+                                deviceName = it.name,
+                                deviceAddress = it.address,
+                                isConnect = true
+                            )
+
+                            BluetoothBatteryUpdateManager.updateBluetoothBatteryWidget(
+                                context,
+                                data
+                            )
                         }
                     }
                 }
@@ -133,8 +172,11 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                 goAsync {
                     device?.let {
                         Log.d(TAG, "Headset connection state changed: ${it.name}")
-                        // 헤드셋 연결 상태 변경 시 배터리 정보 다시 확인
+
+                        // 헤드셋 연결 상태 변경 시 배터리 정보 다시 확인하고 업데이트
                         val batteryLevel = it.getDeviceBatteryLevel()
+                        val deviceType = it.getDeviceType()
+
                         if (batteryLevel >= 0) {
                             Log.i(TAG, "${it.name} Battery level: $batteryLevel%")
                         }

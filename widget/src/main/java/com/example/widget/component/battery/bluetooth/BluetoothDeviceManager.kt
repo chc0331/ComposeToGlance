@@ -31,7 +31,7 @@ class BluetoothDeviceManager(private val context: Context) {
 
     private var callbackInvoked = false
 
-    fun findDevices(callback: (List<ConnectedDevice>) -> Unit) {
+    fun findDevices( callback: (List<ConnectedDevice>) -> Unit) {
         // 권한 체크
         if (!hasBluetoothPermissions()) {
             Log.w(TAG, "Missing Bluetooth permissions")

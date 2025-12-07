@@ -18,7 +18,8 @@ data class BatteryData(
     val charging: Boolean,
     val deviceType: DeviceType = DeviceType.PHONE,
     val deviceName: String? = null,
-    val deviceAddress: String? = null
+    val deviceAddress: String? = null,
+    val isConnect: Boolean = true
 )
 
 class BatteryInfoPreferencesRepository(private val dataStore: DataStore<Preferences>) {
