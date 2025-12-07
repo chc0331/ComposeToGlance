@@ -5,7 +5,7 @@ import com.example.widget.component.ImageComponent
 import com.example.widget.component.StorageComponent
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
-import com.example.widget.component.battery.ui.Battery1x1
+import com.example.widget.component.battery.ui.BatteryWidget
 import com.example.widget.component.battery.ui.Battery2x1
 
 fun initializeWidgetComponents() {
@@ -16,7 +16,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(AnalogClockComponent())
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
-    WidgetComponentRegistry.registerComponent(Battery1x1())
+    WidgetComponentRegistry.registerComponent(BatteryWidget())
     WidgetComponentRegistry.registerComponent(Battery2x1())
     WidgetComponentRegistry.registerComponent(StorageComponent())
 }

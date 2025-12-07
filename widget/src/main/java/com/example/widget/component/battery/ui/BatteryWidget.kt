@@ -14,7 +14,7 @@ import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.widget.SizeType
 import com.example.widget.component.battery.BatteryComponent
 
-class Battery1x1 : BatteryComponent() {
+class BatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.TINY
     }
