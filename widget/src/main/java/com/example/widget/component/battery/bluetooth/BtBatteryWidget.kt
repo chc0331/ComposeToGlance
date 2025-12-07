@@ -96,72 +96,18 @@ class BtBatteryWidget : BatteryComponent() {
     }
 
     private fun WidgetScope.RightContent() {
-        val bluetoothDevice = getFirstBluetoothDevice()
-
-        if (bluetoothDevice != null) {
-            // Show Bluetooth device battery
-            Column({
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+        Column({
+            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+            verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+        }) {
+            Box({
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
-                Box({
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }) {
-                    BluetoothCircularProgress(bluetoothDevice.level)
-                    BluetoothDeviceIcon(bluetoothDevice.deviceType)
-                }
-                BluetoothBatteryText(bluetoothDevice.level)
+                CircularProgress(getBatteryValue())
+                BatteryIcon()
             }
-        } else {
-            // No Bluetooth device, show duplicate phone battery or empty
-            Column({
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-            }) {
-                Box({
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }) {
-                    CircularProgress(getBatteryValue())
-                    BatteryIcon()
-                }
-                BatteryText()
-            }
+            BatteryText()
         }
-    }
-
-    private fun WidgetScope.BluetoothCircularProgress(batteryLevel: Float) {
-        fun WidgetScope.getProgressSize(): Float {
-            val size = getLocal(DslLocalSize) as DpSize
-            return size.height.value * 0.58f
-        }
-
-        Progress({
-            ViewProperty {
-                Width {
-                    Dp {
-                        value = getProgressSize()
-                    }
-                }
-                Height {
-                    Dp {
-                        value = getProgressSize()
-                    }
-                }
-            }
-            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-            progressValue = batteryLevel
-            maxValue = 100f
-            ProgressColor {
-                Color {
-                    resId = R.color.battery_gauge_sufficient_color
-                }
-            }
-            BackgroundColor {
-                Color {
-                    argb = Color.Companion.LightGray.toArgb()
-                }
-            }
-        })
     }
 
     private fun WidgetScope.CircularProgress(batteryLevel: Float) {
