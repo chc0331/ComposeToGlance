@@ -189,7 +189,7 @@ abstract class BatteryComponent : WidgetComponent() {
             return 50f
         }
         val value = currentState?.let { state ->
-            val currentValue = state[BatteryPreferenceKey.Phone.Level]
+            val currentValue = state[BatteryPreferenceKey.Level]
             currentValue ?: 0f
         } ?: 0f
 
@@ -203,7 +203,7 @@ abstract class BatteryComponent : WidgetComponent() {
             return false
         }
         return currentState?.let { state ->
-            val currentValue = state[BatteryPreferenceKey.Phone.Charging]
+            val currentValue = state[BatteryPreferenceKey.Charging]
             currentValue ?: false
         } ?: false
     }

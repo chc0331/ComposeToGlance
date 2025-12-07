@@ -71,8 +71,8 @@ object BatteryUpdateManager {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
-            pref[BatteryPreferenceKey.Phone.Level] = data.level
-            pref[BatteryPreferenceKey.Phone.Charging] = data.charging
+            pref[BatteryPreferenceKey.Level] = data.level
+            pref[BatteryPreferenceKey.Charging] = data.charging
         }
     }
 

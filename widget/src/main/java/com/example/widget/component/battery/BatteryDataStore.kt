@@ -9,10 +9,8 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.first
 
 object BatteryPreferenceKey {
-    object Phone {
-        val Level = floatPreferencesKey("phone_battery_value")
-        val Charging = booleanPreferencesKey("phone_battery_charging")
-    }
+    val Level = floatPreferencesKey("phone_battery_value")
+    val Charging = booleanPreferencesKey("phone_battery_charging")
 }
 
 /**
@@ -52,16 +50,15 @@ class BatteryInfoPreferencesRepository(private val dataStore: DataStore<Preferen
     suspend fun updateBatterInfo(data: BatteryData) {
         dataStore.updateData {
             it.toMutablePreferences().also { pref ->
-                pref[BatteryPreferenceKey.Phone.Level] = data.level
-                pref[BatteryPreferenceKey.Phone.Charging] = data.charging
+                pref[BatteryPreferenceKey.Level] = data.level
+                pref[BatteryPreferenceKey.Charging] = data.charging
             }
         }
     }
 
-    suspend fun getBatteryInfo(device: DeviceType = DeviceType.PHONE) = dataStore.data.first().run {
-        // todo : need to check device type.
-        val level = this[BatteryPreferenceKey.Phone.Level] ?: 0f
-        val charging = this[BatteryPreferenceKey.Phone.Charging] ?: false
+    suspend fun getBatteryInfo() = dataStore.data.first().run {
+        val level = this[BatteryPreferenceKey.Level] ?: 0f
+        val charging = this[BatteryPreferenceKey.Charging] ?: false
         BatteryData(level, charging)
     }
 }
