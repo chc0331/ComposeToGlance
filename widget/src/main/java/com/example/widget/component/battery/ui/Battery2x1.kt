@@ -20,6 +20,7 @@ import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.R
 import com.example.widget.SizeType
+import com.example.widget.component.battery.BatteryComponent
 import com.example.widget.component.battery.datastore.DeviceType
 
 class Battery2x1 : BatteryComponent() {

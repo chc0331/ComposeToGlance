@@ -1,4 +1,4 @@
-package com.example.widget.component.battery.ui
+package com.example.widget.component.battery
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -87,7 +87,7 @@ abstract class BatteryComponent : WidgetComponent() {
             }
             BackgroundColor {
                 Color {
-                    argb = Color.LightGray.toArgb()
+                    argb = Color.Companion.LightGray.toArgb()
                 }
             }
         })
@@ -136,7 +136,7 @@ abstract class BatteryComponent : WidgetComponent() {
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {
                     Color {
-                        argb = Color.Black.toArgb()
+                        argb = Color.Companion.Black.toArgb()
                     }
                 }
             })
@@ -154,7 +154,7 @@ abstract class BatteryComponent : WidgetComponent() {
                 fontSize = textSize * 0.6f
                 FontColor {
                     Color {
-                        argb = Color.Black.toArgb()
+                        argb = Color.Companion.Black.toArgb()
                     }
                 }
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD

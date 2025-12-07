@@ -12,6 +12,7 @@ import com.example.dsl.proto.HorizontalAlignment.H_ALIGN_CENTER
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.widget.SizeType
+import com.example.widget.component.battery.BatteryComponent
 
 class Battery1x1 : BatteryComponent() {
     override fun getSizeType(): SizeType {
