@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.compose.ui.graphics.toArgb
+import com.example.dsl.R
 import com.example.dsl.glance.GlanceRenderer
 import com.example.dsl.glance.converter.ColorConverter
 import com.example.dsl.glance.renderer.ImageRenderer
@@ -17,7 +19,6 @@ import com.example.dsl.proto.WidgetNode
 fun ImageRenderer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
-    renderer: GlanceRenderer
 ): RemoteViews? {
     if (!node.hasImage()) {
         return null
@@ -30,21 +31,18 @@ fun ImageRenderer.renderToRemoteViews(
         return renderToAnimationRemoteViews(node, context)
     }
 
-    // RemoteViews 생성 (ImageView를 위한 간단한 레이아웃)
-    // RemoteViews는 단일 뷰를 직접 생성할 수 없으므로 레이아웃이 필요
-    // simple_list_item_1을 사용하고 text1을 ImageView로 사용
-    val remoteViews = RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
-    val imageViewId = android.R.id.text1
+    val viewId = viewProperty.viewId
+    val remoteViews = RemoteViews(context.packageName, R.layout.image_component, viewId)
 
     // ImageProvider 처리
     when {
         imageProperty.provider.hasDrawableResId() -> {
-            remoteViews.setImageViewResource(imageViewId, imageProperty.provider.drawableResId)
+            remoteViews.setImageViewResource(viewId, imageProperty.provider.drawableResId)
         }
 
         imageProperty.provider.hasUri() -> {
             remoteViews.setImageViewUri(
-                imageViewId,
+                viewId,
                 android.net.Uri.parse(imageProperty.provider.uri)
             )
         }
@@ -52,12 +50,12 @@ fun ImageRenderer.renderToRemoteViews(
         imageProperty.provider.hasBitmap() -> {
             val byteArray = imageProperty.provider.bitmap.toByteArray()
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-            remoteViews.setImageViewBitmap(imageViewId, bitmap)
+            remoteViews.setImageViewBitmap(viewId, bitmap)
         }
 
         else -> {
             // 기본 이미지
-            remoteViews.setImageViewResource(imageViewId, android.R.drawable.ic_menu_gallery)
+            remoteViews.setImageViewResource(viewId, android.R.drawable.ic_menu_gallery)
         }
     }
 
@@ -65,25 +63,16 @@ fun ImageRenderer.renderToRemoteViews(
     if (imageProperty.hasTintColor()) {
         // tintColor는 Color 타입이므로 직접 변환
         val tintColor = ColorConverter.toGlanceColor(imageProperty.tintColor)
-        remoteViews.setInt(imageViewId, "setColorFilter", tintColor.value.toInt())
+        remoteViews.setInt(viewId, "setColorFilter", tintColor.toArgb())
     }
 
     // Alpha
     if (imageProperty.alpha != 1f && imageProperty.alpha > 0f) {
-        remoteViews.setFloat(imageViewId, "setAlpha", imageProperty.alpha)
+        remoteViews.setFloat(viewId, "setAlpha", imageProperty.alpha)
     }
-
-    // ContentScale (ScaleType)
-    val scaleType = when (imageProperty.contentScale) {
-        ContentScale.CONTENT_SCALE_FIT -> android.widget.ImageView.ScaleType.FIT_CENTER
-        ContentScale.CONTENT_SCALE_CROP -> android.widget.ImageView.ScaleType.CENTER_CROP
-        ContentScale.CONTENT_SCALE_FILL_BOUNDS -> android.widget.ImageView.ScaleType.FIT_XY
-        else -> android.widget.ImageView.ScaleType.FIT_CENTER
-    }
-    remoteViews.setInt(imageViewId, "setScaleType", scaleType.ordinal)
 
     // ViewProperty 속성 적용
-    RemoteViewsBuilder.applyViewProperties(remoteViews, imageViewId, viewProperty, context)
+    RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context)
 
     return remoteViews
 }

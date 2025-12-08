@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.emptyPreferences
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
@@ -23,10 +23,9 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
-import com.example.widget.ViewKey
 import com.example.widget.component.battery.BatteryComponent
 import com.example.widget.component.battery.DeviceType
-import com.example.widget.component.battery.getDeviceIcon
+import com.example.widget.component.viewid.ViewIdType
 
 class BluetoothBatteryWidget : BatteryComponent() {
 
@@ -59,70 +58,43 @@ class BluetoothBatteryWidget : BatteryComponent() {
                     Height { matchParent = true }
                 }
             }) {
-                val size = getLocal(DslLocalSize) as DpSize
-                Box({
-                    ViewProperty {
-                        Width {
-                            Dp {
-                                value = size.width.value / 2
-                            }
-                        }
-                        Height { matchParent = true }
+                DeviceContent(DeviceType.BLUETOOTH_EARBUDS)
+                DeviceContent(DeviceType.BLUETOOTH_WATCH)
+            }
+        }
+    }
+
+    private fun WidgetScope.DeviceContent(type: DeviceType) {
+        val size = getLocal(DslLocalSize) as DpSize
+        Box({
+            ViewProperty {
+                Width {
+                    Dp {
+                        value = size.width.value / 2
                     }
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }) {
-                    EarBudsContent()
                 }
-                Box({
-                    ViewProperty {
-                        Width {
-                            Dp {
-                                value = size.width.value / 2
-                            }
-                        }
-                        Height { matchParent = true }
-                    }
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }) {
-                    WatchContent()
-                }
+                Height { matchParent = true }
+            }
+            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+        }) {
+            if (type == DeviceType.BLUETOOTH_EARBUDS) {
+                EarBudsContent()
+            } else if (type == DeviceType.BLUETOOTH_WATCH) {
+                WatchContent()
             }
         }
     }
 
     private fun WidgetScope.EarBudsContent() {
-        val state = getLocal(DslLocalState)
-        val btEarBudsConnected =
-            state?.get(BluetoothBatteryPreferenceKey.BtEarbudsConnected) as Boolean? ?: false
-        val btEarBudsBatteryValue =
-            state?.get(BluetoothBatteryPreferenceKey.BtEarbudsLevel) as Float? ?: 0f
-        Log.i("heec.choi", "EarbudsContent / $btEarBudsConnected $btEarBudsBatteryValue")
-        if (btEarBudsConnected) {
-            ConnectedDeviceContent(btEarBudsBatteryValue, DeviceType.BLUETOOTH_EARBUDS)
-        } else SkeletonContent()
-    }
-
-    private fun WidgetScope.WatchContent() {
-        val state = getLocal(DslLocalState)
-        val btWatchConnected =
-            state?.get(BluetoothBatteryPreferenceKey.BtWatchConnected) as Boolean? ?: false
-        val btWatchBatteryValue =
-            state?.get(BluetoothBatteryPreferenceKey.BtWatchLevel) as Float? ?: 0f
-        Log.i("heec.choi", "WatchContent / $btWatchConnected $btWatchBatteryValue")
-        if (btWatchConnected) {
-            ConnectedDeviceContent(btWatchBatteryValue, DeviceType.BLUETOOTH_WATCH)
-        } else SkeletonContent()
-    }
-
-    /**
-     * 연결된 BT 디바이스의 배터리 정보 표시
-     */
-    private fun WidgetScope.ConnectedDeviceContent(level: Float, deviceType: DeviceType) {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
-        val viewId =
-            if (deviceType == DeviceType.BLUETOOTH_EARBUDS)
-                ViewKey.Bluetooth.getEarBudsTextId(gridIndex)
-            else 0
+        val currentState = getLocal(DslLocalState) ?: emptyPreferences()
+        val isPreview = getLocal(DslLocalPreview) ?: false
+        val batteryLevel = getBatteryValue()
+        var isConnected = isPreview
+
+        if (!isPreview) {
+            isConnected = currentState[BluetoothBatteryPreferenceKey.BtEarbudsConnected] ?: false
+        }
 
         Column({
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
@@ -132,62 +104,84 @@ class BluetoothBatteryWidget : BatteryComponent() {
             Box({
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
-                CircularProgress(level, viewId)
-                BatteryIcon(deviceType)
+                BatteryProgress(
+                    progressLevel = batteryLevel,
+                    progressViewId = getEarBudsProgressId(gridIndex), isConnected
+                )
+                BatteryIcon(
+                    iconResId = R.drawable.ic_bluetooth_earbuds,
+                    iconViewId = getEarBudsIconId(gridIndex), isConnected
+                )
             }
-            // 프로그레스 밑에 배터리 용량 텍스트
-            DeviceBatteryText(level, viewId)
+            BatteryText(
+                batteryLevel,
+                getEarBudsTextId(gridIndex), isConnected
+            )
         }
     }
 
-    /**
-     * 연결 안된 상태의 스켈레톤 UI
-     */
-    private fun WidgetScope.SkeletonContent() {
+    private fun WidgetScope.WatchContent() {
+        val gridIndex = getLocal(DslLocalGridIndex) as Int
+        val currentState = getLocal(DslLocalState) ?: emptyPreferences()
+        val isPreview = getLocal(DslLocalPreview) ?: false
+        val batteryLevel = getBatteryValue()
+        var isConnected = isPreview
+
+        if (!isPreview) {
+            isConnected = currentState[BluetoothBatteryPreferenceKey.BtWatchConnected] ?: false
+        }
+
+
         Column({
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
             verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
-            // 스켈레톤 프로그레스와 아이콘
+            // Circular Progress와 Device Icon을 겹쳐서 배치하는 Box
             Box({
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
-                SkeletonProgress()
-                SkeletonIcon()
+                BatteryProgress(
+                    progressLevel = batteryLevel,
+                    progressViewId = getWatchProgressId(gridIndex),
+                    isConnected
+                )
+                BatteryIcon(
+                    iconResId = R.drawable.ic_bluetooth_watch,
+                    iconViewId = getWatchIconId(gridIndex), isConnected
+                )
             }
-            // 스켈레톤 텍스트
-            SkeletonText()
+            BatteryText(
+                batteryLevel,
+                getWatchTextId(gridIndex), isConnected
+            )
         }
     }
 
-    /**
-     * 스켈레톤 프로그레스 (회색 원형 프로그레스)
-     */
-    private fun WidgetScope.SkeletonProgress() {
+    private fun WidgetScope.BatteryProgress(
+        progressLevel: Float, progressViewId: Int,
+        isConnect: Boolean = false
+    ) {
         fun WidgetScope.getProgressSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.58f
         }
-
-        Progress({
+        Progress {
             ViewProperty {
+                viewId = progressViewId
+                partiallyUpdate = true
                 Width {
-                    Dp {
-                        value = getProgressSize()
-                    }
+                    Dp { value = getProgressSize() }
                 }
                 Height {
-                    Dp {
-                        value = getProgressSize()
-                    }
+                    Dp { value = getProgressSize() }
                 }
             }
             progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-            progressValue = 0f
+            progressValue = if (isConnect) progressLevel else 0f
             maxValue = 100f
             ProgressColor {
                 Color {
-                    argb = Color.Companion.LightGray.toArgb()
+                    resId = R.color.battery_gauge_sufficient_color
                 }
             }
             BackgroundColor {
@@ -195,65 +189,39 @@ class BluetoothBatteryWidget : BatteryComponent() {
                     argb = Color.Companion.LightGray.toArgb()
                 }
             }
-        })
+        }
     }
 
-    /**
-     * 스켈레톤 아이콘 (비활성화된 블루투스 아이콘)
-     */
-    private fun WidgetScope.SkeletonIcon() {
-        fun WidgetScope.getIconSize(): Float {
+    private fun WidgetScope.BatteryIcon(
+        iconResId: Int, iconViewId: Int,
+        isConnect: Boolean = false
+    ) {
+        fun WidgetScope.getBatteryIconSize(): Float {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.22f
         }
-
         Image {
             ViewProperty {
-                Width { Dp { value = getIconSize() } }
-                Height { Dp { value = getIconSize() } }
+                viewId = iconViewId
+                Width { Dp { value = getBatteryIconSize() } }
+                Height { Dp { value = getBatteryIconSize() } }
+                partiallyUpdate = true
             }
             Provider {
-                drawableResId = R.drawable.ic_bluetooth_device
+                drawableResId = iconResId
             }
-            // 반투명 처리를 위한 tint 설정
             TintColor {
-                argb = Color.LightGray.toArgb()
+                argb = if (isConnect) Color.Transparent.toArgb() else Color.LightGray.toArgb()
             }
         }
     }
 
-    /**
-     * 스켈레톤 텍스트 (회색 바 형태)
-     */
-    private fun WidgetScope.SkeletonText() {
+    private fun WidgetScope.BatteryText(
+        progressLevel: Float, textViewId: Int,
+        isConnect: Boolean = false
+    ) {
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
-
-        Box({
-            ViewProperty {
-                Width { Dp { value = textSize * 2f } }
-                Height { Dp { value = textSize } }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Companion.LightGray.toArgb()
-                    }
-                }
-                CornerRadius {
-                    radius = 4f
-                }
-            }
-        }) {}
-    }
-
-    /**
-     * 디바이스별 배터리 정보를 표시하는 텍스트
-     */
-    private fun WidgetScope.DeviceBatteryText(batteryLevel: Float, viewId: Int) {
-        val gridIndex = getLocal(DslLocalGridIndex) as Int
-        val batteryValueText = "${batteryLevel.toInt()}"
-        val size = getLocal(DslLocalSize) as DpSize
-        val textSize = size.height.value * 0.18f
-
         Row({
             ViewProperty {
                 Width { wrapContent = true }
@@ -262,24 +230,25 @@ class BluetoothBatteryWidget : BatteryComponent() {
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
             verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
         }) {
-            Text({
+            Text {
                 ViewProperty {
-                    this.viewId = viewId
+                    viewId = textViewId
                     partiallyUpdate = true
                     Width { wrapContent = true }
                     Height { wrapContent = true }
                 }
                 TextContent {
-                    text = batteryValueText
+                    text = if (isConnect) progressLevel.toInt().toString()
+                    else ""
                 }
                 fontSize = textSize
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 FontColor {
                     Color {
-                        argb = Color.Companion.Black.toArgb()
+                        argb = Color.Black.toArgb()
                     }
                 }
-            })
+            }
             Text {
                 ViewProperty {
                     Width { wrapContent = true }
@@ -302,43 +271,45 @@ class BluetoothBatteryWidget : BatteryComponent() {
         }
     }
 
-    /**
-     * 원형 프로그레스 표시
-     */
-    private fun WidgetScope.CircularProgress(batteryLevel: Float, viewId: Int) {
-        fun WidgetScope.getProgressSize(): Float {
-            val size = getLocal(DslLocalSize) as DpSize
-            return size.height.value * 0.58f
-        }
+    override fun getViewIdTypes(): List<ViewIdType> {
+        return BluetoothBatteryViewIdType.all()
+    }
 
-        Progress({
-            ViewProperty {
-                this.viewId = viewId
-                partiallyUpdate = true
-                Width {
-                    Dp {
-                        value = getProgressSize()
-                    }
-                }
-                Height {
-                    Dp {
-                        value = getProgressSize()
-                    }
-                }
-            }
-            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-            progressValue = batteryLevel
-            maxValue = 100f
-            ProgressColor {
-                Color {
-                    resId = R.color.battery_gauge_sufficient_color
-                }
-            }
-            BackgroundColor {
-                Color {
-                    argb = Color.Companion.LightGray.toArgb()
-                }
-            }
-        })
+    internal fun getEarBudsTextId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryText, gridIndex)
+
+    internal fun getEarBudsProgressId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryProgress, gridIndex)
+
+    internal fun getEarBudsIconId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryIcon, gridIndex)
+
+    internal fun getWatchTextId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.WatchBatteryText, gridIndex)
+
+    internal fun getWatchProgressId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.WatchBatteryProgress, gridIndex)
+
+    internal fun getWatchIconId(gridIndex: Int) =
+        generateViewId(BluetoothBatteryViewIdType.WatchBatteryIcon, gridIndex)
+}
+
+sealed class BluetoothBatteryViewIdType(override val typeName: String) : ViewIdType() {
+    object EarBudsBatteryText : BluetoothBatteryViewIdType("ear_buds_battery_text")
+    object EarBudsBatteryProgress : BluetoothBatteryViewIdType("ear_buds_battery_progress")
+    object EarBudsBatteryIcon : BluetoothBatteryViewIdType("ear_buds_battery_icon")
+    object WatchBatteryText : BluetoothBatteryViewIdType("watch_battery_text")
+    object WatchBatteryProgress : BluetoothBatteryViewIdType("watch_battery_progress")
+    object WatchBatteryIcon : BluetoothBatteryViewIdType("watch_battery_icon")
+
+    companion object {
+        fun all(): List<BluetoothBatteryViewIdType> = listOf(
+            EarBudsBatteryText,
+            EarBudsBatteryProgress,
+            EarBudsBatteryIcon,
+            WatchBatteryText,
+            WatchBatteryProgress,
+            WatchBatteryIcon
+        )
     }
 }

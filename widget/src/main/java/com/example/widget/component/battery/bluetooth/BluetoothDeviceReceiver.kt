@@ -40,7 +40,7 @@ fun BluetoothDeviceReceiver.register(context: Context) {
             context.registerReceiver(this, connectionFilter)
         }
     } catch (e: Exception) {
-        Log.e(TAG, "❌ Failed to register receiver", e)
+        Log.e(TAG, ":x: Failed to register receiver", e)
     }
 }
 
@@ -48,7 +48,7 @@ fun BluetoothDeviceReceiver.unregister(context: Context) {
     try {
         context.unregisterReceiver(this)
     } catch (e: Exception) {
-        Log.e(TAG, "❌ Failed to unregister receiver", e)
+        Log.e(TAG, ":x: Failed to unregister receiver", e)
     }
 }
 
@@ -127,10 +127,16 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
             BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
                 goAsync {
                     device?.let {
-                        Log.d(TAG, "Device disconnected: ${it.name} (${it.address})")
-
-                        // 위젯에서 해당 기기 제거
-                        kotlinx.coroutines.runBlocking {
+                        val deviceName = it.name
+                        val deviceType = it.getDeviceType()
+                        val batteryData =
+                            BatteryData(0f, false, deviceType, deviceName, isConnect = false)
+                        // 위젯 업데이트
+                        CoroutineScope(Dispatchers.Default).launch {
+                            BluetoothBatteryUpdateManager.syncAndUpdateBluetoothBatteryWidgetState(
+                                context,
+                                listOf(batteryData)
+                            )
                         }
                     }
                 }

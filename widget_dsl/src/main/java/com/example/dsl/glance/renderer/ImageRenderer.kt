@@ -42,10 +42,19 @@ object ImageRenderer : NodeRenderer {
         val viewProperty = imageProperty.viewProperty
 
         if (node.image.animation) {
-            createRemoteViews(node, context)?.let {
+            createAnimationRemoteViews(node, context)?.let {
                 AndroidRemoteViews(
                     modifier = GlanceModifier.wrapContentSize(),
                     remoteViews = it)
+            }
+            return
+        }
+        if(node.image.viewProperty.partiallyUpdate) {
+            createRemoteViews(node, context)?.let {
+                AndroidRemoteViews(
+                    modifier = GlanceModifier.wrapContentSize(),
+                    remoteViews = it
+                )
             }
             return
         }
@@ -118,12 +127,19 @@ object ImageRenderer : NodeRenderer {
         }
     }
 
-    private fun createRemoteViews(
+    private fun createAnimationRemoteViews(
         node: WidgetNode,
         context: RenderContext
     ): RemoteViews? {
         val remoteViews = renderToAnimationRemoteViews(node, context.context)
         return remoteViews
     }
-}
 
+    private fun createRemoteViews(
+        node: WidgetNode,
+        context: RenderContext
+    ): RemoteViews? {
+        val remoteViews = renderToRemoteViews(node, context.context)
+        return remoteViews
+    }
+}

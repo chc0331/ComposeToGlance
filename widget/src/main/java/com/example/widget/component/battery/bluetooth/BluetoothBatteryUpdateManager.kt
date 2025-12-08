@@ -1,20 +1,27 @@
 package com.example.widget.component.battery.bluetooth
 
+import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.widget.RemoteViewsCompat.setImageViewColorFilter
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import com.example.widget.R
-import com.example.widget.ViewKey
 import com.example.widget.component.battery.BatteryData
 import com.example.widget.component.battery.DeviceType
+import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeAppWidget
 import com.example.widget.provider.LargeWidgetProvider
+import com.example.widget.provider.layoutKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +42,6 @@ object BluetoothBatteryUpdateManager {
         context: Context,
         connectedDevices: List<BatteryData>
     ) {
-        Log.i("heec.choi", "updateBluetoothBatteryWidget: ${connectedDevices.size} devices")
         val btBatteryRepo =
             BluetoothBatteryInfoPreferencesRepository(context.bluetoothBatteryDataStore)
         // 최대 2개 디바이스만 처리
@@ -58,7 +64,6 @@ object BluetoothBatteryUpdateManager {
 
         // 각 위젯의 상태 업데이트
         widgetIds.forEach { widgetId ->
-            Log.i("heec.choi", "Updating widget state for widgetId: $widgetId $device1 $device2")
             device1?.let {
                 updateBluetoothBatteryWidgetState(context, widgetId, it)
             }
@@ -105,7 +110,6 @@ object BluetoothBatteryUpdateManager {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
-            Log.i("heec.choi", "updateBluetoothBatteryWidgetState $glanceId $data")
             if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
                 pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
                 pref[BluetoothBatteryPreferenceKey.BtEarbudsConnected] = data.isConnect
@@ -120,23 +124,45 @@ object BluetoothBatteryUpdateManager {
         val btBatteryRepo =
             BluetoothBatteryInfoPreferencesRepository(context.bluetoothBatteryDataStore)
         btBatteryRepo.updateBluetoothBatteryInfo(data)
+        val glanceManager = GlanceAppWidgetManager(context)
         val manager = AppWidgetManager.getInstance(context)
         manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java))
             .forEach { widgetId ->
-                val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
-                // todo : Current is brute force, need to refactoring
-                (0 until 9).forEach {
-                    remoteViews.setTextViewText(
-                        ViewKey.Bluetooth.getEarBudsTextId(it),
-                        "${data.level.toInt()}"
-                    )
+                val glanceId = glanceManager.getGlanceIdBy(widgetId)
+                val currentState =
+                    getAppWidgetState(context, PreferencesGlanceStateDefinition, glanceId)
+                val currentLayout: WidgetLayout = WidgetLayout.parseFrom(currentState[layoutKey])
+                // 실제 배치된 Battery 컴포넌트만 필터링
+                val bluetoothComponents = currentLayout.placedWidgetComponentList
+                    .filter { it.widgetTag.contains("Bluetooth") }
+                val bluetoothComponent =
+                    bluetoothComponents.firstOrNull()?.let { placed: PlacedWidgetComponent ->
+                        WidgetComponentRegistry.getComponent(placed.widgetTag) as? BluetoothBatteryWidget
+                    }
+
+                if (bluetoothComponent == null) return
+                bluetoothComponents.forEach { component ->
+                    val gridIndex = component.gridIndex
+                    val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
+                    if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
+                        remoteViews.setProgressBar(
+                            bluetoothComponent.getEarBudsProgressId(gridIndex),
+                            100, if (data.isConnect) data.level.toInt() else 0, false
+                        )
+                        remoteViews.setImageViewColorFilter(
+                            bluetoothComponent.getEarBudsIconId(gridIndex),
+                            if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
+                        )
+                        remoteViews.setTextViewText(
+                            bluetoothComponent.getEarBudsTextId(gridIndex),
+                            if (data.isConnect) data.level.toInt().toString() else ""
+                        )
+                    } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
+
+                    }
+                    AppWidgetManager.getInstance(context)
+                        .partiallyUpdateAppWidget(widgetId, remoteViews)
                 }
-                Log.i(
-                    TAG,
-                    "partially update : $widgetId ${data.charging} ${R.id.batteryValue}"
-                )
-                AppWidgetManager.getInstance(context)
-                    .partiallyUpdateAppWidget(widgetId, remoteViews)
             }
     }
 }
