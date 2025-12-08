@@ -26,15 +26,6 @@ import com.example.widget.component.viewid.ViewIdType
 
 abstract class BatteryComponent : WidgetComponent() {
 
-    companion object {
-        internal val batteryValueKey = floatPreferencesKey("battery_value")
-        internal val chargingStateKey = booleanPreferencesKey("charging_state")
-    }
-
-    fun getCellType(): String {
-        return if (getSizeType() == SizeType.TINY) "1x1" else "2x1"
-    }
-
     override fun getName(): String {
         return "${getSizeType()}-Battery"
     }
