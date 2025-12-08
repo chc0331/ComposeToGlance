@@ -1,10 +1,12 @@
 package com.example.widget.component.battery
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Image
 import com.example.dsl.component.Progress
@@ -19,12 +21,15 @@ import com.example.dsl.provider.DslLocalPreview
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
-import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.widget.component.core.ComponentStateManager
 import com.example.widget.component.viewid.ViewIdType
 
-abstract class BatteryComponent : WidgetComponent() {
+private const val BATTERY_PREFERENCES_NAME = "battery_info_pf"
+internal val Context.batteryDataStore by preferencesDataStore(name = BATTERY_PREFERENCES_NAME)
+
+abstract class BatteryComponent : WidgetComponent(), ComponentStateManager {
 
     override fun getName(): String {
         return "${getSizeType()}-Battery"
@@ -233,6 +238,14 @@ abstract class BatteryComponent : WidgetComponent() {
         return generateViewId(BatteryViewIdType.ChargingIcon, gridIndex)
     }
 
+    // ComponentStateManager 구현
+    override fun getDataStore(context: Context): DataStore<Preferences> {
+        return context.batteryDataStore
+    }
+
+    override fun getPreferenceKeyName(): String {
+        return BATTERY_PREFERENCES_NAME
+    }
 }
 
 /**

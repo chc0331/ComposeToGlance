@@ -17,9 +17,10 @@ import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
 import com.example.widget.proto.SizeType
+import com.example.widget.WidgetComponentRegistry
+import com.example.widget.initializeWidgetComponents
 import com.example.widget.provider.LargeWidgetProvider
 import com.example.widget.repository.WidgetLayoutRepository
-import initializeWidgetComponents
 import kotlinx.coroutines.launch
 
 class WidgetEditorViewModel(

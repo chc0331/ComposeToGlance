@@ -10,11 +10,16 @@ import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.SizeType
+import com.example.widget.component.core.ComponentUpdateManager
 
 class BatteryWidget : BatteryComponent() {
     override fun getSizeType(): SizeType {
         return SizeType.TINY
     }
+
+    override fun getStateManager() = this
+
+    override fun getUpdateManager(): ComponentUpdateManager<*>? = BatteryUpdateManager
 
     override fun WidgetScope.Content() {
         Box({

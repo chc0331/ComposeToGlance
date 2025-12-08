@@ -8,7 +8,7 @@ enum class WidgetCategory(
 ) {
     BASIC("Basic"), CLOCK("Clock"), DEVICE_INFO("DeviceInfo");
 
-    fun toProto(): com.example.widget.proto.WidgetCategory  {
+    fun toProto(): com.example.widget.proto.WidgetCategory {
         return when (this) {
             BASIC -> com.example.widget.proto.WidgetCategory.WIDGET_CATEGORY_BASIC
             CLOCK -> com.example.widget.proto.WidgetCategory.WIDGET_CATEGORY_CLOCK

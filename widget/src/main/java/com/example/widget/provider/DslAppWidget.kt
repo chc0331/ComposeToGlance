@@ -39,7 +39,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
 
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            Log.i("heec.choi","provideGlance $id")
+            Log.i("heec.choi", "provideGlance $id")
             androidx.glance.layout.Box(
                 modifier = GlanceModifier.fillMaxSize().background(Color.Transparent),
                 contentAlignment = Alignment.Center

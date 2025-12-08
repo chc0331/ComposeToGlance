@@ -31,7 +31,7 @@ class BluetoothDeviceManager(private val context: Context) {
 
     private var callbackInvoked = false
 
-    fun findDevices( callback: (List<ConnectedDevice>) -> Unit) {
+    fun findDevices(callback: (List<ConnectedDevice>) -> Unit) {
         // 권한 체크
         if (!hasBluetoothPermissions()) {
             Log.w(TAG, "Missing Bluetooth permissions")
@@ -276,7 +276,10 @@ class BluetoothDeviceManager(private val context: Context) {
                                 bluetoothDevice = device,
                                 deviceType = detectedDeviceType
                             )
-                            Log.d(TAG, "Updated device with Classic/Dual address: $deviceName, Type: $detectedDeviceType")
+                            Log.d(
+                                TAG,
+                                "Updated device with Classic/Dual address: $deviceName, Type: $detectedDeviceType"
+                            )
                         }
                     }
                 } else {
@@ -291,7 +294,10 @@ class BluetoothDeviceManager(private val context: Context) {
                             deviceType = detectedDeviceType
                         )
                     )
-                    Log.d(TAG, "Added new device: $deviceName ($deviceAddress), Type: $detectedDeviceType")
+                    Log.d(
+                        TAG,
+                        "Added new device: $deviceName ($deviceAddress), Type: $detectedDeviceType"
+                    )
                 }
 
                 processedAddresses.add(deviceAddress)
@@ -302,7 +308,10 @@ class BluetoothDeviceManager(private val context: Context) {
 
         Log.i(TAG, "Merged result: ${mergedList.size} unique devices")
         mergedList.forEach { device ->
-            Log.d(TAG, "  - ${device.name} (${device.address}): ${device.types.joinToString()}, Type: ${device.deviceType}")
+            Log.d(
+                TAG,
+                "  - ${device.name} (${device.address}): ${device.types.joinToString()}, Type: ${device.deviceType}"
+            )
         }
 
         return mergedList

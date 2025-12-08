@@ -94,7 +94,11 @@ class BluetoothBatteryWidget : WidgetComponent() {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         val currentState = getLocal(DslLocalState) ?: emptyPreferences()
         val isPreview = getLocal(DslLocalPreview) ?: false
-        val batteryLevel = getBatteryValue()
+        val batteryLevel = if (isPreview) {
+            50f
+        } else {
+            currentState[BluetoothBatteryPreferenceKey.BtEarbudsLevel] ?: 0f
+        }
         var isConnected = isPreview
 
         if (!isPreview) {
@@ -111,16 +115,19 @@ class BluetoothBatteryWidget : WidgetComponent() {
             }) {
                 BatteryProgress(
                     progressLevel = batteryLevel,
-                    progressViewId = getEarBudsProgressId(gridIndex), isConnected
+                    progressViewId = getEarBudsProgressId(gridIndex),
+                    isConnected
                 )
                 BatteryIcon(
                     iconResId = R.drawable.ic_bluetooth_earbuds,
-                    iconViewId = getEarBudsIconId(gridIndex), isConnected
+                    iconViewId = getEarBudsIconId(gridIndex),
+                    isConnected
                 )
             }
             BatteryText(
                 batteryLevel,
-                getEarBudsTextId(gridIndex), isConnected
+                getEarBudsTextId(gridIndex),
+                isConnected
             )
         }
     }
@@ -129,13 +136,16 @@ class BluetoothBatteryWidget : WidgetComponent() {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         val currentState = getLocal(DslLocalState) ?: emptyPreferences()
         val isPreview = getLocal(DslLocalPreview) ?: false
-        val batteryLevel = getBatteryValue()
+        val batteryLevel = if (isPreview) {
+            50f
+        } else {
+            currentState[BluetoothBatteryPreferenceKey.BtWatchLevel] ?: 0f
+        }
         var isConnected = isPreview
 
         if (!isPreview) {
             isConnected = currentState[BluetoothBatteryPreferenceKey.BtWatchConnected] ?: false
         }
-
 
         Column({
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
@@ -152,18 +162,21 @@ class BluetoothBatteryWidget : WidgetComponent() {
                 )
                 BatteryIcon(
                     iconResId = R.drawable.ic_bluetooth_watch,
-                    iconViewId = getWatchIconId(gridIndex), isConnected
+                    iconViewId = getWatchIconId(gridIndex),
+                    isConnected
                 )
             }
             BatteryText(
                 batteryLevel,
-                getWatchTextId(gridIndex), isConnected
+                getWatchTextId(gridIndex),
+                isConnected
             )
         }
     }
 
     private fun WidgetScope.BatteryProgress(
-        progressLevel: Float, progressViewId: Int,
+        progressLevel: Float,
+        progressViewId: Int,
         isConnect: Boolean = false
     ) {
         fun WidgetScope.getProgressSize(): Float {
@@ -198,7 +211,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryIcon(
-        iconResId: Int, iconViewId: Int,
+        iconResId: Int,
+        iconViewId: Int,
         isConnect: Boolean = false
     ) {
         fun WidgetScope.getBatteryIconSize(): Float {
@@ -222,7 +236,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryText(
-        progressLevel: Float, textViewId: Int,
+        progressLevel: Float,
+        textViewId: Int,
         isConnect: Boolean = false
     ) {
         val size = getLocal(DslLocalSize) as DpSize
@@ -243,8 +258,11 @@ class BluetoothBatteryWidget : WidgetComponent() {
                     Height { wrapContent = true }
                 }
                 TextContent {
-                    text = if (isConnect) progressLevel.toInt().toString()
-                    else ""
+                    text = if (isConnect) {
+                        progressLevel.toInt().toString()
+                    } else {
+                        ""
+                    }
                 }
                 fontSize = textSize
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD

@@ -1,90 +1,81 @@
 package com.example.widget.component.battery
 
-import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.state.PreferencesGlanceStateDefinition
 import com.example.widget.R
-import com.example.widget.proto.PlacedWidgetComponent
+import com.example.widget.WidgetComponentRegistry
+import com.example.widget.component.core.ComponentUpdateHelper
+import com.example.widget.component.core.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
-import com.example.widget.provider.LargeWidgetProvider
-import com.example.widget.provider.layoutKey
 
-private const val BATTERY_PREFERENCES_NAME = "battery_info_pf"
-internal val Context.batteryDataStore by preferencesDataStore(name = BATTERY_PREFERENCES_NAME)
-
-object BatteryUpdateManager {
+object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     private const val TAG = "BatteryUpdateManager"
 
-    suspend fun updateBatteryWidget(context: Context, data: BatteryData) {
-        Log.i(TAG, "updateBatteryWidget $data")
+    override suspend fun updateComponent(context: Context, data: BatteryData) {
+        Log.i(TAG, "updateComponent $data")
         val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
         batteryRepo.updateBatterInfo(data)
 
-        val glanceManager = GlanceAppWidgetManager(context)
-        val manager = AppWidgetManager.getInstance(context)
-        manager.getAppWidgetIds(ComponentName(context, LargeWidgetProvider::class.java))
-            .forEach { widgetId ->
-                val glanceId = glanceManager.getGlanceIdBy(widgetId)
-                val currentState =
-                    getAppWidgetState(context, PreferencesGlanceStateDefinition, glanceId)
-                val currentLayout: WidgetLayout = WidgetLayout.parseFrom(currentState[layoutKey])
+        // Battery 컴포넌트 태그들을 동적으로 찾기 (하드코딩 제거)
+        val batteryComponentTags = WidgetComponentRegistry.getAllComponents()
+            .filterIsInstance<BatteryComponent>()
+            .map { it.getWidgetTag() }
 
-                // 실제 배치된 Battery 컴포넌트만 필터링
-                val batteryComponents = currentLayout.placedWidgetComponentList
-                    .filter { it.widgetTag.contains("Battery") && !it.widgetTag.contains("Bluetooth") }
-                // Battery 컴포넌트 인스턴스 조회
-                val batteryComponent =
-                    batteryComponents.firstOrNull()?.let { placed: PlacedWidgetComponent ->
-                        WidgetComponentRegistry.getComponent(placed.widgetTag) as? BatteryComponent
-                    }
+        batteryComponentTags.forEach { componentTag ->
+            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, componentTag)
 
-                if (batteryComponent == null) return
+            placedComponents.forEach { (widgetId, placedComponent) ->
+                val batteryComponent = ComponentUpdateHelper.getComponentInstance(componentTag) as? BatteryComponent
+                    ?: return@forEach
 
-                batteryComponents.forEach { component ->
-                    val gridIndex = component.gridIndex
-                    val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
-                    remoteViews.setProgressBar(
-                        batteryComponent.getBatteryProgressId(gridIndex),
-                        100, data.level.toInt(), false
-                    )
-                    remoteViews.setTextViewText(
-                        batteryComponent.getBatteryTextId(gridIndex),
-                        "${data.level.toInt()}"
-                    )
-                    remoteViews.setViewVisibility(
-                        batteryComponent.getChargingIconId(gridIndex),
-                        if (data.charging) View.VISIBLE else View.GONE
-                    )
-                    Log.i(TAG, "partially update : $widgetId ${data.charging} ${R.id.batteryValue}")
-                    AppWidgetManager.getInstance(context)
-                        .partiallyUpdateAppWidget(widgetId, remoteViews)
-                }
+                // GlanceAppWidgetState 업데이트 (위젯 재렌더링 시 올바른 값 표시)
+                updateBatteryWidgetState(context, widgetId, data)
+
+                val gridIndex = placedComponent.gridIndex
+                val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+
+                remoteViews.setProgressBar(
+                    batteryComponent.getBatteryProgressId(gridIndex),
+                    100,
+                    data.level.toInt(),
+                    false
+                )
+                remoteViews.setTextViewText(
+                    batteryComponent.getBatteryTextId(gridIndex),
+                    "${data.level.toInt()}"
+                )
+                remoteViews.setViewVisibility(
+                    batteryComponent.getChargingIconId(gridIndex),
+                    if (data.charging) View.VISIBLE else View.GONE
+                )
+
+                Log.i(TAG, "partially update : $widgetId ${data.charging}")
+                ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
             }
+        }
     }
 
-    suspend fun syncBatteryWidgetState(context: Context) {
+    override suspend fun syncComponentState(context: Context) {
         val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
         val batteryData = batteryRepo.getBatteryInfo()
 
-        val widgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(
-            ComponentName(
-                context,
-                LargeWidgetProvider::class.java
-            )
-        )
-        widgetIds.forEach {
-            Log.i(TAG, "Sync widget state $it $batteryData")
-            updateBatteryWidgetState(context, it, batteryData)
+        val batteryComponentTags = WidgetComponentRegistry.getAllComponents()
+            .filterIsInstance<BatteryComponent>()
+            .map { it.getWidgetTag() }
+
+        batteryComponentTags.forEach { componentTag ->
+            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, componentTag)
+
+            placedComponents.forEach { (widgetId, _) ->
+                Log.i(TAG, "Sync widget state $widgetId $batteryData")
+                updateBatteryWidgetState(context, widgetId, batteryData)
+            }
         }
     }
 

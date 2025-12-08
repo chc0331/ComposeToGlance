@@ -44,6 +44,8 @@ class BluetoothBatteryInfoPreferencesRepository(private val dataStore: DataStore
                 charging = false,
                 isConnect = this[BluetoothBatteryPreferenceKey.BtWatchConnected] ?: false
             )
-        } else BatteryData(level = 0f, charging = false)
+        } else {
+            BatteryData(level = 0f, charging = false)
+        }
     }
 }

@@ -5,6 +5,9 @@ import com.example.dsl.proto.WidgetNode
 import com.example.dsl.provider.DslLocalProvider
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.WidgetComponentRegistry
+import com.example.widget.component.core.ComponentStateManager
+import com.example.widget.component.core.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdProvider
 import com.example.widget.component.viewid.ViewIdType
 import com.example.widget.localprovider.DslLocalSizeType
@@ -86,4 +89,18 @@ abstract class WidgetComponent : ViewIdProvider {
             )
         }
     }
+
+    /**
+     * 컴포넌트의 상태 관리자를 반환합니다.
+     * 상태 관리가 필요한 컴포넌트만 오버라이드하여 구현합니다.
+     * @return ComponentStateManager 또는 null
+     */
+    open fun getStateManager(): ComponentStateManager? = null
+
+    /**
+     * 컴포넌트의 업데이트 관리자를 반환합니다.
+     * 업데이트가 필요한 컴포넌트만 오버라이드하여 구현합니다.
+     * @return ComponentUpdateManager 또는 null
+     */
+    open fun getUpdateManager(): ComponentUpdateManager<*>? = null
 }

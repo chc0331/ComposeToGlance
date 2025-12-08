@@ -1,6 +1,5 @@
 package com.example.widget.provider
 
-import WidgetComponentRegistry
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -28,12 +27,13 @@ import com.example.dsl.provider.DslLocalGridIndex
 import com.example.dsl.provider.DslLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
-import com.example.widget.component.battery.BatteryUpdateManager
-import com.example.widget.component.battery.checkBatteryComponentExist
+import com.example.widget.WidgetComponentRegistry
 import com.example.widget.component.battery.BatteryData
 import com.example.widget.component.battery.BatteryStatusReceiver
+import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.BluetoothBatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.checkBluetoothBatteryComponentExist
+import com.example.widget.component.battery.checkBatteryComponentExist
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
@@ -144,12 +144,15 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.i(TAG, "onReceive / ${intent.action}")
         if (intent.action == "com.example.widget.test") {
-            BatteryStatusReceiver().onReceive(context, Intent().apply {
-                action = Intent.ACTION_BATTERY_CHANGED
-                putExtra(BatteryManager.EXTRA_LEVEL, Random.nextInt(10))
-                putExtra(BatteryManager.EXTRA_SCALE, 10)
-                putExtra(BatteryManager.EXTRA_STATUS, 2)
-            })
+            BatteryStatusReceiver().onReceive(
+                context,
+                Intent().apply {
+                    action = Intent.ACTION_BATTERY_CHANGED
+                    putExtra(BatteryManager.EXTRA_LEVEL, Random.nextInt(10))
+                    putExtra(BatteryManager.EXTRA_SCALE, 10)
+                    putExtra(BatteryManager.EXTRA_STATUS, 2)
+                }
+            )
             AppWidgetManager.getInstance(context).getAppWidgetIds(
                 ComponentName(
                     context,
@@ -181,7 +184,7 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                     BluetoothBatteryUpdateManager.syncBluetoothDeviceState(context)
                 }
                 if (widgetLayoutData.checkBatteryComponentExist()) {
-                    BatteryUpdateManager.syncBatteryWidgetState(context)
+                    BatteryUpdateManager.syncComponentState(context)
                 }
             }
         }

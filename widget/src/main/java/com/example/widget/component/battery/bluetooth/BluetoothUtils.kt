@@ -184,7 +184,6 @@ fun BluetoothDevice.getDeviceType(): DeviceType {
                         }
                     }
 
-
                     // 스피커
                     BluetoothClass.Device.AUDIO_VIDEO_HIFI_AUDIO -> DeviceType.BLUETOOTH_SPEAKER
                     BluetoothClass.Device.AUDIO_VIDEO_LOUDSPEAKER -> DeviceType.BLUETOOTH_SPEAKER
@@ -281,8 +280,7 @@ private fun inferDeviceTypeFromName(deviceName: String?): DeviceType {
 
         // 보청기 패턴
         nameLower.contains("hearing") ||
-        nameLower.contains("보청기") -> DeviceType.BLUETOOTH_HEARING_AID
-
+            nameLower.contains("보청기") -> DeviceType.BLUETOOTH_HEARING_AID
 
         else -> DeviceType.BLUETOOTH_UNKNOWN
     }

@@ -11,7 +11,7 @@ class ViewIdAllocator {
 
     companion object {
         private const val TAG = "ViewIdAllocator"
-        private const val INITIAL_BASE_ID = 1000  // 시작 ID (기존 시스템과 충돌 방지)
+        private const val INITIAL_BASE_ID = 1000 // 시작 ID (기존 시스템과 충돌 방지)
     }
 
     private var currentBaseId = INITIAL_BASE_ID
@@ -40,8 +40,8 @@ class ViewIdAllocator {
 
         override fun toString(): String {
             return "ViewIdAllocation(tag=$componentTag, baseId=$baseId, " +
-                    "viewTypes=$viewTypeCount, gridCount=$maxGridCount, " +
-                    "range=$baseId..$endId)"
+                "viewTypes=$viewTypeCount, gridCount=$maxGridCount, " +
+                "range=$baseId..$endId)"
         }
     }
 
@@ -71,7 +71,7 @@ class ViewIdAllocator {
         )
 
         allocations[tag] = allocation
-        currentBaseId = allocation.endId + 1  // 다음 컴포넌트를 위한 ID
+        currentBaseId = allocation.endId + 1 // 다음 컴포넌트를 위한 ID
 
         Log.i(TAG, "Allocated: $allocation")
 

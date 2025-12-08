@@ -165,7 +165,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                                 isConnect = true
                             )
 
-                            BluetoothBatteryUpdateManager.updateBluetoothBatteryWidget(
+                            BluetoothBatteryUpdateManager.updateComponent(
                                 context,
                                 data
                             )

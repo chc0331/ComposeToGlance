@@ -1,3 +1,5 @@
+package com.example.widget
+
 import android.util.Log
 import com.example.widget.component.AnalogClockComponent
 import com.example.widget.component.ButtonComponent
