@@ -1,13 +1,16 @@
 package com.example.widget.provider
 
+import android.R.attr.top
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color.argb
 import android.os.BatteryManager
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
@@ -22,9 +25,11 @@ import com.example.dsl.component.Box
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.provider.DslLocalCellHeight
 import com.example.dsl.provider.DslLocalCellWidth
+import com.example.dsl.provider.DslLocalContentPadding
 import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalGridIndex
 import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.DslLocalRootPadding
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.WidgetComponentRegistry
@@ -46,6 +51,11 @@ val layoutKey = byteArrayPreferencesKey("layout_key")
 
 class LargeAppWidget : DslAppWidget() {
 
+    companion object {
+        private const val ROOT_PADDING = 8.0f
+        private const val CONTENT_PADDING = 2.0f
+    }
+
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
 
@@ -54,9 +64,14 @@ class LargeAppWidget : DslAppWidget() {
         val currentLayout = WidgetLayout.parseFrom(currentState?.get(layoutKey))
         val widgetSize = getLocal(DslLocalSize) as DpSize
 
+        val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / 4
+        val cellHeight = (widgetSize.height - ROOT_PADDING.dp * 2) / 2
+
         DslLocalProvider(
-            DslLocalCellWidth provides (widgetSize.width / 4),
-            DslLocalCellHeight provides (widgetSize.height / 2)
+            DslLocalRootPadding provides ROOT_PADDING.dp,
+            DslLocalContentPadding provides CONTENT_PADDING.dp,
+            DslLocalCellWidth provides cellWidth,
+            DslLocalCellHeight provides cellHeight
         ) {
             Box({
                 ViewProperty {
@@ -73,12 +88,14 @@ class LargeAppWidget : DslAppWidget() {
     }
 
     private fun WidgetScope.GridItem(widget: PlacedWidgetComponent) {
+        val rootPadding = getLocal(DslLocalRootPadding) as Dp
+        val contentPadding = getLocal(DslLocalContentPadding) as Dp
         val cellWidth = getLocal(DslLocalCellWidth)
         val cellHeight = getLocal(DslLocalCellHeight)
         val gridIndex = widget.gridIndex
 
-        val topMargin = cellHeight?.times((gridIndex - 1) / 4) ?: 0.dp
-        val leftMargin = cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp
+        val topMargin = rootPadding + (cellHeight?.times((gridIndex - 1) / 4) ?: 0.dp)
+        val leftMargin = rootPadding + (cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp)
         Box({
             ViewProperty {
                 Width { matchParent = true }
@@ -107,6 +124,12 @@ class LargeAppWidget : DslAppWidget() {
                         Dp {
                             value = componentHeight.value
                         }
+                    }
+                    Padding {
+                        start = contentPadding.value
+                        top = contentPadding.value
+                        bottom = contentPadding.value
+                        end = contentPadding.value
                     }
                 }
             }) {
