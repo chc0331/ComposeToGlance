@@ -1,6 +1,5 @@
 package com.example.widget.component.battery.bluetooth
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -23,19 +22,25 @@ import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
-import com.example.widget.component.battery.BatteryComponent
+import com.example.widget.WidgetCategory
+import com.example.widget.component.WidgetComponent
+import com.example.widget.component.battery.BatteryPreferenceKey
 import com.example.widget.component.battery.DeviceType
 import com.example.widget.component.viewid.ViewIdType
 
-class BluetoothBatteryWidget : BatteryComponent() {
+class BluetoothBatteryWidget : WidgetComponent() {
+
+    override fun getName(): String = "BluetoothBattery"
+
+    override fun getDescription(): String = "BluetoothBattery"
+
+    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_INFO
 
     override fun getSizeType(): SizeType {
         return SizeType.SMALL
     }
 
-    override fun getWidgetTag(): String {
-        return "BluetoothBattery"
-    }
+    override fun getWidgetTag(): String = "BluetoothBattery"
 
     override fun WidgetScope.Content() {
         Box({
@@ -269,6 +274,19 @@ class BluetoothBatteryWidget : BatteryComponent() {
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
             }
         }
+    }
+    private fun WidgetScope.getBatteryValue(): Float {
+        val currentState = getLocal(DslLocalState)
+        val isPreview = getLocal(DslLocalPreview) ?: false
+        if (isPreview) {
+            return 50f
+        }
+        val value = currentState?.let { state ->
+            val currentValue = state[BatteryPreferenceKey.Level]
+            currentValue ?: 0f
+        } ?: 0f
+
+        return value
     }
 
     override fun getViewIdTypes(): List<ViewIdType> {
