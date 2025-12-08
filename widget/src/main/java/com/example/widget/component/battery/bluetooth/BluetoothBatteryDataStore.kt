@@ -20,12 +20,19 @@ class BluetoothBatteryInfoPreferencesRepository(private val dataStore: DataStore
     suspend fun updateBluetoothBatteryInfo(data: BatteryData) {
         dataStore.updateData {
             it.toMutablePreferences().also { pref ->
+                // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
+                val isValidBatteryLevel = data.level in 0f..100f
+                
                 if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
                     pref[BluetoothBatteryPreferenceKey.BtEarbudsConnected] = data.isConnect
-                    pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
+                    if (isValidBatteryLevel) {
+                        pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
+                    }
                 } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
                     pref[BluetoothBatteryPreferenceKey.BtWatchConnected] = data.isConnect
-                    pref[BluetoothBatteryPreferenceKey.BtWatchLevel] = data.level
+                    if (isValidBatteryLevel) {
+                        pref[BluetoothBatteryPreferenceKey.BtWatchLevel] = data.level
+                    }
                 }
             }
         }

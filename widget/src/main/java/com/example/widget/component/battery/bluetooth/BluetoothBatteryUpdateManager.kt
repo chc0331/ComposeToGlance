@@ -104,15 +104,22 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         widgetId: Int,
         data: BatteryData
     ) {
+        // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
+        val isValidBatteryLevel = data.level in 0f..100f
+        
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
             if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
-                pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
                 pref[BluetoothBatteryPreferenceKey.BtEarbudsConnected] = data.isConnect
+                if (isValidBatteryLevel) {
+                    pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
+                }
             } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
-                pref[BluetoothBatteryPreferenceKey.BtWatchLevel] = data.level
                 pref[BluetoothBatteryPreferenceKey.BtWatchConnected] = data.isConnect
+                if (isValidBatteryLevel) {
+                    pref[BluetoothBatteryPreferenceKey.BtWatchLevel] = data.level
+                }
             }
         }
     }

@@ -101,15 +101,20 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                                     "Connected device: $deviceName, Battery: $batteryLevel%, Type: $deviceType"
                                 )
 
-                                // 배터리 정보가 없어도 연결된 디바이스는 표시 (0%로)
-                                BatteryData(
-                                    level = batteryLevel.toFloat(),
-                                    charging = false,
-                                    deviceType = deviceType,
-                                    deviceName = deviceName,
-                                    deviceAddress = connectedDevice.address,
-                                    isConnect = true
-                                )
+                                // 정상적인 배터리 값(>= 0)이 들어왔을 때만 업데이트
+                                if (batteryLevel >= 0) {
+                                    BatteryData(
+                                        level = batteryLevel.toFloat(),
+                                        charging = false,
+                                        deviceType = deviceType,
+                                        deviceName = deviceName,
+                                        deviceAddress = connectedDevice.address,
+                                        isConnect = true
+                                    )
+                                } else {
+                                    Log.d(TAG, "Skipping update for $deviceName: invalid battery level ($batteryLevel)")
+                                    null
+                                }
                             }
 
                             // 위젯 업데이트
