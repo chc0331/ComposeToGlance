@@ -12,6 +12,7 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.update.ComponentUpdateManager
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -68,5 +69,8 @@ class DigitalClockComponent : WidgetComponent() {
                 textAlign = TextAlign.TEXT_ALIGN_CENTER
             })
         }
+    }
+    override fun getUpdateManager(): ComponentUpdateManager<*>? {
+        return null
     }
 }

@@ -1,4 +1,4 @@
-package com.example.widget.component.core
+package com.example.widget.component.update
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName

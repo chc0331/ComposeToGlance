@@ -1,6 +1,7 @@
-package com.example.widget.component.core
+package com.example.widget.component.update
 
 import android.content.Context
+import com.example.widget.component.WidgetComponent
 
 /**
  * 위젯 컴포넌트의 업데이트 관리를 위한 인터페이스
@@ -9,6 +10,9 @@ import android.content.Context
  * partiallyUpdateAppWidget을 사용하여 위젯을 업데이트합니다.
  */
 interface ComponentUpdateManager<T> {
+
+    val widget: WidgetComponent
+
     /**
      * 컴포넌트를 업데이트합니다.
      * @param context Context

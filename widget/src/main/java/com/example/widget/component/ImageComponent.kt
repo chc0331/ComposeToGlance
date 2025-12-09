@@ -8,6 +8,7 @@ import com.example.dsl.component.Box
 import com.example.dsl.proto.AlignmentType
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.update.ComponentUpdateManager
 
 class ImageComponent : WidgetComponent() {
     override fun getName(): String {
@@ -47,5 +48,8 @@ class ImageComponent : WidgetComponent() {
             // 예시로는 빈 Box만 표시합니다.
             // Image(drawableResId = R.drawable.example_image) 형태로 사용 가능
         }
+    }
+    override fun getUpdateManager(): ComponentUpdateManager<*>? {
+        return null
     }
 }

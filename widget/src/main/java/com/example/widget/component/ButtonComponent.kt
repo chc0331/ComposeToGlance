@@ -12,6 +12,7 @@ import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.update.ComponentUpdateManager
 
 class ButtonComponent : WidgetComponent() {
     override fun getName(): String {
@@ -70,5 +71,9 @@ class ButtonComponent : WidgetComponent() {
                 }
             })
         }
+    }
+
+    override fun getUpdateManager(): ComponentUpdateManager<*>? {
+        return null
     }
 }

@@ -21,6 +21,7 @@ import com.example.dsl.proto.VerticalAlignment.V_ALIGN_CENTER
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.update.ComponentUpdateManager
 
 class StorageComponent : WidgetComponent() {
 
@@ -114,4 +115,6 @@ class StorageComponent : WidgetComponent() {
             }
         }
     }
+
+    override fun getUpdateManager(): ComponentUpdateManager<*>? = null
 }

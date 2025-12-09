@@ -70,7 +70,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
 
         val device: BluetoothDevice? = intent.getBluetoothDevice()
 
-        Log.i("heec.choi", "onReceive / ${intent.action}")
+        Log.i(TAG, "onReceive / ${intent.action}")
 
         when (intent.action) {
             BluetoothDevice.ACTION_ACL_CONNECTED -> {
@@ -112,17 +112,19 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                                         isConnect = true
                                     )
                                 } else {
-                                    Log.d(TAG, "Skipping update for $deviceName: invalid battery level ($batteryLevel)")
+                                    Log.d(
+                                        TAG,
+                                        "Skipping update for $deviceName: invalid battery level ($batteryLevel)"
+                                    )
                                     null
                                 }
                             }
 
                             // 위젯 업데이트
                             CoroutineScope(Dispatchers.Default).launch {
-                                BluetoothBatteryUpdateManager.syncAndUpdateBluetoothBatteryWidgetState(
-                                    context,
-                                    deviceInfoList
-                                )
+                                deviceInfoList.forEach {
+                                    BluetoothBatteryUpdateManager.updateComponent(context, it)
+                                }
                             }
                         }
                     }
@@ -138,9 +140,9 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                             BatteryData(0f, false, deviceType, deviceName, isConnect = false)
                         // 위젯 업데이트
                         CoroutineScope(Dispatchers.Default).launch {
-                            BluetoothBatteryUpdateManager.syncAndUpdateBluetoothBatteryWidgetState(
+                            BluetoothBatteryUpdateManager.updateComponent(
                                 context,
-                                listOf(batteryData)
+                                batteryData
                             )
                         }
                     }

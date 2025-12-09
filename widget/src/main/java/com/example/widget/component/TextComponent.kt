@@ -1,7 +1,5 @@
 package com.example.widget.component
 
-import android.R.attr.text
-import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
@@ -12,6 +10,7 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.component.update.ComponentUpdateManager
 
 class TextComponent : WidgetComponent() {
 
@@ -62,5 +61,9 @@ class TextComponent : WidgetComponent() {
                 textAlign = TextAlign.TEXT_ALIGN_CENTER
             })
         }
+    }
+
+    override fun getUpdateManager(): ComponentUpdateManager<*>? {
+        return null
     }
 }

@@ -24,8 +24,8 @@ import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
-import com.example.widget.component.battery.BatteryPreferenceKey
 import com.example.widget.component.battery.DeviceType
+import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
 
 class BluetoothBatteryWidget : WidgetComponent() {
@@ -36,9 +36,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
 
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_INFO
 
-    override fun getSizeType(): SizeType {
-        return SizeType.SMALL
-    }
+    override fun getSizeType(): SizeType = SizeType.SMALL
 
     override fun getWidgetTag(): String = "BluetoothBattery"
 
@@ -293,19 +291,6 @@ class BluetoothBatteryWidget : WidgetComponent() {
             }
         }
     }
-    private fun WidgetScope.getBatteryValue(): Float {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
-        if (isPreview) {
-            return 50f
-        }
-        val value = currentState?.let { state ->
-            val currentValue = state[BatteryPreferenceKey.Level]
-            currentValue ?: 0f
-        } ?: 0f
-
-        return value
-    }
 
     override fun getViewIdTypes(): List<ViewIdType> {
         return BluetoothBatteryViewIdType.all()
@@ -328,24 +313,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
 
     internal fun getWatchIconId(gridIndex: Int) =
         generateViewId(BluetoothBatteryViewIdType.WatchBatteryIcon, gridIndex)
+
+    override fun getUpdateManager(): ComponentUpdateManager<*> = BluetoothBatteryUpdateManager
 }
 
-sealed class BluetoothBatteryViewIdType(override val typeName: String) : ViewIdType() {
-    object EarBudsBatteryText : BluetoothBatteryViewIdType("ear_buds_battery_text")
-    object EarBudsBatteryProgress : BluetoothBatteryViewIdType("ear_buds_battery_progress")
-    object EarBudsBatteryIcon : BluetoothBatteryViewIdType("ear_buds_battery_icon")
-    object WatchBatteryText : BluetoothBatteryViewIdType("watch_battery_text")
-    object WatchBatteryProgress : BluetoothBatteryViewIdType("watch_battery_progress")
-    object WatchBatteryIcon : BluetoothBatteryViewIdType("watch_battery_icon")
 
-    companion object {
-        fun all(): List<BluetoothBatteryViewIdType> = listOf(
-            EarBudsBatteryText,
-            EarBudsBatteryProgress,
-            EarBudsBatteryIcon,
-            WatchBatteryText,
-            WatchBatteryProgress,
-            WatchBatteryIcon
-        )
-    }
-}

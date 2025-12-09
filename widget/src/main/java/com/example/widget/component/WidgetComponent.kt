@@ -1,16 +1,12 @@
 package com.example.widget.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.proto.WidgetNode
-import com.example.dsl.provider.DslLocalProvider
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.WidgetComponentRegistry
-import com.example.widget.component.core.ComponentStateManager
-import com.example.widget.component.core.ComponentUpdateManager
+import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdProvider
 import com.example.widget.component.viewid.ViewIdType
-import com.example.widget.localprovider.DslLocalSizeType
 
 abstract class WidgetComponent : ViewIdProvider {
 
@@ -28,31 +24,6 @@ abstract class WidgetComponent : ViewIdProvider {
      */
     fun renderContent(scope: WidgetScope) {
         scope.Content()
-    }
-
-    private fun WidgetScope.WidgetContent() {
-        DslLocalProvider(DslLocalSizeType provides getSizeType()) {
-            Content()
-        }
-    }
-
-    /**
-     * Content를 주어진 scope에서 실행하여 WidgetNode를 생성합니다.
-     * 이 메서드는 DslLocalProvider 내에서 호출되어야 합니다.
-     */
-    fun provideContent(scope: WidgetScope): WidgetNode {
-        scope.Content()
-        return scope.build()
-    }
-
-    /**
-     * 새로운 scope를 생성하여 Content를 실행합니다.
-     * 주의: 이 메서드는 DslLocalProvider의 locals에 접근할 수 없습니다.
-     */
-    fun provideContent(): WidgetNode {
-        val scope = WidgetScope()
-        scope.Content()
-        return scope.build()
     }
 
     override fun getViewIdTypes(): List<ViewIdType> = emptyList()
@@ -91,16 +62,9 @@ abstract class WidgetComponent : ViewIdProvider {
     }
 
     /**
-     * 컴포넌트의 상태 관리자를 반환합니다.
-     * 상태 관리가 필요한 컴포넌트만 오버라이드하여 구현합니다.
-     * @return ComponentStateManager 또는 null
-     */
-    open fun getStateManager(): ComponentStateManager? = null
-
-    /**
      * 컴포넌트의 업데이트 관리자를 반환합니다.
      * 업데이트가 필요한 컴포넌트만 오버라이드하여 구현합니다.
      * @return ComponentUpdateManager 또는 null
      */
-    open fun getUpdateManager(): ComponentUpdateManager<*>? = null
+    abstract fun getUpdateManager(): ComponentUpdateManager<*>?
 }

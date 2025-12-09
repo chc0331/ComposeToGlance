@@ -204,7 +204,7 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                     it[layoutKey] = widgetLayoutData.toByteArray()
                 }
                 if (widgetLayoutData.checkBluetoothBatteryComponentExist()) {
-                    BluetoothBatteryUpdateManager.syncBluetoothDeviceState(context)
+                    BluetoothBatteryUpdateManager.syncComponentState(context)
                 }
                 if (widgetLayoutData.checkBatteryComponentExist()) {
                     BatteryUpdateManager.syncComponentState(context)
