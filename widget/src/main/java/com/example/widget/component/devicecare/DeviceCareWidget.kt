@@ -3,7 +3,6 @@ package com.example.widget.component.devicecare
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.glance.GlanceModifier
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Column
 import com.example.dsl.component.Progress
@@ -15,7 +14,7 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.provider.DslLocalSize
+import com.example.dsl.localprovider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent

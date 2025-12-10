@@ -1,9 +1,8 @@
 package com.example.dsl
 
-import com.example.dsl.proto.Padding
 import com.example.dsl.proto.WidgetLayoutDocument
 import com.example.dsl.proto.WidgetNode
-import com.example.dsl.provider.WidgetLocal
+import com.example.dsl.localprovider.WidgetLocal
 
 /**
  * Widget DSL - Compose 스타일의 선언적 API

@@ -17,10 +17,10 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.provider.DslLocalGridIndex
-import com.example.dsl.provider.DslLocalPreview
-import com.example.dsl.provider.DslLocalSize
-import com.example.dsl.provider.DslLocalState
+import com.example.dsl.localprovider.DslLocalGridIndex
+import com.example.dsl.localprovider.DslLocalPreview
+import com.example.dsl.localprovider.DslLocalSize
+import com.example.dsl.localprovider.DslLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory

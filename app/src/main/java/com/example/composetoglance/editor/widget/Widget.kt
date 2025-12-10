@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
 import com.example.dsl.widget.GlanceRenderer
-import com.example.dsl.provider.DslLocalContext
-import com.example.dsl.provider.DslLocalPreview
-import com.example.dsl.provider.WidgetLocalProvider
-import com.example.dsl.provider.DslLocalSize
+import com.example.dsl.localprovider.DslLocalContext
+import com.example.dsl.localprovider.DslLocalPreview
+import com.example.dsl.localprovider.WidgetLocalProvider
+import com.example.dsl.localprovider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.component.WidgetComponent
 import com.example.widget.proto.PlacedWidgetComponent

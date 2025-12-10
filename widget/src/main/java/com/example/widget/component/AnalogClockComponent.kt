@@ -14,7 +14,7 @@ import com.example.dsl.modifier.height
 import com.example.dsl.modifier.width
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
-import com.example.dsl.provider.DslLocalSize
+import com.example.dsl.localprovider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.update.ComponentUpdateManager

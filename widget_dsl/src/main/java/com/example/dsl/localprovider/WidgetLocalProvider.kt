@@ -1,4 +1,4 @@
-package com.example.dsl.provider
+package com.example.dsl.localprovider
 
 import android.content.Context
 import androidx.compose.ui.unit.Dp

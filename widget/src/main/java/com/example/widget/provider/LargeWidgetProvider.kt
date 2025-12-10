@@ -1,11 +1,9 @@
 package com.example.widget.provider
 
-import android.R.attr.top
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color.argb
 import android.os.BatteryManager
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -15,7 +13,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.byteArrayPreferencesKey
-import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
@@ -25,15 +22,15 @@ import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
-import com.example.dsl.provider.DslLocalCellHeight
-import com.example.dsl.provider.DslLocalCellWidth
-import com.example.dsl.provider.DslLocalContentPadding
-import com.example.dsl.provider.DslLocalContentRadius
-import com.example.dsl.provider.DslLocalGridIndex
-import com.example.dsl.provider.WidgetLocalProvider
-import com.example.dsl.provider.DslLocalRootPadding
-import com.example.dsl.provider.DslLocalSize
-import com.example.dsl.provider.DslLocalState
+import com.example.dsl.localprovider.DslLocalCellHeight
+import com.example.dsl.localprovider.DslLocalCellWidth
+import com.example.dsl.localprovider.DslLocalContentPadding
+import com.example.dsl.localprovider.DslLocalContentRadius
+import com.example.dsl.localprovider.DslLocalGridIndex
+import com.example.dsl.localprovider.WidgetLocalProvider
+import com.example.dsl.localprovider.DslLocalRootPadding
+import com.example.dsl.localprovider.DslLocalSize
+import com.example.dsl.localprovider.DslLocalState
 import com.example.widget.WidgetComponentRegistry
 import com.example.widget.component.battery.BatteryData
 import com.example.widget.component.battery.BatteryStatusReceiver

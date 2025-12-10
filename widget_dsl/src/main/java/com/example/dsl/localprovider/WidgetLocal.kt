@@ -1,4 +1,4 @@
-package com.example.dsl.provider
+package com.example.dsl.localprovider
 
 import com.example.dsl.WidgetScope
 
