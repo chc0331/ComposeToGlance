@@ -33,16 +33,6 @@ val Float.dp: DpValue get() = DpValue(this)
 val Int.dp: DpValue get() = DpValue(this.toFloat())
 
 /**
- * wrapContent Dimension
- */
-val wrapContent: Dimension = Dimension.newBuilder().setWrapContent(true).build()
-
-/**
- * matchParent Dimension
- */
-val matchParent: Dimension = Dimension.newBuilder().setMatchParent(true).build()
-
-/**
  * Dp 값으로 Dimension 생성
  */
 fun DimensionDp(value: Float): Dimension {
@@ -80,36 +70,28 @@ fun Modifier.width(value: Float): Modifier {
  * Modifier에 width를 fillMaxWidth (matchParent)로 설정
  */
 fun Modifier.fillMaxWidth(): Modifier {
-    return this then Modifier.WidthModifier(matchParent)
+    return this then Modifier.WidthModifier(Dimension.newBuilder().setMatchParent(true).build())
 }
 
 /**
  * Modifier에 width를 wrapContentWidth로 설정
  */
 fun Modifier.wrapContentWidth(): Modifier {
-    return this then Modifier.WidthModifier(wrapContent)
+    return this then Modifier.WidthModifier(Dimension.newBuilder().setWrapContent(true).build())
 }
 
 /**
  * Modifier에 height를 fillMaxHeight (matchParent)로 설정
  */
 fun Modifier.fillMaxHeight(): Modifier {
-    return this then Modifier.HeightModifier(matchParent)
+    return this then Modifier.HeightModifier(Dimension.newBuilder().setMatchParent(true).build())
 }
 
 /**
  * Modifier에 height를 wrapContentHeight로 설정
  */
 fun Modifier.wrapContentHeight(): Modifier {
-    return this then Modifier.HeightModifier(wrapContent)
-}
-
-/**
- * Modifier에 height를 Dimension으로 설정
- * (Modifier.kt의 height(dimension: Dimension)과 동일하지만 확장 함수로 제공)
- */
-fun Modifier.height(dimension: Dimension): Modifier {
-    return this then Modifier.HeightModifier(dimension)
+    return this then Modifier.HeightModifier(Dimension.newBuilder().setWrapContent(true).build())
 }
 
 /**

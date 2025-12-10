@@ -11,7 +11,6 @@ import com.example.dsl.modifier.backgroundColor
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
 import com.example.dsl.modifier.height
-import com.example.dsl.modifier.matchParent
 import com.example.dsl.modifier.width
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
