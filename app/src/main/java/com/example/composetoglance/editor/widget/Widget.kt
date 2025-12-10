@@ -119,7 +119,7 @@ private fun WidgetItemContent(
             modifier = Modifier
                 .width(width)
                 .height(height)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
                 .background(MaterialTheme.colorScheme.surfaceVariant), // Use theme surface variant
             contentAlignment = Alignment.Center
         ) {
@@ -230,9 +230,9 @@ data class PositionedWidget(
  */
 fun WidgetComponent.getSizeInDp(): Pair<Dp, Dp> {
     return when (getSizeType()) {
-        SizeType.TINY -> 50.dp to 50.dp
-        SizeType.SMALL -> 100.dp to 50.dp
-        SizeType.MEDIUM -> 100.dp to 100.dp
+        SizeType.TINY -> 68.dp to 80.dp
+        SizeType.SMALL -> 148.dp to 80.dp
+        SizeType.MEDIUM -> 148.dp to 160.dp
         else -> 50.dp to 50.dp
     }
 }
