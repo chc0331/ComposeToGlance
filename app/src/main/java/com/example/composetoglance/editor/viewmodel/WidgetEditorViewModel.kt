@@ -28,8 +28,8 @@ class WidgetEditorViewModel(
 ) : ViewModel() {
 
     init {
-        // 위젯 컴포넌트 초기화
-        initializeWidgetComponents()
+        // 위젯 컴포넌트 초기화는 MainActivity에서 수행됨
+        // (Lifecycle 관리를 위해 Application Context가 필요)
     }
 
     val categories = WidgetCategory.entries.toList()

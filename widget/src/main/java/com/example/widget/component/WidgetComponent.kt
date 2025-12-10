@@ -4,6 +4,8 @@ import com.example.dsl.WidgetScope
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.WidgetComponentRegistry
+import com.example.widget.component.datastore.ComponentDataStore
+import com.example.widget.component.lifecycle.ComponentLifecycle
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdProvider
 import com.example.widget.component.viewid.ViewIdType
@@ -67,4 +69,33 @@ abstract class WidgetComponent : ViewIdProvider {
      * @return ComponentUpdateManager 또는 null
      */
     abstract fun getUpdateManager(): ComponentUpdateManager<*>?
+
+    /**
+     * 컴포넌트의 DataStore를 반환합니다.
+     * 상태 저장이 필요한 컴포넌트만 오버라이드하여 구현합니다.
+     * 
+     * @return ComponentDataStore 또는 null
+     */
+    open fun getDataStore(): ComponentDataStore<*>? = null
+
+    /**
+     * 컴포넌트의 Lifecycle을 반환합니다.
+     * BroadcastReceiver, WorkManager 등 생명주기 관리가 필요한 컴포넌트만 오버라이드합니다.
+     * 
+     * @return ComponentLifecycle 또는 null
+     */
+    open fun getLifecycle(): ComponentLifecycle? = null
+
+    /**
+     * Lifecycle 자동 등록 여부를 반환합니다.
+     * 
+     * true: 앱 시작 시 자동으로 lifecycle을 등록합니다. (기본값)
+     * false: 컴포넌트가 위젯에 배치될 때만 lifecycle을 등록합니다.
+     * 
+     * 대부분의 경우 true를 사용하는 것이 권장됩니다.
+     * Battery처럼 항상 모니터링이 필요한 경우 true를 사용하세요.
+     * 
+     * @return 자동 등록 여부
+     */
+    open fun requiresAutoLifecycle(): Boolean = true
 }

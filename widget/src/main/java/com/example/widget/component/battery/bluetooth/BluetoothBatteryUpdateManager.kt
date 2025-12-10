@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.widget.RemoteViewsCompat.setImageViewColorFilter
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.component.battery.BatteryData
@@ -13,11 +12,6 @@ import com.example.widget.component.update.ComponentUpdateHelper
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
 
-private const val BLUETOOTH_BATTERY_PREFERENCES_NAME = "bluetooth_battery_info_pf"
-internal val Context.bluetoothBatteryDataStore by preferencesDataStore(
-    name = BLUETOOTH_BATTERY_PREFERENCES_NAME
-)
-
 object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     private const val TAG = "BluetoothBatteryUpdateMgr"
@@ -25,9 +19,8 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         get() = BluetoothBatteryWidget()
 
     override suspend fun updateComponent(context: Context, data: BatteryData) {
-        val btBatteryRepo =
-            BluetoothBatteryInfoPreferencesRepository(context.bluetoothBatteryDataStore)
-        btBatteryRepo.updateBluetoothBatteryInfo(data)
+        // 새로운 ComponentDataStore 사용
+        BluetoothBatteryComponentDataStore.updateDeviceData(context, data)
 
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
@@ -84,10 +77,10 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
 
     override suspend fun syncComponentState(context: Context) {
-        val btBatteryRepo =
-            BluetoothBatteryInfoPreferencesRepository(context.bluetoothBatteryDataStore)
-        val earBudsData = btBatteryRepo.getBluetoothBatteryInfo(DeviceType.BLUETOOTH_EARBUDS)
-        val watchData = btBatteryRepo.getBluetoothBatteryInfo(DeviceType.BLUETOOTH_WATCH)
+        // 새로운 ComponentDataStore 사용
+        val compositeData = BluetoothBatteryComponentDataStore.loadData(context)
+        val earBudsData = compositeData.earbudsData
+        val watchData = compositeData.watchData
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->
                 updateBluetoothBatteryWidgetState(context, widgetId, earBudsData)

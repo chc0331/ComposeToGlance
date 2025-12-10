@@ -310,4 +310,11 @@ class BluetoothBatteryWidget : WidgetComponent() {
         generateViewId(BluetoothBatteryViewIdType.WatchBatteryIcon, gridIndex)
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = BluetoothBatteryUpdateManager
+    
+    override fun getDataStore() = BluetoothBatteryComponentDataStore
+    
+    // BroadcastReceiver는 WidgetForegroundService에서 관리하므로 Lifecycle 불필요
+    override fun getLifecycle() = null
+    
+    override fun requiresAutoLifecycle() = false
 }

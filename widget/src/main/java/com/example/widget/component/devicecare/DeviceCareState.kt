@@ -5,17 +5,11 @@ private const val W_STORAGE = 0.30f
 private const val W_CPU = 0.20f
 private const val W_TEMP = 0.15f
 
-data class DeviceState(
-    val memoryUsageRatio: Float,   // 0.0 ~ 1.0 (사용 중 비율)
-    val storageUsageRatio: Float,  // 0.0 ~ 1.0
-    val cpuLoad: Float,            // 0.0 ~ 1.0 이상
-    val temperatureCelsius: Float  // ex) 25 ~ 50
-)
-
-enum class HealthStatus {
-    GOOD, WARNING, CRITICAL
-}
-
+/**
+ * 디바이스 건강도 계산기
+ * 
+ * 메모리, 저장소, CPU, 온도 상태를 종합하여 전체 점수를 계산합니다.
+ */
 object DeviceHealthCalculator {
 
     fun calculateScore(state: DeviceState): Int {

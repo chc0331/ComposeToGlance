@@ -18,6 +18,8 @@ import com.example.composetoglance.service.WidgetForegroundService
 import com.example.composetoglance.theme.ComposeToGlanceTheme
 import com.example.dsl.widget.renderer.RendererInitializer
 import com.example.widget.repository.WidgetLayoutRepository
+import com.example.widget.WidgetComponentRegistry
+import com.example.widget.initializeWidgetComponents
 
 class MainActivity : ComponentActivity() {
 
@@ -54,6 +56,12 @@ class MainActivity : ComponentActivity() {
         // Renderer 초기화 (앱 시작 시 한 번만 실행)
         RendererInitializer.initialize()
         
+        // Widget 컴포넌트 초기화
+        initializeWidgetComponents()
+        
+        // Widget 컴포넌트 Lifecycle 초기화
+        WidgetComponentRegistry.initializeLifecycles(applicationContext)
+        
         enableEdgeToEdge()
 
         // Android 13+ 알림 권한 확인 및 요청
@@ -81,6 +89,12 @@ class MainActivity : ComponentActivity() {
                 MainContent(viewModel)
             }
         }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        // Widget 컴포넌트 Lifecycle 정리
+        WidgetComponentRegistry.shutdownLifecycles(applicationContext)
     }
     
     private fun requestBluetoothPermissionsIfNeeded() {

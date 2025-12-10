@@ -5,16 +5,12 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.R
 import com.example.widget.component.update.ComponentUpdateHelper
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
-
-private const val BATTERY_PREFERENCES_NAME = "battery_info_pf"
-internal val Context.batteryDataStore by preferencesDataStore(name = BATTERY_PREFERENCES_NAME)
 
 object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
@@ -24,8 +20,8 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     override suspend fun updateComponent(context: Context, data: BatteryData) {
         Log.i(TAG, "updateComponent $data")
-        val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
-        batteryRepo.updateBatterInfo(data)
+        // 새로운 ComponentDataStore 사용
+        BatteryComponentDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
                 updateBatteryWidgetState(context, widgetId, data)
@@ -52,8 +48,8 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     }
 
     override suspend fun syncComponentState(context: Context) {
-        val batteryRepo = BatteryInfoPreferencesRepository(context.batteryDataStore)
-        val batteryData = batteryRepo.getBatteryInfo()
+        // 새로운 ComponentDataStore 사용
+        val batteryData = BatteryComponentDataStore.loadData(context)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->
                 Log.i(TAG, "Sync widget state $widgetId $batteryData")

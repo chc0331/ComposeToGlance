@@ -167,4 +167,10 @@ class DeviceCareWidget : WidgetComponent() {
     }
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = DeviceCareUpdateManager
+    
+    override fun getDataStore() = DeviceCareComponentDataStore
+    
+    override fun getLifecycle() = DeviceCareLifecycle
+    
+    override fun requiresAutoLifecycle() = true
 }
