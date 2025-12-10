@@ -1,6 +1,7 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
+import com.example.dsl.modifier.Modifier
 import com.example.dsl.syntax.BoxLayoutDsl
 import com.example.dsl.syntax.ColumnLayoutDsl
 import com.example.dsl.syntax.RowLayoutDsl
@@ -42,15 +43,16 @@ import com.example.dsl.proto.WidgetNode
  * ```
  */
 fun WidgetScope.Column(
-    block: ColumnLayoutDsl.() -> Unit,
+    modifier: Modifier = Modifier,
+    contentProperty: ColumnLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
     childScope.content()
 
-    val dsl = ColumnLayoutDsl(this)
-    dsl.block()
+    val dsl = ColumnLayoutDsl(this, modifier)
+    dsl.contentProperty()
 
     val columnNode = WidgetNode.newBuilder()
         .setColumn(dsl.build())
@@ -85,15 +87,16 @@ fun WidgetScope.Column(
  * ```
  */
 fun WidgetScope.Row(
-    block: RowLayoutDsl.() -> Unit,
+    modifier: Modifier = Modifier,
+    contentProperty: RowLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
     childScope.content()
 
-    val dsl = RowLayoutDsl(this)
-    dsl.block()
+    val dsl = RowLayoutDsl(this, modifier)
+    dsl.contentProperty()
 
     val rowNode = WidgetNode.newBuilder()
         .setRow(dsl.build())
@@ -127,15 +130,16 @@ fun WidgetScope.Row(
  * ```
  */
 fun WidgetScope.Box(
-    block: BoxLayoutDsl.() -> Unit,
+    modifier: Modifier = Modifier,
+    contentProperty: BoxLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
     val childScope = WidgetScope()
     childScope.copyLocalsFrom(this)
     childScope.content()
 
-    val dsl = BoxLayoutDsl(this)
-    dsl.block()
+    val dsl = BoxLayoutDsl(this, modifier)
+    dsl.contentProperty()
 
     val boxNode = WidgetNode.newBuilder()
         .setBox(dsl.build())

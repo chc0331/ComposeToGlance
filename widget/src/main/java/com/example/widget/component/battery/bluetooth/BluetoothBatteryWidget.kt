@@ -11,6 +11,7 @@ import com.example.dsl.component.Image
 import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Text
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
@@ -41,26 +42,24 @@ class BluetoothBatteryWidget : WidgetComponent() {
     override fun getWidgetTag(): String = "BluetoothBattery"
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Companion.White.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.White.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
-            Row({
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                ViewProperty {
-                    Width { matchParent = true }
-                    Height { matchParent = true }
+        ) {
+            Row(
+                modifier = Modifier
+                    .width(matchParent)
+                    .height(matchParent),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
-            }) {
+            ) {
                 DeviceContent(DeviceType.BLUETOOTH_EARBUDS)
                 DeviceContent(DeviceType.BLUETOOTH_WATCH)
             }
@@ -69,17 +68,14 @@ class BluetoothBatteryWidget : WidgetComponent() {
 
     private fun WidgetScope.DeviceContent(type: DeviceType) {
         val size = getLocal(DslLocalSize) as DpSize
-        Box({
-            ViewProperty {
-                Width {
-                    Dp {
-                        value = size.width.value / 2
-                    }
-                }
-                Height { matchParent = true }
+        Box(
+            modifier = Modifier
+                .width(size.width.value / 2)
+                .height(matchParent),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
+        ) {
             if (type == DeviceType.BLUETOOTH_EARBUDS) {
                 EarBudsContent()
             } else if (type == DeviceType.BLUETOOTH_WATCH) {
@@ -103,12 +99,12 @@ class BluetoothBatteryWidget : WidgetComponent() {
             isConnected = currentState[BluetoothBatteryPreferenceKey.BtEarbudsConnected] ?: false
         }
 
-        Column({
+        Column(contentProperty = {
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
             verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
             // Circular Progress와 Device Icon을 겹쳐서 배치하는 Box
-            Box({
+            Box(contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
                 BatteryProgress(
@@ -145,12 +141,12 @@ class BluetoothBatteryWidget : WidgetComponent() {
             isConnected = currentState[BluetoothBatteryPreferenceKey.BtWatchConnected] ?: false
         }
 
-        Column({
+        Column(contentProperty = {
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
             verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
             // Circular Progress와 Device Icon을 겹쳐서 배치하는 Box
-            Box({
+            Box(contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
                 BatteryProgress(
@@ -181,31 +177,28 @@ class BluetoothBatteryWidget : WidgetComponent() {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.58f
         }
-        Progress {
-            ViewProperty {
-                viewId = progressViewId
-                partiallyUpdate = true
-                Width {
-                    Dp { value = getProgressSize() }
+        Progress(
+            modifier = Modifier
+                .viewId(progressViewId)
+                .partiallyUpdate(true)
+                .width(getProgressSize())
+                .height(getProgressSize()),
+            contentProperty = {
+                progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
+                progressValue = if (isConnect) progressLevel else 0f
+                maxValue = 100f
+                ProgressColor {
+                    Color {
+                        resId = R.color.battery_gauge_sufficient_color
+                    }
                 }
-                Height {
-                    Dp { value = getProgressSize() }
-                }
-            }
-            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-            progressValue = if (isConnect) progressLevel else 0f
-            maxValue = 100f
-            ProgressColor {
-                Color {
-                    resId = R.color.battery_gauge_sufficient_color
-                }
-            }
-            BackgroundColor {
-                Color {
-                    argb = Color.Companion.LightGray.toArgb()
+                BackgroundColor {
+                    Color {
+                        argb = Color.LightGray.toArgb()
+                    }
                 }
             }
-        }
+        )
     }
 
     private fun WidgetScope.BatteryIcon(
@@ -217,20 +210,21 @@ class BluetoothBatteryWidget : WidgetComponent() {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.22f
         }
-        Image {
-            ViewProperty {
-                viewId = iconViewId
-                Width { Dp { value = getBatteryIconSize() } }
-                Height { Dp { value = getBatteryIconSize() } }
-                partiallyUpdate = true
+        Image(
+            modifier = Modifier
+                .viewId(iconViewId)
+                .partiallyUpdate(true)
+                .width(getBatteryIconSize())
+                .height(getBatteryIconSize()),
+            contentProperty = {
+                Provider {
+                    drawableResId = iconResId
+                }
+                TintColor {
+                    argb = if (isConnect) Color.Transparent.toArgb() else Color.LightGray.toArgb()
+                }
             }
-            Provider {
-                drawableResId = iconResId
-            }
-            TintColor {
-                argb = if (isConnect) Color.Transparent.toArgb() else Color.LightGray.toArgb()
-            }
-        }
+        )
     }
 
     private fun WidgetScope.BatteryText(
@@ -240,55 +234,56 @@ class BluetoothBatteryWidget : WidgetComponent() {
     ) {
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
-        Row({
-            ViewProperty {
-                Width { wrapContent = true }
-                Height { wrapContent = true }
+        Row(
+            modifier = Modifier
+                .width(wrapContent)
+                .height(wrapContent),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
             }
-            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-            verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
-        }) {
-            Text {
-                ViewProperty {
-                    viewId = textViewId
-                    partiallyUpdate = true
-                    Width { wrapContent = true }
-                    Height { wrapContent = true }
-                }
-                TextContent {
-                    text = if (isConnect) {
-                        progressLevel.toInt().toString()
-                    } else {
-                        ""
+        ) {
+            Text(
+                modifier = Modifier
+                    .viewId(textViewId)
+                    .partiallyUpdate(true)
+                    .width(wrapContent)
+                    .height(wrapContent),
+                contentProperty = {
+                    TextContent {
+                        text = if (isConnect) {
+                            progressLevel.toInt().toString()
+                        } else {
+                            ""
+                        }
+                    }
+                    fontSize = textSize
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color.Black.toArgb()
+                        }
                     }
                 }
-                fontSize = textSize
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Black.toArgb()
+            )
+            Text(
+                modifier = Modifier
+                    .width(wrapContent)
+                    .height(wrapContent)
+                    .padding(bottom = 2f),
+                contentProperty = {
+                    TextContent {
+                        text = "%"
                     }
-                }
-            }
-            Text {
-                ViewProperty {
-                    Width { wrapContent = true }
-                    Height { wrapContent = true }
-                    Padding {
-                        bottom = 2f
+                    fontSize = textSize * 0.6f
+                    FontColor {
+                        Color {
+                            argb = Color.Black.toArgb()
+                        }
                     }
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 }
-                TextContent {
-                    text = "%"
-                }
-                fontSize = textSize * 0.6f
-                FontColor {
-                    Color {
-                        argb = Color.Companion.Black.toArgb()
-                    }
-                }
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-            }
+            )
         }
     }
 
@@ -316,5 +311,3 @@ class BluetoothBatteryWidget : WidgetComponent() {
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = BluetoothBatteryUpdateManager
 }
-
-

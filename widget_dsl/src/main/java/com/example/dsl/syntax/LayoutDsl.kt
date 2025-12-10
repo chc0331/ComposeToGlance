@@ -1,6 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
+import com.example.dsl.modifier.Modifier
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ColumnLayoutProperty
 import com.example.dsl.proto.RowLayoutProperty
@@ -25,26 +26,16 @@ import com.example.dsl.proto.VerticalAlignment.V_ALIGN_TOP
  * Column 레이아웃 DSL
  */
 class ColumnLayoutDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = ColumnLayoutProperty.newBuilder()
     private val propertyDsl = ColumnLayoutPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var horizontalAlignmentSet = false
     private var verticalAlignmentSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            // viewId가 설정되지 않았으면 기본값 사용
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -71,8 +62,11 @@ class ColumnLayoutDsl(
      * ColumnLayoutProperty 빌드
      */
     internal fun build(): ColumnLayoutProperty {
-        // viewProperty가 설정되지 않았으면 기본값으로 설정
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
@@ -92,26 +86,16 @@ class ColumnLayoutDsl(
  * Row 레이아웃 DSL
  */
 class RowLayoutDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = RowLayoutProperty.newBuilder()
     private val propertyDsl = RowLayoutPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var horizontalAlignmentSet = false
     private var verticalAlignmentSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            // viewId가 설정되지 않았으면 기본값 사용
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -138,8 +122,11 @@ class RowLayoutDsl(
      * RowLayoutProperty 빌드
      */
     internal fun build(): RowLayoutProperty {
-        // viewProperty가 설정되지 않았으면 기본값으로 설정
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
@@ -159,25 +146,15 @@ class RowLayoutDsl(
  * Box 레이아웃 DSL
  */
 class BoxLayoutDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = BoxLayoutProperty.newBuilder()
     private val propertyDsl = BoxLayoutPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var contentAlignmentSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            // viewId가 설정되지 않았으면 기본값 사용
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -194,8 +171,11 @@ class BoxLayoutDsl(
      * BoxLayoutProperty 빌드
      */
     internal fun build(): BoxLayoutProperty {
-        // viewProperty가 설정되지 않았으면 기본값으로 설정
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }

@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
@@ -39,35 +40,34 @@ class DigitalClockComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Black.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.Black.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
+        ) {
             // 현재 시간을 포맷팅 (실제로는 동적으로 업데이트되어야 함)
             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
             val currentTime = timeFormat.format(Date())
 
-            Text({
-                TextContent {
-                    text = currentTime
-                }
-                fontSize = 32f
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Green.toArgb()
+            Text(
+                contentProperty = {
+                    TextContent {
+                        text = currentTime
                     }
+                    fontSize = 32f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color.Green.toArgb()
+                        }
+                    }
+                    textAlign = TextAlign.TEXT_ALIGN_CENTER
                 }
-                textAlign = TextAlign.TEXT_ALIGN_CENTER
-            })
+            )
         }
     }
     override fun getUpdateManager(): ComponentUpdateManager<*>? {

@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
@@ -32,18 +33,15 @@ class ImageComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.LightGray.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.LightGray.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
+        ) {
             // Note: 실제 이미지는 drawable 리소스나 URI를 사용해야 합니다.
             // 예시로는 빈 Box만 표시합니다.
             // Image(drawableResId = R.drawable.example_image) 형태로 사용 가능

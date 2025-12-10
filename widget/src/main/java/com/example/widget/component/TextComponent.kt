@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign
@@ -35,31 +36,30 @@ class TextComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.White.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.White.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
-            Text({
-                TextContent {
-                    text = "Hello World"
-                }
-                fontSize = 18f
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Black.toArgb()
+        ) {
+            Text(
+                contentProperty = {
+                    TextContent {
+                        text = "Hello World"
                     }
+                    fontSize = 18f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color.Black.toArgb()
+                        }
+                    }
+                    textAlign = TextAlign.TEXT_ALIGN_CENTER
                 }
-                textAlign = TextAlign.TEXT_ALIGN_CENTER
-            })
+            )
         }
     }
 

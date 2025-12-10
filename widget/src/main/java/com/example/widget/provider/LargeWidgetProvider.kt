@@ -22,6 +22,7 @@ import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.provider.DslLocalCellHeight
 import com.example.dsl.provider.DslLocalCellWidth
@@ -73,13 +74,14 @@ class LargeAppWidget : DslAppWidget() {
             DslLocalCellWidth provides cellWidth,
             DslLocalCellHeight provides cellHeight
         ) {
-            Box({
-                ViewProperty {
-                    Width { matchParent = true }
-                    Height { matchParent = true }
+            Box(
+                modifier = Modifier
+                    .width(matchParent)
+                    .height(matchParent),
+                contentProperty = {
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
                 }
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
-            }) {
+            ) {
                 currentLayout.placedWidgetComponentList.forEach {
                     GridItem(it)
                 }
@@ -96,56 +98,36 @@ class LargeAppWidget : DslAppWidget() {
 
         val topMargin = rootPadding + (cellHeight?.times((gridIndex - 1) / 4) ?: 0.dp)
         val leftMargin = rootPadding + (cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp)
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                Padding {
-                    start = leftMargin.value
-                    top = topMargin.value
-                }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Transparent.toArgb()
-                    }
-                }
-            }
-        }) {
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .padding(start = leftMargin.value, top = topMargin.value)
+                .backgroundColor(Color.Transparent.toArgb())
+        ) {
             val componentWidth = cellWidth?.times(widget.colSpan) ?: 0.dp
             val componentHeight = cellHeight?.times(widget.rowSpan) ?: 0.dp
-            Box({
-                ViewProperty {
-                    Width {
-                        Dp {
-                            value = componentWidth.value
-                        }
-                    }
-                    Height {
-                        Dp {
-                            value = componentHeight.value
-                        }
-                    }
-                    Padding {
-                        start = contentPadding.value
-                        top = contentPadding.value
-                        bottom = contentPadding.value
+            Box(
+                modifier = Modifier
+                    .width(componentWidth.value)
+                    .height(componentHeight.value)
+                    .padding(
+                        start = contentPadding.value,
+                        top = contentPadding.value,
+                        bottom = contentPadding.value,
                         end = contentPadding.value
-                    }
-                }
-            }) {
+                    )
+            ) {
                 DslLocalProvider(
                     DslLocalSize provides DpSize(componentWidth, componentHeight),
                     DslLocalGridIndex provides gridIndex
                 ) {
                     val contentRadius = getLocal(DslLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
-                        Box({
-                            ViewProperty {
-                                CornerRadius {
-                                    radius = contentRadius.value
-                                }
-                            }
-                        }) {
+                        Box(
+                            modifier = Modifier
+                                .cornerRadius(contentRadius.value)
+                        ) {
                             it.renderContent(this)
                         }
                     }

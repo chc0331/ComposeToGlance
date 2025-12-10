@@ -23,6 +23,7 @@ import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.modifier.*
 import com.example.dsl.provider.DslLocalBackgroundRadius
 import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalContext
@@ -77,16 +78,13 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     DslLocalBackgroundRadius provides backgroundRadius,
                     DslLocalContentRadius provides contentRadius
                 ) {
-                    Box({
-                        ViewProperty {
-                            Width { Dp { value = dpSize.width.value } }
-                            Height { Dp { value = dpSize.height.value } }
-                            BackgroundColor { Color { argb = Color.LightGray.toArgb() } }
-                            CornerRadius {
-                                radius = backgroundRadius.value
-                            }
-                        }
-                    }) {
+                    Box(
+                        modifier = Modifier
+                            .width(dpSize.width.value)
+                            .height(dpSize.height.value)
+                            .backgroundColor(Color.LightGray.toArgb())
+                            .cornerRadius(backgroundRadius.value)
+                    ) {
                         DslContent()
                     }
                 }

@@ -1,6 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
+import com.example.dsl.modifier.Modifier
 import com.example.dsl.proto.ButtonProperty
 import com.example.dsl.proto.ContentScale
 import com.example.dsl.proto.FontWeight
@@ -11,6 +12,7 @@ import com.example.dsl.proto.ProgressType.PROGRESS_TYPE_LINEAR
 import com.example.dsl.proto.SpacerProperty
 import com.example.dsl.proto.TextAlign
 import com.example.dsl.proto.TextProperty
+import com.example.dsl.syntax.ColorDsl
 
 /**
  * 컴포넌트 DSL 클래스
@@ -29,25 +31,16 @@ import com.example.dsl.proto.TextProperty
  * Text 컴포넌트 DSL
  */
 class TextDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = TextProperty.newBuilder()
     private val propertyDsl = TextPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var textSet = false
     private var fontColorSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -106,11 +99,22 @@ class TextDsl(
      * TextProperty 빌드
      */
     internal fun build(): TextProperty {
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        // ViewProperty 블록이 있으면 propertyDsl.ViewProperty에서 처리하고,
+        // 없으면 buildViewProperty()의 결과를 직접 설정
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            // ViewProperty 블록이 설정되었는지 확인
+            // propertyDsl.ViewProperty는 블록을 받아서 처리하므로,
+            // buildViewProperty()의 결과를 propertyBuilder에 직접 설정
+            propertyBuilder.viewProperty = viewProperty
+        } else {
+            // ViewProperty가 설정되지 않았으면 기본값으로 설정
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
+        
         if (!textSet) {
             propertyDsl.Text {
                 text = ""
@@ -131,24 +135,15 @@ class TextDsl(
  * Image 컴포넌트 DSL
  */
 class ImageDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = ImageProperty.newBuilder()
     private val propertyDsl = ImagePropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var providerSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -200,11 +195,16 @@ class ImageDsl(
      * ImageProperty 빌드
      */
     internal fun build(): ImageProperty {
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
+        
         if (!providerSet) {
             throw IllegalArgumentException("Image provider must be set. Use provider { drawableResId = ... } or provider { uri = ... } or provider { bitmap(...) }")
         }
@@ -216,25 +216,16 @@ class ImageDsl(
  * Button 컴포넌트 DSL
  */
 class ButtonDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = ButtonProperty.newBuilder()
     private val propertyDsl = ButtonPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var textSet = false
     private var fontColorSet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
@@ -303,11 +294,16 @@ class ButtonDsl(
      * ButtonProperty 빌드
      */
     internal fun build(): ButtonProperty {
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
+        
         if (!textSet) {
             throw IllegalArgumentException("Button text must be set")
         }
@@ -326,32 +322,20 @@ class ButtonDsl(
  * Progress 컴포넌트 DSL
  */
 class ProgressDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = ProgressProperty.newBuilder()
     private val propertyDsl = ProgressPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
     private var progressColorSet = false
     private var backgroundColorSet = false
 
     init {
+        this.modifier(modifier)
         // 기본값 설정
         propertyDsl.progressType = PROGRESS_TYPE_LINEAR
         propertyDsl.maxValue = 100f
         propertyDsl.progressValue = 0f
-    }
-
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
     }
 
     /**
@@ -401,11 +385,16 @@ class ProgressDsl(
      * ProgressProperty 빌드
      */
     internal fun build(): ProgressProperty {
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }
         }
+        
         if (!progressColorSet) {
             propertyDsl.ProgressColor {
                 Color {
@@ -428,30 +417,25 @@ class ProgressDsl(
  * Spacer 컴포넌트 DSL
  */
 class SpacerDsl(
-    private val scope: WidgetScope
-) {
+    scope: WidgetScope,
+    modifier: Modifier = Modifier
+) : BaseComponentDsl(scope) {
     private val propertyBuilder = SpacerProperty.newBuilder()
     private val propertyDsl = SpacerPropertyDsl(propertyBuilder)
-    private var viewPropertySet = false
 
-    /**
-     * ViewProperty 설정 블록
-     */
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        viewPropertySet = true
-        propertyDsl.ViewProperty {
-            if (viewId == 0) {
-                viewId = scope.nextViewId()
-            }
-            block()
-        }
+    init {
+        this.modifier(modifier)
     }
 
     /**
      * SpacerProperty 빌드
      */
     internal fun build(): SpacerProperty {
-        if (!viewPropertySet) {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
             }

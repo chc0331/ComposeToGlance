@@ -1,6 +1,7 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
+import com.example.dsl.modifier.Modifier
 import com.example.dsl.syntax.ButtonDsl
 import com.example.dsl.syntax.ImageDsl
 import com.example.dsl.syntax.ProgressDsl
@@ -26,28 +27,39 @@ import com.example.dsl.proto.WidgetNode
 /**
  * Text 컴포넌트 (중첩 DSL 빌더 패턴)
  * 
- * 사용 예시:
+ * 사용 예시 (기존 방식):
  * ```
  * Text({
- *     viewProperty {
+ *     ViewProperty {
  *         Width { wrapContent = true }
  *         Height { wrapContent = true }
  *     }
- *     text = "Hello World"
+ *     TextContent { text = "Hello World" }
  *     fontSize = 18f
  *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
- *     fontColor {
- *         color {
- *             argb = Color.Black.toArgb()
- *         }
- *     }
- *     textAlign = TextAlign.TEXT_ALIGN_CENTER
  * })
  * ```
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Text(
+ *     modifier = Modifier
+ *         .width(wrapContent)
+ *         .height(wrapContent)
+ *         .padding(16.dp)
+ * ) {
+ *     TextContent { text = "Hello World" }
+ *     fontSize = 18f
+ *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
+ * }
+ * ```
  */
-fun WidgetScope.Text(block: TextDsl.() -> Unit) {
-    val dsl = TextDsl(this)
-    dsl.block()
+fun WidgetScope.Text(
+    modifier: Modifier = Modifier,
+    contentProperty: TextDsl.() -> Unit
+) {
+    val dsl = TextDsl(this, modifier)
+    dsl.contentProperty()
     val textNode = WidgetNode.newBuilder()
         .setText(dsl.build())
         .build()
@@ -57,23 +69,37 @@ fun WidgetScope.Text(block: TextDsl.() -> Unit) {
 /**
  * Image 컴포넌트 (중첩 DSL 빌더 패턴)
  * 
- * 사용 예시:
+ * 사용 예시 (기존 방식):
  * ```
  * Image({
- *     viewProperty {
+ *     ViewProperty {
  *         Width { wrapContent = true }
  *         Height { wrapContent = true }
  *     }
- *     provider {
- *         drawableResId = R.drawable.example_image
- *     }
+ *     Provider { drawableResId = R.drawable.example_image }
  *     contentScale = ContentScale.CONTENT_SCALE_FIT
  * })
  * ```
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Image(
+ *     modifier = Modifier
+ *         .width(wrapContent)
+ *         .height(wrapContent)
+ *         .padding(16.dp)
+ * ) {
+ *     Provider { drawableResId = R.drawable.example_image }
+ *     contentScale = ContentScale.CONTENT_SCALE_FIT
+ * }
+ * ```
  */
-fun WidgetScope.Image(block: ImageDsl.() -> Unit) {
-    val dsl = ImageDsl(this)
-    dsl.block()
+fun WidgetScope.Image(
+    modifier: Modifier = Modifier,
+    contentProperty: ImageDsl.() -> Unit
+) {
+    val dsl = ImageDsl(this, modifier)
+    dsl.contentProperty()
     val imageNode = WidgetNode.newBuilder()
         .setImage(dsl.build())
         .build()
@@ -83,32 +109,39 @@ fun WidgetScope.Image(block: ImageDsl.() -> Unit) {
 /**
  * Button 컴포넌트 (중첩 DSL 빌더 패턴)
  * 
- * 사용 예시:
+ * 사용 예시 (기존 방식):
  * ```
  * Button({
- *     viewProperty {
+ *     ViewProperty {
  *         Width { wrapContent = true }
  *         Height { wrapContent = true }
  *     }
- *     text = "Click Me"
+ *     Text { text = "Click Me" }
  *     fontSize = 16f
  *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
- *     fontColor {
- *         color {
- *             argb = Color.White.toArgb()
- *         }
- *     }
- *     backgroundColor {
- *         color {
- *             argb = Color.Blue.toArgb()
- *         }
- *     }
  * })
  * ```
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Button(
+ *     modifier = Modifier
+ *         .width(wrapContent)
+ *         .height(wrapContent)
+ *         .padding(16.dp)
+ * ) {
+ *     Text { text = "Click Me" }
+ *     fontSize = 16f
+ *     fontWeight = FontWeight.FONT_WEIGHT_BOLD
+ * }
+ * ```
  */
-fun WidgetScope.Button(block: ButtonDsl.() -> Unit) {
-    val dsl = ButtonDsl(this)
-    dsl.block()
+fun WidgetScope.Button(
+    modifier: Modifier = Modifier,
+    contentProperty: ButtonDsl.() -> Unit
+) {
+    val dsl = ButtonDsl(this, modifier)
+    dsl.contentProperty()
     val buttonNode = WidgetNode.newBuilder()
         .setButton(dsl.build())
         .build()
@@ -118,32 +151,39 @@ fun WidgetScope.Button(block: ButtonDsl.() -> Unit) {
 /**
  * Progress 컴포넌트 (중첩 DSL 빌더 패턴)
  * 
- * 사용 예시:
+ * 사용 예시 (기존 방식):
  * ```
  * Progress({
- *     viewProperty {
+ *     ViewProperty {
  *         Width { matchParent = true }
  *         Height { matchParent = true }
  *     }
  *     progressType = ProgressType.PROGRESS_TYPE_LINEAR
  *     maxValue = 100f
  *     progressValue = 65f
- *     progressColor {
- *         color {
- *             argb = Color.Blue.toArgb()
- *         }
- *     }
- *     backgroundColor {
- *         color {
- *             argb = Color.LightGray.toArgb()
- *         }
- *     }
  * })
  * ```
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Progress(
+ *     modifier = Modifier
+ *         .width(matchParent)
+ *         .height(matchParent)
+ *         .padding(16.dp)
+ * ) {
+ *     progressType = ProgressType.PROGRESS_TYPE_LINEAR
+ *     maxValue = 100f
+ *     progressValue = 65f
+ * }
+ * ```
  */
-fun WidgetScope.Progress(block: ProgressDsl.() -> Unit) {
-    val dsl = ProgressDsl(this)
-    dsl.block()
+fun WidgetScope.Progress(
+    modifier: Modifier = Modifier,
+    contentProperty: ProgressDsl.() -> Unit
+) {
+    val dsl = ProgressDsl(this, modifier)
+    dsl.contentProperty()
     val progressNode = WidgetNode.newBuilder()
         .setProgress(dsl.build())
         .build()
@@ -153,19 +193,32 @@ fun WidgetScope.Progress(block: ProgressDsl.() -> Unit) {
 /**
  * Spacer 컴포넌트 (중첩 DSL 빌더 패턴)
  * 
- * 사용 예시:
+ * 사용 예시 (기존 방식):
  * ```
  * Spacer({
- *     viewProperty {
+ *     ViewProperty {
  *         Width { wrapContent = true }
  *         Height { wrapContent = true }
  *     }
  * })
  * ```
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Spacer(
+ *     modifier = Modifier
+ *         .width(wrapContent)
+ *         .height(wrapContent)
+ *         .padding(16.dp)
+ * )
+ * ```
  */
-fun WidgetScope.Spacer(block: SpacerDsl.() -> Unit) {
-    val dsl = SpacerDsl(this)
-    dsl.block()
+fun WidgetScope.Spacer(
+    modifier: Modifier = Modifier,
+    contentProperty: SpacerDsl.() -> Unit = {}
+) {
+    val dsl = SpacerDsl(this, modifier)
+    dsl.contentProperty()
     val spacerNode = WidgetNode.newBuilder()
         .setSpacer(dsl.build())
         .build()

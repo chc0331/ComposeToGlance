@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Button
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.widget.SizeType
@@ -36,40 +37,36 @@ class ButtonComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.White.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.White.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
-            Button({
-                Text {
-                    text = "Click Me"
-                }
-                fontSize = 16f
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.White.toArgb()
+        ) {
+            Button(
+                modifier = Modifier
+                    .cornerRadius(8f),
+                contentProperty = {
+                    Text {
+                        text = "Click Me"
+                    }
+                    fontSize = 16f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color.White.toArgb()
+                        }
+                    }
+                    BackgroundColor {
+                        Color {
+                            argb = Color.Blue.toArgb()
+                        }
                     }
                 }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Blue.toArgb()
-                    }
-                }
-                ViewProperty {
-                    CornerRadius {
-                        radius = 8f
-                    }
-                }
-            })
+            )
         }
     }
 

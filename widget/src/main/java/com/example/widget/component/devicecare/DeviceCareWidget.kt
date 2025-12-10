@@ -9,6 +9,7 @@ import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Spacer
 import com.example.dsl.component.Text
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
@@ -32,33 +33,26 @@ class DeviceCareWidget : WidgetComponent() {
     override fun getWidgetTag() = "DeviceCare"
 
     override fun WidgetScope.Content() {
-        Column({
-            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-            verticalAlignment = VerticalAlignment.V_ALIGN_TOP
-            ViewProperty {
-                BackgroundColor {
-                    Color {
-                        argb = Color.White.toArgb()
-                    }
-                }
-                Height { matchParent = true }
-                Width { matchParent = true }
-                Padding {
-                    top = 6f
-                    start = 8f
-                    end = 8f
-                    bottom = 6f
-                }
+        Column(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.White.toArgb())
+                .padding(top = 6f, start = 8f, end = 8f, bottom = 6f),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_TOP
             }
-        }) {
+        ) {
             TitleBar()
-            Column({
-                ViewProperty {
-                    Width { matchParent = true }
-                    Height { matchParent = true }
+            Column(
+                modifier = Modifier
+                    .width(matchParent)
+                    .height(matchParent),
+                contentProperty = {
                     verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
                 }
-            }) {
+            ) {
                 ScoreProgress("Memory", progressViewId = 0)
                 Spacer()
                 ScoreProgress("Storage", progressViewId = 0)
@@ -72,52 +66,49 @@ class DeviceCareWidget : WidgetComponent() {
 
     private fun WidgetScope.TitleBar() {
         val localSize = getLocal(DslLocalSize) as DpSize
-        Row({
-            ViewProperty {
-                Width { matchParent = true }
-                Height {
-                    Dp {
-                        value = localSize.height.value * 0.28f
+        Row(
+            modifier = Modifier
+                .width(matchParent)
+                .height(localSize.height.value * 0.28f)
+                .backgroundColor(Color.White.toArgb())
+        ) {
+            Row(
+                modifier = Modifier
+                    .width(wrapContent)
+                    .height(matchParent),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                    verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
+                }
+            ) {
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = "Device Score"
+                        }
+                        fontSize = localSize.height.value * 0.16f
+                        fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
                     }
-                }
-                BackgroundColor {
-                    Color {
-                        argb = Color.White.toArgb()
-                    }
-                }
-            }
-        }) {
-            Row({
-                ViewProperty {
-                    Width { wrapContent = true }
-                    Height { matchParent = true }
-                }
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
-            }) {
-                Text {
-                    TextContent {
-                        text = "Device Score"
-                    }
-                    fontSize = localSize.height.value * 0.16f
-                    fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-                }
+                )
             }
 
-            Row({
-                ViewProperty {
-                    Width { matchParent = true }
-                    Height { matchParent = true }
+            Row(
+                modifier = Modifier
+                    .width(matchParent)
+                    .height(matchParent),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-            }) {
-                Text {
-                    TextContent {
-                        text = "89"
+            ) {
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = "89"
+                        }
+                        fontSize = localSize.height.value * 0.24f
+                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
                     }
-                    fontSize = localSize.height.value * 0.24f
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                }
+                )
             }
         }
     }
@@ -129,59 +120,50 @@ class DeviceCareWidget : WidgetComponent() {
     ) {
         val localSize = getLocal(DslLocalSize) as DpSize
 
-        Row({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { wrapContent = true }
-            }
-        }) {
-            Row({}) {
-                Text {
-                    TextContent {
-                        text = category
+        Row(
+            modifier = Modifier
+                .width(matchParent)
+                .height(wrapContent)
+        ) {
+            Row {
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = category
+                        }
+                        fontSize = 8f
                     }
-                    fontSize = 8f
-                }
-                Progress({
-                    ViewProperty {
-//                        viewId = progressViewId
-//                        partiallyUpdate = true
-                        Width {
-                            Dp {
-                                value = localSize.width.value * 0.75f
+                )
+                Progress(
+                    modifier = Modifier
+                        .width(localSize.width.value * 0.75f)
+                        .height(localSize.height.value * 0.1f),
+                    contentProperty = {
+                        progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                        progressValue = 65f
+                        maxValue = 100f
+                        ProgressColor {
+                            Color {
+                                argb = progressColor
                             }
                         }
-                        Height { Dp { value = localSize.height.value * 0.1f } }
-                    }
-                    progressType = ProgressType.PROGRESS_TYPE_LINEAR
-                    progressValue = 65f
-                    maxValue = 100f
-                    ProgressColor {
-                        Color {
-                            argb = progressColor
+                        BackgroundColor {
+                            Color {
+                                argb = Color.LightGray.toArgb()
+                            }
                         }
                     }
-                    BackgroundColor {
-                        Color {
-                            argb = Color.Companion.LightGray.toArgb()
-                        }
-                    }
-                })
+                )
             }
         }
     }
 
     private fun WidgetScope.Spacer(height: Float = 2f) {
-        Spacer {
-            ViewProperty {
-                Width { matchParent = true }
-                Height {
-                    Dp {
-                        value = height
-                    }
-                }
-            }
-        }
+        Spacer(
+            modifier = Modifier
+                .width(matchParent)
+                .height(height)
+        )
     }
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = DeviceCareUpdateManager

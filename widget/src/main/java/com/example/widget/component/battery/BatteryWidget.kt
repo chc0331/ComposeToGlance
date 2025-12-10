@@ -10,6 +10,7 @@ import com.example.dsl.component.Image
 import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Text
+import com.example.dsl.modifier.*
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
@@ -23,6 +24,10 @@ import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.dsl.modifier.viewId
+import com.example.dsl.modifier.partiallyUpdate
+import com.example.dsl.modifier.hide
+import com.example.dsl.modifier.padding
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
 
@@ -39,40 +44,36 @@ class BatteryWidget : WidgetComponent() {
     override fun getSizeType() = SizeType.TINY
 
     override fun WidgetScope.Content() {
-        Box({
-            ViewProperty {
-                Width { matchParent = true }
-                Height { matchParent = true }
-                BackgroundColor {
-                    Color {
-                        argb = Color.Companion.White.toArgb()
-                    }
-                }
+        Box(
+            modifier = Modifier
+                .width(matchParent)
+                .height(matchParent)
+                .backgroundColor(Color.White.toArgb()),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
-            Column({
+        ) {
+            Column(contentProperty = {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
                 // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
-                Box({
-                    ViewProperty {
-                    }
+                Box(contentProperty = {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }) {
                     BatteryProgress()
                     BatteryIcon()
                 }
                 // 프로그레스 밑에 배터리 용량 텍스트
-                Row({
-                    ViewProperty {
-                        Width { matchParent = true }
-                        Height { wrapContent = true }
+                Row(
+                    modifier = Modifier
+                        .width(matchParent)
+                        .height(wrapContent),
+                    contentProperty = {
+                        horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                        verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                     }
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }) {
+                ) {
                     ChargingIcon()
                     BatteryText()
                 }
@@ -88,35 +89,28 @@ class BatteryWidget : WidgetComponent() {
 
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         val batteryValue = getBatteryValue()
-        Progress({
-            ViewProperty {
-                viewId = getBatteryProgressId(gridIndex)
-                partiallyUpdate = true
-                Width {
-                    Dp {
-                        value = getProgressSize()
+        Progress(
+            modifier = Modifier
+                .viewId(getBatteryProgressId(gridIndex))
+                .partiallyUpdate(true)
+                .width(getProgressSize())
+                .height(getProgressSize()),
+            contentProperty = {
+                progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
+                progressValue = batteryValue
+                maxValue = 100f
+                ProgressColor {
+                    Color {
+                        resId = R.color.battery_gauge_sufficient_color
                     }
                 }
-                Height {
-                    Dp {
-                        value = getProgressSize()
+                BackgroundColor {
+                    Color {
+                        argb = Color.LightGray.toArgb()
                     }
                 }
             }
-            progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-            progressValue = batteryValue
-            maxValue = 100f
-            ProgressColor {
-                Color {
-                    resId = R.color.battery_gauge_sufficient_color
-                }
-            }
-            BackgroundColor {
-                Color {
-                    argb = Color.Companion.LightGray.toArgb()
-                }
-            }
-        })
+        )
     }
 
     private fun WidgetScope.BatteryIcon(deviceType: DeviceType = DeviceType.PHONE) {
@@ -124,15 +118,16 @@ class BatteryWidget : WidgetComponent() {
             val size = getLocal(DslLocalSize) as DpSize
             return size.height.value * 0.22f
         }
-        Image {
-            ViewProperty {
-                Width { Dp { value = getBatteryIconSize() } }
-                Height { Dp { value = getBatteryIconSize() } }
+        Image(
+            modifier = Modifier
+                .width(getBatteryIconSize())
+                .height(getBatteryIconSize()),
+            contentProperty = {
+                Provider {
+                    drawableResId = getDeviceIcon(deviceType)
+                }
             }
-            Provider {
-                drawableResId = getDeviceIcon(deviceType)
-            }
-        }
+        )
     }
 
     private fun WidgetScope.BatteryText() {
@@ -140,51 +135,52 @@ class BatteryWidget : WidgetComponent() {
         val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
-        Row({
-            ViewProperty {
-                Width { wrapContent = true }
-                Height { wrapContent = true }
+        Row(
+            modifier = Modifier
+                .width(wrapContent)
+                .height(wrapContent),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
             }
-            horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-            verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
-        }) {
-            Text({
-                ViewProperty {
-                    viewId = getBatteryTextId(gridIndex)
-                    partiallyUpdate = true
-                    Width { wrapContent = true }
-                    Height { wrapContent = true }
-                }
-                TextContent {
-                    text = batteryValueText
-                }
-                fontSize = textSize
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Companion.Black.toArgb()
+        ) {
+            Text(
+                modifier = Modifier
+                    .viewId(getBatteryTextId(gridIndex))
+                    .partiallyUpdate(true)
+                    .width(wrapContent)
+                    .height(wrapContent),
+                contentProperty = {
+                    TextContent {
+                        text = batteryValueText
+                    }
+                    fontSize = textSize
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color.Black.toArgb()
+                        }
                     }
                 }
-            })
-            Text {
-                ViewProperty {
-                    Width { wrapContent = true }
-                    Height { wrapContent = true }
-                    Padding {
-                        bottom = 2f
+            )
+            Text(
+                modifier = Modifier
+                    .width(wrapContent)
+                    .height(wrapContent)
+                    .padding(bottom = 2f),
+                contentProperty = {
+                    TextContent {
+                        text = "%"
                     }
-                }
-                TextContent {
-                    text = "%"
-                }
-                fontSize = textSize * 0.6f
-                FontColor {
-                    Color {
-                        argb = Color.Companion.Black.toArgb()
+                    fontSize = textSize * 0.6f
+                    FontColor {
+                        Color {
+                            argb = Color.Black.toArgb()
+                        }
                     }
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 }
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-            }
+            )
         }
     }
 
@@ -196,19 +192,20 @@ class BatteryWidget : WidgetComponent() {
 
         val iconSize = getChargingIconSize()
         val gridIndex = getLocal(DslLocalGridIndex) as Int
-        Image {
-            ViewProperty {
-                viewId = getChargingIconId(gridIndex)
-                Width { Dp { value = iconSize * 0.6f } }
-                Height { Dp { value = iconSize } }
-                hide = !getChargingState()
+        Image(
+            modifier = Modifier
+                .viewId(getChargingIconId(gridIndex))
+                .width(iconSize * 0.6f)
+                .height(iconSize)
+                .hide(!getChargingState()),
+            contentProperty = {
+                Provider {
+                    drawableResId = R.layout.battery_charging_avd
+                }
+                animation = true
+                infiniteLoop = true
             }
-            Provider {
-                drawableResId = R.layout.battery_charging_avd
-            }
-            animation = true
-            infiniteLoop = true
-        }
+        )
     }
 
     private fun WidgetScope.getBatteryValue(): Float {
