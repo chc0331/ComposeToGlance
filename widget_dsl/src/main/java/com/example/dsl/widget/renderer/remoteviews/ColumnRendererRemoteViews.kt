@@ -14,7 +14,7 @@ import com.example.dsl.proto.WidgetNode
 /**
  * ColumnRenderer의 RemoteViews 확장 함수
  */
-fun ColumnRenderer.renderToRemoteViews(
+internal fun ColumnRenderer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: GlanceRenderer

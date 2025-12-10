@@ -10,7 +10,7 @@ import com.example.dsl.widget.converter.AlignmentConverter
 /**
  * Box 노드 렌더러
  */
-object BoxRenderer : NodeRenderer {
+internal object BoxRenderer : NodeRenderer {
 
     @Composable
     override fun render(

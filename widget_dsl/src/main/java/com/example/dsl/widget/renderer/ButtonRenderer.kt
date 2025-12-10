@@ -17,7 +17,7 @@ import com.example.dsl.widget.converter.ColorConverter
 /**
  * Button 노드 렌더러
  */
-object ButtonRenderer : NodeRenderer {
+internal object ButtonRenderer : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,

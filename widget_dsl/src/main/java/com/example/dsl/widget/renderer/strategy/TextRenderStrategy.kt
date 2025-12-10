@@ -19,7 +19,7 @@ import com.example.dsl.widget.renderer.RemoteViewsBuilder
 /**
  * Text 노드 렌더링 전략
  */
-object TextRenderStrategy {
+internal object TextRenderStrategy {
     /**
      * Glance 전략
      */

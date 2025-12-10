@@ -11,7 +11,7 @@ import com.example.dsl.proto.WidgetNode
 /**
  * SpacerRenderer의 RemoteViews 확장 함수
  */
-fun SpacerRenderer.renderToRemoteViews(
+internal fun SpacerRenderer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: GlanceRenderer

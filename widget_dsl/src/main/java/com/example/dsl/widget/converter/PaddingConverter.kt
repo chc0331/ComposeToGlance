@@ -7,7 +7,7 @@ import com.example.dsl.proto.Padding
 /**
  * Proto Padding을 Glance Padding으로 변환
  */
-object PaddingConverter {
+internal object PaddingConverter {
     /**
      * Proto Padding의 각 방향 값을 반환
      * @param protoPadding Proto Padding

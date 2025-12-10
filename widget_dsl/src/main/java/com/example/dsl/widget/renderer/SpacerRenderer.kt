@@ -10,7 +10,7 @@ import com.example.dsl.widget.RenderContext
 /**
  * Spacer 노드 렌더러
  */
-object SpacerRenderer : NodeRenderer {
+internal object SpacerRenderer : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,

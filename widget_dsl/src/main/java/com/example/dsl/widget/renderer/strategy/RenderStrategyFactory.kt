@@ -6,7 +6,7 @@ import com.example.dsl.proto.WidgetNode
  * 렌더링 전략을 선택하는 Factory
  * 노드 속성에 따라 적절한 Strategy를 반환
  */
-object RenderStrategyFactory {
+internal object RenderStrategyFactory {
     /**
      * Text 노드에 대한 적절한 Strategy 선택
      */

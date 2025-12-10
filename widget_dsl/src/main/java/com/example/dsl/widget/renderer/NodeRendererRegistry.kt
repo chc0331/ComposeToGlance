@@ -14,7 +14,7 @@ import com.example.dsl.proto.WidgetNode
  * NodeRendererRegistry.register("text", TextRenderer)
  * ```
  */
-object NodeRendererRegistry {
+internal object NodeRendererRegistry {
     /**
      * 노드 타입별 Renderer 매핑
      * 키: 노드 타입 문자열 (예: "box", "text", "image")

@@ -8,7 +8,7 @@ import androidx.glance.layout.Alignment
  * 렌더링 컨텍스트
  * 노드 렌더링 시 필요한 정보를 전달
  */
-data class RenderContext(
+internal data class RenderContext(
     val context: Context,
     val modifier: GlanceModifier = GlanceModifier,
     val parentAlignment: Alignment? = null

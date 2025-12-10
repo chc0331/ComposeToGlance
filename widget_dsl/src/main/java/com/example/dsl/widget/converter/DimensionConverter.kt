@@ -8,7 +8,7 @@ import com.example.dsl.proto.Dimension as ProtoDimension
 /**
  * Proto Dimension을 Glance Dimension으로 변환
  */
-object DimensionConverter {
+internal object DimensionConverter {
     /**
      * Proto Dimension을 Glance Dimension으로 변환
      * @param protoDimension Proto Dimension

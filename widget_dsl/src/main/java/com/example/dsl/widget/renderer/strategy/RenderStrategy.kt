@@ -9,7 +9,7 @@ import com.example.dsl.widget.RenderContext
  * 렌더링 전략 인터페이스
  * Glance와 RemoteViews를 통합하는 추상화
  */
-interface RenderStrategy {
+internal interface RenderStrategy {
     /**
      * WidgetNode를 렌더링
      * @param node WidgetNode

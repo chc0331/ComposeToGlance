@@ -9,7 +9,7 @@ import com.example.dsl.widget.RenderContext
  * 노드 렌더러 인터페이스
  * 각 노드 타입별로 구현
  */
-interface NodeRenderer {
+internal interface NodeRenderer {
     /**
      * WidgetNode를 Glance Composable로 렌더링
      * @param node WidgetNode

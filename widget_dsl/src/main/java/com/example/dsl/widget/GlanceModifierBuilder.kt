@@ -23,7 +23,7 @@ import com.example.dsl.proto.ViewProperty
 /**
  * Proto ViewProperty를 GlanceModifier로 변환하는 빌더
  */
-object GlanceModifierBuilder {
+internal object GlanceModifierBuilder {
     /**
      * ViewProperty를 GlanceModifier로 변환
      * @param viewProperty Proto ViewProperty

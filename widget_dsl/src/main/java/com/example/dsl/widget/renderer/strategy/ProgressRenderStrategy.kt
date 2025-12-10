@@ -23,7 +23,7 @@ import com.example.dsl.widget.renderer.RemoteViewsBuilder
 /**
  * Progress 노드 렌더링 전략
  */
-object ProgressRenderStrategy {
+internal object ProgressRenderStrategy {
     /**
      * Glance 전략
      */

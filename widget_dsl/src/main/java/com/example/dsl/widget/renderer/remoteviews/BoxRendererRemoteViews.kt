@@ -12,7 +12,7 @@ import com.example.dsl.proto.WidgetNode
 /**
  * BoxRenderer의 RemoteViews 확장 함수
  */
-fun BoxRenderer.renderToRemoteViews(
+internal fun BoxRenderer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: GlanceRenderer

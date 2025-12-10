@@ -11,7 +11,7 @@ import com.example.dsl.proto.Action as ProtoAction
 /**
  * Proto Action을 Glance Action으로 변환
  */
-object ActionConverter {
+internal object ActionConverter {
     /**
      * Proto Action을 Glance Action으로 변환
      * @param protoAction Proto Action

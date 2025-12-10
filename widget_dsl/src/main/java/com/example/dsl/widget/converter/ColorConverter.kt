@@ -9,7 +9,7 @@ import com.example.dsl.proto.ColorProvider
 /**
  * Proto Color를 Glance Color로 변환
  */
-object ColorConverter {
+internal object ColorConverter {
     /**
      * Proto Color를 Glance Color로 변환
      * @param protoColor Proto Color

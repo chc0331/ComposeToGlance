@@ -11,7 +11,7 @@ import com.example.dsl.widget.converter.AlignmentConverter
 /**
  * Row 노드 렌더러
  */
-object RowRenderer : NodeRenderer {
+internal object RowRenderer : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,

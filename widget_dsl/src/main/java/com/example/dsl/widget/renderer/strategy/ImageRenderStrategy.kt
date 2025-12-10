@@ -20,7 +20,7 @@ import com.example.dsl.widget.renderer.RemoteViewsBuilder
 /**
  * Image 노드 렌더링 전략
  */
-object ImageRenderStrategy {
+internal object ImageRenderStrategy {
     /**
      * Glance 전략
      */

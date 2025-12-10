@@ -11,7 +11,7 @@ import com.example.dsl.proto.WidgetNode
 /**
  * ButtonRenderer의 RemoteViews 확장 함수
  */
-fun ButtonRenderer.renderToRemoteViews(
+internal fun ButtonRenderer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: GlanceRenderer

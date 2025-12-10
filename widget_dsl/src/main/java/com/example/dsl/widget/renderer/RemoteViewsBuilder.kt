@@ -12,7 +12,7 @@ import com.example.dsl.proto.ViewProperty
 /**
  * RemoteViews를 생성하고 속성을 적용하는 유틸리티 클래스
  */
-object RemoteViewsBuilder {
+internal object RemoteViewsBuilder {
     /**
      * ViewProperty의 속성들을 RemoteViews에 적용
      */

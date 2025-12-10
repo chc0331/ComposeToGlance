@@ -28,7 +28,7 @@ import com.example.dsl.proto.ViewProperty
 /**
  * TextProperty DSL
  */
-class TextPropertyDsl(private val builder: TextProperty.Builder) {
+internal class TextPropertyDsl(private val builder: TextProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -75,7 +75,7 @@ class TextPropertyDsl(private val builder: TextProperty.Builder) {
 /**
  * ImageProperty DSL
  */
-class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
+internal class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -124,7 +124,7 @@ class ImagePropertyDsl(private val builder: ImageProperty.Builder) {
 /**
  * ButtonProperty DSL
  */
-class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
+internal class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -171,7 +171,7 @@ class ButtonPropertyDsl(private val builder: ButtonProperty.Builder) {
 /**
  * ProgressProperty DSL
  */
-class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
+internal class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -213,7 +213,7 @@ class ProgressPropertyDsl(private val builder: ProgressProperty.Builder) {
 /**
  * SpacerProperty DSL
  */
-class SpacerPropertyDsl(private val builder: SpacerProperty.Builder) {
+internal class SpacerPropertyDsl(private val builder: SpacerProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()

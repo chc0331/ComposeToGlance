@@ -12,7 +12,7 @@ import com.example.dsl.widget.RenderContext
  * RemoteViews 기반 렌더링 전략 추상 클래스
  * RemoteViews를 생성하고 AndroidRemoteViews로 감싸서 반환
  */
-abstract class RemoteViewsRenderStrategy : RenderStrategy {
+internal abstract class RemoteViewsRenderStrategy : RenderStrategy {
     /**
      * RemoteViews 객체를 생성
      * 하위 클래스에서 구현

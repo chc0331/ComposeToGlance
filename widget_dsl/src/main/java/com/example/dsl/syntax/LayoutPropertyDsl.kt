@@ -21,7 +21,7 @@ import com.example.dsl.proto.ViewProperty
 /**
  * BoxLayoutProperty DSL
  */
-class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {
+internal class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -38,7 +38,7 @@ class BoxLayoutPropertyDsl(private val builder: BoxLayoutProperty.Builder) {
 /**
  * RowLayoutProperty DSL
  */
-class RowLayoutPropertyDsl(private val builder: RowLayoutProperty.Builder) {
+internal class RowLayoutPropertyDsl(private val builder: RowLayoutProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
@@ -61,7 +61,7 @@ class RowLayoutPropertyDsl(private val builder: RowLayoutProperty.Builder) {
 /**
  * ColumnLayoutProperty DSL
  */
-class ColumnLayoutPropertyDsl(private val builder: ColumnLayoutProperty.Builder) {
+internal class ColumnLayoutPropertyDsl(private val builder: ColumnLayoutProperty.Builder) {
     fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()

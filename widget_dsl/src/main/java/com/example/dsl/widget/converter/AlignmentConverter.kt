@@ -8,7 +8,7 @@ import com.example.dsl.proto.VerticalAlignment
 /**
  * Proto Alignment를 Glance Alignment로 변환
  */
-object AlignmentConverter {
+internal object AlignmentConverter {
     /**
      * Proto AlignmentType을 Glance Alignment로 변환
      */
