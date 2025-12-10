@@ -3,6 +3,7 @@ package com.example.widget.component.devicecare
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.datastore.preferences.core.emptyPreferences
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Column
 import com.example.dsl.component.Progress
@@ -14,11 +15,15 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
+import com.example.dsl.localprovider.WidgetLocalGridIndex
+import com.example.dsl.localprovider.WidgetLocalPreview
 import com.example.dsl.localprovider.WidgetLocalSize
+import com.example.dsl.localprovider.WidgetLocalState
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.update.ComponentUpdateManager
+import com.example.widget.component.viewid.ViewIdType
 
 class DeviceCareWidget : WidgetComponent() {
 
@@ -53,19 +58,41 @@ class DeviceCareWidget : WidgetComponent() {
                     verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
                 }
             ) {
-                ScoreProgress("Memory", progressViewId = 0)
+                ScoreProgress("Memory", DeviceCareViewIdType.MemoryProgress)
                 Spacer()
-                ScoreProgress("Storage", progressViewId = 0)
+                ScoreProgress("Storage", DeviceCareViewIdType.StorageProgress)
                 Spacer()
-                ScoreProgress("CPU", progressViewId = 0)
+                ScoreProgress("CPU", DeviceCareViewIdType.CpuProgress)
                 Spacer()
-                ScoreProgress("Temperature", progressViewId = 0)
+                ScoreProgress("Temperature", DeviceCareViewIdType.TemperatureProgress)
             }
         }
     }
 
     private fun WidgetScope.TitleBar() {
         val localSize = getLocal(WidgetLocalSize) as DpSize
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        val currentState = getLocal(WidgetLocalState) ?: emptyPreferences()
+        val isPreview = getLocal(WidgetLocalPreview) ?: false
+        
+        val deviceState = if (isPreview) {
+            DeviceState(
+                memoryUsageRatio = 0.6f,
+                storageUsageRatio = 0.5f,
+                cpuLoad = 0.3f,
+                temperatureCelsius = 38f
+            )
+        } else {
+            DeviceState(
+                memoryUsageRatio = currentState[DeviceCarePreferenceKey.MemoryUsageRatio] ?: 0f,
+                storageUsageRatio = currentState[DeviceCarePreferenceKey.StorageUsageRatio] ?: 0f,
+                cpuLoad = currentState[DeviceCarePreferenceKey.CpuLoad] ?: 0f,
+                temperatureCelsius = currentState[DeviceCarePreferenceKey.TemperatureCelsius] ?: 0f
+            )
+        }
+        
+        val score = DeviceHealthCalculator.calculateScore(deviceState)
+        
         Row(
             modifier = WidgetModifier
                 .fillMaxWidth()
@@ -101,9 +128,14 @@ class DeviceCareWidget : WidgetComponent() {
                 }
             ) {
                 Text(
+                    modifier = WidgetModifier
+                        .viewId(getScoreTextId(gridIndex))
+                        .partiallyUpdate(true)
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                     contentProperty = {
                         TextContent {
-                            text = "89"
+                            text = score.toString()
                         }
                         fontSize = localSize.height.value * 0.24f
                         fontWeight = FontWeight.FONT_WEIGHT_BOLD
@@ -115,10 +147,49 @@ class DeviceCareWidget : WidgetComponent() {
 
     private fun WidgetScope.ScoreProgress(
         category: String,
-        progressViewId: Int,
+        viewIdType: DeviceCareViewIdType,
         progressColor: Int = Color.Blue.toArgb()
     ) {
         val localSize = getLocal(WidgetLocalSize) as DpSize
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        val currentState = getLocal(WidgetLocalState) ?: emptyPreferences()
+        val isPreview = getLocal(WidgetLocalPreview) ?: false
+        
+        val calculatedScore = when (viewIdType) {
+            DeviceCareViewIdType.MemoryProgress -> {
+                if (isPreview) {
+                    DeviceHealthCalculator.memoryScore(0.6f).toFloat()
+                } else {
+                    val ratio = currentState[DeviceCarePreferenceKey.MemoryUsageRatio] ?: 0f
+                    DeviceHealthCalculator.memoryScore(ratio).toFloat()
+                }
+            }
+            DeviceCareViewIdType.StorageProgress -> {
+                if (isPreview) {
+                    DeviceHealthCalculator.storageScore(0.5f).toFloat()
+                } else {
+                    val ratio = currentState[DeviceCarePreferenceKey.StorageUsageRatio] ?: 0f
+                    DeviceHealthCalculator.storageScore(ratio).toFloat()
+                }
+            }
+            DeviceCareViewIdType.CpuProgress -> {
+                if (isPreview) {
+                    DeviceHealthCalculator.cpuScore(0.3f).toFloat()
+                } else {
+                    val load = currentState[DeviceCarePreferenceKey.CpuLoad] ?: 0f
+                    DeviceHealthCalculator.cpuScore(load).toFloat()
+                }
+            }
+            DeviceCareViewIdType.TemperatureProgress -> {
+                if (isPreview) {
+                    DeviceHealthCalculator.temperatureScore(38f).toFloat()
+                } else {
+                    val temp = currentState[DeviceCarePreferenceKey.TemperatureCelsius] ?: 0f
+                    DeviceHealthCalculator.temperatureScore(temp).toFloat()
+                }
+            }
+            else -> 0f
+        }
 
         Row(
             modifier = WidgetModifier
@@ -136,11 +207,13 @@ class DeviceCareWidget : WidgetComponent() {
                 )
                 Progress(
                     modifier = WidgetModifier
+                        .viewId(getProgressId(gridIndex, viewIdType))
+                        .partiallyUpdate(true)
                         .width(localSize.width.value * 0.75f)
                         .height(localSize.height.value * 0.1f),
                     contentProperty = {
                         progressType = ProgressType.PROGRESS_TYPE_LINEAR
-                        progressValue = 65f
+                        progressValue = calculatedScore
                         maxValue = 100f
                         ProgressColor {
                             Color {
@@ -164,6 +237,53 @@ class DeviceCareWidget : WidgetComponent() {
                 .fillMaxWidth()
                 .height(height)
         )
+    }
+
+    override fun getViewIdTypes(): List<ViewIdType> {
+        return DeviceCareViewIdType.all()
+    }
+
+    // View ID Helper 메서드들
+    /**
+     * 점수 텍스트 View ID 조회
+     */
+    fun getScoreTextId(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.ScoreText, gridIndex)
+    }
+
+    /**
+     * 프로그레스 View ID 조회
+     */
+    fun getProgressId(gridIndex: Int, viewIdType: DeviceCareViewIdType): Int {
+        return generateViewId(viewIdType, gridIndex)
+    }
+
+    /**
+     * 메모리 프로그레스 View ID 조회
+     */
+    fun getMemoryProgressId(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.MemoryProgress, gridIndex)
+    }
+
+    /**
+     * 저장소 프로그레스 View ID 조회
+     */
+    fun getStorageProgressId(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.StorageProgress, gridIndex)
+    }
+
+    /**
+     * CPU 프로그레스 View ID 조회
+     */
+    fun getCpuProgressId(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.CpuProgress, gridIndex)
+    }
+
+    /**
+     * 온도 프로그레스 View ID 조회
+     */
+    fun getTemperatureProgressId(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.TemperatureProgress, gridIndex)
     }
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = DeviceCareUpdateManager

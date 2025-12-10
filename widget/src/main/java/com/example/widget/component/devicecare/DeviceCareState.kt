@@ -52,15 +52,15 @@ object DeviceHealthCalculator {
         return (ratio * 100).toInt().coerceIn(0, 100)
     }
 
-    private fun memoryScore(memoryUsageRatio: Float): Int =
+    fun memoryScore(memoryUsageRatio: Float): Int =
         linearScore(memoryUsageRatio, goodMax = 0.6f, badMin = 0.95f)
 
-    private fun storageScore(storageUsageRatio: Float): Int =
+    fun storageScore(storageUsageRatio: Float): Int =
         linearScore(storageUsageRatio, goodMax = 0.7f, badMin = 0.95f)
 
-    private fun cpuScore(cpuLoad: Float): Int =
+    fun cpuScore(cpuLoad: Float): Int =
         linearScore(cpuLoad, goodMax = 0.4f, badMin = 1.0f)
 
-    private fun temperatureScore(temperatureCelsius: Float): Int =
+    fun temperatureScore(temperatureCelsius: Float): Int =
         linearScore(temperatureCelsius, goodMax = 35f, badMin = 45f)
 }

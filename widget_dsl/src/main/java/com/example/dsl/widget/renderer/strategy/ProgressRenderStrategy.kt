@@ -51,9 +51,11 @@ internal object ProgressRenderStrategy {
                 ProgressType.PROGRESS_TYPE_LINEAR -> {
                     renderLinearProgress(progressProperty, modifier, context)
                 }
+
                 ProgressType.PROGRESS_TYPE_CIRCULAR -> {
                     renderCircularProgress(progressProperty, modifier, context)
                 }
+
                 else -> {
                     renderLinearProgress(progressProperty, modifier, context)
                 }
@@ -85,7 +87,13 @@ internal object ProgressRenderStrategy {
             LinearProgressIndicator(
                 progress = progress.coerceIn(0f, 1f),
                 modifier = modifier,
-                color = ColorConverter.toGlanceColorProvider(ColorProvider(color = Color(progressColor.toArgb()))),
+                color = ColorConverter.toGlanceColorProvider(
+                    ColorProvider(
+                        color = Color(
+                            progressColor.toArgb()
+                        )
+                    )
+                ),
                 backgroundColor = ColorConverter.toGlanceColorProvider(
                     ColorProvider(
                         color = Color(
@@ -108,7 +116,7 @@ internal object ProgressRenderStrategy {
             val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
                 context.context.getColor(progressProperty.backgroundColor.resId)
             } else progressProperty.backgroundColor.color.argb
-            
+
             androidx.glance.appwidget.AndroidRemoteViews(
                 modifier = modifier,
                 remoteViews = RemoteViews(
@@ -152,13 +160,27 @@ internal object ProgressRenderStrategy {
             // Progress 타입에 따라 렌더링
             return when (progressProperty.progressType) {
                 ProgressType.PROGRESS_TYPE_LINEAR -> {
-                    renderLinearProgressToRemoteViews(progressProperty, viewProperty, context.context)
+                    renderLinearProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
                 }
+
                 ProgressType.PROGRESS_TYPE_CIRCULAR -> {
-                    renderCircularProgressToRemoteViews(progressProperty, viewProperty, context.context)
+                    renderCircularProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
                 }
+
                 else -> {
-                    renderLinearProgressToRemoteViews(progressProperty, viewProperty, context.context)
+                    renderLinearProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
                 }
             }
         }
@@ -168,30 +190,40 @@ internal object ProgressRenderStrategy {
             viewProperty: com.example.dsl.proto.ViewProperty,
             context: android.content.Context
         ): android.widget.RemoteViews {
-            val remoteViews = android.widget.RemoteViews(context.packageName, android.R.layout.simple_list_item_1)
-            val progressBarId = android.R.id.text1
+            val viewId = viewProperty.viewId
+            val remoteViews =
+                RemoteViews(context.packageName, R.layout.linear_progress_component)
 
             val max = progressProperty.maxValue.toInt()
             val progress = progressProperty.progressValue.toInt()
 
-            remoteViews.setProgressBar(progressBarId, max, progress, false)
+            remoteViews.setProgressBar(viewId, max, progress, false)
 
             // Progress color
             val progressColor = ColorConverter.toGlanceColor(
                 progressProperty.progressColor,
                 context
             )
-            remoteViews.setInt(progressBarId, "setProgressTint", progressColor.value.toInt())
+            remoteViews.setInt(viewId, "setProgressTint", progressColor.value.toInt())
 
             // Background color
             val backgroundColor = ColorConverter.toGlanceColor(
                 progressProperty.backgroundColor,
                 context
             )
-            remoteViews.setInt(progressBarId, "setProgressBackgroundTint", backgroundColor.value.toInt())
+            remoteViews.setInt(
+                viewId,
+                "setProgressBackgroundTint",
+                backgroundColor.value.toInt()
+            )
 
             // ViewProperty 속성 적용
-            RemoteViewsBuilder.applyViewProperties(remoteViews, progressBarId, viewProperty, context)
+            RemoteViewsBuilder.applyViewProperties(
+                remoteViews,
+                viewId,
+                viewProperty,
+                context
+            )
 
             return remoteViews
         }
@@ -202,7 +234,11 @@ internal object ProgressRenderStrategy {
             context: android.content.Context
         ): android.widget.RemoteViews {
             val viewId = viewProperty.viewId
-            val remoteViews = android.widget.RemoteViews(context.packageName, R.layout.circular_progress_component, viewId)
+            val remoteViews = android.widget.RemoteViews(
+                context.packageName,
+                R.layout.circular_progress_component,
+                viewId
+            )
             val max = progressProperty.maxValue.toInt()
             val progress = progressProperty.progressValue.toInt()
 
@@ -224,7 +260,7 @@ internal object ProgressRenderStrategy {
                 viewId, "setProgressBackgroundTintList",
                 ColorStateList.valueOf(backgroundColor)
             )
-            
+
             // ViewProperty 속성 적용
             RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context)
 
