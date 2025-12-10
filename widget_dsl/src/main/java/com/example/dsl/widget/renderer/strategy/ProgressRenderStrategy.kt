@@ -191,30 +191,33 @@ internal object ProgressRenderStrategy {
             context: android.content.Context
         ): android.widget.RemoteViews {
             val viewId = viewProperty.viewId
-            val remoteViews =
-                RemoteViews(context.packageName, R.layout.linear_progress_component)
+            // RemoteViews 생성 시 viewId를 전달하여 레이아웃의 ProgressBar ID를 viewId로 설정
+            val remoteViews = android.widget.RemoteViews(
+                context.packageName,
+                R.layout.linear_progress_component,
+                viewId
+            )
 
             val max = progressProperty.maxValue.toInt()
             val progress = progressProperty.progressValue.toInt()
 
             remoteViews.setProgressBar(viewId, max, progress, false)
 
-            // Progress color
-            val progressColor = ColorConverter.toGlanceColor(
-                progressProperty.progressColor,
-                context
-            )
-            remoteViews.setInt(viewId, "setProgressTint", progressColor.value.toInt())
+            val progressColor = if (progressProperty.progressColor.resId != 0) {
+                context.getColor(progressProperty.progressColor.resId)
+            } else progressProperty.progressColor.color.argb
+            val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+                context.getColor(progressProperty.backgroundColor.resId)
+            } else progressProperty.backgroundColor.color.argb
 
-            // Background color
-            val backgroundColor = ColorConverter.toGlanceColor(
-                progressProperty.backgroundColor,
-                context
-            )
-            remoteViews.setInt(
+            remoteViews.setColorStateList(
                 viewId,
-                "setProgressBackgroundTint",
-                backgroundColor.value.toInt()
+                "setProgressTintList",
+                ColorStateList.valueOf(progressColor)
+            )
+            remoteViews.setColorStateList(
+                viewId, "setProgressBackgroundTintList",
+                ColorStateList.valueOf(backgroundColor)
             )
 
             // ViewProperty 속성 적용

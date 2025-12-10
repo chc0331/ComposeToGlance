@@ -2,6 +2,7 @@ package com.example.dsl.widget.renderer
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -23,6 +24,8 @@ internal object RemoteViewsBuilder {
         context: Context
     ) {
 
+        Log.i("heec.choi","Viewproperty : ${viewProperty.width.dp} ${viewProperty.height.dp}")
+
         if (viewProperty.width.dp.value != 0f) {
             remoteViews.setViewLayoutWidth(
                 viewId,
@@ -33,7 +36,7 @@ internal object RemoteViewsBuilder {
         if(viewProperty.height.dp.value != 0f){
             remoteViews.setViewLayoutHeight(
                 viewId,
-                viewProperty.width.dp.value,
+                viewProperty.height.dp.value,
                 TypedValue.COMPLEX_UNIT_DIP
             )
         }
