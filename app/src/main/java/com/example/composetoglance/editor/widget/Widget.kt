@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
 import com.example.dsl.widget.GlanceRenderer
-import com.example.dsl.localprovider.DslLocalContext
-import com.example.dsl.localprovider.DslLocalPreview
+import com.example.dsl.localprovider.WidgetLocalContext
+import com.example.dsl.localprovider.WidgetLocalPreview
 import com.example.dsl.localprovider.WidgetLocalProvider
-import com.example.dsl.localprovider.DslLocalSize
+import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.widget.SizeType
 import com.example.widget.component.WidgetComponent
 import com.example.widget.proto.PlacedWidgetComponent
@@ -137,9 +137,9 @@ private fun WidgetItemContent(
                     val layout = remember(key) {
                         WidgetLayout {
                             WidgetLocalProvider(
-                                DslLocalPreview provides true,
-                                DslLocalSize provides size,
-                                DslLocalContext provides context
+                                WidgetLocalPreview provides true,
+                                WidgetLocalSize provides size,
+                                WidgetLocalContext provides context
                             ) {
                                 // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
                                 // this는 WidgetLocalProvider가 생성한 childScope를 가리킴

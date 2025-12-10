@@ -16,10 +16,10 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.localprovider.DslLocalGridIndex
-import com.example.dsl.localprovider.DslLocalPreview
-import com.example.dsl.localprovider.DslLocalSize
-import com.example.dsl.localprovider.DslLocalState
+import com.example.dsl.localprovider.WidgetLocalGridIndex
+import com.example.dsl.localprovider.WidgetLocalPreview
+import com.example.dsl.localprovider.WidgetLocalSize
+import com.example.dsl.localprovider.WidgetLocalState
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
@@ -83,11 +83,11 @@ class BatteryWidget : WidgetComponent() {
 
     private fun WidgetScope.BatteryProgress() {
         fun WidgetScope.getProgressSize(): Float {
-            val size = getLocal(DslLocalSize) as DpSize
+            val size = getLocal(WidgetLocalSize) as DpSize
             return size.height.value * 0.58f
         }
 
-        val gridIndex = getLocal(DslLocalGridIndex) as Int
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValue = getBatteryValue()
         Progress(
             modifier = WidgetModifier
@@ -115,7 +115,7 @@ class BatteryWidget : WidgetComponent() {
 
     private fun WidgetScope.BatteryIcon(deviceType: DeviceType = DeviceType.PHONE) {
         fun WidgetScope.getBatteryIconSize(): Float {
-            val size = getLocal(DslLocalSize) as DpSize
+            val size = getLocal(WidgetLocalSize) as DpSize
             return size.height.value * 0.22f
         }
         Image(
@@ -131,9 +131,9 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryText() {
-        val gridIndex = getLocal(DslLocalGridIndex) as Int
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
-        val size = getLocal(DslLocalSize) as DpSize
+        val size = getLocal(WidgetLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
         Row(
             modifier = WidgetModifier
@@ -186,12 +186,12 @@ class BatteryWidget : WidgetComponent() {
 
     private fun WidgetScope.ChargingIcon() {
         fun WidgetScope.getChargingIconSize(): Float {
-            val size = getLocal(DslLocalSize) as DpSize
+            val size = getLocal(WidgetLocalSize) as DpSize
             return size.height.value * 0.2f
         }
 
         val iconSize = getChargingIconSize()
-        val gridIndex = getLocal(DslLocalGridIndex) as Int
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         Image(
             modifier = WidgetModifier
                 .viewId(getChargingIconId(gridIndex))
@@ -209,8 +209,8 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.getBatteryValue(): Float {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
+        val currentState = getLocal(WidgetLocalState)
+        val isPreview = getLocal(WidgetLocalPreview) ?: false
         if (isPreview) {
             return 50f
         }
@@ -223,8 +223,8 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.getChargingState(): Boolean {
-        val currentState = getLocal(DslLocalState)
-        val isPreview = getLocal(DslLocalPreview) ?: false
+        val currentState = getLocal(WidgetLocalState)
+        val isPreview = getLocal(WidgetLocalPreview) ?: false
         if (isPreview) {
             return false
         }

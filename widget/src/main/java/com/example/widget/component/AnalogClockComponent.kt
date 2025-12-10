@@ -14,7 +14,7 @@ import com.example.dsl.modifier.height
 import com.example.dsl.modifier.width
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ProgressType
-import com.example.dsl.localprovider.DslLocalSize
+import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.update.ComponentUpdateManager
@@ -51,7 +51,7 @@ class AnalogClockComponent : WidgetComponent() {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
         ) {
-            val size = getLocal(DslLocalSize) as? DpSize
+            val size = getLocal(WidgetLocalSize) as? DpSize
             val clockSize =
                 size?.let { kotlin.math.min(it.width.value, it.height.value) * 0.8f } ?: 80f
 

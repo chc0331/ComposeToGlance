@@ -14,7 +14,7 @@ import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.VerticalAlignment
-import com.example.dsl.localprovider.DslLocalSize
+import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
@@ -65,7 +65,7 @@ class DeviceCareWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.TitleBar() {
-        val localSize = getLocal(DslLocalSize) as DpSize
+        val localSize = getLocal(WidgetLocalSize) as DpSize
         Row(
             modifier = WidgetModifier
                 .fillMaxWidth()
@@ -118,7 +118,7 @@ class DeviceCareWidget : WidgetComponent() {
         progressViewId: Int,
         progressColor: Int = Color.Blue.toArgb()
     ) {
-        val localSize = getLocal(DslLocalSize) as DpSize
+        val localSize = getLocal(WidgetLocalSize) as DpSize
 
         Row(
             modifier = WidgetModifier

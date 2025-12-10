@@ -24,13 +24,13 @@ import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.modifier.*
-import com.example.dsl.localprovider.DslLocalBackgroundRadius
-import com.example.dsl.localprovider.DslLocalContentRadius
-import com.example.dsl.localprovider.DslLocalContext
-import com.example.dsl.localprovider.DslLocalGlanceId
+import com.example.dsl.localprovider.WidgetLocalBackgroundRadius
+import com.example.dsl.localprovider.WidgetLocalContentRadius
+import com.example.dsl.localprovider.WidgetLocalContext
+import com.example.dsl.localprovider.WidgetLocalGlanceId
 import com.example.dsl.localprovider.WidgetLocalProvider
-import com.example.dsl.localprovider.DslLocalSize
-import com.example.dsl.localprovider.DslLocalState
+import com.example.dsl.localprovider.WidgetLocalSize
+import com.example.dsl.localprovider.WidgetLocalState
 import com.example.widget.R
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.util.getSystemContentRadius
@@ -71,12 +71,12 @@ abstract class DslAppWidget : GlanceAppWidget() {
         renderer.render(
             WidgetLayout {
                 WidgetLocalProvider(
-                    DslLocalSize provides dpSize,
-                    DslLocalContext provides context,
-                    DslLocalState provides state,
-                    DslLocalGlanceId provides glanceId,
-                    DslLocalBackgroundRadius provides backgroundRadius,
-                    DslLocalContentRadius provides contentRadius
+                    WidgetLocalSize provides dpSize,
+                    WidgetLocalContext provides context,
+                    WidgetLocalState provides state,
+                    WidgetLocalGlanceId provides glanceId,
+                    WidgetLocalBackgroundRadius provides backgroundRadius,
+                    WidgetLocalContentRadius provides contentRadius
                 ) {
                     Box(
                         modifier = WidgetModifier
