@@ -35,7 +35,7 @@ class DeviceCareWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Column(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb())
@@ -47,7 +47,7 @@ class DeviceCareWidget : WidgetComponent() {
         ) {
             TitleBar()
             Column(
-                modifier = Modifier
+                modifier = DslModifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 contentProperty = {
@@ -68,13 +68,13 @@ class DeviceCareWidget : WidgetComponent() {
     private fun WidgetScope.TitleBar() {
         val localSize = getLocal(DslLocalSize) as DpSize
         Row(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .height(localSize.height.value * 0.28f)
                 .backgroundColor(Color.White.toArgb())
         ) {
             Row(
-                modifier = Modifier
+                modifier = DslModifier
                     .wrapContentWidth()
                     .fillMaxHeight(),
                 contentProperty = {
@@ -94,7 +94,7 @@ class DeviceCareWidget : WidgetComponent() {
             }
 
             Row(
-                modifier = Modifier
+                modifier = DslModifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 contentProperty = {
@@ -122,7 +122,7 @@ class DeviceCareWidget : WidgetComponent() {
         val localSize = getLocal(DslLocalSize) as DpSize
 
         Row(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
@@ -136,7 +136,7 @@ class DeviceCareWidget : WidgetComponent() {
                     }
                 )
                 Progress(
-                    modifier = Modifier
+                    modifier = DslModifier
                         .width(localSize.width.value * 0.75f)
                         .height(localSize.height.value * 0.1f),
                     contentProperty = {
@@ -161,7 +161,7 @@ class DeviceCareWidget : WidgetComponent() {
 
     private fun WidgetScope.Spacer(height: Float = 2f) {
         Spacer(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .height(height)
         )

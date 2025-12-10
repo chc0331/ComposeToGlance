@@ -135,7 +135,7 @@ fun WidgetScope.NewComponent(block: NewComponentDsl.() -> Unit) {
 `glance/renderer/NewComponentRenderer.kt` 파일을 생성합니다.
 
 ```kotlin
-package com.example.dsl.glance.renderer
+package com.example.dsl.widget.renderer
 
 import androidx.compose.runtime.Composable
 import com.example.dsl.proto.WidgetNode

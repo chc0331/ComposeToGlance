@@ -1,7 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.Modifier
+import com.example.dsl.modifier.DslModifier
 import com.example.dsl.modifier.ModifierBuilder
 import com.example.dsl.proto.ViewProperty
 
@@ -13,14 +13,14 @@ import com.example.dsl.proto.ViewProperty
 abstract class BaseComponentDsl(
     protected val scope: WidgetScope
 ) {
-    private var modifier: Modifier = Modifier
+    private var modifier: DslModifier = DslModifier
     private var viewPropertyBlock: (ViewPropertyDsl.() -> Unit)? = null
     private var viewPropertySet = false
 
     /**
      * Modifier 설정
      */
-    fun modifier(value: Modifier) {
+    fun modifier(value: DslModifier) {
         modifier = value
     }
 
@@ -54,7 +54,7 @@ abstract class BaseComponentDsl(
      * ViewProperty가 설정되었는지 확인
      */
     protected fun hasViewProperty(): Boolean {
-        return viewPropertySet || modifier !== Modifier
+        return viewPropertySet || modifier !== DslModifier
     }
 }
 

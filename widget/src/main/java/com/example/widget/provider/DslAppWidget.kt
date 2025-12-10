@@ -22,7 +22,7 @@ import androidx.glance.layout.fillMaxSize
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.modifier.*
 import com.example.dsl.provider.DslLocalBackgroundRadius
 import com.example.dsl.provider.DslLocalContentRadius
@@ -79,7 +79,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     DslLocalContentRadius provides contentRadius
                 ) {
                     Box(
-                        modifier = Modifier
+                        modifier = DslModifier
                             .width(dpSize.width.value)
                             .height(dpSize.height.value)
                             .backgroundColor(Color.LightGray.toArgb())

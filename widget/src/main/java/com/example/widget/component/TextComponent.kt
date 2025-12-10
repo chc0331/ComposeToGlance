@@ -37,7 +37,7 @@ class TextComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),

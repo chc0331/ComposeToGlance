@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
-import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalPreview
 import com.example.dsl.provider.DslLocalProvider

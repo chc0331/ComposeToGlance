@@ -1,7 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.Modifier
+import com.example.dsl.modifier.DslModifier
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.ColumnLayoutProperty
 import com.example.dsl.proto.RowLayoutProperty
@@ -27,7 +27,7 @@ import com.example.dsl.proto.VerticalAlignment.V_ALIGN_TOP
  */
 class ColumnLayoutDsl(
     scope: WidgetScope,
-    modifier: Modifier = Modifier
+    modifier: DslModifier = DslModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = ColumnLayoutProperty.newBuilder()
     private val propertyDsl = ColumnLayoutPropertyDsl(propertyBuilder)
@@ -87,7 +87,7 @@ class ColumnLayoutDsl(
  */
 class RowLayoutDsl(
     scope: WidgetScope,
-    modifier: Modifier = Modifier
+    modifier: DslModifier = DslModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = RowLayoutProperty.newBuilder()
     private val propertyDsl = RowLayoutPropertyDsl(propertyBuilder)
@@ -147,7 +147,7 @@ class RowLayoutDsl(
  */
 class BoxLayoutDsl(
     scope: WidgetScope,
-    modifier: Modifier = Modifier
+    modifier: DslModifier = DslModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = BoxLayoutProperty.newBuilder()
     private val propertyDsl = BoxLayoutPropertyDsl(propertyBuilder)

@@ -38,7 +38,7 @@ class ButtonComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
@@ -47,7 +47,7 @@ class ButtonComponent : WidgetComponent() {
             }
         ) {
             Button(
-                modifier = Modifier
+                modifier = DslModifier
                     .cornerRadius(8f),
                 contentProperty = {
                     Text {

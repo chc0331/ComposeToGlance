@@ -16,7 +16,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.glance.GlanceComposable
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
-import com.example.dsl.glance.GlanceRenderer
+import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.proto.WidgetLayoutDocument
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)

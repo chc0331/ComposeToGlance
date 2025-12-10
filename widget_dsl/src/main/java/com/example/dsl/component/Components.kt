@@ -1,7 +1,7 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.Modifier
+import com.example.dsl.modifier.DslModifier
 import com.example.dsl.syntax.ButtonDsl
 import com.example.dsl.syntax.ImageDsl
 import com.example.dsl.syntax.ProgressDsl
@@ -43,7 +43,7 @@ import com.example.dsl.proto.WidgetNode
  * 사용 예시 (Modifier 사용):
  * ```
  * Text(
- *     modifier = Modifier
+ *     modifier = DslModifier
  *         .width(wrapContent)
  *         .height(wrapContent)
  *         .padding(16.dp)
@@ -55,7 +55,7 @@ import com.example.dsl.proto.WidgetNode
  * ```
  */
 fun WidgetScope.Text(
-    modifier: Modifier = Modifier,
+    modifier: DslModifier = DslModifier,
     contentProperty: TextDsl.() -> Unit
 ) {
     val dsl = TextDsl(this, modifier)
@@ -84,7 +84,7 @@ fun WidgetScope.Text(
  * 사용 예시 (Modifier 사용):
  * ```
  * Image(
- *     modifier = Modifier
+ *     modifier = DslModifier
  *         .width(wrapContent)
  *         .height(wrapContent)
  *         .padding(16.dp)
@@ -95,7 +95,7 @@ fun WidgetScope.Text(
  * ```
  */
 fun WidgetScope.Image(
-    modifier: Modifier = Modifier,
+    modifier: DslModifier = DslModifier,
     contentProperty: ImageDsl.() -> Unit
 ) {
     val dsl = ImageDsl(this, modifier)
@@ -125,7 +125,7 @@ fun WidgetScope.Image(
  * 사용 예시 (Modifier 사용):
  * ```
  * Button(
- *     modifier = Modifier
+ *     modifier = DslModifier
  *         .width(wrapContent)
  *         .height(wrapContent)
  *         .padding(16.dp)
@@ -137,7 +137,7 @@ fun WidgetScope.Image(
  * ```
  */
 fun WidgetScope.Button(
-    modifier: Modifier = Modifier,
+    modifier: DslModifier = DslModifier,
     contentProperty: ButtonDsl.() -> Unit
 ) {
     val dsl = ButtonDsl(this, modifier)
@@ -167,7 +167,7 @@ fun WidgetScope.Button(
  * 사용 예시 (Modifier 사용):
  * ```
  * Progress(
- *     modifier = Modifier
+ *     modifier = DslModifier
  *         .width(matchParent)
  *         .height(matchParent)
  *         .padding(16.dp)
@@ -179,7 +179,7 @@ fun WidgetScope.Button(
  * ```
  */
 fun WidgetScope.Progress(
-    modifier: Modifier = Modifier,
+    modifier: DslModifier = DslModifier,
     contentProperty: ProgressDsl.() -> Unit
 ) {
     val dsl = ProgressDsl(this, modifier)
@@ -206,7 +206,7 @@ fun WidgetScope.Progress(
  * 사용 예시 (Modifier 사용):
  * ```
  * Spacer(
- *     modifier = Modifier
+ *     modifier = DslModifier
  *         .width(wrapContent)
  *         .height(wrapContent)
  *         .padding(16.dp)
@@ -214,7 +214,7 @@ fun WidgetScope.Progress(
  * ```
  */
 fun WidgetScope.Spacer(
-    modifier: Modifier = Modifier,
+    modifier: DslModifier = DslModifier,
     contentProperty: SpacerDsl.() -> Unit = {}
 ) {
     val dsl = SpacerDsl(this, modifier)

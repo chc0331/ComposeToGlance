@@ -16,7 +16,7 @@ import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModelFactory
 import com.example.composetoglance.service.WidgetForegroundService
 import com.example.composetoglance.theme.ComposeToGlanceTheme
-import com.example.dsl.glance.renderer.RendererInitializer
+import com.example.dsl.widget.renderer.RendererInitializer
 import com.example.widget.repository.WidgetLayoutRepository
 
 class MainActivity : ComponentActivity() {

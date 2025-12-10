@@ -53,61 +53,61 @@ fun DimensionWeight(weight: Float): Dimension {
 /**
  * Modifier에 width를 Dp 값으로 설정
  */
-fun Modifier.width(value: DpValue): Modifier {
+fun DslModifier.width(value: DpValue): DslModifier {
     val dimension = DimensionDp(value.value)
-    return this then Modifier.WidthModifier(dimension)
+    return this then DslModifier.WidthModifier(dimension)
 }
 
 /**
  * Modifier에 width를 Float 값으로 설정
  */
-fun Modifier.width(value: Float): Modifier {
+fun DslModifier.width(value: Float): DslModifier {
     val dimension = DimensionDp(value)
-    return this then Modifier.WidthModifier(dimension)
+    return this then DslModifier.WidthModifier(dimension)
 }
 
 /**
  * Modifier에 width를 fillMaxWidth (matchParent)로 설정
  */
-fun Modifier.fillMaxWidth(): Modifier {
-    return this then Modifier.WidthModifier(Dimension.newBuilder().setMatchParent(true).build())
+fun DslModifier.fillMaxWidth(): DslModifier {
+    return this then DslModifier.WidthModifier(Dimension.newBuilder().setMatchParent(true).build())
 }
 
 /**
  * Modifier에 width를 wrapContentWidth로 설정
  */
-fun Modifier.wrapContentWidth(): Modifier {
-    return this then Modifier.WidthModifier(Dimension.newBuilder().setWrapContent(true).build())
+fun DslModifier.wrapContentWidth(): DslModifier {
+    return this then DslModifier.WidthModifier(Dimension.newBuilder().setWrapContent(true).build())
 }
 
 /**
  * Modifier에 height를 fillMaxHeight (matchParent)로 설정
  */
-fun Modifier.fillMaxHeight(): Modifier {
-    return this then Modifier.HeightModifier(Dimension.newBuilder().setMatchParent(true).build())
+fun DslModifier.fillMaxHeight(): DslModifier {
+    return this then DslModifier.HeightModifier(Dimension.newBuilder().setMatchParent(true).build())
 }
 
 /**
  * Modifier에 height를 wrapContentHeight로 설정
  */
-fun Modifier.wrapContentHeight(): Modifier {
-    return this then Modifier.HeightModifier(Dimension.newBuilder().setWrapContent(true).build())
+fun DslModifier.wrapContentHeight(): DslModifier {
+    return this then DslModifier.HeightModifier(Dimension.newBuilder().setWrapContent(true).build())
 }
 
 /**
  * Modifier에 height를 Dp 값으로 설정
  */
-fun Modifier.height(value: DpValue): Modifier {
+fun DslModifier.height(value: DpValue): DslModifier {
     val dimension = DimensionDp(value.value)
-    return this then Modifier.HeightModifier(dimension)
+    return this then DslModifier.HeightModifier(dimension)
 }
 
 /**
  * Modifier에 height를 Float 값으로 설정
  */
-fun Modifier.height(value: Float): Modifier {
+fun DslModifier.height(value: Float): DslModifier {
     val dimension = DimensionDp(value)
-    return this then Modifier.HeightModifier(dimension)
+    return this then DslModifier.HeightModifier(dimension)
 }
 
 // ==================== Padding 편의 함수 ====================
@@ -140,34 +140,34 @@ fun Padding(
 /**
  * Modifier에 padding을 설정 (모든 방향 동일)
  */
-fun Modifier.padding(all: Float): Modifier {
+fun DslModifier.padding(all: Float): DslModifier {
     return padding(Padding(all = all))
 }
 
 /**
  * Modifier에 padding을 설정 (Dp 값)
  */
-fun Modifier.padding(all: DpValue): Modifier {
+fun DslModifier.padding(all: DpValue): DslModifier {
     return padding(Padding(all = all.value))
 }
 
 /**
  * Modifier에 padding을 설정 (수평/수직)
  */
-fun Modifier.padding(
+fun DslModifier.padding(
     horizontal: Float? = null,
     vertical: Float? = null
-): Modifier {
+): DslModifier {
     return padding(Padding(horizontal = horizontal, vertical = vertical))
 }
 
 /**
  * Modifier에 padding을 설정 (Dp 값, 수평/수직)
  */
-fun Modifier.padding(
+fun DslModifier.padding(
     horizontal: DpValue? = null,
     vertical: DpValue? = null
-): Modifier {
+): DslModifier {
     return padding(Padding(
         horizontal = horizontal?.value,
         vertical = vertical?.value
@@ -177,24 +177,24 @@ fun Modifier.padding(
 /**
  * Modifier에 padding을 설정 (개별 방향)
  */
-fun Modifier.padding(
+fun DslModifier.padding(
     start: Float = 0f,
     top: Float = 0f,
     end: Float = 0f,
     bottom: Float = 0f
-): Modifier {
+): DslModifier {
     return padding(Padding(start = start, top = top, end = end, bottom = bottom))
 }
 
 /**
  * Modifier에 padding을 설정 (Dp 값, 개별 방향)
  */
-fun Modifier.padding(
+fun DslModifier.padding(
     start: DpValue = 0.dp,
     top: DpValue = 0.dp,
     end: DpValue = 0.dp,
     bottom: DpValue = 0.dp
-): Modifier {
+): DslModifier {
     return padding(Padding(
         start = start.value,
         top = top.value,
@@ -215,14 +215,14 @@ fun CornerRadius(radius: Float): CornerRadius {
 /**
  * Modifier에 cornerRadius를 설정
  */
-fun Modifier.cornerRadius(radius: Float): Modifier {
+fun DslModifier.cornerRadius(radius: Float): DslModifier {
     return cornerRadius(CornerRadius(radius))
 }
 
 /**
  * Modifier에 cornerRadius를 설정 (Dp 값)
  */
-fun Modifier.cornerRadius(radius: DpValue): Modifier {
+fun DslModifier.cornerRadius(radius: DpValue): DslModifier {
     return cornerRadius(CornerRadius(radius.value))
 }
 
@@ -240,7 +240,7 @@ fun ColorProvider(colorArgb: Int): ColorProvider {
 /**
  * Modifier에 backgroundColor를 설정 (ARGB Int 값)
  */
-fun Modifier.backgroundColor(colorArgb: Int): Modifier {
+fun DslModifier.backgroundColor(colorArgb: Int): DslModifier {
     return backgroundColor(ColorProvider(colorArgb))
 }
 

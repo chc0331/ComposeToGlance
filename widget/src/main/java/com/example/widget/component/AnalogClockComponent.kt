@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.DpSize
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Progress
-import com.example.dsl.modifier.Modifier
+import com.example.dsl.modifier.DslModifier
 import com.example.dsl.modifier.backgroundColor
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
@@ -43,7 +43,7 @@ class AnalogClockComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.Black.toArgb()),
@@ -57,7 +57,7 @@ class AnalogClockComponent : WidgetComponent() {
 
             // 시계 원형 배경 (Progress를 원형으로 사용)
             Progress(
-                modifier = Modifier
+                modifier = DslModifier
                     .width(clockSize)
                     .height(clockSize),
                 contentProperty = {
@@ -79,7 +79,7 @@ class AnalogClockComponent : WidgetComponent() {
             // 시계 중심점 (간단한 원)
             val centerSize = clockSize * 0.1f
             Progress(
-                modifier = Modifier
+                modifier = DslModifier
                     .width(centerSize)
                     .height(centerSize),
                 contentProperty = {

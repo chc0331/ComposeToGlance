@@ -34,7 +34,7 @@ class ImageComponent : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = Modifier
+            modifier = DslModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.LightGray.toArgb()),
