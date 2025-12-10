@@ -19,7 +19,7 @@ object ModifierBuilder {
      * @return ViewProperty.Builder
      */
     fun buildViewProperty(
-        modifier: DslModifier,
+        modifier: WidgetModifier,
         scope: WidgetScope
     ): ViewProperty.Builder {
         val builder = ViewProperty.newBuilder()
@@ -30,41 +30,41 @@ object ModifierBuilder {
         // Modifier 체인을 순회하며 설정 적용
         modifier.forEach { element ->
             when (element) {
-                is DslModifier.WidthModifier -> {
+                is WidgetModifier.WidthModifier -> {
                     builder.width = element.dimension
                 }
-                is DslModifier.HeightModifier -> {
+                is WidgetModifier.HeightModifier -> {
                     builder.height = element.dimension
                 }
-                is DslModifier.PaddingModifier -> {
+                is WidgetModifier.PaddingModifier -> {
                     builder.padding = element.padding
                 }
-                is DslModifier.CornerRadiusModifier -> {
+                is WidgetModifier.CornerRadiusModifier -> {
                     builder.cornerRadius = element.cornerRadius
                 }
-                is DslModifier.SemanticsModifier -> {
+                is WidgetModifier.SemanticsModifier -> {
                     builder.semantics = element.semantics
                 }
-                is DslModifier.ClickActionModifier -> {
+                is WidgetModifier.ClickActionModifier -> {
                     builder.clickAction = element.action
                 }
-                is DslModifier.BackgroundColorModifier -> {
+                is WidgetModifier.BackgroundColorModifier -> {
                     builder.backgroundColor = element.colorProvider
                 }
-                is DslModifier.ViewIdModifier -> {
+                is WidgetModifier.ViewIdModifier -> {
                     builder.viewId = element.viewId
                     viewIdSet = true
                 }
-                is DslModifier.PartiallyUpdateModifier -> {
+                is WidgetModifier.PartiallyUpdateModifier -> {
                     builder.partiallyUpdate = element.partiallyUpdate
                 }
-                is DslModifier.HideModifier -> {
+                is WidgetModifier.HideModifier -> {
                     builder.hide = element.hide
                 }
-                DslModifier -> {
+                WidgetModifier -> {
                     // 빈 Modifier는 무시
                 }
-                is DslModifier.Combined -> {
+                is WidgetModifier.Combined -> {
                     // Combined는 forEach에서 처리됨
                 }
             }
@@ -81,12 +81,12 @@ object ModifierBuilder {
     /**
      * Modifier 체인을 순회하는 헬퍼 함수
      */
-    private fun DslModifier.forEach(action: (DslModifier) -> Unit) {
+    private fun WidgetModifier.forEach(action: (WidgetModifier) -> Unit) {
         when (this) {
-            DslModifier -> {
+            WidgetModifier -> {
                 // 빈 Modifier는 처리하지 않음
             }
-            is DslModifier.Combined -> {
+            is WidgetModifier.Combined -> {
                 // 외부부터 내부 순서로 처리 (체이닝 순서 유지)
                 outer.forEach(action)
                 inner.forEach(action)

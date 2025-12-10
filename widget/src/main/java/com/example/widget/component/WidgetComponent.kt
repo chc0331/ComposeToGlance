@@ -19,8 +19,8 @@ abstract class WidgetComponent : ViewIdProvider {
 
     /**
      * Content를 주어진 scope에서 실행합니다.
-     * 이 메서드는 DslLocalProvider 내에서 호출되어야 하며,
-     * 생성된 children은 DslLocalProvider가 자동으로 수집합니다.
+     * 이 메서드는 WidgetLocalProvider 내에서 호출되어야 하며,
+     * 생성된 children은 WidgetLocalProvider가 자동으로 수집합니다.
      */
     fun renderContent(scope: WidgetScope) {
         scope.Content()

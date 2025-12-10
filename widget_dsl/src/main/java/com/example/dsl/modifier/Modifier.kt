@@ -16,93 +16,93 @@ import com.example.dsl.proto.Semantics
  * ```
  * Text(
  *     text = "Hello",
- *     modifier = DslModifier
+ *     modifier = WidgetModifier
  *         .width(wrapContent)
  *         .height(wrapContent)
  *         .padding(start = 16.dp, top = 8.dp)
  * )
  * ```
  */
-interface DslModifier {
+interface WidgetModifier {
     /**
      * Modifier 체이닝을 위한 내부 클래스
      */
     data class Combined(
-        val outer: DslModifier,
-        val inner: DslModifier
-    ) : DslModifier {
-        override fun toString(): String = "DslModifier.Combined($outer, $inner)"
+        val outer: WidgetModifier,
+        val inner: WidgetModifier
+    ) : WidgetModifier {
+        override fun toString(): String = "WidgetModifier.Combined($outer, $inner)"
     }
 
     /**
      * Width 설정
      */
-    data class WidthModifier(val dimension: Dimension) : DslModifier
+    data class WidthModifier(val dimension: Dimension) : WidgetModifier
 
     /**
      * Height 설정
      */
-    data class HeightModifier(val dimension: Dimension) : DslModifier
+    data class HeightModifier(val dimension: Dimension) : WidgetModifier
 
     /**
      * Padding 설정
      */
-    data class PaddingModifier(val padding: Padding) : DslModifier
+    data class PaddingModifier(val padding: Padding) : WidgetModifier
 
     /**
      * CornerRadius 설정
      */
-    data class CornerRadiusModifier(val cornerRadius: CornerRadius) : DslModifier
+    data class CornerRadiusModifier(val cornerRadius: CornerRadius) : WidgetModifier
 
     /**
      * Semantics 설정
      */
-    data class SemanticsModifier(val semantics: Semantics) : DslModifier
+    data class SemanticsModifier(val semantics: Semantics) : WidgetModifier
 
     /**
      * ClickAction 설정
      */
-    data class ClickActionModifier(val action: Action) : DslModifier
+    data class ClickActionModifier(val action: Action) : WidgetModifier
 
     /**
      * BackgroundColor 설정
      */
-    data class BackgroundColorModifier(val colorProvider: ColorProvider) : DslModifier
+    data class BackgroundColorModifier(val colorProvider: ColorProvider) : WidgetModifier
 
     /**
      * ViewId 설정
      */
-    data class ViewIdModifier(val viewId: Int) : DslModifier
+    data class ViewIdModifier(val viewId: Int) : WidgetModifier
 
     /**
      * PartiallyUpdate 설정
      */
-    data class PartiallyUpdateModifier(val partiallyUpdate: Boolean) : DslModifier
+    data class PartiallyUpdateModifier(val partiallyUpdate: Boolean) : WidgetModifier
 
     /**
      * Hide 설정
      */
-    data class HideModifier(val hide: Boolean) : DslModifier
+    data class HideModifier(val hide: Boolean) : WidgetModifier
 
     /**
      * Modifier 체이닝
      */
-    infix fun then(other: DslModifier): DslModifier {
+    infix fun then(other: WidgetModifier): WidgetModifier {
         return when {
-            this === DslModifier -> other
-            other === DslModifier -> this
+            this === WidgetModifier -> other
+            other === WidgetModifier -> this
             else -> Combined(this, other)
         }
     }
 
     /**
-     * The companion object `DslModifier` is the empty, default, or starter [DslModifier] that
-     * contains no elements. Use it to create a new [DslModifier] using modifier
+     * The companion object `WidgetModifier` is the empty, default, or starter [WidgetModifier] that
+     * contains no elements. Use it to create a new [WidgetModifier] using modifier
      * extension factory functions.
      */
-    public companion object : DslModifier {
-        override infix fun then(other: DslModifier): DslModifier = other
-        override fun toString(): String = "DslModifier"
+    public companion object : WidgetModifier {
+        override infix fun then(other: WidgetModifier): WidgetModifier = other
+        override fun toString(): String = "WidgetModifier"
     }
 }
 
@@ -115,56 +115,56 @@ interface DslModifier {
 /**
  * Padding 설정
  */
-fun DslModifier.padding(padding: Padding): DslModifier {
-    return this then DslModifier.PaddingModifier(padding)
+fun WidgetModifier.padding(padding: Padding): WidgetModifier {
+    return this then WidgetModifier.PaddingModifier(padding)
 }
 
 /**
  * CornerRadius 설정
  */
-fun DslModifier.cornerRadius(cornerRadius: CornerRadius): DslModifier {
-    return this then DslModifier.CornerRadiusModifier(cornerRadius)
+fun WidgetModifier.cornerRadius(cornerRadius: CornerRadius): WidgetModifier {
+    return this then WidgetModifier.CornerRadiusModifier(cornerRadius)
 }
 
 /**
  * Semantics 설정
  */
-fun DslModifier.semantics(semantics: Semantics): DslModifier {
-    return this then DslModifier.SemanticsModifier(semantics)
+fun WidgetModifier.semantics(semantics: Semantics): WidgetModifier {
+    return this then WidgetModifier.SemanticsModifier(semantics)
 }
 
 /**
  * ClickAction 설정
  */
-fun DslModifier.clickAction(action: Action): DslModifier {
-    return this then DslModifier.ClickActionModifier(action)
+fun WidgetModifier.clickAction(action: Action): WidgetModifier {
+    return this then WidgetModifier.ClickActionModifier(action)
 }
 
 /**
  * BackgroundColor 설정
  */
-fun DslModifier.backgroundColor(colorProvider: ColorProvider): DslModifier {
-    return this then DslModifier.BackgroundColorModifier(colorProvider)
+fun WidgetModifier.backgroundColor(colorProvider: ColorProvider): WidgetModifier {
+    return this then WidgetModifier.BackgroundColorModifier(colorProvider)
 }
 
 /**
  * ViewId 설정
  */
-fun DslModifier.viewId(viewId: Int): DslModifier {
-    return this then DslModifier.ViewIdModifier(viewId)
+fun WidgetModifier.viewId(viewId: Int): WidgetModifier {
+    return this then WidgetModifier.ViewIdModifier(viewId)
 }
 
 /**
  * PartiallyUpdate 설정
  */
-fun DslModifier.partiallyUpdate(partiallyUpdate: Boolean): DslModifier {
-    return this then DslModifier.PartiallyUpdateModifier(partiallyUpdate)
+fun WidgetModifier.partiallyUpdate(partiallyUpdate: Boolean): WidgetModifier {
+    return this then WidgetModifier.PartiallyUpdateModifier(partiallyUpdate)
 }
 
 /**
  * Hide 설정
  */
-fun DslModifier.hide(hide: Boolean): DslModifier {
-    return this then DslModifier.HideModifier(hide)
+fun WidgetModifier.hide(hide: Boolean): WidgetModifier {
+    return this then WidgetModifier.HideModifier(hide)
 }
 

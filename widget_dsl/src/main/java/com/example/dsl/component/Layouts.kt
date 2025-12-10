@@ -1,7 +1,7 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.DslModifier
+import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.syntax.BoxLayoutDsl
 import com.example.dsl.syntax.ColumnLayoutDsl
 import com.example.dsl.syntax.RowLayoutDsl
@@ -43,7 +43,7 @@ import com.example.dsl.proto.WidgetNode
  * ```
  */
 fun WidgetScope.Column(
-    modifier: DslModifier = DslModifier,
+    modifier: WidgetModifier = WidgetModifier,
     contentProperty: ColumnLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
@@ -87,7 +87,7 @@ fun WidgetScope.Column(
  * ```
  */
 fun WidgetScope.Row(
-    modifier: DslModifier = DslModifier,
+    modifier: WidgetModifier = WidgetModifier,
     contentProperty: RowLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
@@ -130,7 +130,7 @@ fun WidgetScope.Row(
  * ```
  */
 fun WidgetScope.Box(
-    modifier: DslModifier = DslModifier,
+    modifier: WidgetModifier = WidgetModifier,
     contentProperty: BoxLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {

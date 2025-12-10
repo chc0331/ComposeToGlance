@@ -30,7 +30,7 @@ import com.example.dsl.provider.DslLocalCellWidth
 import com.example.dsl.provider.DslLocalContentPadding
 import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalGridIndex
-import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.WidgetLocalProvider
 import com.example.dsl.provider.DslLocalRootPadding
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
@@ -69,14 +69,14 @@ class LargeAppWidget : DslAppWidget() {
         val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / 4
         val cellHeight = (widgetSize.height - ROOT_PADDING.dp * 2) / 2
 
-        DslLocalProvider(
+        WidgetLocalProvider(
             DslLocalRootPadding provides ROOT_PADDING.dp,
             DslLocalContentPadding provides CONTENT_PADDING.dp,
             DslLocalCellWidth provides cellWidth,
             DslLocalCellHeight provides cellHeight
         ) {
             Box(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 contentProperty = {
@@ -100,7 +100,7 @@ class LargeAppWidget : DslAppWidget() {
         val topMargin = rootPadding + (cellHeight?.times((gridIndex - 1) / 4) ?: 0.dp)
         val leftMargin = rootPadding + (cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp)
         Box(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(start = leftMargin.value, top = topMargin.value)
@@ -109,7 +109,7 @@ class LargeAppWidget : DslAppWidget() {
             val componentWidth = cellWidth?.times(widget.colSpan) ?: 0.dp
             val componentHeight = cellHeight?.times(widget.rowSpan) ?: 0.dp
             Box(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .width(componentWidth.value)
                     .height(componentHeight.value)
                     .padding(
@@ -119,14 +119,14 @@ class LargeAppWidget : DslAppWidget() {
                         end = contentPadding.value
                     )
             ) {
-                DslLocalProvider(
+                WidgetLocalProvider(
                     DslLocalSize provides DpSize(componentWidth, componentHeight),
                     DslLocalGridIndex provides gridIndex
                 ) {
                     val contentRadius = getLocal(DslLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {
                         Box(
-                            modifier = DslModifier
+                            modifier = WidgetModifier
                                 .cornerRadius(contentRadius.value)
                         ) {
                             it.renderContent(this)

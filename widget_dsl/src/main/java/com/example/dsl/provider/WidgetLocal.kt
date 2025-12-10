@@ -21,7 +21,7 @@ class WidgetLocalProvider<T>(
     val value: T
 )
 
-fun WidgetScope.DslLocalProvider(
+fun WidgetScope.WidgetLocalProvider(
     vararg providers: WidgetLocalProvider<*>,
     block: WidgetScope.() -> Unit
 ) {

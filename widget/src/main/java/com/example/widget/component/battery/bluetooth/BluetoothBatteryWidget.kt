@@ -43,7 +43,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
@@ -52,7 +52,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
             }
         ) {
             Row(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 contentProperty = {
@@ -69,7 +69,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
     private fun WidgetScope.DeviceContent(type: DeviceType) {
         val size = getLocal(DslLocalSize) as DpSize
         Box(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .width(size.width.value / 2)
                 .fillMaxHeight(),
             contentProperty = {
@@ -178,7 +178,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
             return size.height.value * 0.58f
         }
         Progress(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .viewId(progressViewId)
                 .partiallyUpdate(true)
                 .width(getProgressSize())
@@ -211,7 +211,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
             return size.height.value * 0.22f
         }
         Image(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .viewId(iconViewId)
                 .partiallyUpdate(true)
                 .width(getBatteryIconSize())
@@ -235,7 +235,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
         Row(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .wrapContentWidth()
                 .wrapContentHeight(),
             contentProperty = {
@@ -244,7 +244,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
             }
         ) {
             Text(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .viewId(textViewId)
                     .partiallyUpdate(true)
                     .wrapContentWidth()
@@ -267,7 +267,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
                 }
             )
             Text(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .wrapContentWidth()
                     .wrapContentHeight()
                     .padding(bottom = 2f),

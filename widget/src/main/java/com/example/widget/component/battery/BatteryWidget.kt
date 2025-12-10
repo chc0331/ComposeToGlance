@@ -45,7 +45,7 @@ class BatteryWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         Box(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
@@ -66,7 +66,7 @@ class BatteryWidget : WidgetComponent() {
                 }
                 // 프로그레스 밑에 배터리 용량 텍스트
                 Row(
-                    modifier = DslModifier
+                    modifier = WidgetModifier
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     contentProperty = {
@@ -90,7 +90,7 @@ class BatteryWidget : WidgetComponent() {
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         val batteryValue = getBatteryValue()
         Progress(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .viewId(getBatteryProgressId(gridIndex))
                 .partiallyUpdate(true)
                 .width(getProgressSize())
@@ -119,7 +119,7 @@ class BatteryWidget : WidgetComponent() {
             return size.height.value * 0.22f
         }
         Image(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .width(getBatteryIconSize())
                 .height(getBatteryIconSize()),
             contentProperty = {
@@ -136,7 +136,7 @@ class BatteryWidget : WidgetComponent() {
         val size = getLocal(DslLocalSize) as DpSize
         val textSize = size.height.value * 0.18f
         Row(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .wrapContentWidth()
                 .wrapContentHeight(),
             contentProperty = {
@@ -145,7 +145,7 @@ class BatteryWidget : WidgetComponent() {
             }
         ) {
             Text(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .viewId(getBatteryTextId(gridIndex))
                     .partiallyUpdate(true)
                     .wrapContentWidth()
@@ -164,7 +164,7 @@ class BatteryWidget : WidgetComponent() {
                 }
             )
             Text(
-                modifier = DslModifier
+                modifier = WidgetModifier
                     .wrapContentWidth()
                     .wrapContentHeight()
                     .padding(bottom = 2f),
@@ -193,7 +193,7 @@ class BatteryWidget : WidgetComponent() {
         val iconSize = getChargingIconSize()
         val gridIndex = getLocal(DslLocalGridIndex) as Int
         Image(
-            modifier = DslModifier
+            modifier = WidgetModifier
                 .viewId(getChargingIconId(gridIndex))
                 .width(iconSize * 0.6f)
                 .height(iconSize)

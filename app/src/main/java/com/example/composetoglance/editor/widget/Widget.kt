@@ -30,7 +30,7 @@ import com.example.dsl.WidgetLayout
 import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalPreview
-import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.WidgetLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.widget.SizeType
 import com.example.widget.component.WidgetComponent
@@ -136,14 +136,14 @@ private fun WidgetItemContent(
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
                     val layout = remember(key) {
                         WidgetLayout {
-                            DslLocalProvider(
+                            WidgetLocalProvider(
                                 DslLocalPreview provides true,
                                 DslLocalSize provides size,
                                 DslLocalContext provides context
                             ) {
                                 // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
-                                // this는 DslLocalProvider가 생성한 childScope를 가리킴
-                                // Content()가 생성한 children은 DslLocalProvider가 자동으로 수집함
+                                // this는 WidgetLocalProvider가 생성한 childScope를 가리킴
+                                // Content()가 생성한 children은 WidgetLocalProvider가 자동으로 수집함
                                 component.renderContent(this)
                             }
                         }

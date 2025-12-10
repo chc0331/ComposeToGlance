@@ -28,7 +28,7 @@ import com.example.dsl.provider.DslLocalBackgroundRadius
 import com.example.dsl.provider.DslLocalContentRadius
 import com.example.dsl.provider.DslLocalContext
 import com.example.dsl.provider.DslLocalGlanceId
-import com.example.dsl.provider.DslLocalProvider
+import com.example.dsl.provider.WidgetLocalProvider
 import com.example.dsl.provider.DslLocalSize
 import com.example.dsl.provider.DslLocalState
 import com.example.widget.R
@@ -70,7 +70,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val contentRadius = remember { context.getSystemContentRadius() }
         renderer.render(
             WidgetLayout {
-                DslLocalProvider(
+                WidgetLocalProvider(
                     DslLocalSize provides dpSize,
                     DslLocalContext provides context,
                     DslLocalState provides state,
@@ -79,7 +79,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     DslLocalContentRadius provides contentRadius
                 ) {
                     Box(
-                        modifier = DslModifier
+                        modifier = WidgetModifier
                             .width(dpSize.width.value)
                             .height(dpSize.height.value)
                             .backgroundColor(Color.LightGray.toArgb())

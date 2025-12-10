@@ -1,7 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.DslModifier
+import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.proto.ButtonProperty
 import com.example.dsl.proto.ContentScale
 import com.example.dsl.proto.FontWeight
@@ -32,7 +32,7 @@ import com.example.dsl.syntax.ColorDsl
  */
 class TextDsl(
     scope: WidgetScope,
-    modifier: DslModifier = DslModifier
+    modifier: WidgetModifier = WidgetModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = TextProperty.newBuilder()
     private val propertyDsl = TextPropertyDsl(propertyBuilder)
@@ -136,7 +136,7 @@ class TextDsl(
  */
 class ImageDsl(
     scope: WidgetScope,
-    modifier: DslModifier = DslModifier
+    modifier: WidgetModifier = WidgetModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = ImageProperty.newBuilder()
     private val propertyDsl = ImagePropertyDsl(propertyBuilder)
@@ -217,7 +217,7 @@ class ImageDsl(
  */
 class ButtonDsl(
     scope: WidgetScope,
-    modifier: DslModifier = DslModifier
+    modifier: WidgetModifier = WidgetModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = ButtonProperty.newBuilder()
     private val propertyDsl = ButtonPropertyDsl(propertyBuilder)
@@ -323,7 +323,7 @@ class ButtonDsl(
  */
 class ProgressDsl(
     scope: WidgetScope,
-    modifier: DslModifier = DslModifier
+    modifier: WidgetModifier = WidgetModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = ProgressProperty.newBuilder()
     private val propertyDsl = ProgressPropertyDsl(propertyBuilder)
@@ -418,7 +418,7 @@ class ProgressDsl(
  */
 class SpacerDsl(
     scope: WidgetScope,
-    modifier: DslModifier = DslModifier
+    modifier: WidgetModifier = WidgetModifier
 ) : BaseComponentDsl(scope) {
     private val propertyBuilder = SpacerProperty.newBuilder()
     private val propertyDsl = SpacerPropertyDsl(propertyBuilder)
