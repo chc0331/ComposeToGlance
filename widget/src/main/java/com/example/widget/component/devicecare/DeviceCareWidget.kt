@@ -3,6 +3,7 @@ package com.example.widget.component.devicecare
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.glance.GlanceModifier
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Column
 import com.example.dsl.component.Progress
@@ -35,8 +36,8 @@ class DeviceCareWidget : WidgetComponent() {
     override fun WidgetScope.Content() {
         Column(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb())
                 .padding(top = 6f, start = 8f, end = 8f, bottom = 6f),
             contentProperty = {
@@ -47,8 +48,8 @@ class DeviceCareWidget : WidgetComponent() {
             TitleBar()
             Column(
                 modifier = Modifier
-                    .width(matchParent)
-                    .height(matchParent),
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
                 contentProperty = {
                     verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
                 }
@@ -68,14 +69,14 @@ class DeviceCareWidget : WidgetComponent() {
         val localSize = getLocal(DslLocalSize) as DpSize
         Row(
             modifier = Modifier
-                .width(matchParent)
+                .fillMaxWidth()
                 .height(localSize.height.value * 0.28f)
                 .backgroundColor(Color.White.toArgb())
         ) {
             Row(
                 modifier = Modifier
-                    .width(wrapContent)
-                    .height(matchParent),
+                    .wrapContentWidth()
+                    .fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                     verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
@@ -94,8 +95,8 @@ class DeviceCareWidget : WidgetComponent() {
 
             Row(
                 modifier = Modifier
-                    .width(matchParent)
-                    .height(matchParent),
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }
@@ -122,8 +123,8 @@ class DeviceCareWidget : WidgetComponent() {
 
         Row(
             modifier = Modifier
-                .width(matchParent)
-                .height(wrapContent)
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             Row {
                 Text(
@@ -161,7 +162,7 @@ class DeviceCareWidget : WidgetComponent() {
     private fun WidgetScope.Spacer(height: Float = 2f) {
         Spacer(
             modifier = Modifier
-                .width(matchParent)
+                .fillMaxWidth()
                 .height(height)
         )
     }

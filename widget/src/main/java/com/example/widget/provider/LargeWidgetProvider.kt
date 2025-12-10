@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.byteArrayPreferencesKey
+import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
@@ -76,8 +77,8 @@ class LargeAppWidget : DslAppWidget() {
         ) {
             Box(
                 modifier = Modifier
-                    .width(matchParent)
-                    .height(matchParent),
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
                 contentProperty = {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
                 }
@@ -100,8 +101,8 @@ class LargeAppWidget : DslAppWidget() {
         val leftMargin = rootPadding + (cellWidth?.times((gridIndex - 1) % 4) ?: 0.dp)
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(start = leftMargin.value, top = topMargin.value)
                 .backgroundColor(Color.Transparent.toArgb())
         ) {

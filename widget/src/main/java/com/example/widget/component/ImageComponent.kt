@@ -35,8 +35,8 @@ class ImageComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.LightGray.toArgb()),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER

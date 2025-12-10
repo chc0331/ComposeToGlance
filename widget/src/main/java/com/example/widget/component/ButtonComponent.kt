@@ -39,8 +39,8 @@ class ButtonComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER

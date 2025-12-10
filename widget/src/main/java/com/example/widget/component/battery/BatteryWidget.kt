@@ -46,8 +46,8 @@ class BatteryWidget : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
@@ -67,8 +67,8 @@ class BatteryWidget : WidgetComponent() {
                 // 프로그레스 밑에 배터리 용량 텍스트
                 Row(
                     modifier = Modifier
-                        .width(matchParent)
-                        .height(wrapContent),
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     contentProperty = {
                         horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                         verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
@@ -137,8 +137,8 @@ class BatteryWidget : WidgetComponent() {
         val textSize = size.height.value * 0.18f
         Row(
             modifier = Modifier
-                .width(wrapContent)
-                .height(wrapContent),
+                .wrapContentWidth()
+                .wrapContentHeight(),
             contentProperty = {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                 verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
@@ -148,8 +148,8 @@ class BatteryWidget : WidgetComponent() {
                 modifier = Modifier
                     .viewId(getBatteryTextId(gridIndex))
                     .partiallyUpdate(true)
-                    .width(wrapContent)
-                    .height(wrapContent),
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
                 contentProperty = {
                     TextContent {
                         text = batteryValueText
@@ -165,8 +165,8 @@ class BatteryWidget : WidgetComponent() {
             )
             Text(
                 modifier = Modifier
-                    .width(wrapContent)
-                    .height(wrapContent)
+                    .wrapContentWidth()
+                    .wrapContentHeight()
                     .padding(bottom = 2f),
                 contentProperty = {
                     TextContent {

@@ -61,14 +61,6 @@ fun DimensionWeight(weight: Float): Dimension {
 }
 
 /**
- * Modifier에 width를 Dimension으로 설정
- * (Modifier.kt의 width(dimension: Dimension)과 동일하지만 확장 함수로 제공)
- */
-fun Modifier.width(dimension: Dimension): Modifier {
-    return this then Modifier.WidthModifier(dimension)
-}
-
-/**
  * Modifier에 width를 Dp 값으로 설정
  */
 fun Modifier.width(value: DpValue): Modifier {
@@ -82,6 +74,34 @@ fun Modifier.width(value: DpValue): Modifier {
 fun Modifier.width(value: Float): Modifier {
     val dimension = DimensionDp(value)
     return this then Modifier.WidthModifier(dimension)
+}
+
+/**
+ * Modifier에 width를 fillMaxWidth (matchParent)로 설정
+ */
+fun Modifier.fillMaxWidth(): Modifier {
+    return this then Modifier.WidthModifier(matchParent)
+}
+
+/**
+ * Modifier에 width를 wrapContentWidth로 설정
+ */
+fun Modifier.wrapContentWidth(): Modifier {
+    return this then Modifier.WidthModifier(wrapContent)
+}
+
+/**
+ * Modifier에 height를 fillMaxHeight (matchParent)로 설정
+ */
+fun Modifier.fillMaxHeight(): Modifier {
+    return this then Modifier.HeightModifier(matchParent)
+}
+
+/**
+ * Modifier에 height를 wrapContentHeight로 설정
+ */
+fun Modifier.wrapContentHeight(): Modifier {
+    return this then Modifier.HeightModifier(wrapContent)
 }
 
 /**

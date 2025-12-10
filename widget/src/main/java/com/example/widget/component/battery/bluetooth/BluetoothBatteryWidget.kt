@@ -44,8 +44,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.White.toArgb()),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
@@ -53,8 +53,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
         ) {
             Row(
                 modifier = Modifier
-                    .width(matchParent)
-                    .height(matchParent),
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
@@ -71,7 +71,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
         Box(
             modifier = Modifier
                 .width(size.width.value / 2)
-                .height(matchParent),
+                .fillMaxHeight(),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -236,8 +236,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
         val textSize = size.height.value * 0.18f
         Row(
             modifier = Modifier
-                .width(wrapContent)
-                .height(wrapContent),
+                .wrapContentWidth()
+                .wrapContentHeight(),
             contentProperty = {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                 verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
@@ -247,8 +247,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
                 modifier = Modifier
                     .viewId(textViewId)
                     .partiallyUpdate(true)
-                    .width(wrapContent)
-                    .height(wrapContent),
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
                 contentProperty = {
                     TextContent {
                         text = if (isConnect) {
@@ -268,8 +268,8 @@ class BluetoothBatteryWidget : WidgetComponent() {
             )
             Text(
                 modifier = Modifier
-                    .width(wrapContent)
-                    .height(wrapContent)
+                    .wrapContentWidth()
+                    .wrapContentHeight()
                     .padding(bottom = 2f),
                 contentProperty = {
                     TextContent {

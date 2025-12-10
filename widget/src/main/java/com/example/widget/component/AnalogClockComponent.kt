@@ -8,6 +8,8 @@ import com.example.dsl.component.Box
 import com.example.dsl.component.Progress
 import com.example.dsl.modifier.Modifier
 import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.fillMaxHeight
+import com.example.dsl.modifier.fillMaxWidth
 import com.example.dsl.modifier.height
 import com.example.dsl.modifier.matchParent
 import com.example.dsl.modifier.width
@@ -43,8 +45,8 @@ class AnalogClockComponent : WidgetComponent() {
     override fun WidgetScope.Content() {
         Box(
             modifier = Modifier
-                .width(matchParent)
-                .height(matchParent)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .backgroundColor(Color.Black.toArgb()),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
