@@ -24,10 +24,9 @@ internal object DimensionConverter {
                 Dimension.Wrap
             }
             protoDimension.matchParent -> {
-                Dimension.Expand
+                Dimension.Fill
             }
             protoDimension.hasWeight() -> {
-                // Glance는 weight를 직접 지원하지 않으므로 Expand로 변환
                 Dimension.Expand
             }
             else -> null
@@ -62,4 +61,3 @@ internal object DimensionConverter {
         return if (protoDimension.hasDp()) protoDimension.dp.value else null
     }
 }
-

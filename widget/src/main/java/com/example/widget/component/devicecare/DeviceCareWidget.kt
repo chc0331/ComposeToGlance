@@ -1,8 +1,12 @@
 package com.example.widget.component.devicecare
 
+import android.R.attr.label
+import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.datastore.preferences.core.Preferences
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
@@ -11,10 +15,13 @@ import com.example.dsl.component.Progress
 import com.example.dsl.component.Row
 import com.example.dsl.component.Spacer
 import com.example.dsl.component.Text
+import com.example.dsl.localprovider.WidgetLocalContext
 import com.example.dsl.localprovider.WidgetLocalSize
+import com.example.dsl.localprovider.WidgetLocalState
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.modifier.backgroundColor
 import com.example.dsl.modifier.cornerRadius
+import com.example.dsl.modifier.expandWidth
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
 import com.example.dsl.modifier.height
@@ -31,8 +38,11 @@ import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.widget.component.battery.BatteryViewIdType
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
+import com.example.widget.util.getSystemBackgroundRadius
+
 
 class DeviceCareWidget : WidgetComponent() {
 
@@ -48,291 +58,208 @@ class DeviceCareWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        
-        Box(
+        val verticalPadding = localSize.height.value * 0.03f
+
+        Row(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(Color(0xFFF5F5F5).toArgb())
                 .cornerRadius(16f)
-                .padding(top = 16f, start = 16f, end = 16f, bottom = 16f),
+                .padding(top = verticalPadding, start = 12f, end = 12f, bottom = verticalPadding),
             contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_TOP
             }
         ) {
-            // Main content
-            Column(
-                modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                contentProperty = {
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                    verticalAlignment = VerticalAlignment.V_ALIGN_TOP
-                }
-            ) {
-                // Memory Progress Bar with Icon
-                ProgressBarWithIcon(
-                    iconRes = R.drawable.ic_memory,
-                    label = "5.8GB / 8GB",
-                    progress = 0.725f, // 5.8 / 8
-                    progressColor = Color(0xFF2196F3).toArgb()
-                )
-                
-                Spacer(height = 12f)
-                
-                // Storage Progress Bar with Icon
-                ProgressBarWithIcon(
-                    iconRes = R.drawable.ic_storage,
-                    label = "120GB / 256GB",
-                    progress = 0.47f, // 120 / 256
-                    progressColor = Color(0xFF2196F3).toArgb()
-                )
-                
-                Spacer(height = 16f)
-                
-                // Info Row 1: Temperature and Battery
-                InfoRow(
-                    icon1Res = R.drawable.ic_temperature,
-                    text1 = "38°C · 24시간 가능",
-                    icon2Res = null,
-                    text2 = ""
-                )
-                
-                Spacer(height = 8f)
-                
-                // Info Row 2: Data Usage
-                InfoRow(
-                    icon1Res = R.drawable.ic_data_usage,
-                    text1 = "오늘 데이터 사용량: 1200MB",
-                    icon2Res = null,
-                    text2 = ""
-                )
-            }
-            
-            // Warning section overlay (top-right)
-//            Box(
-//                modifier = WidgetModifier
-//                    .fillMaxWidth()
-//                    .fillMaxHeight(),
-//                contentProperty = {
-//                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_END
-//                }
-//            ) {
-//                Column(
-//                    modifier = WidgetModifier
-//                        .wrapContentWidth()
-//                        .wrapContentHeight(),
-//                    contentProperty = {
-//                        horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-//                        verticalAlignment = VerticalAlignment.V_ALIGN_TOP
-//                    }
-//                ) {
-//                    Image(
-//                        modifier = WidgetModifier
-//                            .width(24f)
-//                            .height(24f),
-//                        contentProperty = {
-//                            Provider {
-//                                drawableResId = R.drawable.ic_warning
-//                            }
-//                        }
-//                    )
-//                    Spacer(height = 4f)
-//                    Text(
-//                        contentProperty = {
-//                            TextContent {
-//                                text = "경고"
-//                            }
-//                            fontSize = 10f
-//                            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-//                            FontColor {
-//                                Color {
-//                                    argb = Color(0xFFFF0000).toArgb()
-//                                }
-//                            }
-//                        }
-//                    )
-//                }
-//            }
+            DeviceStateContent(
+                modifier = WidgetModifier.fillMaxWidth().fillMaxHeight()
+            )
         }
     }
 
-    private fun WidgetScope.ProgressBarWithIcon(
-        iconRes: Int,
-        label: String,
-        progress: Float,
-        progressColor: Int
-    ) {
+    private fun WidgetScope.DeviceStateContent(modifier: WidgetModifier) {
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        
-        Row(
-            modifier = WidgetModifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
+        Column(
+            modifier = modifier,
             contentProperty = {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
+            val itemHeight = localSize.height.value * 0.42f
+            // Memory Progress Bar with Icon
+            ProgressBarWithIcon(
+                modifier = WidgetModifier.fillMaxWidth().height(itemHeight),
+                iconRes = R.drawable.ic_memory,
+                progressColor = Color(0xFF2196F3).toArgb()
+            )
+
+            // Storage Progress Bar with Icon
+            ProgressBarWithIcon(
+                modifier = WidgetModifier.fillMaxWidth().height(itemHeight),
+                iconRes = R.drawable.ic_storage,
+                progressColor = Color(0xFF2196F3).toArgb(),
+                memory = false
+            )
+        }
+    }
+
+    private fun WidgetScope.ProgressBarWithIcon(
+        modifier: WidgetModifier = WidgetModifier,
+        iconRes: Int,
+        progressColor: Int,
+        memory: Boolean = true
+    ) {
+        val localSize = getLocal(WidgetLocalSize) as DpSize
+        Row(
+            modifier = modifier.padding(vertical = 2f),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+            }
+        ) {
+            val iconSize = localSize.height * 0.36f
             // Icon
             Image(
                 modifier = WidgetModifier
-                    .width(20f)
-                    .height(20f),
+                    .width(iconSize.value)
+                    .height(iconSize.value).backgroundColor(Color.LightGray.toArgb())
+                    .padding(all = 4f)
+                    .cornerRadius(12f),
                 contentProperty = {
                     Provider {
                         drawableResId = iconRes
                     }
                 }
             )
-            
-            Spacer(width = 8f)
-            
-            // Progress bar and label column
-            Column(
-                modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                contentProperty = {
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }
-            ) {
-                // Progress bar
-                Progress(
-                    modifier = WidgetModifier
-                        .fillMaxWidth()
-                        .height(12f)
-                        .cornerRadius(6f),
-                    contentProperty = {
-                        progressType = ProgressType.PROGRESS_TYPE_LINEAR
-                        progressValue = progress
-                        maxValue = 1f
-                        ProgressColor {
-                            Color {
-                                argb = progressColor
-                            }
-                        }
-                        BackgroundColor {
-                            Color {
-                                argb = Color(0xFFE0E0E0).toArgb()
-                            }
-                        }
-                    }
+
+            Spacer(modifier = WidgetModifier.width(4f).wrapContentHeight())
+
+            val progressHeight = localSize.height.value * 0.28f
+            if (memory) {
+                RamUsageProcess(
+                    modifier = WidgetModifier.expandWidth().height(progressHeight),
+                    progressColor = progressColor
                 )
-                
-                Spacer(height = 4f)
-                
-                // Label
-                Text(
-                    contentProperty = {
-                        TextContent {
-                            text = label
-                        }
-                        fontSize = 11f
-                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                        FontColor {
-                            Color {
-                                argb = Color(0xFF666666).toArgb()
-                            }
-                        }
-                    }
-                )
-            }
-        }
-    }
-    
-    private fun WidgetScope.InfoRow(
-        icon1Res: Int,
-        text1: String,
-        icon2Res: Int?,
-        text2: String
-    ) {
-        Row(
-            modifier = WidgetModifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            contentProperty = {
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-            }
-        ) {
-            // First icon and text
-            Image(
-                modifier = WidgetModifier
-                    .width(16f)
-                    .height(16f),
-                contentProperty = {
-                    Provider {
-                        drawableResId = icon1Res
-                    }
-                }
-            )
-            
-            Spacer(width = 4f)
-            
-            Text(
-                contentProperty = {
-                    TextContent {
-                        text = text1
-                    }
-                    fontSize = 11f
-                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                    FontColor {
-                        Color {
-                            argb = Color(0xFF666666).toArgb()
-                        }
-                    }
-                }
-            )
-            
-            // Second icon and text (optional)
-            if (icon2Res != null && text2.isNotEmpty()) {
-                Spacer(width = 12f)
-                
-                Image(
-                    modifier = WidgetModifier
-                        .width(16f)
-                        .height(16f),
-                    contentProperty = {
-                        Provider {
-                            drawableResId = icon2Res
-                        }
-                    }
-                )
-                
-                Spacer(width = 4f)
-                
-                Text(
-                    contentProperty = {
-                        TextContent {
-                            text = text2
-                        }
-                        fontSize = 11f
-                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL
-                        FontColor {
-                            Color {
-                                argb = Color(0xFF666666).toArgb()
-                            }
-                        }
-                    }
+            } else {
+                StorageUsageProcess(
+                    modifier = WidgetModifier.expandWidth().height(progressHeight),
+                    progressColor = progressColor
                 )
             }
         }
     }
 
-    private fun WidgetScope.Spacer(height: Float = 0f, width: Float = 0f) {
-        if (height > 0f) {
-            Spacer(
+    private fun WidgetScope.RamUsageProcess(
+        modifier: WidgetModifier = WidgetModifier,
+        progressColor: Int
+    ) {
+        val context = getLocal(WidgetLocalContext) as Context
+        val state = getLocal(WidgetLocalState) as Preferences
+        val currentMemoryUsage = state[DeviceCarePreferenceKey.MemoryUsage] ?: 0f
+        val totalMemory = state[DeviceCarePreferenceKey.TotalMemory] ?: 100f
+        val progress = (currentMemoryUsage * 100f) / totalMemory
+        Box(
+            modifier = modifier,
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
+        ) {
+            // Progress bar
+            Progress(
                 modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .height(height)
+                    .fillMaxWidth().fillMaxHeight()
+                    .cornerRadius(context.getSystemBackgroundRadius().value),
+                contentProperty = {
+                    progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                    progressValue = progress
+                    maxValue = 100f
+                    ProgressColor {
+                        Color {
+                            argb = progressColor
+                        }
+                    }
+                    BackgroundColor {
+                        Color {
+                            argb = Color(0xFFE0E0E0).toArgb()
+                        }
+                    }
+                }
             )
-        } else if (width > 0f) {
-            Spacer(
+
+            Spacer(modifier = WidgetModifier.height(4f).wrapContentWidth())
+
+            // Label
+            Text(
+                contentProperty = {
+                    TextContent {
+                        text = "${currentMemoryUsage}GB / ${totalMemory}GB"
+                    }
+                    fontSize = 11f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color(0xFF000000).toArgb()
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    private fun WidgetScope.StorageUsageProcess(
+        modifier: WidgetModifier = WidgetModifier,
+        progressColor: Int
+    ) {
+        val context = getLocal(WidgetLocalContext) as Context
+        val state = getLocal(WidgetLocalState) as Preferences
+        val currentStorageUsage = state[DeviceCarePreferenceKey.StorageUsage] ?: 0f
+        val totalStorage = state[DeviceCarePreferenceKey.TotalStorage] ?: 100f
+        val progress = (currentStorageUsage * 100f) / totalStorage
+        Box(
+            modifier = modifier,
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
+        ) {
+            // Progress bar
+            Progress(
                 modifier = WidgetModifier
-                    .width(width)
-                    .fillMaxHeight()
+                    .fillMaxWidth().fillMaxHeight()
+                    .cornerRadius(context.getSystemBackgroundRadius().value),
+                contentProperty = {
+                    progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                    progressValue = progress
+                    maxValue = 100f
+                    ProgressColor {
+                        Color {
+                            argb = progressColor
+                        }
+                    }
+                    BackgroundColor {
+                        Color {
+                            argb = Color(0xFFE0E0E0).toArgb()
+                        }
+                    }
+                }
+            )
+
+            Spacer(modifier = WidgetModifier.height(4f).wrapContentWidth())
+
+            // Label
+            Text(
+                contentProperty = {
+                    TextContent {
+                        text = "${currentStorageUsage}GB / ${totalStorage}GB"
+                    }
+                    fontSize = 11f
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    FontColor {
+                        Color {
+                            argb = Color(0xFF000000).toArgb()
+                        }
+                    }
+                }
             )
         }
     }
@@ -341,54 +268,27 @@ class DeviceCareWidget : WidgetComponent() {
         return DeviceCareViewIdType.all()
     }
 
-    // View ID Helper 메서드들
-    /**
-     * 점수 텍스트 View ID 조회
-     */
-    fun getScoreTextId(gridIndex: Int): Int {
-        return generateViewId(DeviceCareViewIdType.ScoreText, gridIndex)
+    fun getRamUsageText(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.RamUsageText, gridIndex)
     }
 
-    /**
-     * 프로그레스 View ID 조회
-     */
-    fun getProgressId(gridIndex: Int, viewIdType: DeviceCareViewIdType): Int {
-        return generateViewId(viewIdType, gridIndex)
+    fun getRamUsageProgress(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.RamUsageProgress, gridIndex)
     }
 
-    /**
-     * 메모리 프로그레스 View ID 조회
-     */
-    fun getMemoryProgressId(gridIndex: Int): Int {
-        return generateViewId(DeviceCareViewIdType.MemoryProgress, gridIndex)
+    fun getStorageUsageText(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.StorageUsageText, gridIndex)
     }
 
-    /**
-     * 저장소 프로그레스 View ID 조회
-     */
-    fun getStorageProgressId(gridIndex: Int): Int {
-        return generateViewId(DeviceCareViewIdType.StorageProgress, gridIndex)
-    }
-
-    /**
-     * CPU 프로그레스 View ID 조회
-     */
-    fun getCpuProgressId(gridIndex: Int): Int {
-        return generateViewId(DeviceCareViewIdType.CpuProgress, gridIndex)
-    }
-
-    /**
-     * 온도 프로그레스 View ID 조회
-     */
-    fun getTemperatureProgressId(gridIndex: Int): Int {
-        return generateViewId(DeviceCareViewIdType.TemperatureProgress, gridIndex)
+    fun getStorageUsageProgress(gridIndex: Int): Int {
+        return generateViewId(DeviceCareViewIdType.StorageUsageProgress, gridIndex)
     }
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = DeviceCareUpdateManager
-    
+
     override fun getDataStore() = DeviceCareComponentDataStore
-    
+
     override fun getLifecycle() = DeviceCareLifecycle
-    
+
     override fun requiresAutoLifecycle() = true
 }

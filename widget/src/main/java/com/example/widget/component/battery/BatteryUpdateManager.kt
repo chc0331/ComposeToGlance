@@ -8,6 +8,7 @@ import android.widget.RemoteViews
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.R
+import com.example.widget.component.devicecare.DeviceCareWorker
 import com.example.widget.component.update.ComponentUpdateHelper
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
@@ -48,7 +49,6 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     }
 
     override suspend fun syncComponentState(context: Context) {
-        // 새로운 ComponentDataStore 사용
         val batteryData = BatteryComponentDataStore.loadData(context)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->

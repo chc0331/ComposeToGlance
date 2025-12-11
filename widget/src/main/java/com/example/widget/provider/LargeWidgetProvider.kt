@@ -38,6 +38,8 @@ import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.BluetoothBatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.checkBluetoothBatteryComponentExist
 import com.example.widget.component.battery.checkBatteryComponentExist
+import com.example.widget.component.devicecare.DeviceCareUpdateManager
+import com.example.widget.component.devicecare.checkDeviceCareComponentExist
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
@@ -188,6 +190,9 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                 }
                 if (widgetLayoutData.checkBatteryComponentExist()) {
                     BatteryUpdateManager.syncComponentState(context)
+                }
+                if (widgetLayoutData.checkDeviceCareComponentExist()) {
+                    DeviceCareUpdateManager.syncComponentState(context)
                 }
             }
         }

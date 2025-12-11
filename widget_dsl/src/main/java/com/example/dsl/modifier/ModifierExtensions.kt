@@ -10,7 +10,7 @@ import com.example.dsl.syntax.builder.Dp as DpBuilder
 
 /**
  * Modifier 편의 확장 함수들
- * 
+ *
  * Dimension, Padding, CornerRadius 등을 간편하게 생성할 수 있는 함수들을 제공합니다.
  */
 
@@ -80,11 +80,19 @@ fun WidgetModifier.wrapContentWidth(): WidgetModifier {
     return this then WidgetModifier.WidthModifier(Dimension.newBuilder().setWrapContent(true).build())
 }
 
+fun WidgetModifier.expandWidth(): WidgetModifier{
+    return this then WidgetModifier.WidthModifier(Dimension.newBuilder().setWeight(1f).build())
+}
+
 /**
  * Modifier에 height를 fillMaxHeight (matchParent)로 설정
  */
 fun WidgetModifier.fillMaxHeight(): WidgetModifier {
     return this then WidgetModifier.HeightModifier(Dimension.newBuilder().setMatchParent(true).build())
+}
+
+fun WidgetModifier.expandHeight(): WidgetModifier{
+    return this then WidgetModifier.HeightModifier(Dimension.newBuilder().setWeight(1f).build())
 }
 
 /**
@@ -243,4 +251,3 @@ fun ColorProvider(colorArgb: Int): ColorProvider {
 fun WidgetModifier.backgroundColor(colorArgb: Int): WidgetModifier {
     return backgroundColor(ColorProvider(colorArgb))
 }
-

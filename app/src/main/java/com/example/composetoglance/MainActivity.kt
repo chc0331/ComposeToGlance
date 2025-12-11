@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
         initializeWidgetComponents()
         
         // Widget 컴포넌트 Lifecycle 초기화
-        WidgetComponentRegistry.initializeLifecycles(applicationContext)
+//        WidgetComponentRegistry.initializeLifecycles(applicationContext)
         
         enableEdgeToEdge()
 

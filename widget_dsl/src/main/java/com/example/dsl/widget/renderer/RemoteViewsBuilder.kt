@@ -23,9 +23,6 @@ internal object RemoteViewsBuilder {
         viewProperty: ViewProperty,
         context: Context
     ) {
-
-        Log.i("heec.choi","Viewproperty : ${viewProperty.width.dp} ${viewProperty.height.dp}")
-
         if (viewProperty.width.dp.value != 0f) {
             remoteViews.setViewLayoutWidth(
                 viewId,

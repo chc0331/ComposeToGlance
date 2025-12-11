@@ -19,3 +19,4 @@ data class BatteryData(
     val isConnect: Boolean = true
 )
 
+

@@ -45,3 +45,4 @@ interface ComponentLifecycle {
     fun isRegistered(): Boolean
 }
 
+

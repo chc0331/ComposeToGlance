@@ -28,8 +28,7 @@ object DeviceCareLifecycle : ComponentLifecycle {
         try {
             val workRequest = PeriodicWorkRequestBuilder<DeviceCareWorker>(
                 15, TimeUnit.MINUTES
-            )
-                .addTag("device_care_worker_tag")
+            ).addTag("device_care_worker_tag")
                 .build()
             
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -63,4 +62,5 @@ object DeviceCareLifecycle : ComponentLifecycle {
     
     override fun isRegistered(): Boolean = registered
 }
+
 

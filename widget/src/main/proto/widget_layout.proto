@@ -49,3 +49,4 @@ message WidgetLayout {
   repeated PlacedWidgetComponent placed_widget_component = 2;
 }
 
+
