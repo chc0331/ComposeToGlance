@@ -1,8 +1,6 @@
 package com.example.widget.component.devicecare
 
-import android.R.attr.label
 import android.content.Context
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -38,7 +36,6 @@ import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
-import com.example.widget.component.battery.BatteryViewIdType
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
 import com.example.widget.util.getSystemBackgroundRadius
@@ -162,7 +159,7 @@ class DeviceCareWidget : WidgetComponent() {
         Box(
             modifier = modifier,
             contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
             }
         ) {
             // Progress bar
@@ -188,22 +185,56 @@ class DeviceCareWidget : WidgetComponent() {
             )
 
             Spacer(modifier = WidgetModifier.height(4f).wrapContentWidth())
-
-            // Label
             Text(
+                modifier = WidgetModifier.wrapContentWidth().wrapContentHeight()
+                    .padding(start = 6f),
                 contentProperty = {
                     TextContent {
-                        text = "${currentMemoryUsage}GB / ${totalMemory}GB"
+                        text = "Ram"
                     }
-                    fontSize = 11f
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    fontSize = 10f
+                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL
                     FontColor {
                         Color {
-                            argb = Color(0xFF000000).toArgb()
+                            argb = Color(0xFFFFFFFF).toArgb()
                         }
                     }
                 }
             )
+            Row(
+                modifier = WidgetModifier.fillMaxWidth().wrapContentHeight().padding(end = 4f),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_END
+                }) {
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = "${String.format("%.1f", (100 - progress))}%"
+                        }
+                        fontSize = 12f
+                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                        FontColor {
+                            Color {
+                                argb = Color(0xFF000000).toArgb()
+                            }
+                        }
+                    }
+                )
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = " Free"
+                        }
+                        fontSize = 8f
+                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                        FontColor {
+                            Color {
+                                argb = Color(0xFF000000).toArgb()
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 
@@ -219,7 +250,7 @@ class DeviceCareWidget : WidgetComponent() {
         Box(
             modifier = modifier,
             contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
             }
         ) {
             // Progress bar
@@ -245,22 +276,57 @@ class DeviceCareWidget : WidgetComponent() {
             )
 
             Spacer(modifier = WidgetModifier.height(4f).wrapContentWidth())
-
-            // Label
             Text(
+                modifier = WidgetModifier.wrapContentWidth().wrapContentHeight()
+                    .padding(start = 6f),
                 contentProperty = {
                     TextContent {
-                        text = "${currentStorageUsage}GB / ${totalStorage}GB"
+                        text = "Storage"
                     }
-                    fontSize = 11f
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                    fontSize = 10f
+                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL
                     FontColor {
                         Color {
-                            argb = Color(0xFF000000).toArgb()
+                            argb = Color(0xFFFFFFFF).toArgb()
                         }
                     }
                 }
             )
+
+            Row(
+                modifier = WidgetModifier.fillMaxWidth().wrapContentHeight().padding(end = 4f),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_END
+                }) {
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = "${String.format("%.1f", (100 - progress))}%"
+                        }
+                        fontSize = 12f
+                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                        FontColor {
+                            Color {
+                                argb = Color(0xFF000000).toArgb()
+                            }
+                        }
+                    }
+                )
+                Text(
+                    contentProperty = {
+                        TextContent {
+                            text = " Free"
+                        }
+                        fontSize = 8f
+                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
+                        FontColor {
+                            Color {
+                                argb = Color(0xFF000000).toArgb()
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 

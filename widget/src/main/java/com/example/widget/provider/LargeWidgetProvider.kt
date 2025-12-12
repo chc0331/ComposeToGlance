@@ -147,6 +147,7 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
         get() = LargeAppWidget()
 
     override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
         Log.i(TAG, "onReceive / ${intent.action}")
         if (intent.action == "com.example.widget.test") {
             BatteryStatusReceiver().onReceive(
@@ -171,7 +172,6 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
         } else if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             initData(context, intent)
         }
-        super.onReceive(context, intent)
     }
 
     private fun initData(context: Context, intent: Intent) {

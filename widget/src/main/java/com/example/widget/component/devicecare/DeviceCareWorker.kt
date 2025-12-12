@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -14,7 +13,6 @@ class DeviceCareWorker(
     private val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
-    private val TAG = "DeviceCareWorker"
     override suspend fun doWork(): Result {
         return try {
             val deviceState = DeviceStateCollector.collect(context = context)
@@ -35,7 +33,8 @@ class DeviceCareWorker(
     }
 
     companion object {
-        private val WORK_NAME = "device_care_worker"
+        private const val TAG = "DeviceCareWorker"
+        private const val WORK_NAME = "device_care_worker"
 
         fun buildRequest() = PeriodicWorkRequestBuilder<DeviceCareWorker>(
             15, TimeUnit.MINUTES
@@ -43,6 +42,7 @@ class DeviceCareWorker(
 
         fun registerWorker(context: Context) {
             val workRequest = buildRequest()
+            Log.i(TAG, "registerWorker - ${System.currentTimeMillis()}")
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, workRequest
             )

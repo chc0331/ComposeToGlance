@@ -7,7 +7,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.component.update.ComponentUpdateHelper
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
-import com.google.android.material.color.utilities.Score.score
+import com.example.widget.provider.LargeAppWidget
 
 object DeviceCareUpdateManager : ComponentUpdateManager<DeviceState> {
 
@@ -58,6 +58,7 @@ object DeviceCareUpdateManager : ComponentUpdateManager<DeviceState> {
             .forEach { (widgetId, _) ->
                 Log.i(TAG, "Sync widget state: $widgetId $deviceState")
                 updateWidgetState(context, widgetId, syncData)
+                updateWidget(context, widgetId)
             }
         DeviceCareWorker.registerWorker(context)
     }
@@ -74,6 +75,19 @@ object DeviceCareUpdateManager : ComponentUpdateManager<DeviceState> {
             pref[DeviceCarePreferenceKey.TotalMemory] = data.totalMemory
             pref[DeviceCarePreferenceKey.StorageUsage] = data.storageUsage
             pref[DeviceCarePreferenceKey.TotalStorage] = data.totalStorage
+        }
+    }
+
+    private suspend fun updateWidget(
+        context: Context,
+        widgetId: Int
+    ) {
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
+        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+        glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
+            if (id == glanceId) {
+                LargeAppWidget().update(context, id)
+            }
         }
     }
 }

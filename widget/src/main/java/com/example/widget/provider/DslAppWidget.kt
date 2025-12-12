@@ -3,7 +3,11 @@ package com.example.widget.provider
 import android.content.Context
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.preferences.core.Preferences
@@ -19,11 +23,10 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.text.Text
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.widget.GlanceRenderer
-import com.example.dsl.modifier.*
 import com.example.dsl.localprovider.WidgetLocalBackgroundRadius
 import com.example.dsl.localprovider.WidgetLocalContentRadius
 import com.example.dsl.localprovider.WidgetLocalContext
@@ -31,6 +34,13 @@ import com.example.dsl.localprovider.WidgetLocalGlanceId
 import com.example.dsl.localprovider.WidgetLocalProvider
 import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
+import com.example.dsl.modifier.WidgetModifier
+import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.cornerRadius
+import com.example.dsl.modifier.height
+import com.example.dsl.modifier.width
+import com.example.dsl.proto.WidgetLayoutDocument
+import com.example.dsl.widget.GlanceRenderer
 import com.example.widget.R
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.util.getSystemContentRadius
@@ -68,8 +78,10 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val renderer = remember { GlanceRenderer(context) }
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
-        renderer.render(
-            WidgetLayout {
+        var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
+
+        LaunchedEffect(state) {
+            renderContent = WidgetLayout {
                 WidgetLocalProvider(
                     WidgetLocalSize provides dpSize,
                     WidgetLocalContext provides context,
@@ -89,7 +101,22 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     }
                 }
             }
-        )
+        }
+        if (renderContent == null) {
+            LoadingContent()
+        } else {
+            renderer.render(renderContent!!)
+        }
+    }
+
+    @Composable
+    private fun LoadingContent() {
+        androidx.glance.layout.Box(
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Loading...")
+        }
     }
 
     abstract fun WidgetScope.DslContent()
