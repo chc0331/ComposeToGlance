@@ -128,7 +128,10 @@ class WidgetEditorViewModel(
      */
     fun getOccupiedCells(excluding: PositionedWidget? = null): Set<Int> {
         return positionedWidgets
-            .filter { it != excluding }
+            .filter { 
+                // ID 기반 비교로 더 안전하게 제외 (참조 비교와 ID 비교 모두 지원)
+                excluding == null || it.id != excluding.id
+            }
             .flatMap { positionedWidget ->
                 if (positionedWidget.cellIndices.isNotEmpty()) {
                     positionedWidget.cellIndices
