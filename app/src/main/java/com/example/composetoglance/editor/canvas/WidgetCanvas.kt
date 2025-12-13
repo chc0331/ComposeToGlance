@@ -16,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
@@ -43,6 +45,7 @@ fun WidgetCanvas(
     val selectedLayout = viewModel.selectedLayout
     val positionedWidgets = viewModel.positionedWidgets
     var canvasPosition by remember { mutableStateOf(Offset.Zero) }
+    var canvasBounds by remember { mutableStateOf<Rect?>(null) }
     var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
     val density = LocalDensity.current
     val dragInfo = LocalDragTargetInfo.current
@@ -109,9 +112,13 @@ fun WidgetCanvas(
         modifier = modifier
             .onGloballyPositioned { layoutCoordinates ->
                 val newPosition = layoutCoordinates.positionInWindow()
+                val newBounds = layoutCoordinates.boundsInWindow()
                 // 값이 실제로 변경되었을 때만 상태 업데이트하여 불필요한 재구성 방지
                 if (newPosition != canvasPosition) {
                     canvasPosition = newPosition
+                }
+                if (newBounds != canvasBounds) {
+                    canvasBounds = newBounds
                 }
             }
     ) {
@@ -154,6 +161,14 @@ fun WidgetCanvas(
                 canvasPosition = canvasPosition,
                 density = density,
                 dragInfo = dragInfo
+            )
+
+            DeleteZoneIndicator(
+                layoutBounds = layoutBounds,
+                canvasPosition = canvasPosition,
+                canvasBounds = canvasBounds,
+                dragInfo = dragInfo,
+                density = density
             )
 
             // Display dropped widgets
