@@ -101,6 +101,7 @@ fun MainContent(
                     onWidgetSelected = { widget ->
                         widgetToAdd = widget
                     },
+                    selectedLayout = viewModel.selectedLayout,
                     modifier = Modifier
                         .weight(CanvasConstants.BOTTOM_PANEL_WEIGHT)
                         .clip(RoundedCornerShape(CanvasConstants.BOTTOM_PANEL_CORNER_RADIUS))

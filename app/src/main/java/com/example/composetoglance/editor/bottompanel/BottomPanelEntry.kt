@@ -17,7 +17,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,10 +58,19 @@ fun BottomPanelWithTabs(
     categories: List<WidgetCategory>,
     onLayoutSelected: (Layout) -> Unit,
     modifier: Modifier = Modifier,
-    onWidgetSelected: (WidgetComponent) -> Unit = {}
+    onWidgetSelected: (WidgetComponent) -> Unit = {},
+    selectedLayout: Layout? = null
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
+    val isWidgetTabEnabled = selectedLayout != null
+
+    // 레이아웃이 선택 해제되면 레이아웃 탭으로 자동 전환
+    LaunchedEffect(selectedLayout) {
+        if (selectedLayout == null && tabIndex == 1) {
+            tabIndex = 0
+        }
+    }
 
     Column(modifier = modifier) {
         TabRow(
@@ -84,12 +95,34 @@ fun BottomPanelWithTabs(
             }
         ) {
             tabs.forEachIndexed { index, title ->
+                val isTabEnabled = index != 1 || isWidgetTabEnabled
+                val isWidgetTabDisabled = index == 1 && !isWidgetTabEnabled
                 Tab(
                     selected = tabIndex == index,
-                    onClick = { tabIndex = index },
-                    text = { Text(text = title) },
+                    onClick = { 
+                        if (index == 1 && !isWidgetTabEnabled) {
+                            // 위젯 탭이 비활성화된 경우 클릭 무시
+                            return@Tab
+                        }
+                        tabIndex = index 
+                    },
+                    enabled = isTabEnabled,
+                    text = { 
+                        Text(
+                            text = title,
+                            color = if (isWidgetTabDisabled) {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) // disabled 색상
+                            } else {
+                                Color.Unspecified // 기본 색상 사용
+                            }
+                        ) 
+                    },
                     selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = MaterialTheme.colorScheme.primary
+                    unselectedContentColor = if (isWidgetTabDisabled) {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) // disabled 색상
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
                 )
             }
         }
