@@ -1,7 +1,9 @@
 package com.example.dsl.modifier
 
+import android.content.ComponentName
 import com.example.dsl.proto.Action
 import com.example.dsl.proto.ColorProvider
+import com.example.dsl.proto.Component
 import com.example.dsl.proto.CornerRadius
 import com.example.dsl.proto.Dimension
 import com.example.dsl.proto.Padding
@@ -134,9 +136,32 @@ fun WidgetModifier.semantics(semantics: Semantics): WidgetModifier {
 }
 
 /**
- * ClickAction 설정
+ * ClickAction 설정 (Activity Component 정보를 직접 전달)
+ * 
+ * @param componentName Activity의 ComponentName
+ * 
+ * 사용 예시:
+ * ```
+ * Text(
+ *     text = "Open Settings",
+ *     modifier = WidgetModifier
+ *         .clickAction(
+ *             ComponentName("com.example.app", "com.example.app.SettingsActivity")
+ *         )
+ * )
+ * ```
  */
-fun WidgetModifier.clickAction(action: Action): WidgetModifier {
+fun WidgetModifier.clickAction(componentName: ComponentName): WidgetModifier {
+    val component = Component.newBuilder()
+        .setPackageName(componentName.packageName)
+        .setClassName(componentName.className)
+        .build()
+    
+    val action = Action.newBuilder()
+        .setActivity(true)
+        .setComponent(component)
+        .build()
+    
     return this then WidgetModifier.ClickActionModifier(action)
 }
 
