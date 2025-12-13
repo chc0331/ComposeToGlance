@@ -1,5 +1,6 @@
 package com.example.dsl.widget.renderer.strategy
 
+import android.util.Log
 import com.example.dsl.proto.WidgetNode
 
 /**
@@ -28,6 +29,7 @@ internal object RenderStrategyFactory {
 
         // 애니메이션 이미지는 항상 RemoteViews 사용
         if (node.image.animation) {
+            Log.i("heec.choi","AnimationRemoteViews")
             return ImageRenderStrategy.AnimationRemoteViews
         }
 

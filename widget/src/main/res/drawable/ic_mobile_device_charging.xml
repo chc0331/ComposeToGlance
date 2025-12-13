@@ -1,0 +1,80 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="37dp"
+            android:height="33dp"
+            android:viewportWidth="32.6"
+            android:viewportHeight="24.8">
+
+            <!-- 1. Device Frame -->
+            <path
+                android:name="device_frame"
+                android:fillColor="#000000"
+                android:fillType="evenOdd"
+                android:pathData="M20.65,1.03 H11.95 C9.23,1.03 8.07,2.07 8.07,4.13 v16.53 C8.07,22.73 9.23,23.77 11.95,23.77 h8.70 C23.37,23.77 24.53,22.73 24.53,20.67 V4.13 C24.53,2.07 23.37,1.03 20.65,1.03 Z
+                M22.22,21.70 H10.38 c-1.05,0 -1.96,-0.72 -1.96,-1.55 V4.65 c0,-0.83 0.91,-1.55 1.96,-1.55 h11.84 c1.05,0 1.96,0.72 1.96,1.55 v15.50 c0,0.83 -0.91,1.55 -1.96,1.55 Z" />
+
+            <!-- 2. Dynamic Island -->
+            <path
+                android:name="dynamic_island"
+                android:fillColor="#000000"
+                android:pathData="M14.56,4.13 h3.47 c0.70,0 1.27,0.46 1.27,1.03 v0.21 c0,0.57 -0.57,1.03 -1.27,1.03 h-3.47 c-0.70,0 -1.27,-0.46 -1.27,-1.03 V5.17 c0,-0.57 0.57,-1.03 1.27,-1.03 Z" />
+
+            <!-- 3. Charging Bolt Group -->
+            <group
+                android:name="charging_bolt_group"
+                android:pivotX="16.75"
+                android:pivotY="14.0"
+                android:scaleX="0"
+                android:scaleY="0">
+                <path
+                    android:name="charging_bolt"
+                    android:fillColor="#000000"
+                    android:pathData="M18.5,7.5 L14.5,14.5 L16.5,14.5 L15.0,20.5 L19.0,13.5 L17.0,13.5 Z" />
+            </group>
+
+        </vector>
+    </aapt:attr>
+
+    <!-- Charging Bolt Animation -->
+    <target android:name="charging_bolt_group">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+
+                <!-- 1. Scale: 0 -> 1 -> 0 -->
+                <!-- duration="2000" (2초) -->
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:duration="2000"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:duration="2000"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+
+                <!-- 2. Alpha: 0 -> 1 -> 0 -->
+                <objectAnimator
+                    android:propertyName="alpha"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:duration="2000"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>

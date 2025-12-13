@@ -28,6 +28,8 @@ import com.example.dsl.modifier.viewId
 import com.example.dsl.modifier.partiallyUpdate
 import com.example.dsl.modifier.hide
 import com.example.dsl.modifier.padding
+import com.example.widget.ViewKey.Battery.getBatteryTextId
+import com.example.widget.ViewKey.Battery.getChargingIconId
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
 
@@ -57,84 +59,29 @@ class BatteryWidget : WidgetComponent() {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
-                // Circular Progress와 BatteryIcon을 겹쳐서 배치하는 Box
-                Box(contentProperty = {
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }) {
-                    BatteryProgress()
-                    BatteryIcon()
-                }
-                // 프로그레스 밑에 배터리 용량 텍스트
-                Row(
-                    modifier = WidgetModifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    contentProperty = {
-                        horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
-                        verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                    }
-                ) {
-                    ChargingIcon()
-                    BatteryText()
-                }
+                BatteryIcon()
+                BatteryDescription()
+                BatteryText()
             }
         }
     }
 
-    private fun WidgetScope.BatteryProgress() {
-        fun WidgetScope.getProgressSize(): Float {
-            val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.58f
-        }
 
-        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
-        val batteryValue = getBatteryValue()
-        Progress(
-            modifier = WidgetModifier
-                .viewId(getBatteryProgressId(gridIndex))
-                .partiallyUpdate(true)
-                .width(getProgressSize())
-                .height(getProgressSize()),
-            contentProperty = {
-                progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-                progressValue = batteryValue
-                maxValue = 100f
-                ProgressColor {
-                    Color {
-                        resId = R.color.battery_gauge_sufficient_color
-                    }
-                }
-                BackgroundColor {
-                    Color {
-                        argb = Color.LightGray.toArgb()
-                    }
-                }
+    private fun WidgetScope.BatteryDescription() {
+        Text {
+            TextContent {
+                text = "Battery"
             }
-        )
-    }
-
-    private fun WidgetScope.BatteryIcon(deviceType: DeviceType = DeviceType.PHONE) {
-        fun WidgetScope.getBatteryIconSize(): Float {
-            val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.22f
+            fontSize = 12f
+            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
         }
-        Image(
-            modifier = WidgetModifier
-                .width(getBatteryIconSize())
-                .height(getBatteryIconSize()),
-            contentProperty = {
-                Provider {
-                    drawableResId = getDeviceIcon(deviceType)
-                }
-            }
-        )
     }
 
     private fun WidgetScope.BatteryText() {
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(WidgetLocalSize) as DpSize
-        val textSize = size.height.value * 0.18f
+        val textSize = size.height.value * 0.12f
         Row(
             modifier = WidgetModifier
                 .wrapContentWidth()
@@ -184,10 +131,32 @@ class BatteryWidget : WidgetComponent() {
         }
     }
 
+    private fun WidgetScope.BatteryIcon() {
+        val size = getLocal(WidgetLocalSize) as DpSize
+        val height = size.height.value
+        Box(modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(), contentProperty = {
+            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+        }
+        ) {
+            Image(
+                modifier = WidgetModifier
+                    .width(height * 0.34f)
+                    .height(height * 0.34f),
+                contentProperty = {
+                    Provider {
+                        drawableResId = R.drawable.ic_mobile_device
+                    }
+                }
+            )
+            ChargingIcon()
+        }
+
+    }
+
     private fun WidgetScope.ChargingIcon() {
         fun WidgetScope.getChargingIconSize(): Float {
             val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.2f
+            return size.height.value * 0.34f
         }
 
         val iconSize = getChargingIconSize()
@@ -195,8 +164,8 @@ class BatteryWidget : WidgetComponent() {
         Image(
             modifier = WidgetModifier
                 .viewId(getChargingIconId(gridIndex))
-                .width(iconSize * 0.6f)
                 .height(iconSize)
+                .width(iconSize)
                 .hide(!getChargingState()),
             contentProperty = {
                 Provider {
@@ -239,41 +208,24 @@ class BatteryWidget : WidgetComponent() {
         return BatteryViewIdType.all()
     }
 
-    // View ID Helper 메서드들
-    /**
-     * 배터리 텍스트 View ID 조회
-     */
     fun getBatteryTextId(gridIndex: Int): Int {
         return generateViewId(BatteryViewIdType.Text, gridIndex)
     }
 
-    /**
-     * 배터리 프로그레스 View ID 조회
-     */
-    fun getBatteryProgressId(gridIndex: Int): Int {
-        return generateViewId(BatteryViewIdType.Progress, gridIndex)
-    }
-
-    /**
-     * 배터리 아이콘 View ID 조회
-     */
     fun getBatteryIconId(gridIndex: Int): Int {
         return generateViewId(BatteryViewIdType.Icon, gridIndex)
     }
 
-    /**
-     * 충전 아이콘 View ID 조회
-     */
     fun getChargingIconId(gridIndex: Int): Int {
         return generateViewId(BatteryViewIdType.ChargingIcon, gridIndex)
     }
 
     override fun getUpdateManager(): ComponentUpdateManager<*> = BatteryUpdateManager
-    
+
     override fun getDataStore() = BatteryComponentDataStore
-    
+
     // BroadcastReceiver는 WidgetForegroundService에서 관리하므로 Lifecycle 불필요
     override fun getLifecycle() = null
-    
+
     override fun requiresAutoLifecycle() = false
 }

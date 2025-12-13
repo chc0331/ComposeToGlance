@@ -34,12 +34,6 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                 val isValidBatteryLevel = data.level in 0f..100f
 
                 if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
-                    remoteViews.setProgressBar(
-                        widget.getEarBudsProgressId(gridIndex),
-                        100,
-                        if (data.isConnect && isValidBatteryLevel) data.level.toInt() else 0,
-                        false
-                    )
                     remoteViews.setImageViewColorFilter(
                         widget.getEarBudsIconId(gridIndex),
                         if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
@@ -52,13 +46,6 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                         )
                     }
                 } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
-                    // Watch 업데이트 로직 추가 필요 시 여기에 구현
-                    remoteViews.setProgressBar(
-                        widget.getWatchProgressId(gridIndex),
-                        100,
-                        if (data.isConnect && isValidBatteryLevel) data.level.toInt() else 0,
-                        false
-                    )
                     remoteViews.setImageViewColorFilter(
                         widget.getWatchIconId(gridIndex),
                         if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()

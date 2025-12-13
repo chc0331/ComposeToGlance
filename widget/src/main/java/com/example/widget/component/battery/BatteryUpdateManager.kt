@@ -29,12 +29,6 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-                remoteViews.setProgressBar(
-                    widget.getBatteryProgressId(gridIndex),
-                    100,
-                    data.level.toInt(),
-                    false
-                )
                 remoteViews.setTextViewText(
                     widget.getBatteryTextId(gridIndex),
                     "${data.level.toInt()}"

@@ -103,20 +103,17 @@ class BluetoothBatteryWidget : WidgetComponent() {
             horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
             verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
-            // Circular Progress와 Device Icon을 겹쳐서 배치하는 Box
-            Box(contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }) {
-                BatteryProgress(
-                    progressLevel = batteryLevel,
-                    progressViewId = getEarBudsProgressId(gridIndex),
-                    isConnected
-                )
-                BatteryIcon(
-                    iconResId = R.drawable.ic_bluetooth_earbuds,
-                    iconViewId = getEarBudsIconId(gridIndex),
-                    isConnected
-                )
+            BatteryIcon(
+                iconResId = R.drawable.ic_bluetooth_earbuds,
+                iconViewId = getEarBudsIconId(gridIndex),
+                isConnected
+            )
+            Text {
+                TextContent {
+                    text = "EarBuds"
+                }
+                fontSize = 12f
+                fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
             }
             BatteryText(
                 batteryLevel,
@@ -146,19 +143,17 @@ class BluetoothBatteryWidget : WidgetComponent() {
             verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
         }) {
             // Circular Progress와 Device Icon을 겹쳐서 배치하는 Box
-            Box(contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }) {
-                BatteryProgress(
-                    progressLevel = batteryLevel,
-                    progressViewId = getWatchProgressId(gridIndex),
-                    isConnected
-                )
-                BatteryIcon(
-                    iconResId = R.drawable.ic_bluetooth_watch,
-                    iconViewId = getWatchIconId(gridIndex),
-                    isConnected
-                )
+            BatteryIcon(
+                iconResId = R.drawable.ic_bluetooth_watch,
+                iconViewId = getWatchIconId(gridIndex),
+                isConnected
+            )
+            Text {
+                TextContent {
+                    text = "Watch"
+                }
+                fontSize = 12f
+                fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
             }
             BatteryText(
                 batteryLevel,
@@ -168,39 +163,6 @@ class BluetoothBatteryWidget : WidgetComponent() {
         }
     }
 
-    private fun WidgetScope.BatteryProgress(
-        progressLevel: Float,
-        progressViewId: Int,
-        isConnect: Boolean = false
-    ) {
-        fun WidgetScope.getProgressSize(): Float {
-            val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.58f
-        }
-        Progress(
-            modifier = WidgetModifier
-                .viewId(progressViewId)
-                .partiallyUpdate(true)
-                .width(getProgressSize())
-                .height(getProgressSize()),
-            contentProperty = {
-                progressType = ProgressType.PROGRESS_TYPE_CIRCULAR
-                progressValue = if (isConnect) progressLevel else 0f
-                maxValue = 100f
-                ProgressColor {
-                    Color {
-                        resId = R.color.battery_gauge_sufficient_color
-                    }
-                }
-                BackgroundColor {
-                    Color {
-                        argb = Color.LightGray.toArgb()
-                    }
-                }
-            }
-        )
-    }
-
     private fun WidgetScope.BatteryIcon(
         iconResId: Int,
         iconViewId: Int,
@@ -208,7 +170,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
     ) {
         fun WidgetScope.getBatteryIconSize(): Float {
             val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.22f
+            return size.height.value * 0.34f
         }
         Image(
             modifier = WidgetModifier
@@ -233,7 +195,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
         isConnect: Boolean = false
     ) {
         val size = getLocal(WidgetLocalSize) as DpSize
-        val textSize = size.height.value * 0.18f
+        val textSize = size.height.value * 0.12f
         Row(
             modifier = WidgetModifier
                 .wrapContentWidth()
@@ -254,7 +216,7 @@ class BluetoothBatteryWidget : WidgetComponent() {
                         text = if (isConnect) {
                             progressLevel.toInt().toString()
                         } else {
-                            ""
+                            "--"
                         }
                     }
                     fontSize = textSize
@@ -264,24 +226,6 @@ class BluetoothBatteryWidget : WidgetComponent() {
                             argb = Color.Black.toArgb()
                         }
                     }
-                }
-            )
-            Text(
-                modifier = WidgetModifier
-                    .wrapContentWidth()
-                    .wrapContentHeight()
-                    .padding(bottom = 2f),
-                contentProperty = {
-                    TextContent {
-                        text = "%"
-                    }
-                    fontSize = textSize * 0.6f
-                    FontColor {
-                        Color {
-                            argb = Color.Black.toArgb()
-                        }
-                    }
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
                 }
             )
         }
@@ -294,17 +238,11 @@ class BluetoothBatteryWidget : WidgetComponent() {
     internal fun getEarBudsTextId(gridIndex: Int) =
         generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryText, gridIndex)
 
-    internal fun getEarBudsProgressId(gridIndex: Int) =
-        generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryProgress, gridIndex)
-
     internal fun getEarBudsIconId(gridIndex: Int) =
         generateViewId(BluetoothBatteryViewIdType.EarBudsBatteryIcon, gridIndex)
 
     internal fun getWatchTextId(gridIndex: Int) =
         generateViewId(BluetoothBatteryViewIdType.WatchBatteryText, gridIndex)
-
-    internal fun getWatchProgressId(gridIndex: Int) =
-        generateViewId(BluetoothBatteryViewIdType.WatchBatteryProgress, gridIndex)
 
     internal fun getWatchIconId(gridIndex: Int) =
         generateViewId(BluetoothBatteryViewIdType.WatchBatteryIcon, gridIndex)

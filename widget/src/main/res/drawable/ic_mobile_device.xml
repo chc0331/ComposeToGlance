@@ -1,50 +1,57 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
 
-    <!-- 1. 기기 본체 프레임 -->
-    <!-- Y좌표: 1 ~ 23 (높이 22 유지) -->
-    <path
-        android:fillColor="#000000"
-        android:fillType="evenOdd"
-        android:pathData="
-            M15.5,1
-            H8.5
-            C6.5,1 5.5,2 5.5,4
-            v16
-            C5.5,22 6.5,23 8.5,23
-            h7
-            C17.5,23 18.5,22 18.5,20
-            V4
-            C18.5,2 17.5,1 15.5,1
-            Z
-            M16.8,21
-            H7.2
-            c-0.8,0 -1.5,-0.7 -1.5,-1.5
-            V4.5
-            c0,-0.8 0.7,-1.5 1.5,-1.5
-            h9.6
-            c0.8,0 1.5,0.7 1.5,1.5
-            v15
-            c0,0.8 -0.7,1.5 -1.5,1.5
-            Z" />
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="37dp"
+            android:height="33dp"
+            android:viewportWidth="32.6"
+            android:viewportHeight="24.8">
 
-    <!-- 2. 다이내믹 아일랜드 -->
-    <!-- 화면 상단 여백에 맞춰 y=4로 조정 -->
-    <path
-        android:fillColor="#000000"
-        android:pathData="
-            M10.5,4
-            h3
-            c0.55,0 1,0.45 1,1
-            v0.2
-            c0,0.55 -0.45,1 -1,1
-            h-3
-            c-0.55,0 -1,-0.45 -1,-1
-            V5
-            c0,-0.55 0.45,-1 1,-1
-            Z" />
+            <!-- 1. 기기 본체 프레임 -->
+            <path
+                android:name="device_frame"
+                android:fillColor="#000000"
+                android:fillType="evenOdd"
+                android:pathData="
+                    M20.65,1.03
+                    H11.95
+                    C9.23,1.03 8.07,2.07 8.07,4.13
+                    v16.53
+                    C8.07,22.73 9.23,23.77 11.95,23.77
+                    h8.70
+                    C23.37,23.77 24.53,22.73 24.53,20.67
+                    V4.13
+                    C24.53,2.07 23.37,1.03 20.65,1.03
+                    Z
+                    M22.22,21.70
+                    H10.38
+                    c-1.05,0 -1.96,-0.72 -1.96,-1.55
+                    V4.65
+                    c0,-0.83 0.91,-1.55 1.96,-1.55
+                    h11.84
+                    c1.05,0 1.96,0.72 1.96,1.55
+                    v15.50
+                    c0,0.83 -0.91,1.55 -1.96,1.55
+                    Z" />
 
-</vector>
+            <!-- 2. 다이내믹 아일랜드 -->
+            <path
+                android:name="dynamic_island"
+                android:fillColor="#000000"
+                android:pathData="
+                    M14.56,4.13
+                    h3.47
+                    c0.70,0 1.27,0.46 1.27,1.03
+                    v0.21
+                    c0,0.57 -0.57,1.03 -1.27,1.03
+                    h-3.47
+                    c-0.70,0 -1.27,-0.46 -1.27,-1.03
+                    V5.17
+                    c0,-0.57 0.57,-1.03 1.27,-1.03
+                    Z" />
+
+        </vector>
+    </aapt:attr>
+
+</animated-vector>
