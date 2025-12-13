@@ -1,2 +1,1 @@
-1. 배터리 위젯
-<img width="100" height="100" alt="6232653bac6007217dcc4343196c140274856a0212ff3457d54f91f39e7d9cc9" src="https://github.com/user-attachments/assets/47846a44-3272-4618-9d80-88d2a9b48555" />
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/21233777-fb0a-42bc-8f4e-62fcd6b1c513" />
