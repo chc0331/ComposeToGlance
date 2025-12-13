@@ -94,7 +94,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
                         modifier = WidgetModifier
                             .width(dpSize.width.value)
                             .height(dpSize.height.value)
-                            .backgroundColor(Color.LightGray.toArgb())
+                            .backgroundColor(Color.Transparent.toArgb())
                             .cornerRadius(backgroundRadius.value)
                     ) {
                         DslContent()
