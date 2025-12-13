@@ -6,11 +6,12 @@ import com.example.widget.component.AnalogClockComponent
 import com.example.widget.component.ButtonComponent
 import com.example.widget.component.DigitalClockComponent
 import com.example.widget.component.ImageComponent
-import com.example.widget.component.devicecare.DeviceCareWidget
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.battery.BatteryWidget
 import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget
+import com.example.widget.component.devicecare.ram.RamWidget
+import com.example.widget.component.devicecare.storage.StorageWidget
 import com.example.widget.component.lifecycle.ComponentLifecycleManager
 import com.example.widget.component.viewid.ViewIdAllocator
 
@@ -24,7 +25,8 @@ fun initializeWidgetComponents() {
 
     WidgetComponentRegistry.registerComponent(BatteryWidget())
     WidgetComponentRegistry.registerComponent(BluetoothBatteryWidget())
-    WidgetComponentRegistry.registerComponent(DeviceCareWidget())
+    WidgetComponentRegistry.registerComponent(RamWidget())
+    WidgetComponentRegistry.registerComponent(StorageWidget())
 }
 
 /**
@@ -50,14 +52,14 @@ object WidgetComponentRegistry {
             val allocation = viewIdAllocator.allocate(widget)
             Log.d(TAG, "Registered component with View IDs: $widgetTag -> $allocation")
         }
-        
+
         Log.d(TAG, "Registered component: $widgetTag")
     }
 
     /**
      * 모든 컴포넌트의 lifecycle을 초기화합니다.
      * 앱 시작 시 한 번만 호출되어야 합니다.
-     * 
+     *
      * @param context Context
      */
     fun initializeLifecycles(context: Context) {
@@ -65,7 +67,7 @@ object WidgetComponentRegistry {
             Log.w(TAG, "Lifecycles already initialized, skipping")
             return
         }
-        
+
         Log.i(TAG, "Initializing component lifecycles")
         ComponentLifecycleManager.initializeComponents(context, getAllComponents())
         lifecycleInitialized = true
@@ -74,7 +76,7 @@ object WidgetComponentRegistry {
     /**
      * 모든 컴포넌트의 lifecycle을 종료합니다.
      * 앱 종료 시 호출되어야 합니다.
-     * 
+     *
      * @param context Context
      */
     fun shutdownLifecycles(context: Context) {
@@ -82,7 +84,7 @@ object WidgetComponentRegistry {
             Log.w(TAG, "Lifecycles not initialized, nothing to shutdown")
             return
         }
-        
+
         Log.i(TAG, "Shutting down component lifecycles")
         ComponentLifecycleManager.shutdownAll(context)
         lifecycleInitialized = false
@@ -127,7 +129,7 @@ object WidgetComponentRegistry {
      * @return ViewIdAllocator 인스턴스
      */
     fun getViewIdAllocator(): ViewIdAllocator = viewIdAllocator
-    
+
     /**
      * Lifecycle 초기화 상태를 반환합니다.
      * (디버깅 및 테스트 용도)

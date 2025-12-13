@@ -7,7 +7,12 @@ import android.os.Environment
 import android.os.StatFs
 import android.os.storage.StorageManager
 
-
+data class DeviceState(
+    val memoryUsage: Float,
+    val totalMemory: Float,
+    val storageUsage: Float,
+    val totalStorage: Float
+)
 object DeviceStateCollector {
 
     fun collect(context: Context): DeviceState {

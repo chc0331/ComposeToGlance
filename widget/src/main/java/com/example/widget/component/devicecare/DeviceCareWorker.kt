@@ -7,6 +7,9 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.widget.component.devicecare.ram.RamData
+import com.example.widget.component.devicecare.ram.RamUpdateManager
+import com.example.widget.component.devicecare.ram.RamWidgetDataStore
 import java.util.concurrent.TimeUnit
 
 class DeviceCareWorker(
@@ -18,10 +21,10 @@ class DeviceCareWorker(
             val deviceState = DeviceStateCollector.collect(context = context)
             Log.i(TAG, "Device state : $deviceState")
 
-            // 새로운 ComponentDataStore 사용
-            DeviceCareComponentDataStore.saveData(context, deviceState)
-            // UpdateManager를 통해 위젯 업데이트
-            DeviceCareUpdateManager.updateComponent(context, deviceState)
+            val ramUsagePercent = (deviceState.memoryUsage * 100) / deviceState.totalMemory
+            val ramData = RamData(ramUsagePercent)
+            RamWidgetDataStore.saveData(context, ramData)
+            RamUpdateManager.updateComponent(context, ramData)
 
             //DeviceCare위젯 컴포넌트가 추가되어 있으면 registe
             registerWorker(context)

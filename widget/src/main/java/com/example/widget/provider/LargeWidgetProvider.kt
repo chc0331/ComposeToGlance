@@ -20,8 +20,6 @@ import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.modifier.*
-import com.example.dsl.proto.AlignmentType
 import com.example.dsl.localprovider.WidgetLocalCellHeight
 import com.example.dsl.localprovider.WidgetLocalCellWidth
 import com.example.dsl.localprovider.WidgetLocalContentPadding
@@ -31,6 +29,15 @@ import com.example.dsl.localprovider.WidgetLocalProvider
 import com.example.dsl.localprovider.WidgetLocalRootPadding
 import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
+import com.example.dsl.modifier.WidgetModifier
+import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.cornerRadius
+import com.example.dsl.modifier.fillMaxHeight
+import com.example.dsl.modifier.fillMaxWidth
+import com.example.dsl.modifier.height
+import com.example.dsl.modifier.padding
+import com.example.dsl.modifier.width
+import com.example.dsl.proto.AlignmentType
 import com.example.widget.WidgetComponentRegistry
 import com.example.widget.component.battery.BatteryData
 import com.example.widget.component.battery.BatteryStatusReceiver
@@ -38,15 +45,17 @@ import com.example.widget.component.battery.BatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.BluetoothBatteryUpdateManager
 import com.example.widget.component.battery.bluetooth.checkBluetoothBatteryComponentExist
 import com.example.widget.component.battery.checkBatteryComponentExist
-import com.example.widget.component.devicecare.DeviceCareUpdateManager
-import com.example.widget.component.devicecare.checkDeviceCareComponentExist
+import com.example.widget.component.devicecare.ram.RamUpdateManager
+import com.example.widget.component.devicecare.ram.checkRamWidgetExist
+import com.example.widget.component.devicecare.storage.StorageUpdateManager
+import com.example.widget.component.devicecare.storage.checkStorageWidgetExist
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.proto.WidgetLayout
 import com.example.widget.repository.WidgetLayoutRepository
-import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 val layoutKey = byteArrayPreferencesKey("layout_key")
 
@@ -191,8 +200,11 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                 if (widgetLayoutData.checkBatteryComponentExist()) {
                     BatteryUpdateManager.syncComponentState(context)
                 }
-                if (widgetLayoutData.checkDeviceCareComponentExist()) {
-                    DeviceCareUpdateManager.syncComponentState(context)
+                if (widgetLayoutData.checkRamWidgetExist()) {
+                    RamUpdateManager.syncComponentState(context)
+                }
+                if (widgetLayoutData.checkStorageWidgetExist()) {
+                    StorageUpdateManager.syncComponentState(context)
                 }
             }
         }
