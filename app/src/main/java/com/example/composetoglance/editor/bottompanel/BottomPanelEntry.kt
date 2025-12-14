@@ -43,9 +43,9 @@ object BottomPanelConstants {
     val TAB_PADDING_TOP = 8.dp
     val TAB_PADDING_HORIZONTAL = 16.dp
     val TAB_PADDING_BOTTOM = 8.dp
-    val LAYOUT_SPACING = 16.dp
+    val LAYOUT_SPACING = 4.dp
     val LAYOUT_TEXT_SIZE = 16.sp
-    val LAYOUT_ITEM_SPACING = 8.dp
+    val LAYOUT_ITEM_SPACING = 4.dp
     val WIDGET_LIST_PADDING = 16.dp
     val WIDGET_LIST_SPACING = 8.dp
     val TAB_INDICATOR_WIDTH = 80.dp // Tab Indicator의 너비 (짧게 설정)
