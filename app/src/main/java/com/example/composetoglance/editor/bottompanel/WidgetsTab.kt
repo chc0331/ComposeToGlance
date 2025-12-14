@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.composetoglance.editor.widget.DragTargetWidgetItem
 import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
+import com.example.widget.getSizeInCells
 import kotlin.collections.filter
 import kotlin.collections.find
 
@@ -125,8 +128,9 @@ fun WidgetsList(
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션
+                    // 1x1 기준으로 가로 4개가 들어가도록 4열로 설정
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
+                        columns = GridCells.Fixed(4),
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.surface),
@@ -134,7 +138,15 @@ fun WidgetsList(
                         horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING),
                         verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING)
                     ) {
-                        itemsIndexed(filteredWidgets) { index, widget ->
+                        items(
+                            items = filteredWidgets.withIndex().toList(),
+                            span = { (_, widget) ->
+                                // 위젯의 col_span에 따라 span 설정
+                                val (colSpan, _) = widget.getSizeInCells()
+                                GridItemSpan(colSpan)
+                            },
+                            key = { (_, widget) -> widget.getWidgetTag() }
+                        ) { (index, widget) ->
                             AnimatedVisibility(
                                 visible = visibleItems.contains(index),
                                 enter = fadeIn(
