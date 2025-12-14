@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
  * 캔버스 관련 상수
  */
 object CanvasConstants {
-    val CANVAS_WEIGHT = 2.8f
-    val BOTTOM_PANEL_WEIGHT = 1.2f
+    val CANVAS_WEIGHT = 2.2f
+    val BOTTOM_PANEL_WEIGHT = 1.6f
     val HORIZONTAL_PADDING = 16.dp
     val TOP_PADDING = 16.dp
     val SPACER_SIZE = 6.dp
