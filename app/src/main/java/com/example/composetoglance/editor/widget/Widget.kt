@@ -57,7 +57,7 @@ fun DragTargetWidgetItem(
         dataToDrop = data,
         onComponentClick = onComponentClick,
         onDragStart = onDragStart,
-        dragContent = { WidgetItem(data) }
+        dragContent = { WidgetItem(data, showLabel = false) }
     ) {
         Box(
             modifier = Modifier.wrapContentSize(),
@@ -87,7 +87,8 @@ fun DragTargetWidgetItem(
 @Composable
 fun WidgetItem(
     data: WidgetComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showLabel: Boolean = true
 ) {
     // 위젯 데이터를 기반으로 캐시 키 생성하여 재렌더링 방지
     val cacheKey = remember(data.getWidgetTag(), data.getSizeType()) {
@@ -98,7 +99,8 @@ fun WidgetItem(
     WidgetItemContent(
         data = data,
         modifier = modifier,
-        key = cacheKey
+        key = cacheKey,
+        showLabel = showLabel
     )
 }
 
@@ -106,7 +108,8 @@ fun WidgetItem(
 private fun WidgetItemContent(
     data: WidgetComponent,
     modifier: Modifier,
-    key: String
+    key: String,
+    showLabel: Boolean = true
 ) {
     val (width, height) = data.getSizeInDp()
     val size = remember(key) { DpSize(width, height) }
@@ -164,13 +167,15 @@ private fun WidgetItemContent(
                 DefaultWidgetContent(data)
             }
         }
-        // 위젯 컴포넌트 이름 표시
-        Text(
-            text = data.getName(),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        // 위젯 컴포넌트 이름 표시 (위젯 탭에서만 표시)
+        if (showLabel) {
+            Text(
+                text = data.getName(),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }
 

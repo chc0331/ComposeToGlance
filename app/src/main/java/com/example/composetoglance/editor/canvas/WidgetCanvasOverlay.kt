@@ -220,7 +220,8 @@ private fun WidgetPreview(
     ) {
         WidgetItem(
             data = draggedWidget,
-            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
+            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA),
+            showLabel = false
         )
     }
 }

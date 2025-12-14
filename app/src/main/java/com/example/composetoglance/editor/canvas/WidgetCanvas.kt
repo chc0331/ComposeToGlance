@@ -193,7 +193,7 @@ fun WidgetCanvas(
                             }
                             .alpha(if (isDragging) 0f else 1f)
                     ) {
-                        WidgetItem(data = item.widget)
+                        WidgetItem(data = item.widget, showLabel = false)
                     }
                 }
             }
