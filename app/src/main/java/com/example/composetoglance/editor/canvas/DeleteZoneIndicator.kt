@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -20,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -58,29 +62,8 @@ fun BoxScope.DeleteZoneIndicator(
     // 부모 Box의 크기를 얻기 위한 상태
     var parentSize by remember { mutableStateOf<Size?>(null) }
     
-    // 레이아웃 밖인지 확인
-    val isOutsideLayout = remember(dropPositionInWindow, layoutBounds) {
-        derivedStateOf {
-            if (layoutBounds == null) false
-            else {
-                val bounds = layoutBounds
-                !(dropPositionInWindow.x >= bounds.position.x &&
-                        dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
-                        dropPositionInWindow.y >= bounds.position.y &&
-                        dropPositionInWindow.y <= bounds.position.y + bounds.size.height)
-            }
-        }
-    }.value
-    
-    // 캔버스 밖인지 확인
-    val isOutsideCanvas = remember(dropPositionInWindow, canvasBounds) {
-        derivedStateOf {
-            canvasBounds?.contains(dropPositionInWindow) == false
-        }
-    }.value
-    
-    // 삭제 영역 표시 여부
-    val showDeleteZone = isOutsideLayout || isOutsideCanvas
+    // 드래그 중이면 항상 삭제 영역 표시 (드래그 위치에 따라 해당 방향만 표시됨)
+    val showDeleteZone = true
     
     // 애니메이션을 위한 alpha 값
     val targetAlpha = if (showDeleteZone) 1f else 0f
@@ -99,8 +82,8 @@ fun BoxScope.DeleteZoneIndicator(
             }
     ) {
         if (showDeleteZone && animatedAlpha > 0f) {
-            // 레이아웃 밖 영역 표시
-            if (isOutsideLayout && layoutBounds != null) {
+            // 레이아웃이 있으면 레이아웃 기준으로 삭제 영역 표시
+            if (layoutBounds != null) {
                 LayoutDeleteZone(
                     layoutBounds = layoutBounds,
                     canvasPosition = canvasPosition,
@@ -110,9 +93,8 @@ fun BoxScope.DeleteZoneIndicator(
                     alpha = animatedAlpha
                 )
             }
-            
-            // 캔버스 밖 영역 표시 (레이아웃이 없을 때만)
-            if (isOutsideCanvas && canvasBounds != null && layoutBounds == null) {
+            // 레이아웃이 없으면 캔버스 기준으로 삭제 영역 표시
+            else if (canvasBounds != null) {
                 CanvasDeleteZone(
                     canvasBounds = canvasBounds,
                     dropPositionInWindow = dropPositionInWindow,
@@ -348,7 +330,15 @@ private fun DeleteZoneArea(
             .border(
                 width = WidgetCanvasConstants.DELETE_ZONE_BORDER_WIDTH_DP,
                 color = MaterialTheme.colorScheme.error.copy(alpha = alpha)
-            )
-    )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Delete,
+            contentDescription = "삭제",
+            modifier = Modifier.size(48.dp),
+            tint = MaterialTheme.colorScheme.error.copy(alpha = alpha)
+        )
+    }
 }
 
