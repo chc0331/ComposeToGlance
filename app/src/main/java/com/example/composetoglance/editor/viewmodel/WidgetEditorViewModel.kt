@@ -35,8 +35,8 @@ class WidgetEditorViewModel(
     val categories = WidgetCategory.entries.toList()
     val widgets = WidgetComponentRegistry.getAllComponents()
 
-    // 선택된 레이아웃
-    var selectedLayout by mutableStateOf<Layout?>(null)
+    // 선택된 레이아웃 (기본값: Medium)
+    var selectedLayout by mutableStateOf<Layout?>(Layout("Medium"))
         private set
 
     // 캔버스에 배치된 위젯들 (셀 기반 위치 정보 포함)
