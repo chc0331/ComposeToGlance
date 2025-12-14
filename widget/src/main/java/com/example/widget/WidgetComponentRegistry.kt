@@ -9,7 +9,8 @@ import com.example.widget.component.ImageComponent
 import com.example.widget.component.TextComponent
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.battery.BatteryWidget
-import com.example.widget.component.battery.bluetooth.BluetoothBatteryWidget
+import com.example.widget.component.battery.bluetooth.earbuds.EarbudsBatteryWidget
+import com.example.widget.component.battery.bluetooth.watch.WatchBatteryWidget
 import com.example.widget.component.devicecare.ram.RamWidget
 import com.example.widget.component.devicecare.storage.StorageWidget
 import com.example.widget.component.lifecycle.ComponentLifecycleManager
@@ -24,7 +25,8 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
     WidgetComponentRegistry.registerComponent(BatteryWidget())
-    WidgetComponentRegistry.registerComponent(BluetoothBatteryWidget())
+    WidgetComponentRegistry.registerComponent(EarbudsBatteryWidget())
+    WidgetComponentRegistry.registerComponent(WatchBatteryWidget())
     WidgetComponentRegistry.registerComponent(RamWidget())
     WidgetComponentRegistry.registerComponent(StorageWidget())
 }

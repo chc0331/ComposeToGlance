@@ -1,103 +1,43 @@
 package com.example.widget.component.battery.bluetooth
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.widget.RemoteViewsCompat.setImageViewColorFilter
-import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.component.battery.BatteryData
 import com.example.widget.component.battery.DeviceType
-import com.example.widget.component.update.ComponentUpdateHelper
+import com.example.widget.component.battery.bluetooth.earbuds.EarbudsBatteryUpdateManager
+import com.example.widget.component.battery.bluetooth.watch.WatchBatteryUpdateManager
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.proto.WidgetLayout
 
+/**
+ * Bluetooth 배터리 업데이트를 각 디바이스 타입별 UpdateManager로 라우팅하는 중앙 관리자
+ * BluetoothDeviceReceiver에서 호출되며, 디바이스 타입에 따라 적절한 UpdateManager를 호출합니다.
+ */
 object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     private const val TAG = "BluetoothBatteryUpdateMgr"
-    override val widget: BluetoothBatteryWidget
-        get() = BluetoothBatteryWidget()
+
+    // 더 이상 직접 위젯을 가지지 않음 (라우터 역할만 수행)
+    override val widget: com.example.widget.component.WidgetComponent
+        get() = throw UnsupportedOperationException("BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers")
 
     override suspend fun updateComponent(context: Context, data: BatteryData) {
-        // 새로운 ComponentDataStore 사용
-        BluetoothBatteryComponentDataStore.updateDeviceData(context, data)
-
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, component) ->
-                // GlanceAppWidgetState 업데이트 (위젯 재렌더링 시 올바른 값 표시)
-                updateBluetoothBatteryWidgetState(context, widgetId, data)
-
-                val gridIndex = component.gridIndex
-                val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-
-                // 배터리 레벨이 유효한지 확인 (0-100 사이)
-                val isValidBatteryLevel = data.level in 0f..100f
-
-                if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
-                    remoteViews.setImageViewColorFilter(
-                        widget.getEarBudsIconId(gridIndex),
-                        if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
-                    )
-                    // 유효한 배터리 레벨일 때만 텍스트 업데이트
-                    if (isValidBatteryLevel) {
-                        remoteViews.setTextViewText(
-                            widget.getEarBudsTextId(gridIndex),
-                            if (data.isConnect) data.level.toInt().toString() else ""
-                        )
-                    }
-                } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
-                    remoteViews.setImageViewColorFilter(
-                        widget.getWatchIconId(gridIndex),
-                        if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
-                    )
-                    // 유효한 배터리 레벨일 때만 텍스트 업데이트
-                    if (isValidBatteryLevel) {
-                        remoteViews.setTextViewText(
-                            widget.getWatchTextId(gridIndex),
-                            if (data.isConnect) data.level.toInt().toString() else ""
-                        )
-                    }
-                }
-                ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
+        when (data.deviceType) {
+            DeviceType.BLUETOOTH_EARBUDS -> {
+                EarbudsBatteryUpdateManager.updateComponent(context, data)
             }
-    }
-
-
-    override suspend fun syncComponentState(context: Context) {
-        // 새로운 ComponentDataStore 사용
-        val compositeData = BluetoothBatteryComponentDataStore.loadData(context)
-        val earBudsData = compositeData.earbudsData
-        val watchData = compositeData.watchData
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateBluetoothBatteryWidgetState(context, widgetId, earBudsData)
-                updateBluetoothBatteryWidgetState(context, widgetId, watchData)
+            DeviceType.BLUETOOTH_WATCH -> {
+                WatchBatteryUpdateManager.updateComponent(context, data)
             }
-    }
-
-    private suspend fun updateBluetoothBatteryWidgetState(
-        context: Context,
-        widgetId: Int,
-        data: BatteryData
-    ) {
-        // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
-        val isValidBatteryLevel = data.level in 0f..100f
-
-        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        updateAppWidgetState(context, glanceId) { pref ->
-            if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
-                pref[BluetoothBatteryPreferenceKey.BtEarbudsConnected] = data.isConnect
-                if (isValidBatteryLevel) {
-                    pref[BluetoothBatteryPreferenceKey.BtEarbudsLevel] = data.level
-                }
-            } else if (data.deviceType == DeviceType.BLUETOOTH_WATCH) {
-                pref[BluetoothBatteryPreferenceKey.BtWatchConnected] = data.isConnect
-                if (isValidBatteryLevel) {
-                    pref[BluetoothBatteryPreferenceKey.BtWatchLevel] = data.level
-                }
+            else -> {
+                // 다른 타입은 무시
             }
         }
+    }
+
+    override suspend fun syncComponentState(context: Context) {
+        // 각 디바이스 타입별로 상태 동기화
+        EarbudsBatteryUpdateManager.syncComponentState(context)
+        WatchBatteryUpdateManager.syncComponentState(context)
     }
 }
 
