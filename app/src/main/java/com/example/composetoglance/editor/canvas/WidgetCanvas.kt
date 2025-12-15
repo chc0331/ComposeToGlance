@@ -138,6 +138,13 @@ fun WidgetCanvas(
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
+            DeleteZoneIndicator(
+                layoutBounds = layoutBounds,
+                canvasPosition = canvasPosition,
+                canvasBounds = canvasBounds,
+                dragInfo = dragInfo,
+                density = density
+            )
             LayoutDisplay(
                 selectedLayout = selectedLayout,
                 onLayoutBoundsChanged = { bounds ->
@@ -161,14 +168,6 @@ fun WidgetCanvas(
                 canvasPosition = canvasPosition,
                 density = density,
                 dragInfo = dragInfo
-            )
-
-            DeleteZoneIndicator(
-                layoutBounds = layoutBounds,
-                canvasPosition = canvasPosition,
-                canvasBounds = canvasBounds,
-                dragInfo = dragInfo,
-                density = density
             )
 
             // Display dropped widgets

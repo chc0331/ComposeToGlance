@@ -250,20 +250,6 @@ private fun GridCellHighlight(
             isOccupied = isOccupied
         )
     }
-    
-    // 호버되지 않은 빈 셀들만 개별적으로 그리기
-    gridCells.forEach { cell ->
-        val isOccupied = cell.index in occupiedCells
-        val isHovered = cell.index in hoveredCellSet
-
-        if (!isHovered && !isOccupied) {
-            EmptyCell(
-                cell = cell,
-                canvasPosition = canvasPosition,
-                density = density
-            )
-        }
-    }
 }
 
 @Composable

@@ -3,7 +3,6 @@ package com.example.composetoglance.editor.canvas
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,25 +10,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTargetInfo
@@ -51,20 +51,20 @@ fun BoxScope.DeleteZoneIndicator(
 ) {
     // PositionedWidget만 삭제 대상이므로 확인
     val isPositionedWidget = dragInfo.dataToDrop is PositionedWidget
-    
+
     // 드래그 중이고 PositionedWidget인 경우에만 표시
     if (!dragInfo.isDragging || !isPositionedWidget) {
         return
     }
-    
+
     val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
-    
+
     // 부모 Box의 크기를 얻기 위한 상태
     var parentSize by remember { mutableStateOf<Size?>(null) }
-    
+
     // 드래그 중이면 항상 삭제 영역 표시 (드래그 위치에 따라 해당 방향만 표시됨)
     val showDeleteZone = true
-    
+
     // 애니메이션을 위한 alpha 값
     val targetAlpha = if (showDeleteZone) 1f else 0f
     val animatedAlpha by animateFloatAsState(
@@ -72,7 +72,7 @@ fun BoxScope.DeleteZoneIndicator(
         animationSpec = tween(durationMillis = 200),
         label = "delete_zone_alpha"
     )
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -145,60 +145,13 @@ private fun LayoutDeleteZone(
             offsetX = 0f,
             offsetY = 0f,
             width = Float.MAX_VALUE,
-            height = relativeTop,
+            height = Float.MAX_VALUE,
             density = density,
             alpha = alpha,
-            isActive = isActive
+            isActive = isActive,
+            cornerShape = RoundedCornerShape(CanvasConstants.CORNER_RADIUS)
         )
     }
-
-    // 아래쪽 영역 (항상 표시)
-    val bottomHeight = if (parentSize != null && relativeBottom < parentSize.height) {
-        parentSize.height - relativeBottom
-    } else {
-        Float.MAX_VALUE
-    }
-
-    if (bottomHeight > 0f || bottomHeight == Float.MAX_VALUE) {
-        DeleteZoneArea(
-            offsetX = 0f,
-            offsetY = relativeBottom,
-            width = Float.MAX_VALUE,
-            height = bottomHeight,
-            density = density,
-            alpha = alpha,
-            isActive = isActive
-        )
-    }
-
-    // 왼쪽 영역 (항상 표시)
-    if (relativeLeft > 0f) {
-        DeleteZoneArea(
-            offsetX = 0f,
-            offsetY = max(0f, relativeTop),
-            width = relativeLeft,
-            height = layoutBounds.size.height.toFloat(),
-            density = density,
-            alpha = alpha,
-            isActive = isActive
-        )
-    }
-
-    val rightWidth = if (parentSize != null && relativeRight < parentSize.width) {
-        parentSize.width - relativeRight
-    } else {
-        Float.MAX_VALUE
-    }
-    // 오른쪽 영역 (항상 표시)
-    DeleteZoneArea(
-        offsetX = relativeRight,
-        offsetY = max(0f, relativeTop),
-        width = rightWidth,
-        height = layoutBounds.size.height.toFloat(),
-        density = density,
-        alpha = alpha,
-        isActive = isActive
-    )
 }
 
 /**
@@ -215,14 +168,14 @@ private fun CanvasDeleteZone(
     val canvasLeft = canvasBounds.left
     val canvasTop = canvasBounds.top
     val canvasBottom = canvasBounds.bottom
-    
+
     // 드래그 위치가 캔버스 위쪽에 있는지 확인
     val isAbove = dropPositionInWindow.y < canvasTop
     // 드래그 위치가 캔버스 아래쪽에 있는지 확인
     val isBelow = dropPositionInWindow.y > canvasBottom
     // 드래그 위치가 캔버스 왼쪽에 있는지 확인
     val isLeft = dropPositionInWindow.x < canvasLeft
-    
+
     // 위쪽 영역 (항상 표시)
     if (canvasTop > 0f) {
         DeleteZoneArea(
@@ -235,14 +188,14 @@ private fun CanvasDeleteZone(
             isActive = isAbove
         )
     }
-    
+
     // 아래쪽 영역 (항상 표시)
     val bottomHeight = if (parentSize != null && canvasBottom < parentSize.height) {
         parentSize.height - canvasBottom
     } else {
         Float.MAX_VALUE
     }
-    
+
     if (bottomHeight > 0f || bottomHeight == Float.MAX_VALUE) {
         DeleteZoneArea(
             offsetX = 0f,
@@ -254,7 +207,7 @@ private fun CanvasDeleteZone(
             isActive = isBelow
         )
     }
-    
+
     // 왼쪽 영역 (항상 표시)
     if (canvasLeft > 0f) {
         DeleteZoneArea(
@@ -280,13 +233,14 @@ private fun DeleteZoneArea(
     height: Float,
     density: Density,
     alpha: Float,
-    isActive: Boolean
+    isActive: Boolean,
+    cornerShape: RoundedCornerShape = RoundedCornerShape(0.dp)
 ) {
     // 유효하지 않은 크기는 표시하지 않음
     if (width <= 0f || height <= 0f) {
         return
     }
-    
+
     val widthDp = with(density) {
         if (width == Float.MAX_VALUE) {
             null
@@ -294,7 +248,7 @@ private fun DeleteZoneArea(
             width.toDp()
         }
     }
-    
+
     val heightDp = with(density) {
         if (height == Float.MAX_VALUE) {
             null
@@ -302,10 +256,10 @@ private fun DeleteZoneArea(
             height.toDp()
         }
     }
-    
+
     val offsetXDp = with(density) { offsetX.toDp() }
     val offsetYDp = with(density) { offsetY.toDp() }
-    
+
     val backgroundColor = if (isActive) {
         MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.DELETE_ZONE_BACKGROUND_ALPHA * alpha)
     } else {
@@ -326,20 +280,26 @@ private fun DeleteZoneArea(
                     // 둘 다 명시적으로 지정된 경우
                     widthDp != null && heightDp != null -> Modifier.size(widthDp, heightDp)
                     // 너비만 MAX_VALUE인 경우 (위/아래 영역)
-                    widthDp == null && heightDp != null -> Modifier.fillMaxWidth().height(heightDp)
+                    widthDp == null && heightDp != null -> Modifier
+                        .fillMaxWidth()
+                        .height(heightDp)
                     // 높이만 MAX_VALUE인 경우 (왼쪽/오른쪽 영역)
-                    widthDp != null && heightDp == null -> Modifier.width(widthDp).fillMaxHeight()
+                    widthDp != null && heightDp == null -> Modifier
+                        .width(widthDp)
+                        .fillMaxHeight()
                     // 둘 다 MAX_VALUE인 경우
                     else -> Modifier.fillMaxSize()
                 }
             )
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
+            .clip(cornerShape)
+            .background(backgroundColor)
+            .padding(top = 12.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = "삭제",
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(32.dp),
             tint = iconTint
         )
     }
