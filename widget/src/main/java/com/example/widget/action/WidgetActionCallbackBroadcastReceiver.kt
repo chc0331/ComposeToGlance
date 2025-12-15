@@ -10,7 +10,11 @@ internal class CustomWidgetActionCallbackBroadcastReceiver :
     WidgetActionCallbackBroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i("heec.choi","onReceive : ${intent.action}")
+        Log.i(TAG, "onReceive : ${intent.action}")
         super.onReceive(context, intent)
+    }
+
+    companion object {
+        private const val TAG = "CustomWidgetActionCallbackBroadcastReceiver"
     }
 }

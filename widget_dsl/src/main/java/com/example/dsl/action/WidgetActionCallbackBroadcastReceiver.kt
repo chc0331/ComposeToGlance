@@ -6,13 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.RemoteViews
 import androidx.core.os.bundleOf
-import androidx.glance.action.ActionParameters
-import androidx.glance.action.mutableActionParametersOf
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver
-import androidx.glance.appwidget.action.ToggleableStateKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,23 +19,35 @@ import kotlin.coroutines.CoroutineContext
 abstract class WidgetActionCallbackBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i("heec.choi","onReceive : ${intent.action}")
         goAsync {
-            val glanceManager = GlanceAppWidgetManager(context)
-            val extras = intent.extras
-            if (extras != null) {
-                val paramsBundle = requireNotNull(extras.getBundle(ExtraParameters)) {
-                    "The intent must contain a parameters bundle using extra: $ExtraParameters"
-                }
-                val parameters = widgetActionParametersOf().apply {
-                    paramsBundle.keySet().forEach { key ->
-                        set(WidgetActionParameters.Key(key), paramsBundle[key])
+            intent.extras?.let { intentExtras ->
+                val parameters = getActionParameterExtrasFromExtras(intentExtras)
+                if (parameters != null) {
+                    val parametersMap = parameters.asMap()
+                    val actionClass =
+                        parametersMap[WidgetActionParameters.Key<String>("actionClass")] as String?
+                    val widgetId =
+                        parametersMap[WidgetActionParameters.Key<Int>("widgetId")] as Int?
+                    if (actionClass != null && widgetId != null) {
+                        val glanceManager = GlanceAppWidgetManager(context)
+                        val action = Class.forName(actionClass).getConstructor()
+                            .newInstance() as WidgetActionCallback
+                        val glanceId = glanceManager.getGlanceIdBy(widgetId)
+                        action.onAction(context, glanceId, parameters)
                     }
                 }
-                val className = requireNotNull(extras.getString(ExtraCallbackClassName))
-                val glanceId = glanceManager.getGlanceIdBy(extras.getInt(AppWidgetId))
+            }
+        }
+    }
 
-                RunWidgetCallbackAction.run(context, className, glanceId, parameters)
+    private fun getActionParameterExtrasFromExtras(extras: Bundle): WidgetActionParameters? {
+        return extras.getBundle("ParamExtras")?.let { param1 ->
+            param1.getBundle(ExtraParameters)?.let { param2 ->
+                widgetActionParametersOf().apply {
+                    param2.keySet().forEach { key ->
+                        set(WidgetActionParameters.Key(key), param2[key])
+                    }
+                }
             }
         }
     }
@@ -81,7 +88,9 @@ abstract class WidgetActionCallbackBroadcastReceiver : BroadcastReceiver() {
             }
         }
     }
+
 }
+
 
 @SuppressLint("LongLogTag")
 internal fun BroadcastReceiver.goAsync(

@@ -2,7 +2,6 @@ package com.example.dsl.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
@@ -67,7 +66,6 @@ internal object GlanceModifierBuilder {
 
         // Click Action
         if (viewProperty.hasClickAction()) {
-            Log.i("heec.choi","Click action : ${viewProperty.clickAction}")
             val action = ActionConverter.toGlanceAction(viewProperty.clickAction, context)
             action?.let {
                 modifier = modifier.clickable(it)
