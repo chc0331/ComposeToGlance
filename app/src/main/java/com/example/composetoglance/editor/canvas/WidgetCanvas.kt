@@ -31,6 +31,7 @@ import com.example.composetoglance.editor.widget.PositionedWidget
 import com.example.composetoglance.editor.widget.WidgetItem
 import com.example.composetoglance.editor.widget.toPixels
 import com.example.composetoglance.editor.widget.gridSpec
+import com.example.widget.LayoutDpSize
 import com.example.widget.component.WidgetComponent
 import com.example.widget.getSizeInCells
 import kotlin.math.roundToInt
@@ -53,14 +54,14 @@ fun WidgetCanvas(
     // 위젯 추가 요청 처리
     LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout) {
         val widget = widgetToAdd ?: return@LaunchedEffect
-        
+
         val bounds = layoutBounds
         val spec = selectedLayout?.gridSpec()
         if (bounds == null || spec == null) {
             onWidgetAddProcessed()
             return@LaunchedEffect
         }
-        
+
         // 첫 번째 사용 가능한 위치 찾기
         val position = viewModel.findFirstAvailablePosition(widget, spec)
         if (position == null) {
@@ -68,7 +69,7 @@ fun WidgetCanvas(
             onWidgetAddProcessed()
             return@LaunchedEffect
         }
-        
+
         val (startRow, startCol) = position
         val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
         val cellIndices = GridCalculator.calculateCellIndices(
@@ -78,9 +79,9 @@ fun WidgetCanvas(
             widgetHeightCells,
             spec
         )
-        
+
         // 위젯 실제 크기 DP→픽셀 변환
-        val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density)
+        val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
         // canvasPosition은 LaunchedEffect 내부에서 직접 읽어서 사용
         val currentCanvasPosition = canvasPosition
         val adjustedOffset = GridCalculator.calculateWidgetOffset(
@@ -94,7 +95,7 @@ fun WidgetCanvas(
             spec,
             currentCanvasPosition
         )
-        
+
         // ViewModel에 위젯 추가
         viewModel.addWidgetToFirstAvailablePosition(
             widget = widget,
@@ -103,7 +104,7 @@ fun WidgetCanvas(
             startCol = startCol,
             cellIndices = cellIndices
         )
-        
+
         // 위젯 추가 처리 완료
         onWidgetAddProcessed()
     }
@@ -178,7 +179,7 @@ fun WidgetCanvas(
                     null
                 }
             }
-            
+
             positionedWidgets.forEach { item ->
                 val isDragging = item.id == draggedItemId
                 // 고유 ID를 key로 사용하여 위젯 이동 시 재생성되지 않도록 함
@@ -192,7 +193,7 @@ fun WidgetCanvas(
                             }
                             .alpha(if (isDragging) 0f else 1f)
                     ) {
-                        WidgetItem(data = item.widget, showLabel = false)
+                        WidgetItem(data = item.widget, layout = selectedLayout, showLabel = false)
                     }
                 }
             }

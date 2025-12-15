@@ -126,7 +126,7 @@ fun WidgetDropHandler(
 
         dragInfo.itemDropped = true
 
-        val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density)
+        val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
         val adjustedOffset = GridCalculator.calculateWidgetOffset(
             startRow,
             startCol,

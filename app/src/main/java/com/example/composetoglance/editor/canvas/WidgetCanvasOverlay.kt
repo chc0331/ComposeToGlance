@@ -199,7 +199,7 @@ private fun WidgetPreview(
     val startRow = startCellIndex / spec.columns
     val startCol = startCellIndex % spec.columns
     val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
-    val (widgetWidthPx, widgetHeightPx) = draggedWidget.toPixels(density)
+    val (widgetWidthPx, widgetHeightPx) = draggedWidget.toPixels(density, selectedLayout)
 
     val previewOffset = GridCalculator.calculateWidgetOffset(
         startRow,

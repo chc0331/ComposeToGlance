@@ -1,6 +1,5 @@
 package com.example.composetoglance.editor.widget
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,11 +24,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.widget.LayoutDpSize
 import com.example.widget.util.getSystemBackgroundRadius
 
-data class Layout(val sizeType: String)
+data class Layout(val sizeType: String) {
+    fun getDpSize(): DpSize {
+        val size = LayoutDpSize[sizeType] ?: Pair(155.dp, 185.dp)
+        return DpSize(size.first, size.second)
+    }
+}
 
 data class LayoutGridSpec(val rows: Int, val columns: Int)
 

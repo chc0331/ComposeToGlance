@@ -1,6 +1,5 @@
 package com.example.composetoglance.editor.widget
 
-import com.example.widget.WidgetComponentRegistry
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,17 +22,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
-import com.example.dsl.widget.GlanceRenderer
 import com.example.dsl.localprovider.WidgetLocalContext
 import com.example.dsl.localprovider.WidgetLocalPreview
 import com.example.dsl.localprovider.WidgetLocalProvider
 import com.example.dsl.localprovider.WidgetLocalSize
+import com.example.dsl.widget.GlanceRenderer
 import com.example.widget.SizeType
+import com.example.widget.WidgetComponentRegistry
 import com.example.widget.component.WidgetComponent
 import com.example.widget.proto.PlacedWidgetComponent
 import com.example.widget.util.getSystemBackgroundRadius
@@ -88,7 +87,8 @@ fun DragTargetWidgetItem(
 fun WidgetItem(
     data: WidgetComponent,
     modifier: Modifier = Modifier,
-    showLabel: Boolean = true
+    showLabel: Boolean = true,
+    layout: Layout? = null,
 ) {
     // 위젯 데이터를 기반으로 캐시 키 생성하여 재렌더링 방지
     val cacheKey = remember(data.getWidgetTag(), data.getSizeType()) {
@@ -100,7 +100,8 @@ fun WidgetItem(
         data = data,
         modifier = modifier,
         key = cacheKey,
-        showLabel = showLabel
+        showLabel = showLabel,
+        layout = layout,
     )
 }
 
@@ -109,10 +110,10 @@ private fun WidgetItemContent(
     data: WidgetComponent,
     modifier: Modifier,
     key: String,
-    showLabel: Boolean = true
+    showLabel: Boolean = true,
+    layout: Layout? = null,
 ) {
-    val (width, height) = data.getSizeInDp()
-    val size = remember(key) { DpSize(width, height) }
+    val size = remember(key) { data.getSizeInDp(layout) }
     val context = LocalContext.current
 
     Column(
@@ -121,8 +122,8 @@ private fun WidgetItemContent(
     ) {
         Box(
             modifier = Modifier
-                .width(width)
-                .height(height)
+                .width(size.width)
+                .height(size.height)
                 .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
                 .background(MaterialTheme.colorScheme.surfaceVariant), // Use theme surface variant
             contentAlignment = Alignment.Center
@@ -241,18 +242,37 @@ data class PositionedWidget(
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
  * @return Pair<width in dp, height in dp>
  */
-fun WidgetComponent.getSizeInDp(): Pair<Dp, Dp> {
-    return when (getSizeType()) {
-        SizeType.TINY -> 68.dp to 80.dp
-        SizeType.SMALL -> 148.dp to 80.dp
-        SizeType.MEDIUM -> 148.dp to 160.dp
-        else -> 50.dp to 50.dp
+fun WidgetComponent.getSizeInDp(layout: Layout?): DpSize {
+    return getDpSizeByLayoutType(layout)
+}
+
+fun WidgetComponent.toPixels(density: Density, layout: Layout): Pair<Float, Float> {
+    return with(density) {
+        val (widthDp, heightDp) = getDpSizeByLayoutType(layout)
+        widthDp.toPx() to heightDp.toPx()
     }
 }
 
-fun WidgetComponent.toPixels(density: Density): Pair<Float, Float> {
-    return with(density) {
-        val (widthDp, heightDp) = getSizeInDp()
-        widthDp.toPx() to heightDp.toPx()
+private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
+    if (layout == null) {
+        return when (getSizeType()) {
+            SizeType.TINY -> DpSize(68.dp, 80.dp)
+            SizeType.SMALL -> DpSize(148.dp, 80.dp)
+            SizeType.MEDIUM -> DpSize(148.dp, 160.dp)
+            else -> DpSize(50.dp, 50.dp)
+        }
+    }
+
+    val rootPadding = 8.dp
+    val contentPadding = 4.dp
+    val rowCell = layout.gridSpec()?.rows ?: 1
+    val colCell = layout.gridSpec()?.columns ?: 1
+    val containerSize = layout.getDpSize()
+    val cellWidth = (containerSize.width - rootPadding * 2) / colCell
+    val cellHeight = (containerSize.height - rootPadding * 2) / rowCell
+    return when (getSizeType()) {
+        SizeType.TINY -> DpSize(cellWidth, cellHeight)
+        SizeType.SMALL -> DpSize((cellWidth * 2) - contentPadding * 2, cellHeight)
+        else -> DpSize((cellWidth * 2) - contentPadding, (cellHeight * 2) - contentPadding)
     }
 }
