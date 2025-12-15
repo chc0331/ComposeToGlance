@@ -1,10 +1,16 @@
 package com.example.widget.component.devicecare.ram
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.glance.action.ActionParameters
+import androidx.glance.appwidget.action.InvisibleActionTrampolineActivity
 import com.example.dsl.WidgetScope
+import com.example.dsl.action.RunWidgetCallbackAction
+import com.example.dsl.action.WidgetActionParameters
+import com.example.dsl.action.widgetActionParametersOf
 import com.example.dsl.component.Box
 import com.example.dsl.component.Column
 import com.example.dsl.component.Image
@@ -17,6 +23,7 @@ import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.clickAction
 import com.example.dsl.modifier.cornerRadius
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
@@ -33,6 +40,7 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.action.CustomWidgetActionCallbackBroadcastReceiver
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
@@ -53,9 +61,17 @@ class RamWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         val localSize = getLocal(WidgetLocalSize) as DpSize
+        val context = getLocal(WidgetLocalContext) as Context
         Box(
             modifier = WidgetModifier
-                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb()),
+                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb()).clickAction(
+                    context, RunWidgetCallbackAction(
+                        CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                        RamWidgetAction::class.java, widgetActionParametersOf(
+                            WidgetActionParameters.Key<String>("launchMessageKey") to "test"
+                        )
+                    )
+                ),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {

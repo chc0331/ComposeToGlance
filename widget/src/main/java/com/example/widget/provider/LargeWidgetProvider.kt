@@ -31,6 +31,7 @@ import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.clickAction
 import com.example.dsl.modifier.cornerRadius
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth

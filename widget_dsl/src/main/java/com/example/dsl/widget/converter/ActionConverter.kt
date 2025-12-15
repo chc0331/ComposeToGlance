@@ -3,9 +3,14 @@ package com.example.dsl.widget.converter
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.glance.action.Action
+import androidx.glance.action.action
+import androidx.glance.appwidget.action.actionSendBroadcast
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.action.actionStartService
+import com.example.dsl.action.WidgetActionCallbackBroadcastReceiver
+import com.example.dsl.action.bundleFromBytes
 import com.example.dsl.proto.Action as ProtoAction
 
 /**
@@ -43,8 +48,16 @@ internal object ActionConverter {
             }
 
             else -> {
+                Log.i("heec.choi", "Action : ${protoAction.component},")
+                val paramByteArray = protoAction.actionParameters.toByteArray()
+                val paramBundle = bundleFromBytes(paramByteArray)
+                val parameters =
+                    WidgetActionCallbackBroadcastReceiver.getParameterExtras(paramBundle)
+                Log.i("heec.choi","Parameters : $parameters $paramBundle")
                 // 기본값은 Activity
-                actionStartActivity(intent)
+                intent.putExtra("Option",paramBundle)
+                intent.setAction("android.intent.action.test_widget")
+                actionSendBroadcast(intent)
             }
         }
     }

@@ -62,7 +62,9 @@ message Action {
   bool activity = 1;
   bool service = 2;
   bool broadcast_receiver = 3;
-  Component component = 4;
+  bool lambda = 4;
+  Component component = 5;
+  bytes action_parameters = 6;
 }
 
 message Semantics {

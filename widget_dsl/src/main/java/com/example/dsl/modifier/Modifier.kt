@@ -1,6 +1,9 @@
 package com.example.dsl.modifier
 
 import android.content.ComponentName
+import android.content.Context
+import com.example.dsl.action.RunWidgetCallbackAction
+import com.example.dsl.action.toBytes
 import com.example.dsl.proto.Action
 import com.example.dsl.proto.ColorProvider
 import com.example.dsl.proto.Component
@@ -8,6 +11,7 @@ import com.example.dsl.proto.CornerRadius
 import com.example.dsl.proto.Dimension
 import com.example.dsl.proto.Padding
 import com.example.dsl.proto.Semantics
+import com.google.protobuf.ByteString
 
 /**
  * Widget DSL Modifier
@@ -65,6 +69,8 @@ interface WidgetModifier {
      * ClickAction 설정
      */
     data class ClickActionModifier(val action: Action) : WidgetModifier
+
+    data class LambdaActionModifier(val action: () -> Unit) : WidgetModifier
 
     /**
      * BackgroundColor 설정
@@ -137,9 +143,9 @@ fun WidgetModifier.semantics(semantics: Semantics): WidgetModifier {
 
 /**
  * ClickAction 설정 (Activity Component 정보를 직접 전달)
- * 
+ *
  * @param componentName Activity의 ComponentName
- * 
+ *
  * 사용 예시:
  * ```
  * Text(
@@ -156,12 +162,30 @@ fun WidgetModifier.clickAction(componentName: ComponentName): WidgetModifier {
         .setPackageName(componentName.packageName)
         .setClassName(componentName.className)
         .build()
-    
+
     val action = Action.newBuilder()
         .setActivity(true)
         .setComponent(component)
         .build()
-    
+
+    return this then WidgetModifier.ClickActionModifier(action)
+}
+
+fun WidgetModifier.clickAction(
+    context: Context,
+    action: RunWidgetCallbackAction
+): WidgetModifier {
+    val component = Component.newBuilder()
+        .setPackageName(context.packageName)
+        .setClassName(action.receiverClass.name)
+        .build()
+
+    val action = Action.newBuilder()
+        .setBroadcastReceiver(true)
+        .setComponent(component)
+        .setActionParameters(ByteString.copyFrom(action.parameters.toBytes()))
+        .build()
+
     return this then WidgetModifier.ClickActionModifier(action)
 }
 
@@ -192,4 +216,6 @@ fun WidgetModifier.partiallyUpdate(partiallyUpdate: Boolean): WidgetModifier {
 fun WidgetModifier.hide(hide: Boolean): WidgetModifier {
     return this then WidgetModifier.HideModifier(hide)
 }
+
+
 

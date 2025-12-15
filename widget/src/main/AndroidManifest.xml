@@ -18,6 +18,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/default_appwidget_info" />
         </receiver>
+
+        <receiver
+            android:name=".action.CustomWidgetActionCallbackBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.test_widget" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

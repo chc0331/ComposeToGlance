@@ -1,0 +1,11 @@
+[2025-12-15 18:07:56] [L] galaxy property is null or empty 
+[2025-12-15 18:07:56] [L] Non-GB Project : ComposeToGlance 
+[2025-12-15 18:07:56] [L] allprojects : project : app 
+[2025-12-15 18:07:56] [L] Non-GB Project : app 
+[2025-12-15 18:07:56] [L] allprojects : project : widget 
+[2025-12-15 18:07:56] [L] Non-GB Project : widget 
+[2025-12-15 18:07:56] [L] allprojects : project : widget_dsl 
+[2025-12-15 18:07:56] [L] Non-GB Project : widget_dsl 
+[2025-12-15 18:07:56] [D] gradle projects loaded 
+[2025-12-15 18:07:56] [L] Maven repo base URL : null 
+[2025-12-15 18:07:56] [D] gradle projects evaluated 
