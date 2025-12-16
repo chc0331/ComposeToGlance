@@ -17,6 +17,7 @@ import androidx.glance.layout.width
 import androidx.glance.layout.wrapContentHeight
 import androidx.glance.layout.wrapContentWidth
 import androidx.glance.unit.Dimension
+import com.example.dsl.R
 import com.example.dsl.proto.ViewProperty
 import com.example.dsl.widget.converter.ActionConverter
 import com.example.dsl.widget.converter.ColorConverter
@@ -68,7 +69,7 @@ internal object GlanceModifierBuilder {
         if (viewProperty.hasClickAction()) {
             val action = ActionConverter.toGlanceAction(viewProperty.clickAction, context)
             action?.let {
-                modifier = modifier.clickable(it)
+                modifier = modifier.clickable(it, rippleOverride = R.drawable.click_effect)
             }
         }
 

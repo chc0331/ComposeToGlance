@@ -21,7 +21,9 @@ class DeviceCareWorker(
             val deviceState = DeviceStateCollector.collect(context = context)
             Log.i(TAG, "Device state : $deviceState")
 
-            val ramUsagePercent = (deviceState.memoryUsage * 100) / deviceState.totalMemory
+            val ramUsagePercent =
+                String.format("%.1f", (deviceState.memoryUsage * 100) / deviceState.totalMemory)
+                    .toFloat()
             val ramData = RamData(ramUsagePercent)
             RamWidgetDataStore.saveData(context, ramData)
             RamUpdateManager.updateComponent(context, ramData)

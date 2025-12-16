@@ -15,6 +15,7 @@ import com.example.dsl.component.Row
 import com.example.dsl.component.Text
 import com.example.dsl.localprovider.WidgetLocalContext
 import com.example.dsl.localprovider.WidgetLocalGlanceId
+import com.example.dsl.localprovider.WidgetLocalGridIndex
 import com.example.dsl.localprovider.WidgetLocalPreview
 import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
@@ -24,7 +25,10 @@ import com.example.dsl.modifier.cornerRadius
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
 import com.example.dsl.modifier.height
+import com.example.dsl.modifier.hide
 import com.example.dsl.modifier.padding
+import com.example.dsl.modifier.partiallyUpdate
+import com.example.dsl.modifier.viewId
 import com.example.dsl.modifier.width
 import com.example.dsl.modifier.wrapContentHeight
 import com.example.dsl.modifier.wrapContentWidth
@@ -41,6 +45,7 @@ import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
 import com.example.widget.component.update.ComponentUpdateManager
+import com.example.widget.component.viewid.ViewIdType
 import com.example.widget.util.getSystemBackgroundRadius
 
 class RamWidget : WidgetComponent() {
@@ -57,7 +62,7 @@ class RamWidget : WidgetComponent() {
 
     @SuppressLint("RestrictedApi")
     override fun WidgetScope.Content() {
-        val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId
+        val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val localSize = getLocal(WidgetLocalSize) as DpSize
         val context = getLocal(WidgetLocalContext) as Context
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
@@ -65,7 +70,7 @@ class RamWidget : WidgetComponent() {
             .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
         if (!isPreview)
             backgroundModifier = backgroundModifier.runCallbackAction(
-                context, widgetId.appWidgetId, RamWidgetAction()
+                context, widgetId?.appWidgetId ?: 0, RamWidgetAction()
             )
 
         Box(
@@ -101,17 +106,34 @@ class RamWidget : WidgetComponent() {
     private fun WidgetScope.RamIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
+        val iconSize = height * 0.34f
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         Box(modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(), contentProperty = {
             contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
         }
         ) {
             Image(
                 modifier = WidgetModifier
-                    .width(height * 0.34f)
-                    .height(height * 0.34f),
+                    .width(iconSize)
+                    .height(iconSize),
                 contentProperty = {
                     Provider {
                         drawableResId = R.drawable.ic_memory
+                    }
+                }
+            )
+            Image(
+                modifier = WidgetModifier
+                    .viewId(generateViewId(RamViewIdType.Animation, gridIndex))
+                    .partiallyUpdate(false)
+                    .width(iconSize)
+                    .height(iconSize)
+                    .hide(true),
+                contentProperty = {
+                    Provider {
+                        drawableResId = R.layout.memory_cleaning
+                        animation = true
+                        infiniteLoop = false
                     }
                 }
             )
@@ -133,6 +155,7 @@ class RamWidget : WidgetComponent() {
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val currentRamUsage = getRamValue()
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
 
         Box(
             modifier = modifier.padding(horizontal = 8f, vertical = 2f),
@@ -142,6 +165,8 @@ class RamWidget : WidgetComponent() {
         ) {
             Progress(
                 modifier = WidgetModifier
+                    .viewId(generateViewId(RamViewIdType.Progress, gridIndex))
+                    .partiallyUpdate(true)
                     .fillMaxWidth().fillMaxHeight()
                     .cornerRadius(context.getSystemBackgroundRadius().value),
                 contentProperty = {
@@ -166,6 +191,9 @@ class RamWidget : WidgetComponent() {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }) {
                 Text(
+                    modifier = WidgetModifier.wrapContentWidth().wrapContentHeight().viewId(
+                        generateViewId(RamViewIdType.Text, gridIndex)
+                    ).partiallyUpdate(true),
                     contentProperty = {
                         TextContent {
                             text = "${String.format("%.1f", currentRamUsage)}%"
@@ -193,11 +221,17 @@ class RamWidget : WidgetComponent() {
         } ?: 0f
     }
 
+    override fun getViewIdTypes(): List<ViewIdType> = RamViewIdType.all()
+
     fun getRamTextId(gridIndex: Int): Int {
         return generateViewId(RamViewIdType.Text, gridIndex)
     }
 
     fun getRamProgressId(gridIndex: Int): Int {
         return generateViewId(RamViewIdType.Progress, gridIndex)
+    }
+
+    fun getRamAnimationId(gridIndex: Int): Int {
+        return generateViewId(RamViewIdType.Animation, gridIndex)
     }
 }

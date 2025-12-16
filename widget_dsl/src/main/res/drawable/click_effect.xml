@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 눌렸을 때 (Pressed): 검은색 15% 투명도 -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#26000000" /> <!-- 투명도 조절로 진하기 변경 -->
+            <corners android:radius="12dp" />   <!-- 버튼의 둥글기에 맞게 조절 -->
+        </shape>
+    </item>
+
+    <!-- 포커스 받았을 때 (선택사항) -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#1A000000" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+    <!-- 평소 상태: 투명 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</selector>

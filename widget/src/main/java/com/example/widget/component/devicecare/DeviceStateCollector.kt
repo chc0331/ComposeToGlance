@@ -4,7 +4,6 @@ import android.app.ActivityManager
 import android.app.usage.StorageStatsManager
 import android.content.Context
 import android.os.Environment
-import android.os.StatFs
 import android.os.storage.StorageManager
 
 data class DeviceState(
@@ -39,6 +38,7 @@ class MemoryCollector {
         val totalRamBytes = memoryInfo.totalMem // Total memory in bytes
         val availRamBytes = memoryInfo.availMem // Currently available memory in bytes
         val usedRamBytes = totalRamBytes - availRamBytes // Used memory in bytes
+
 
         // Constant for converting bytes to gigabytes
         val bytesToGb = 1024.0 * 1024.0 * 1024.0 // 1 GB = 1024^3 bytes

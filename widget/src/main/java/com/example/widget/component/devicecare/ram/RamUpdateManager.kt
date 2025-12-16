@@ -1,6 +1,7 @@
 package com.example.widget.component.devicecare.ram
 
 import android.content.Context
+import android.view.View
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.example.widget.component.devicecare.DeviceCareWorker
@@ -11,6 +12,8 @@ import com.example.widget.proto.WidgetLayout
 import com.example.widget.provider.LargeAppWidget
 
 object RamUpdateManager : ComponentUpdateManager<RamData> {
+
+    private const val TAG = "RamUpdateManager"
 
     override val widget: RamWidget
         get() = RamWidget()
@@ -38,12 +41,25 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
                 remoteViews.setTextViewText(
                     widget.getRamTextId(gridIndex),
-                    data.usagePercent.toString()
+                    "${data.usagePercent}%"
                 )
                 remoteViews.setProgressBar(
                     widget.getRamProgressId(gridIndex), 100,
                     data.usagePercent.toInt(),
                     false
+                )
+                ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
+            }
+    }
+
+    suspend fun showAnimation(context: Context, show: Boolean) {
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, component) ->
+                val gridIndex = component.gridIndex
+                val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+                remoteViews.setViewVisibility(
+                    widget.getRamAnimationId(gridIndex), if (show) View.VISIBLE
+                    else View.GONE
                 )
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
             }
