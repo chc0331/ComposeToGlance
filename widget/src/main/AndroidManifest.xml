@@ -7,9 +7,28 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <queries>
+        <!-- 1. [기본] 바탕화면에 아이콘이 있는 앱 (대부분의 앱) -->
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+
+        <!-- 2. [추가] 웹 브라우저 앱 (크롬, 삼성 인터넷, 네이버 등) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+
+        <!-- 3. [추가] 공유하기 기능을 가진 앱 (카톡, 인스타, 페이스북 등 SNS/메신저) -->
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="*/*" />
+        </intent>
+
+        <!-- 4. [추가] 카메라 기능을 가진 앱 -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
 
