@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.AppWidgetId
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
@@ -164,10 +165,10 @@ class RamWidget : WidgetComponent() {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
             }
         ) {
-            Log.i("heec.choi","Progress id : ${generateViewId(RamViewIdType.Progress, gridIndex)}")
+            val progressWidth = (getLocal(WidgetLocalSize) as DpSize).width - (8.dp * 2)
             Progress(
                 modifier = WidgetModifier
-                    .fillMaxWidth().fillMaxHeight()
+                    .width(progressWidth.value).fillMaxHeight()
                     .viewId(generateViewId(RamViewIdType.Progress, gridIndex))
                     .partiallyUpdate(true)
                     .cornerRadius(context.getSystemBackgroundRadius().value),
@@ -177,12 +178,12 @@ class RamWidget : WidgetComponent() {
                     maxValue = 100f
                     ProgressColor {
                         Color {
-                            argb = Color(0x80000000).toArgb()
+                            argb = Color(0x808A8A8A).toArgb()
                         }
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color(0xFF3F51B5).toArgb()
+                            argb = Color(0xFFE3E3E3).toArgb()
                         }
                     }
                 }

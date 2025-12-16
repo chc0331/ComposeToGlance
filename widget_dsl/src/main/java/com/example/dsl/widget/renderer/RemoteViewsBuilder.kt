@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.RemoteViews
 import com.example.dsl.widget.converter.ColorConverter
 import com.example.dsl.widget.converter.PaddingConverter
@@ -24,32 +26,62 @@ internal object RemoteViewsBuilder {
         viewProperty: ViewProperty,
         context: Context
     ) {
-        if (viewProperty.width.dp.value != 0f) {
-            remoteViews.setViewLayoutWidth(
-                viewId,
-                viewProperty.width.dp.value,
-                TypedValue.COMPLEX_UNIT_DIP
-            )
-        } else if (viewProperty.width.matchParent) {
-            Log.i("heec.choi","View id : $viewId")
-            remoteViews.setViewLayoutWidth(
-                viewId,
-                ViewGroup.LayoutParams.MATCH_PARENT.toFloat(), // -1.0f
-                TypedValue.COMPLEX_UNIT_PX
-            )
+        // Width 적용: hasDp() 우선 체크 (DimensionConverter 패턴과 동일)
+        when {
+            viewProperty.width.hasDp() -> {
+                remoteViews.setViewLayoutWidth(
+                    viewId,
+                    viewProperty.width.dp.value,
+                    TypedValue.COMPLEX_UNIT_DIP
+                )
+            }
+
+            viewProperty.width.matchParent -> {
+                remoteViews.setViewLayoutWidth(viewId, MATCH_PARENT.toFloat(), COMPLEX_UNIT_PX)
+            }
+
+            viewProperty.width.wrapContent -> {
+                remoteViews.setViewLayoutWidth(
+                    viewId,
+                    ViewGroup.LayoutParams.WRAP_CONTENT.toFloat(), // -2.0f
+                    TypedValue.COMPLEX_UNIT_PX
+                )
+            }
+
+            else -> {
+                Log.i("RemoteViewsBuilder", "Width: No dimension set, viewId = $viewId")
+            }
         }
-        if (viewProperty.height.dp.value != 0f) {
-            remoteViews.setViewLayoutHeight(
-                viewId,
-                viewProperty.height.dp.value,
-                TypedValue.COMPLEX_UNIT_DIP
-            )
-        } else if (viewProperty.height.matchParent) {
-            remoteViews.setViewLayoutHeight(
-                viewId,
-                ViewGroup.LayoutParams.MATCH_PARENT.toFloat(), // -1.0f
-                TypedValue.COMPLEX_UNIT_PX
-            )
+
+        // Height 적용: hasDp() 우선 체크 (DimensionConverter 패턴과 동일)
+        when {
+            viewProperty.height.hasDp() -> {
+                remoteViews.setViewLayoutHeight(
+                    viewId,
+                    viewProperty.height.dp.value,
+                    TypedValue.COMPLEX_UNIT_DIP
+                )
+            }
+
+            viewProperty.height.matchParent -> {
+                remoteViews.setViewLayoutHeight(
+                    viewId,
+                    ViewGroup.LayoutParams.MATCH_PARENT.toFloat(), // -1.0f
+                    TypedValue.COMPLEX_UNIT_PX
+                )
+            }
+
+            viewProperty.height.wrapContent -> {
+                remoteViews.setViewLayoutHeight(
+                    viewId,
+                    ViewGroup.LayoutParams.WRAP_CONTENT.toFloat(), // -2.0f
+                    TypedValue.COMPLEX_UNIT_PX
+                )
+            }
+
+            else -> {
+                Log.i("RemoteViewsBuilder", "Height: No dimension set, viewId = $viewId")
+            }
         }
 
         // Padding

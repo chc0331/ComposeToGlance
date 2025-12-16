@@ -129,7 +129,10 @@ class LargeAppWidget : DslAppWidget() {
                     )
             ) {
                 WidgetLocalProvider(
-                    WidgetLocalSize provides DpSize(componentWidth, componentHeight),
+                    WidgetLocalSize provides DpSize(
+                        componentWidth - contentPadding * 2,
+                        componentHeight - contentPadding * 2
+                    ),
                     WidgetLocalGridIndex provides gridIndex
                 ) {
                     val contentRadius = getLocal(WidgetLocalContentRadius) ?: 0.dp

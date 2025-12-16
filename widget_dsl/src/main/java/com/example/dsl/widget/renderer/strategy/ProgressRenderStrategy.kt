@@ -1,7 +1,6 @@
 package com.example.dsl.widget.renderer.strategy
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
@@ -220,9 +219,6 @@ internal object ProgressRenderStrategy {
                 viewId, "setProgressBackgroundTintList",
                 ColorStateList.valueOf(backgroundColor)
             )
-
-            // ViewProperty 속성 적용
-            Log.i("heec.choi", "Property : ${viewProperty.width}")
 
             RemoteViewsBuilder.applyViewProperties(
                 remoteViews,
