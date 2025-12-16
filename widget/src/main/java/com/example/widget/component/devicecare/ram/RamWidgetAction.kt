@@ -26,7 +26,7 @@ class RamWidgetAction : WidgetActionCallback {
         val ramWidgetUpdateManager = widget.getUpdateManager() as RamUpdateManager
         ramWidgetUpdateManager.showAnimation(context, true)
         clearMemory(context)
-        delay(3000)
+        delay(2800)
         ramWidgetUpdateManager.showAnimation(context, false)
 
         val deviceState = DeviceStateCollector.collect(context = context)
