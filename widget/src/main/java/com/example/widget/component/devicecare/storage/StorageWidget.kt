@@ -1,5 +1,6 @@
 package com.example.widget.component.devicecare.storage
 
+import android.content.ComponentName
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -17,6 +18,7 @@ import com.example.dsl.localprovider.WidgetLocalSize
 import com.example.dsl.localprovider.WidgetLocalState
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.modifier.backgroundColor
+import com.example.dsl.modifier.clickAction
 import com.example.dsl.modifier.cornerRadius
 import com.example.dsl.modifier.fillMaxHeight
 import com.example.dsl.modifier.fillMaxWidth
@@ -33,6 +35,7 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.action.WidgetActionVisibleActivity
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
@@ -53,9 +56,16 @@ class StorageWidget : WidgetComponent() {
 
     override fun WidgetScope.Content() {
         val localSize = getLocal(WidgetLocalSize) as DpSize
+        val context = getLocal(WidgetLocalContext) as Context
         Box(
             modifier = WidgetModifier
-                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb()),
+                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
+                .clickAction(
+                    ComponentName(
+                        context,
+                        WidgetActionVisibleActivity::class.java
+                    )
+                ),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {

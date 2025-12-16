@@ -38,6 +38,7 @@ internal object ActionConverter {
         return when {
             protoAction.activity -> {
                 actionStartActivity(intent)
+
             }
 
             protoAction.service -> {

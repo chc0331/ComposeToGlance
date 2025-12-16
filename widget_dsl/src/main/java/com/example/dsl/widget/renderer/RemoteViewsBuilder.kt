@@ -126,6 +126,9 @@ internal object RemoteViewsBuilder {
                 val component = protoAction.component
                 val intent = Intent().apply {
                     setClassName(component.packageName, component.className)
+                    if (protoAction.activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
                 }
                 val flags =
                     android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE

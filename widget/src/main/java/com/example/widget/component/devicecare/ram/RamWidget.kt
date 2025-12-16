@@ -2,7 +2,6 @@ package com.example.widget.component.devicecare.ram
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -42,7 +41,7 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
-import com.example.widget.action.runCallbackAction
+import com.example.widget.action.runCallbackBroadcastReceiver
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
@@ -71,7 +70,7 @@ class RamWidget : WidgetComponent() {
         var backgroundModifier = WidgetModifier
             .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
         if (!isPreview)
-            backgroundModifier = backgroundModifier.runCallbackAction(
+            backgroundModifier = backgroundModifier.runCallbackBroadcastReceiver(
                 context, widgetId?.appWidgetId ?: 0, RamWidgetAction()
             )
 

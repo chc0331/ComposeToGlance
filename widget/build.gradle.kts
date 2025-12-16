@@ -59,6 +59,7 @@ dependencies {
     api(libs.androidx.ui.graphics)
     api(libs.androidx.material3)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.protobuf.javalite)

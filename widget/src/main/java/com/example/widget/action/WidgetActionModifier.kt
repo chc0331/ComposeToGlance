@@ -8,7 +8,7 @@ import com.example.dsl.action.widgetActionParametersOf
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.modifier.clickAction
 
-fun WidgetModifier.runCallbackAction(
+fun WidgetModifier.runCallbackBroadcastReceiver(
     context: Context,
     widgetId: Int,
     action: WidgetActionCallback
