@@ -1,6 +1,7 @@
 package com.example.dsl.widget.renderer.strategy
 
 import android.content.res.ColorStateList
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
@@ -192,7 +193,7 @@ internal object ProgressRenderStrategy {
         ): android.widget.RemoteViews {
             val viewId = viewProperty.viewId
             // RemoteViews 생성 시 viewId를 전달하여 레이아웃의 ProgressBar ID를 viewId로 설정
-            val remoteViews = android.widget.RemoteViews(
+            val remoteViews = RemoteViews(
                 context.packageName,
                 R.layout.linear_progress_component,
                 viewId
@@ -221,6 +222,8 @@ internal object ProgressRenderStrategy {
             )
 
             // ViewProperty 속성 적용
+            Log.i("heec.choi", "Property : ${viewProperty.width}")
+
             RemoteViewsBuilder.applyViewProperties(
                 remoteViews,
                 viewId,

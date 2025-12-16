@@ -2,6 +2,7 @@ package com.example.widget.component.devicecare.ram
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -163,11 +164,12 @@ class RamWidget : WidgetComponent() {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
             }
         ) {
+            Log.i("heec.choi","Progress id : ${generateViewId(RamViewIdType.Progress, gridIndex)}")
             Progress(
                 modifier = WidgetModifier
+                    .fillMaxWidth().fillMaxHeight()
                     .viewId(generateViewId(RamViewIdType.Progress, gridIndex))
                     .partiallyUpdate(true)
-                    .fillMaxWidth().fillMaxHeight()
                     .cornerRadius(context.getSystemBackgroundRadius().value),
                 contentProperty = {
                     progressType = ProgressType.PROGRESS_TYPE_LINEAR
@@ -180,7 +182,7 @@ class RamWidget : WidgetComponent() {
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color(0xFFFFFFFF).toArgb()
+                            argb = Color(0xFF3F51B5).toArgb()
                         }
                     }
                 }

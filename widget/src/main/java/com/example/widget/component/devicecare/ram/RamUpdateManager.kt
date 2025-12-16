@@ -1,6 +1,7 @@
 package com.example.widget.component.devicecare.ram
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -39,6 +40,7 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                 updateWidgetState(context, widgetId, data)
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+                Log.i(TAG, "updateRam / ${data.usagePercent}")
                 remoteViews.setTextViewText(
                     widget.getRamTextId(gridIndex),
                     "${data.usagePercent}%"

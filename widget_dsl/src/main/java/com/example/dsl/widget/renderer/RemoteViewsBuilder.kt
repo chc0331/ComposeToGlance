@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.RemoteViews
 import com.example.dsl.widget.converter.ColorConverter
 import com.example.dsl.widget.converter.PaddingConverter
@@ -29,12 +30,25 @@ internal object RemoteViewsBuilder {
                 viewProperty.width.dp.value,
                 TypedValue.COMPLEX_UNIT_DIP
             )
+        } else if (viewProperty.width.matchParent) {
+            Log.i("heec.choi","View id : $viewId")
+            remoteViews.setViewLayoutWidth(
+                viewId,
+                ViewGroup.LayoutParams.MATCH_PARENT.toFloat(), // -1.0f
+                TypedValue.COMPLEX_UNIT_PX
+            )
         }
-        if(viewProperty.height.dp.value != 0f){
+        if (viewProperty.height.dp.value != 0f) {
             remoteViews.setViewLayoutHeight(
                 viewId,
                 viewProperty.height.dp.value,
                 TypedValue.COMPLEX_UNIT_DIP
+            )
+        } else if (viewProperty.height.matchParent) {
+            remoteViews.setViewLayoutHeight(
+                viewId,
+                ViewGroup.LayoutParams.MATCH_PARENT.toFloat(), // -1.0f
+                TypedValue.COMPLEX_UNIT_PX
             )
         }
 
