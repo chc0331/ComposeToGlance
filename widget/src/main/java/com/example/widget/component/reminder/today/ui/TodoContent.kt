@@ -54,7 +54,7 @@ import com.example.widget.component.reminder.today.viewmodel.TodayTodoViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TodayTodoContent(
+fun TodoContent(
     viewModel: TodayTodoViewModel,
     onDismiss: () -> Unit
 ) {

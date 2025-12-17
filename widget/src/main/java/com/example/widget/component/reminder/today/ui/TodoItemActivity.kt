@@ -20,7 +20,7 @@ class TodayTodoActivity : ComponentActivity() {
         
         setContent {
             TodoTheme {
-                TodayTodoContent(
+                TodoContent(
                     viewModel = viewModel,
                     onDismiss = { finish() }
                 )
