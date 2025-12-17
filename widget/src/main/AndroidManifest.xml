@@ -65,6 +65,14 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:excludeFromRecents="true" />
+
+        <activity
+            android:name=".component.reminder.today.TodayTodoActivity"
+            android:theme="@style/Theme.WidgetActionDialog"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:excludeFromRecents="true" />
     </application>
 
 </manifest>

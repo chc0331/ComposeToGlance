@@ -39,6 +39,7 @@ import com.example.widget.action.WidgetActionVisibleActivity
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
+import com.example.widget.component.reminder.today.TodayTodoActivity
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.util.getSystemBackgroundRadius
 
@@ -57,15 +58,19 @@ class StorageWidget : WidgetComponent() {
     override fun WidgetScope.Content() {
         val localSize = getLocal(WidgetLocalSize) as DpSize
         val context = getLocal(WidgetLocalContext) as Context
+        val isPreview = getLocal(WidgetLocalPreview) as Boolean
+        var backgroundModifier = WidgetModifier
+            .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
+        if (!isPreview) {
+            backgroundModifier = backgroundModifier.clickAction(
+                ComponentName(
+                    context,
+                    TodayTodoActivity::class.java
+                )
+            )
+        }
         Box(
-            modifier = WidgetModifier
-                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
-                .clickAction(
-                    ComponentName(
-                        context,
-                        WidgetActionVisibleActivity::class.java
-                    )
-                ),
+            modifier = backgroundModifier,
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
