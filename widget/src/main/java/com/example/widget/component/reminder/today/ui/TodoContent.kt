@@ -96,7 +96,7 @@ fun TodayTodoContent(
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
                                 contentDescription = "이전 날짜",
-                                tint = Color(0xFF0D47A1)
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                         Column(
@@ -123,13 +123,15 @@ fun TodayTodoContent(
                         IconButton(onClick = { viewModel.selectNextDate() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowForward,
-                                contentDescription = "다음 날짜"
+                                contentDescription = "다음 날짜",
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                         IconButton(onClick = { viewModel.showCalendarPicker() }) {
                             Icon(
                                 imageVector = Icons.Filled.DateRange,
-                                contentDescription = "날짜 선택"
+                                contentDescription = "날짜 선택",
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }
@@ -139,7 +141,8 @@ fun TodayTodoContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "닫기"
+                            contentDescription = "닫기",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -315,13 +318,15 @@ private fun InlineAddTodoRow(
             IconButton(onClick = onAdd) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "추가"
+                    contentDescription = "추가",
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
             IconButton(onClick = onMore) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "상세 추가"
+                    contentDescription = "상세 추가",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

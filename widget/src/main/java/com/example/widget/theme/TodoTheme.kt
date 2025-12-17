@@ -10,76 +10,75 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Light Theme Colors (MainActivity와 동일)
+// Light Theme Colors (Color.kt의 색상 상수 사용)
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFFFFFFFF),  // White
-    onPrimary = Color(0xFF1C1B1F),  // Dark text on white
-    primaryContainer = Color(0xFFF5F5F5),  // Very light gray
-    onPrimaryContainer = Color(0xFF000000),  // Black text
-    secondary = Color(0xFF2196F3),  // Material Blue
-    onSecondary = Color(0xFFFFFFFF),  // White text on blue
-    secondaryContainer = Color(0xFFBBDEFB),  // Light blue container
-    onSecondaryContainer = Color(0xFF0D47A1),  // Dark blue text
-    tertiary = Color(0xFF03A9F4),  // Light Blue
-    onTertiary = Color(0xFFFFFFFF),  // White text
-    tertiaryContainer = Color(0xFFE1F5FE),  // Very light blue
-    onTertiaryContainer = Color(0xFF01579B),  // Dark blue
-    error = Color(0xFFB00020),  // Material error red
-    errorContainer = Color(0xFFFFDAD6),
-    onError = Color(0xFFFFFFFF),
-    onErrorContainer = Color(0xFF410002),
-    background = Color(0xFFFFFFFF),  // Pure white
-    onBackground = Color(0xFF1C1B1F),  // Dark text
-    surface = Color(0xFFFFFFFF),  // White surface
-    onSurface = Color(0xFF1C1B1F),  // Dark text
-    surfaceVariant = Color(0xFFF5F5F5),  // Light gray variant
-    onSurfaceVariant = Color(0xFF49454F),  // Medium dark text
-    outline = Color(0xFF79747E),  // Medium gray outline
-    outlineVariant = Color(0xFFCAC4D0),  // Light gray outline
-    scrim = Color(0xFF000000),  // Black scrim
-    inverseSurface = Color(0xFF313033),  // Dark inverse surface
-    inverseOnSurface = Color(0xFFF4EFF4),  // Light text on dark
-    inversePrimary = Color(0xFFE0E0E0),  // Light gray inverse
-    surfaceTint = Color(0xFF2196F3),  // Blue tint
+    primary = md_theme_light_primary,
+    onPrimary = md_theme_light_onPrimary,
+    primaryContainer = md_theme_light_primaryContainer,
+    onPrimaryContainer = md_theme_light_onPrimaryContainer,
+    secondary = md_theme_light_secondary,
+    onSecondary = md_theme_light_onSecondary,
+    secondaryContainer = md_theme_light_secondaryContainer,
+    onSecondaryContainer = md_theme_light_onSecondaryContainer,
+    tertiary = md_theme_light_tertiary,
+    onTertiary = md_theme_light_onTertiary,
+    tertiaryContainer = md_theme_light_tertiaryContainer,
+    onTertiaryContainer = md_theme_light_onTertiaryContainer,
+    error = md_theme_light_error,
+    errorContainer = md_theme_light_errorContainer,
+    onError = md_theme_light_onError,
+    onErrorContainer = md_theme_light_onErrorContainer,
+    background = md_theme_light_background,
+    onBackground = md_theme_light_onBackground,
+    surface = md_theme_light_surface,
+    onSurface = md_theme_light_onSurface,
+    surfaceVariant = md_theme_light_surfaceVariant,
+    onSurfaceVariant = md_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    outlineVariant = md_theme_light_outlineVariant,
+    scrim = md_theme_light_scrim,
+    inverseSurface = md_theme_light_inverseSurface,
+    inverseOnSurface = md_theme_light_inverseOnSurface,
+    inversePrimary = md_theme_light_inversePrimary,
+    surfaceTint = md_theme_light_surfaceTint,
 )
 
-// Dark Theme Colors
+// Dark Theme Colors (Color.kt의 색상 상수 사용)
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF424242),  // Dark gray
-    onPrimary = Color(0xFFFFFFFF),  // White text
-    primaryContainer = Color(0xFF2C2C2C),  // Darker gray container
-    onPrimaryContainer = Color(0xFFFFFFFF),  // White text
-    secondary = Color(0xFF64B5F6),  // Light blue for dark mode
-    onSecondary = Color(0xFF000000),  // Black text on light blue
-    secondaryContainer = Color(0xFF1565C0),  // Medium blue container
-    onSecondaryContainer = Color(0xFFE3F2FD),  // Very light blue text
-    tertiary = Color(0xFF81D4FA),  // Light blue accent
-    onTertiary = Color(0xFF000000),  // Black text
-    tertiaryContainer = Color(0xFF0277BD),  // Dark blue container
-    onTertiaryContainer = Color(0xFFE1F5FE),  // Very light blue text
-    error = Color(0xFFCF6679),  // Light red for dark mode
-    errorContainer = Color(0xFF93000A),
-    onError = Color(0xFF690005),
-    onErrorContainer = Color(0xFFFFDAD6),
-    background = Color(0xFF121212),  // Material dark background
-    onBackground = Color(0xFFE6E1E5),  // Light text
-    surface = Color(0xFF1E1E1E),  // Dark surface
-    onSurface = Color(0xFFE6E1E5),  // Light text
-    surfaceVariant = Color(0xFF2C2C2C),  // Medium dark variant
-    onSurfaceVariant = Color(0xFFCAC4D0),  // Light gray text
-    outline = Color(0xFF938F99),  // Medium light gray outline
-    outlineVariant = Color(0xFF49454F),  // Dark gray outline
-    scrim = Color(0xFF000000),  // Black scrim
-    inverseSurface = Color(0xFFE6E1E5),  // Light inverse surface
-    inverseOnSurface = Color(0xFF313033),  // Dark text on light
-    inversePrimary = Color(0xFF616161),  // Medium gray inverse
-    surfaceTint = Color(0xFF64B5F6),  // Light blue tint
+    primary = md_theme_dark_primary,
+    onPrimary = md_theme_dark_onPrimary,
+    primaryContainer = md_theme_dark_primaryContainer,
+    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
+    secondary = md_theme_dark_secondary,
+    onSecondary = md_theme_dark_onSecondary,
+    secondaryContainer = md_theme_dark_secondaryContainer,
+    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
+    tertiary = md_theme_dark_tertiary,
+    onTertiary = md_theme_dark_onTertiary,
+    tertiaryContainer = md_theme_dark_tertiaryContainer,
+    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
+    error = md_theme_dark_error,
+    errorContainer = md_theme_dark_errorContainer,
+    onError = md_theme_dark_onError,
+    onErrorContainer = md_theme_dark_onErrorContainer,
+    background = md_theme_dark_background,
+    onBackground = md_theme_dark_onBackground,
+    surface = md_theme_dark_surface,
+    onSurface = md_theme_dark_onSurface,
+    surfaceVariant = md_theme_dark_surfaceVariant,
+    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    outlineVariant = md_theme_dark_outlineVariant,
+    scrim = md_theme_dark_scrim,
+    inverseSurface = md_theme_dark_inverseSurface,
+    inverseOnSurface = md_theme_dark_inverseOnSurface,
+    inversePrimary = md_theme_dark_inversePrimary,
+    surfaceTint = md_theme_dark_surfaceTint,
 )
 
 @Composable

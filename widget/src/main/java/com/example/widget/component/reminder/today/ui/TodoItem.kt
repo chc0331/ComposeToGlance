@@ -61,7 +61,7 @@ fun TodoItem(
                 },
                 contentDescription = if (todo.status == TodoStatus.COMPLETED) "완료" else "미완료",
                 tint = if (todo.status == TodoStatus.COMPLETED) {
-                    MaterialTheme.colorScheme.primary
+                    MaterialTheme.colorScheme.secondary
                 } else {
                     MaterialTheme.colorScheme.outline
                 },
