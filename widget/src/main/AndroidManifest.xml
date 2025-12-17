@@ -67,7 +67,7 @@
             android:excludeFromRecents="true" />
 
         <activity
-            android:name=".component.reminder.today.TodayTodoActivity"
+            android:name=".component.reminder.today.ui.TodayTodoActivity"
             android:theme="@style/Theme.WidgetActionDialog"
             android:exported="false"
             android:launchMode="singleTop"

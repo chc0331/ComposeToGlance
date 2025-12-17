@@ -1,4 +1,4 @@
-package com.example.widget.component.reminder.today
+package com.example.widget.component.reminder.today.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.widget.component.reminder.today.TodoStatus
 import com.example.widget.database.TodoEntity
 import java.text.SimpleDateFormat
 import java.util.Date

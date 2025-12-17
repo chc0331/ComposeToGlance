@@ -35,11 +35,10 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
-import com.example.widget.action.WidgetActionVisibleActivity
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
-import com.example.widget.component.reminder.today.TodayTodoActivity
+import com.example.widget.component.reminder.today.ui.TodayTodoActivity
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.util.getSystemBackgroundRadius
 

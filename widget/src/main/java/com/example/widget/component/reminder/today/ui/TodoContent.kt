@@ -1,6 +1,6 @@
-package com.example.widget.component.reminder.today
+package com.example.widget.component.reminder.today.ui
 
-import androidx.activity.ComponentActivity
+import android.R.attr.bottom
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,56 +42,29 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.widget.database.TodoEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import com.example.widget.component.reminder.today.viewmodel.TodayTodoViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TodayTodoContent(
-    context: ComponentActivity,
+    viewModel: TodayTodoViewModel,
     onDismiss: () -> Unit
 ) {
-    val repository = remember { TodoRepository(context) }
-    val todayDateString = remember { getTodayDateString() }
-    val calendar = remember { Calendar.getInstance() }
-    var selectedDateMillis by remember { mutableStateOf(System.currentTimeMillis()) }
-    val selectedDateString = remember(selectedDateMillis) {
-        formatDateString(Date(selectedDateMillis))
-    }
-    val headerDateText = remember(selectedDateMillis) {
-        formatHeaderDate(Date(selectedDateMillis))
-    }
-    val isToday = remember(selectedDateString, todayDateString) { selectedDateString == todayDateString }
-
-    val todos by repository.getTodosByDate(selectedDateString).collectAsState(initial = emptyList())
-    val coroutineScope = rememberCoroutineScope()
-    
-    var showAddDialog by remember { mutableStateOf(false) }
-    var editingTodo by remember { mutableStateOf<TodoEntity?>(null) }
-    var showCalendarPicker by remember { mutableStateOf(false) }
-    var inlineTitle by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
     )
-    
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -101,7 +74,8 @@ fun TodayTodoContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .padding(bottom = 12.dp, start = 6.dp, end = 6.dp)
+                .height(400.dp),
             contentPadding = PaddingValues(bottom = 8.dp)
         ) {
             // iOS-like header (nav-bar feel)
@@ -118,48 +92,41 @@ fun TodayTodoContent(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        IconButton(onClick = {
-                            calendar.timeInMillis = selectedDateMillis
-                            calendar.add(Calendar.DAY_OF_YEAR, -1)
-                            selectedDateMillis = calendar.timeInMillis
-                        }) {
+                        IconButton(onClick = { viewModel.selectPreviousDate() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "이전 날짜"
+                                contentDescription = "이전 날짜",
+                                tint = Color(0xFF0D47A1)
                             )
                         }
                         Column(
                             modifier = Modifier
                                 .weight(1f)
-                                .clickable { showCalendarPicker = true },
+                                .clickable { viewModel.showCalendarPicker() },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = headerDateText,
+                                text = uiState.headerDateText,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = if (isToday) "Today" else selectedDateString,
+                                text = if (uiState.isToday) "Today" else uiState.selectedDateString,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        IconButton(onClick = {
-                            calendar.timeInMillis = selectedDateMillis
-                            calendar.add(Calendar.DAY_OF_YEAR, 1)
-                            selectedDateMillis = calendar.timeInMillis
-                        }) {
+                        IconButton(onClick = { viewModel.selectNextDate() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowForward,
                                 contentDescription = "다음 날짜"
                             )
                         }
-                        IconButton(onClick = { showCalendarPicker = true }) {
+                        IconButton(onClick = { viewModel.showCalendarPicker() }) {
                             Icon(
                                 imageVector = Icons.Filled.DateRange,
                                 contentDescription = "날짜 선택"
@@ -185,32 +152,19 @@ fun TodayTodoContent(
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     InlineAddTodoRow(
-                        title = inlineTitle,
-                        onTitleChange = { inlineTitle = it },
+                        title = uiState.inlineTitle,
+                        onTitleChange = { viewModel.updateInlineTitle(it) },
                         onAdd = {
-                            val title = inlineTitle.trim()
-                            if (title.isNotEmpty()) {
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    val newTodo = TodoEntity(
-                                        title = title,
-                                        description = null,
-                                        date = selectedDateString,
-                                        dateTime = null,
-                                        status = TodoStatus.INCOMPLETE
-                                    )
-                                    repository.insertTodo(newTodo)
-                                }
-                                inlineTitle = ""
-                                focusManager.clearFocus()
-                            }
+                            viewModel.addTodoInline()
+                            focusManager.clearFocus()
                         },
-                        onMore = { showAddDialog = true }
+                        onMore = { viewModel.showAddDialog() }
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 
-            if (todos.isEmpty()) {
+            if (uiState.todos.isEmpty()) {
                 item {
                     Box(
                         modifier = Modifier
@@ -227,11 +181,11 @@ fun TodayTodoContent(
                 }
             } else {
                 itemsIndexed(
-                    items = todos,
+                    items = uiState.todos,
                     key = { _, todo -> todo.id }
                 ) { index, todo ->
                     val isFirst = index == 0
-                    val isLast = index == todos.lastIndex
+                    val isLast = index == uiState.todos.lastIndex
                     val cellShape = when {
                         isFirst && isLast -> RoundedCornerShape(14.dp)
                         isFirst -> RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp)
@@ -250,22 +204,9 @@ fun TodayTodoContent(
                         Column {
                             TodoItem(
                                 todo = todo,
-                                onToggleStatus = { todoEntity ->
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        val newStatus = when (todoEntity.status) {
-                                            TodoStatus.COMPLETED -> TodoStatus.INCOMPLETE
-                                            TodoStatus.INCOMPLETE -> TodoStatus.COMPLETED
-                                            TodoStatus.PENDING -> TodoStatus.COMPLETED
-                                        }
-                                        repository.toggleTodoStatus(todoEntity.id, newStatus)
-                                    }
-                                },
-                                onEdit = { editingTodo = it },
-                                onDelete = { todoEntity ->
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        repository.deleteTodo(todoEntity)
-                                    }
-                                }
+                                onToggleStatus = { viewModel.toggleTodoStatus(it) },
+                                onEdit = { viewModel.showEditDialog(it) },
+                                onDelete = { viewModel.deleteTodo(it) }
                             )
                             if (!isLast) {
                                 HorizontalDivider(
@@ -287,83 +228,51 @@ fun TodayTodoContent(
             }
         }
     }
-    
+
     // Add Dialog
-    if (showAddDialog) {
+    if (uiState.showAddDialog) {
         TodoEditDialog(
             todo = null,
-            onDismiss = { showAddDialog = false },
+            onDismiss = { viewModel.hideAddDialog() },
             onSave = { title, description, dateTime ->
-                coroutineScope.launch(Dispatchers.IO) {
-                    // dateTime이 있으면 해당 날짜를 사용, 없으면 오늘 날짜 사용
-                    val date = if (dateTime != null) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        dateFormat.format(Date(dateTime))
-                    } else {
-                        selectedDateString
-                    }
-                    val newTodo = TodoEntity(
-                        title = title,
-                        description = description.ifEmpty { null },
-                        date = date,
-                        dateTime = dateTime,
-                        status = TodoStatus.INCOMPLETE
-                    )
-                    repository.insertTodo(newTodo)
-                }
-                showAddDialog = false
+                viewModel.addTodo(title, description, dateTime)
             }
         )
     }
-    
+
     // Edit Dialog
-    editingTodo?.let { todo ->
+    uiState.editingTodo?.let { todo ->
         TodoEditDialog(
             todo = todo,
-            onDismiss = { editingTodo = null },
+            onDismiss = { viewModel.hideEditDialog() },
             onSave = { title, description, dateTime ->
-                coroutineScope.launch(Dispatchers.IO) {
-                    // dateTime이 있으면 해당 날짜를 사용, 없으면 기존 날짜 유지
-                    val date = if (dateTime != null) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        dateFormat.format(Date(dateTime))
-                    } else {
-                        todo.date
-                    }
-                    val updatedTodo = todo.copy(
-                        title = title,
-                        description = description.ifEmpty { null },
-                        date = date,
-                        dateTime = dateTime,
-                        updatedAt = System.currentTimeMillis()
-                    )
-                    repository.updateTodo(updatedTodo)
-                }
-                editingTodo = null
+                viewModel.updateTodo(todo, title, description, dateTime)
             }
         )
     }
 
     // Calendar picker
-    if (showCalendarPicker) {
+    if (uiState.showCalendarPicker) {
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = selectedDateMillis,
+            initialSelectedDateMillis = uiState.selectedDateMillis,
             initialDisplayMode = DisplayMode.Picker
         )
         DatePickerDialog(
-            onDismissRequest = { showCalendarPicker = false },
+            onDismissRequest = { viewModel.hideCalendarPicker() },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        datePickerState.selectedDateMillis?.let { selectedDateMillis = it }
-                        showCalendarPicker = false
+                        datePickerState.selectedDateMillis?.let {
+                            viewModel.selectDate(it)
+                        }
+                        viewModel.hideCalendarPicker()
                     },
                 ) {
                     Text("확인")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showCalendarPicker = false }) {
+                TextButton(onClick = { viewModel.hideCalendarPicker() }) {
                     Text("취소")
                 }
             }
