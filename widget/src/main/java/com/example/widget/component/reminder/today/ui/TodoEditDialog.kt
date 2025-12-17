@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.widget.database.TodoEntity
@@ -97,7 +98,8 @@ fun TodoEditDialog(
                     onValueChange = { title = it },
                     label = { Text("제목") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -108,7 +110,8 @@ fun TodoEditDialog(
                     label = { Text("설명 (선택사항)") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
-                    maxLines = 5
+                    maxLines = 5,
+                    shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -120,14 +123,16 @@ fun TodoEditDialog(
                 ) {
                     OutlinedButton(
                         onClick = { showDatePicker = true },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                     ) {
                         Text("날짜 선택")
                     }
                     
                     OutlinedButton(
                         onClick = { showTimePicker = true },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                     ) {
                         Text("시간 선택")
                     }

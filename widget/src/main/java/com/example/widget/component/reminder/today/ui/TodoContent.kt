@@ -183,9 +183,15 @@ fun TodoContent(
                     val isFirst = index == 0
                     val isLast = index == uiState.todos.lastIndex
                     val cellShape = when {
-                        isFirst && isLast -> RoundedCornerShape(14.dp)
-                        isFirst -> RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp)
-                        isLast -> RoundedCornerShape(bottomStart = 14.dp, bottomEnd = 14.dp)
+                        isFirst && isLast -> RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
+                        isFirst -> RoundedCornerShape(
+                            topStart = TodoDesignConstants.CORNER_RADIUS,
+                            topEnd = TodoDesignConstants.CORNER_RADIUS
+                        )
+                        isLast -> RoundedCornerShape(
+                            bottomStart = TodoDesignConstants.CORNER_RADIUS,
+                            bottomEnd = TodoDesignConstants.CORNER_RADIUS
+                        )
                         else -> RoundedCornerShape(0.dp)
                     }
 
@@ -288,7 +294,7 @@ private fun InlineAddTodoRow(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS),
         color = MaterialTheme.colorScheme.surfaceVariant,
         tonalElevation = 0.dp
     ) {
@@ -307,7 +313,7 @@ private fun InlineAddTodoRow(
                 placeholder = { Text("New item") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { onAdd() }),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
             )
             IconButton(onClick = onAdd) {
                 Icon(
