@@ -304,9 +304,10 @@ private fun InlineAddTodoRow(
                 onValueChange = onTitleChange,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
-                placeholder = { Text("New reminder") },
+                placeholder = { Text("New item") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { onAdd() })
+                keyboardActions = KeyboardActions(onDone = { onAdd() }),
+                shape = RoundedCornerShape(14.dp)
             )
             IconButton(onClick = onAdd) {
                 Icon(
