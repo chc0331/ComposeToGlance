@@ -19,8 +19,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
@@ -94,7 +94,7 @@ fun TodoContent(
                     ) {
                         IconButton(onClick = { viewModel.selectPreviousDate() }) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowBack,
+                                imageVector = Icons.Filled.ChevronLeft,
                                 contentDescription = "이전 날짜",
                                 tint = MaterialTheme.colorScheme.secondary
                             )
@@ -122,7 +122,7 @@ fun TodoContent(
                         }
                         IconButton(onClick = { viewModel.selectNextDate() }) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowForward,
+                                imageVector = Icons.Filled.ChevronRight,
                                 contentDescription = "다음 날짜",
                                 tint = MaterialTheme.colorScheme.secondary
                             )
