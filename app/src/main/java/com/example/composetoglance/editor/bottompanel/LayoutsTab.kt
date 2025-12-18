@@ -54,7 +54,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
             ) {
                 Text(
                     text = layout.sizeType,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge
                 )
                 ClickableLayoutComponent(
