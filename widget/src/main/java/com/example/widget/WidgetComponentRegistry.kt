@@ -14,6 +14,7 @@ import com.example.widget.component.battery.bluetooth.watch.WatchBatteryWidget
 import com.example.widget.component.devicecare.ram.RamWidget
 import com.example.widget.component.devicecare.storage.StorageWidget
 import com.example.widget.component.lifecycle.ComponentLifecycleManager
+import com.example.widget.component.reminder.today.TodayTodoWidget
 import com.example.widget.component.viewid.ViewIdAllocator
 
 fun initializeWidgetComponents() {
@@ -29,6 +30,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(WatchBatteryWidget())
     WidgetComponentRegistry.registerComponent(RamWidget())
     WidgetComponentRegistry.registerComponent(StorageWidget())
+    WidgetComponentRegistry.registerComponent(TodayTodoWidget())
 }
 
 /**
