@@ -21,6 +21,7 @@ message WidgetNode {
     ButtonProperty button = 6;
     SpacerProperty spacer = 7;
     ProgressProperty progress = 8;
+    CheckboxProperty checkbox = 9;
   }
   repeated WidgetNode children = 10;
 }
@@ -248,4 +249,12 @@ message ProgressProperty {
   float progress_value = 4;
   ColorProvider progress_color = 5;
   ColorProvider background_color = 6;
+}
+
+message CheckboxProperty {
+  ViewProperty view_property = 1;
+  bool checked = 2;
+  TextContent text = 3;
+  ColorProvider checked_color = 4;
+  ColorProvider unchecked_color = 5;
 }

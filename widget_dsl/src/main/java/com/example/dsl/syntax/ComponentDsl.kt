@@ -6,6 +6,7 @@ import com.example.dsl.proto.ButtonProperty
 import com.example.dsl.proto.ContentScale
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.ImageProperty
+import com.example.dsl.proto.CheckboxProperty
 import com.example.dsl.proto.ProgressProperty
 import com.example.dsl.proto.ProgressType
 import com.example.dsl.proto.ProgressType.PROGRESS_TYPE_LINEAR
@@ -438,6 +439,95 @@ class SpacerDsl(
         } else {
             propertyDsl.ViewProperty {
                 viewId = scope.nextViewId()
+            }
+        }
+        return propertyBuilder.build()
+    }
+}
+
+/**
+ * Checkbox 컴포넌트 DSL
+ */
+class CheckboxDsl(
+    scope: WidgetScope,
+    modifier: WidgetModifier = WidgetModifier
+) : BaseComponentDsl(scope) {
+    private val propertyBuilder = CheckboxProperty.newBuilder()
+    private val propertyDsl = CheckboxPropertyDsl(propertyBuilder)
+    private var textSet = false
+    private var checkedColorSet = false
+    private var uncheckedColorSet = false
+
+    init {
+        this.modifier(modifier)
+        // 기본값 설정
+        propertyDsl.checked = false
+    }
+
+    /**
+     * 체크 상태
+     */
+    var checked: Boolean
+        get() = propertyDsl.checked
+        set(value) {
+            propertyDsl.checked = value
+        }
+
+    /**
+     * 체크박스 텍스트 설정 블록
+     */
+    fun TextContent(block: TextContentDsl.() -> Unit) {
+        textSet = true
+        propertyDsl.Text(block)
+    }
+
+    /**
+     * 체크 상태 색상 설정 블록
+     */
+    fun CheckedColor(block: ColorProviderDsl.() -> Unit) {
+        checkedColorSet = true
+        propertyDsl.CheckedColor(block)
+    }
+
+    /**
+     * 미체크 상태 색상 설정 블록
+     */
+    fun UncheckedColor(block: ColorProviderDsl.() -> Unit) {
+        uncheckedColorSet = true
+        propertyDsl.UncheckedColor(block)
+    }
+
+    /**
+     * CheckboxProperty 빌드
+     */
+    internal fun build(): CheckboxProperty {
+        // ViewProperty 설정 (BaseComponentDsl에서 처리)
+        if (hasViewProperty()) {
+            val viewProperty = buildViewProperty()
+            propertyBuilder.viewProperty = viewProperty
+        } else {
+            propertyDsl.ViewProperty {
+                viewId = scope.nextViewId()
+            }
+        }
+        
+        if (!textSet) {
+            propertyDsl.Text {
+                text = ""
+            }
+        }
+        if (!checkedColorSet) {
+            propertyDsl.CheckedColor {
+                Color {
+                    argb = 0xFF4CAF50.toInt() // 기본 체크 색상 (녹색)
+                }
+            }
+        }
+        if (!uncheckedColorSet) {
+            propertyDsl.UncheckedColor {
+                Color {
+                    argb = 0xFF9E9E9E.toInt() // 기본 미체크 색상 (회색)
+                }
             }
         }
         return propertyBuilder.build()

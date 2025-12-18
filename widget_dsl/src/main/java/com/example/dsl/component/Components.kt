@@ -3,6 +3,7 @@ package com.example.dsl.component
 import com.example.dsl.WidgetScope
 import com.example.dsl.modifier.WidgetModifier
 import com.example.dsl.syntax.ButtonDsl
+import com.example.dsl.syntax.CheckboxDsl
 import com.example.dsl.syntax.ImageDsl
 import com.example.dsl.syntax.ProgressDsl
 import com.example.dsl.syntax.SpacerDsl
@@ -223,4 +224,34 @@ fun WidgetScope.Spacer(
         .setSpacer(dsl.build())
         .build()
     addChild(spacerNode)
+}
+
+/**
+ * Checkbox 컴포넌트 (중첩 DSL 빌더 패턴)
+ * 
+ * 사용 예시 (Modifier 사용):
+ * ```
+ * Checkbox(
+ *     modifier = WidgetModifier
+ *         .width(wrapContent)
+ *         .height(wrapContent)
+ * ) {
+ *     checked = true
+ *     TextContent { text = "Checkbox label" }
+ *     CheckedColor {
+ *         Color { argb = 0xFF4CAF50.toInt() }
+ *     }
+ * }
+ * ```
+ */
+fun WidgetScope.Checkbox(
+    modifier: WidgetModifier = WidgetModifier,
+    contentProperty: CheckboxDsl.() -> Unit
+) {
+    val dsl = CheckboxDsl(this, modifier)
+    dsl.contentProperty()
+    val checkboxNode = WidgetNode.newBuilder()
+        .setCheckbox(dsl.build())
+        .build()
+    addChild(checkboxNode)
 }

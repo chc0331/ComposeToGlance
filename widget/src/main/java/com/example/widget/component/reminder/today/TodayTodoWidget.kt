@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
+import com.example.dsl.component.Checkbox
 import com.example.dsl.component.Column
 import com.example.dsl.component.Row
 import com.example.dsl.component.Text
@@ -25,6 +26,7 @@ import com.example.dsl.modifier.height
 import com.example.dsl.modifier.padding
 import com.example.dsl.modifier.viewId
 import com.example.dsl.modifier.wrapContentHeight
+import com.example.dsl.modifier.wrapContentWidth
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.HorizontalAlignment
@@ -230,21 +232,25 @@ class TodayTodoWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
-            // 체크 상태 표시 (간단한 텍스트)
-            Text(
-                modifier = WidgetModifier.padding(end = 4f),
+            // 체크박스 컴포넌트 사용
+            Checkbox(
+                modifier = WidgetModifier
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+                    .padding(end = 4f),
                 contentProperty = {
+                    checked = todo.status == TodoStatus.COMPLETED
                     TextContent {
-                        text = if (todo.status == TodoStatus.COMPLETED) "✓" else "○"
+                        text = "" // 체크박스만 표시, 텍스트는 별도로
                     }
-                    fontSize = 10f
-                    FontColor {
+                    CheckedColor {
                         Color {
-                            argb = if (todo.status == TodoStatus.COMPLETED) {
-                                Color(0xFF4CAF50).toArgb()
-                            } else {
-                                Color.Gray.toArgb()
-                            }
+                            argb = Color(0xFF4CAF50).toArgb() // 완료 시 녹색
+                        }
+                    }
+                    UncheckedColor {
+                        Color {
+                            argb = Color.Gray.toArgb() // 미완료 시 회색
                         }
                     }
                 }

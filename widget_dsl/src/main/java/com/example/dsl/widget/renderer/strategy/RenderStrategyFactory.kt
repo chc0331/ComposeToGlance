@@ -50,5 +50,16 @@ internal object RenderStrategyFactory {
             ProgressRenderStrategy.Glance
         }
     }
+
+    /**
+     * Checkbox 노드에 대한 적절한 Strategy 선택
+     */
+    fun getCheckboxStrategy(node: WidgetNode): RenderStrategy {
+        return if (node.hasCheckbox() && node.checkbox.viewProperty.partiallyUpdate) {
+            CheckboxRenderStrategy.RemoteViews
+        } else {
+            CheckboxRenderStrategy.Glance
+        }
+    }
 }
 

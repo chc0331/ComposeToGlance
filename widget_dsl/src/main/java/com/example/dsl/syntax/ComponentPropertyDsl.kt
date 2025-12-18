@@ -1,6 +1,7 @@
 package com.example.dsl.syntax
 
 import com.example.dsl.proto.ButtonProperty
+import com.example.dsl.proto.CheckboxProperty
 import com.example.dsl.proto.Color
 import com.example.dsl.proto.ColorProvider
 import com.example.dsl.proto.ContentScale
@@ -218,5 +219,40 @@ internal class SpacerPropertyDsl(private val builder: SpacerProperty.Builder) {
         val viewPropertyBuilder = ViewProperty.newBuilder()
         ViewPropertyDsl(viewPropertyBuilder).block()
         builder.setViewProperty(viewPropertyBuilder.build())
+    }
+}
+
+/**
+ * CheckboxProperty DSL
+ */
+internal class CheckboxPropertyDsl(private val builder: CheckboxProperty.Builder) {
+    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
+        val viewPropertyBuilder = ViewProperty.newBuilder()
+        ViewPropertyDsl(viewPropertyBuilder).block()
+        builder.setViewProperty(viewPropertyBuilder.build())
+    }
+
+    var checked: Boolean
+        get() = builder.checked
+        set(value) {
+            builder.setChecked(value)
+        }
+
+    fun Text(block: TextContentDsl.() -> Unit) {
+        val textContentBuilder = TextContent.newBuilder()
+        TextContentDsl(textContentBuilder).block()
+        builder.setText(textContentBuilder.build())
+    }
+
+    fun CheckedColor(block: ColorProviderDsl.() -> Unit) {
+        val colorProviderBuilder = ColorProvider.newBuilder()
+        ColorProviderDsl(colorProviderBuilder).block()
+        builder.setCheckedColor(colorProviderBuilder.build())
+    }
+
+    fun UncheckedColor(block: ColorProviderDsl.() -> Unit) {
+        val colorProviderBuilder = ColorProvider.newBuilder()
+        ColorProviderDsl(colorProviderBuilder).block()
+        builder.setUncheckedColor(colorProviderBuilder.build())
     }
 }

@@ -27,6 +27,7 @@ object RendererInitializer {
         NodeRendererRegistry.register("button", ButtonRenderer)
         NodeRendererRegistry.register("progress", ProgressRenderer)
         NodeRendererRegistry.register("spacer", SpacerRenderer)
+        NodeRendererRegistry.register("checkbox", CheckboxRenderer)
     }
 
     /**
@@ -37,7 +38,7 @@ object RendererInitializer {
     fun isInitialized(): Boolean {
         val requiredTypes = setOf(
             "box", "column", "row",
-            "text", "image", "button", "progress", "spacer"
+            "text", "image", "button", "progress", "spacer", "checkbox"
         )
         val registeredTypes = NodeRendererRegistry.getRegisteredTypes()
         return registeredTypes.containsAll(requiredTypes)
