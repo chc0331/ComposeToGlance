@@ -1,10 +1,12 @@
 package com.example.widget.component.reminder.today.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.widget.component.reminder.today.TodoDateUtils
 import com.example.widget.component.reminder.today.TodoRepository
 import com.example.widget.component.reminder.today.TodoStatus
+import com.example.widget.component.reminder.today.TodayTodoUpdateManager
 import com.example.widget.database.TodoEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +56,8 @@ data class TodayTodoUiState(
  * TodayTodo 화면의 ViewModel
  */
 class TodayTodoViewModel(
-    private val repository: TodoRepository
+    private val repository: TodoRepository,
+    private val applicationContext: Context
 ) : ViewModel() {
 
     private val _selectedDateMillis = MutableStateFlow(System.currentTimeMillis())
@@ -286,6 +289,16 @@ class TodayTodoViewModel(
     fun deleteTodo(todo: TodoEntity) {
         viewModelScope.launch {
             repository.deleteTodo(todo)
+        }
+    }
+
+    /**
+     * 위젯을 저장하고 업데이트합니다.
+     * 최신 Todo 데이터를 TodayTodoUpdateManager를 통해 위젯에 반영합니다.
+     */
+    fun saveAndUpdateWidget() {
+        viewModelScope.launch {
+            TodayTodoUpdateManager.syncComponentState(applicationContext)
         }
     }
 }

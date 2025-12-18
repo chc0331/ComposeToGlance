@@ -11,7 +11,7 @@ import com.example.widget.theme.AppTheme
 /**
  * Today Todo를 표시하는 Dialog 스타일 Activity
  */
-class TodayTodoActivity : ComponentActivity() {
+class TodoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         

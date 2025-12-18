@@ -34,12 +34,13 @@ import com.example.widget.WidgetCategory
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
-import com.example.widget.component.reminder.today.ui.TodayTodoActivity
+import com.example.widget.component.reminder.today.ui.TodoActivity
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.component.viewid.ViewIdType
 import com.example.widget.database.TodoDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlin.jvm.java
 
 /**
  * 오늘 날짜의 Todo를 표시하는 위젯
@@ -83,7 +84,7 @@ class TodayTodoWidget : WidgetComponent() {
         
         if (!isPreview) {
             backgroundModifier = backgroundModifier.clickAction(
-                ComponentName(context, TodayTodoActivity::class.java)
+                ComponentName(context, TodoActivity ::class.java)
             )
         }
         

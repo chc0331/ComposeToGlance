@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -95,6 +96,9 @@ fun TodoContent(
                         },
                         onCalendarClick = {
                             viewModel.showCalendarPicker()
+                        },
+                        onSave = {
+                            viewModel.saveAndUpdateWidget()
                         },
                         onDismiss = onDismiss
                     )
@@ -254,6 +258,7 @@ private fun Header(
     onPreviewClick: () -> Unit,
     onNextClick: () -> Unit,
     onCalendarClick: () -> Unit,
+    onSave: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -303,15 +308,29 @@ private fun Header(
                 )
             }
         }
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier.padding(start = 8.dp)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "닫기",
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+            IconButton(
+                onClick = onSave,
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = "저장",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            IconButton(
+                onClick = onDismiss
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "닫기",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }

@@ -15,7 +15,9 @@ class TodayTodoViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TodayTodoViewModel::class.java)) {
             val repository = TodoRepository(context)
-            return TodayTodoViewModel(repository) as T
+            // ApplicationContext를 전달하여 위젯 업데이트에 사용
+            val applicationContext = context.applicationContext
+            return TodayTodoViewModel(repository, applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

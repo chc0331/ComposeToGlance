@@ -39,9 +39,10 @@ import com.example.widget.action.WidgetActionVisibleActivity
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
-import com.example.widget.component.reminder.today.ui.TodayTodoActivity
+import com.example.widget.component.reminder.today.ui.TodoActivity
 import com.example.widget.component.update.ComponentUpdateManager
 import com.example.widget.util.getSystemBackgroundRadius
+import kotlin.jvm.java
 
 class StorageWidget : WidgetComponent() {
 
@@ -65,7 +66,7 @@ class StorageWidget : WidgetComponent() {
             backgroundModifier = backgroundModifier.clickAction(
                 ComponentName(
                     context,
-                    TodayTodoActivity::class.java
+                    TodoActivity::class.java
                 )
             )
         }
