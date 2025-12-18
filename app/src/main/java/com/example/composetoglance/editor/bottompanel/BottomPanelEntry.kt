@@ -75,8 +75,8 @@ fun BottomPanelWithTabs(
     Column(modifier = modifier) {
         TabRow(
             selectedTabIndex = tabIndex,
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             indicator = { tabPositions ->
                 Box(
                     modifier = Modifier
@@ -89,7 +89,7 @@ fun BottomPanelWithTabs(
                         modifier = Modifier
                             .width(BottomPanelConstants.TAB_INDICATOR_WIDTH)
                             .height(BottomPanelConstants.TAB_INDICATOR_HEIGHT)
-                            .background(MaterialTheme.colorScheme.primary)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                     )
                 }
             }
@@ -111,17 +111,17 @@ fun BottomPanelWithTabs(
                         Text(
                             text = title,
                             color = if (isWidgetTabDisabled) {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) // disabled 색상
+                                MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f) // disabled 색상
                             } else {
-                                Color.Unspecified // 기본 색상 사용
+                                MaterialTheme.colorScheme.onSecondary
                             }
                         ) 
                     },
                     selectedContentColor = MaterialTheme.colorScheme.primary,
                     unselectedContentColor = if (isWidgetTabDisabled) {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) // disabled 색상
+                        MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f) // disabled 색상
                     } else {
-                        MaterialTheme.colorScheme.primary
+                        MaterialTheme.colorScheme.onSecondary
                     }
                 )
             }

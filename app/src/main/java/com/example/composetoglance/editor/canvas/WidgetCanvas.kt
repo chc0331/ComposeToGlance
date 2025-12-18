@@ -1,5 +1,6 @@
 package com.example.composetoglance.editor.canvas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.MaterialTheme
@@ -136,7 +137,7 @@ fun WidgetCanvas(
             Text(
                 "위젯 캔버스",
                 modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
             DeleteZoneIndicator(

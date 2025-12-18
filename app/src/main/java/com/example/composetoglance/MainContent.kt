@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetoglance.editor.bottompanel.BottomPanelWithTabs
@@ -40,8 +41,8 @@ import com.example.widget.component.WidgetComponent
 fun MainContent(
     viewModel: WidgetEditorViewModel = viewModel()
 ) {
-    val outline = MaterialTheme.colorScheme.primary
-    val canvasBackgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+    val outline = MaterialTheme.colorScheme.outline
+    val canvasBackgroundColor = MaterialTheme.colorScheme.outlineVariant.copy(
         alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA
     )
     val context = LocalContext.current
@@ -49,21 +50,24 @@ fun MainContent(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("위젯 편집", style = MaterialTheme.typography.titleLarge) },
+                title = {
+                    Text(
+                        "위젯 편집", style = MaterialTheme.typography.titleLarge)
+                },
                 modifier = Modifier.height(72.dp),
                 actions = {
                     TextButton(onClick = { viewModel.save(context) }) {
                         Text(
                             "저장",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSecondary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    titleContentColor = MaterialTheme.colorScheme.onSecondary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -76,11 +80,11 @@ fun MainContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = CanvasConstants.HORIZONTAL_PADDING)
             ) {
                 var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
-                
+
                 WidgetCanvas(
                     modifier = Modifier
                         .weight(CanvasConstants.CANVAS_WEIGHT)

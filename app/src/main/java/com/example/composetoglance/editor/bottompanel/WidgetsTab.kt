@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope
@@ -85,7 +87,8 @@ fun WidgetsList(
                 )
             } else {
                 val selectedCategory = categories.find { it.name == categoryName }
-                val filteredWidgets = widgetList.filter { it.getWidgetCategory().name == categoryName }
+                val filteredWidgets =
+                    widgetList.filter { it.getWidgetCategory().name == categoryName }
                 val visibleItems = remember { mutableStateListOf<Int>() }
 
                 // 카테고리 진입 시 위젯들을 순차적으로 표시
@@ -116,7 +119,7 @@ fun WidgetsList(
                             Icon(
                                 imageVector = Icons.Filled.ChevronLeft,
                                 contentDescription = "뒤로가기",
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
                         Text(
@@ -124,7 +127,7 @@ fun WidgetsList(
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션
@@ -154,20 +157,33 @@ fun WidgetsList(
                                 ),
                                 modifier = Modifier
                             ) {
-                                DragTargetWidgetItem(
-                                    data = widget,
-                                    isClicked = activeWidget == widget,
-                                    onComponentClick = {
-                                        activeWidget = if (activeWidget == widget) null else widget
-                                    },
-                                    onAddClick = {
-                                        onWidgetSelected(it)
-                                        activeWidget = null
-                                    },
-                                    onDragStart = {
-                                        activeWidget = null
-                                    }
-                                )
+                                Column(
+                                    modifier = Modifier.wrapContentSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    DragTargetWidgetItem(
+                                        data = widget,
+                                        isClicked = activeWidget == widget,
+                                        onComponentClick = {
+                                            activeWidget =
+                                                if (activeWidget == widget) null else widget
+                                        },
+                                        onAddClick = {
+                                            onWidgetSelected(it)
+                                            activeWidget = null
+                                        },
+                                        onDragStart = {
+                                            activeWidget = null
+                                        }
+                                    )
+                                    Text(
+                                        text = widget.getName(),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.padding(top = 4.dp)
+                                    )
+                                }
+
                             }
                         }
                     }

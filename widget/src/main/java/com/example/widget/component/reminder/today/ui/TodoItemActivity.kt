@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
 import com.example.widget.component.reminder.today.viewmodel.TodayTodoViewModel
 import com.example.widget.component.reminder.today.viewmodel.TodayTodoViewModelFactory
-import com.example.widget.theme.TodoTheme
+import com.example.widget.theme.AppTheme
 
 /**
  * Today Todo를 표시하는 Dialog 스타일 Activity
@@ -19,7 +19,7 @@ class TodayTodoActivity : ComponentActivity() {
         val viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
         
         setContent {
-            TodoTheme {
+            AppTheme {
                 TodoContent(
                     viewModel = viewModel,
                     onDismiss = { finish() }

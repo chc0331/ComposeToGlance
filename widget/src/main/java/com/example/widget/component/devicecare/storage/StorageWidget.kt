@@ -35,6 +35,7 @@ import com.example.dsl.proto.VerticalAlignment
 import com.example.widget.R
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory
+import com.example.widget.action.WidgetActionVisibleActivity
 import com.example.widget.component.WidgetComponent
 import com.example.widget.component.datastore.ComponentDataStore
 import com.example.widget.component.lifecycle.ComponentLifecycle
