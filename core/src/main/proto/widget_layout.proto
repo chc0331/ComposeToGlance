@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package widgetkit.core.proto;
+
+option java_package = "com.widgetkit.core.proto";
+option java_multiple_files = true;
+
+// 레이아웃의 크기 타입
+enum SizeType {
+  SIZE_TYPE_UNSPECIFIED = 0;
+  SIZE_TYPE_TINY = 1;
+  SIZE_TYPE_SMALL = 2;
+  SIZE_TYPE_MEDIUM = 3;
+  SIZE_TYPE_LARGE = 4;
+}
+
+// 위젯 카테고리
+enum WidgetCategory {
+  WIDGET_CATEGORY_UNSPECIFIED = 0;
+  WIDGET_CATEGORY_BASIC = 1;
+  WIDGET_CATEGORY_CLOCK = 2;
+  WIDGET_CATEGORY_DEVICE_INFO = 3;
+}
+
+// 그리드에 배치된 위젯 정보
+message PlacedWidgetComponent {
+  // 그리드에서의 인덱스값
+  int32 grid_index = 1;
+  
+  // 행에 걸쳐 차지하는 셀 수 (row span)
+  int32 row_span = 2;
+  
+  // 열에 걸쳐 차지하는 셀 수 (col span)
+  int32 col_span = 3;
+  
+  // 위젯 카테고리
+  WidgetCategory widget_category = 4;
+  
+  // 위젯 태그 (고유 식별자)
+  string widget_tag = 5;
+}
+
+// 레이아웃 정보를 저장하는 메시지
+message WidgetLayout {
+  // 레이아웃의 크기 타입
+  SizeType size_type = 1;
+  
+  // 배치된 위젯들의 리스트
+  repeated PlacedWidgetComponent placed_widget_component = 2;
+}
+
+

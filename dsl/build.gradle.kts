@@ -1,22 +1,20 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.protobuf)
+
 }
 
 android {
-    namespace = "com.widgetkit.widget"
+    namespace = "com.widgetkit.dsl"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.widgetkit.widget"
         minSdk = 34
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -33,6 +31,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
+        freeCompilerArgs = listOf("-Xjvm-default=all")
         jvmTarget = "17"
     }
     buildFeatures {
@@ -43,28 +42,17 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     implementation(libs.protobuf.javalite)
-    implementation(project(":dsl"))
-    implementation(project(":core"))
-    implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
-    implementation("androidx.core:core-remoteviews:1.1.0")
-
+    api("androidx.glance:glance-appwidget:1.2.0-beta01")
+    api("androidx.core:core-remoteviews:1.1.0")
+    api("androidx.compose.runtime:runtime:1.7.8")
+    api("androidx.compose.ui:ui-graphics:1.6.0")
+    api("androidx.compose.ui:ui-unit:1.6.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }
 
 protobuf {
