@@ -7,7 +7,7 @@ import androidx.glance.action.Action
 import androidx.glance.appwidget.action.actionSendBroadcast
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.action.actionStartService
-import com.widgetkit.dsl.action.bundleFromBytes
+import com.widgetkit.dsl.widget.action.bundleFromBytes
 import com.widgetkit.dsl.proto.Action as ProtoAction
 
 /**

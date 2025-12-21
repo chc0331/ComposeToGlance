@@ -8,19 +8,6 @@ import com.widgetkit.dsl.proto.ImageProvider
 import com.widgetkit.dsl.proto.TextContent
 import java.io.ByteArrayOutputStream
 
-/**
- * Content 관련 DSL 클래스 및 DSL 빌더 함수
- *
- * 이 파일은 block을 받는 DSL 빌더 함수와 DSL 클래스를 포함합니다.
- * - DSL 클래스: ColorDsl, ColorProviderDsl, TextContentDsl, ImageProviderDsl
- * - DSL 빌더 함수: Color(block), ColorProvider(block), TextContent(block), ImageProvider(block)
- *
- * 간단한 빌더 함수(파라미터를 직접 받는)는 ContentBuilders.kt를 참조하세요.
- */
-
-/**
- * Color DSL
- */
 class ColorDsl(private val builder: Color.Builder) {
     var argb: Int
         get() = builder.argb
@@ -28,10 +15,6 @@ class ColorDsl(private val builder: Color.Builder) {
             builder.setArgb(value)
         }
 }
-
-/**
- * ColorProvider DSL
- */
 class ColorProviderDsl(private val builder: ColorProvider.Builder) {
     var resId: Int
         get() = builder.resId
@@ -54,9 +37,6 @@ class ColorProviderDsl(private val builder: ColorProvider.Builder) {
     }
 }
 
-/**
- * TextContent DSL
- */
 class TextContentDsl(private val builder: TextContent.Builder) {
     var text: String
         get() = builder.text
@@ -73,9 +53,6 @@ class TextContentDsl(private val builder: TextContent.Builder) {
         }
 }
 
-/**
- * ImageProvider DSL
- */
 class ImageProviderDsl(private val builder: ImageProvider.Builder) {
     var drawableResId: Int
         get() = if (builder.hasDrawableResId()) builder.drawableResId else 0

@@ -1,9 +1,9 @@
-package com.widgetkit.dsl.action
+package com.widgetkit.dsl.widget.action
 
 import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.glance.GlanceId
-import com.widgetkit.dsl.action.WidgetActionCallbackBroadcastReceiver.Companion.getParameterExtras
+import com.widgetkit.dsl.widget.action.WidgetActionCallbackBroadcastReceiver.Companion.getParameterExtras
 import java.util.Collections
 import kotlin.collections.component1
 import kotlin.collections.component2

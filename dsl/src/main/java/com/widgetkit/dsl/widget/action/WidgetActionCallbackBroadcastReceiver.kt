@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.action
+package com.widgetkit.dsl.widget.action
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver

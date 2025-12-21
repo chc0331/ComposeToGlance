@@ -4,8 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.component.Box
-import com.widgetkit.dsl.component.Progress
+import com.widgetkit.dsl.ui.Progress
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.fillMaxHeight
@@ -18,6 +17,7 @@ import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
+import com.widgetkit.dsl.ui.layout.Box
 
 class AnalogClockComponent : WidgetComponent() {
 

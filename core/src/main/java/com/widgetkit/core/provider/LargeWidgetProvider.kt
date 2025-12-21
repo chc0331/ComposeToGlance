@@ -19,7 +19,6 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.component.Box
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalCellHeight
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalCellWidth
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalContentPadding
@@ -52,6 +51,7 @@ import com.widgetkit.core.component.devicecare.storage.checkStorageWidgetExist
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.proto.WidgetLayout
 import com.widgetkit.core.repository.WidgetLayoutRepository
+import com.widgetkit.dsl.ui.layout.Box
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

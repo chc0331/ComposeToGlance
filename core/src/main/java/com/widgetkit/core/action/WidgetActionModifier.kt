@@ -1,10 +1,10 @@
 package com.widgetkit.core.action
 
 import android.content.Context
-import com.widgetkit.dsl.action.RunWidgetCallbackAction
-import com.widgetkit.dsl.action.WidgetActionCallback
-import com.widgetkit.dsl.action.WidgetActionParameters
-import com.widgetkit.dsl.action.widgetActionParametersOf
+import com.widgetkit.dsl.widget.action.RunWidgetCallbackAction
+import com.widgetkit.dsl.widget.action.WidgetActionCallback
+import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.dsl.widget.action.widgetActionParametersOf
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.clickAction
 

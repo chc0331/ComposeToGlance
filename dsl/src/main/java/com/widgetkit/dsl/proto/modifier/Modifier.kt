@@ -2,8 +2,8 @@ package com.widgetkit.dsl.proto.modifier
 
 import android.content.ComponentName
 import android.content.Context
-import com.widgetkit.dsl.action.RunWidgetCallbackAction
-import com.widgetkit.dsl.action.toBytes
+import com.widgetkit.dsl.widget.action.RunWidgetCallbackAction
+import com.widgetkit.dsl.widget.action.toBytes
 import com.widgetkit.dsl.proto.Action
 import com.widgetkit.dsl.proto.ColorProvider
 import com.widgetkit.dsl.proto.Component

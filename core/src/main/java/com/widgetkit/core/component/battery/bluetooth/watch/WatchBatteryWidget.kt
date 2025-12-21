@@ -4,15 +4,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.emptyPreferences
+import com.widgetkit.core.R
+import com.widgetkit.core.SizeType
+import com.widgetkit.core.WidgetCategory
+import com.widgetkit.core.component.WidgetComponent
+import com.widgetkit.core.component.datastore.ComponentDataStore
+import com.widgetkit.core.component.lifecycle.ComponentLifecycle
+import com.widgetkit.core.component.update.ComponentUpdateManager
+import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.component.Box
-import com.widgetkit.dsl.component.Column
-import com.widgetkit.dsl.component.Image
-import com.widgetkit.dsl.component.Text
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalGridIndex
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.proto.AlignmentType
+import com.widgetkit.dsl.proto.FontWeight
+import com.widgetkit.dsl.proto.HorizontalAlignment
+import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.fillMaxHeight
@@ -23,18 +27,14 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.proto.AlignmentType
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.dsl.proto.HorizontalAlignment
-import com.widgetkit.dsl.proto.VerticalAlignment
-import com.widgetkit.core.R
-import com.widgetkit.core.SizeType
-import com.widgetkit.core.WidgetCategory
-import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.core.component.datastore.ComponentDataStore
-import com.widgetkit.core.component.lifecycle.ComponentLifecycle
-import com.widgetkit.core.component.update.ComponentUpdateManager
-import com.widgetkit.core.component.viewid.ViewIdType
+import com.widgetkit.dsl.ui.Image
+import com.widgetkit.dsl.ui.Text
+import com.widgetkit.dsl.ui.layout.Box
+import com.widgetkit.dsl.ui.layout.Column
+import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalGridIndex
+import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalState
 
 class WatchBatteryWidget : WidgetComponent() {
 

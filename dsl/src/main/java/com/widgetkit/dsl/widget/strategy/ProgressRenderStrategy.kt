@@ -13,8 +13,8 @@ import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.LinearProgressIndicator
 import androidx.glance.layout.Box
 import com.widgetkit.dsl.R
-import com.widgetkit.dsl.proto.builder.Color
-import com.widgetkit.dsl.proto.builder.ColorProvider
+import com.widgetkit.dsl.proto.util.Color
+import com.widgetkit.dsl.proto.util.ColorProvider
 import com.widgetkit.dsl.proto.ProgressProperty
 import com.widgetkit.dsl.proto.ProgressType
 import com.widgetkit.dsl.proto.ViewProperty

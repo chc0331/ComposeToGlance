@@ -3,7 +3,6 @@ package com.widgetkit.core.component
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.component.Box
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.fillMaxHeight
@@ -12,6 +11,7 @@ import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
+import com.widgetkit.dsl.ui.layout.Box
 
 class ImageComponent : WidgetComponent() {
     override fun getName(): String {

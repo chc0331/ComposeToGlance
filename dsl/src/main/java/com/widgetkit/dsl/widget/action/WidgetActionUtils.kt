@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.action
+package com.widgetkit.dsl.widget.action
 
 import android.os.Bundle
 import android.os.Parcel

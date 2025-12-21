@@ -26,7 +26,6 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.text.Text
 import com.widgetkit.dsl.WidgetLayout
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.component.Box
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalBackgroundRadius
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalContentRadius
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalContext
@@ -44,6 +43,7 @@ import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.R
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.util.getSystemContentRadius
+import com.widgetkit.dsl.ui.layout.Box
 
 abstract class DslAppWidget : GlanceAppWidget() {
 
