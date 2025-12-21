@@ -16,7 +16,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.glance.GlanceComposable
 import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
-import com.example.dsl.widget.GlanceRenderer
+import com.example.dsl.widget.WidgetRenderer
 import com.example.dsl.proto.WidgetLayoutDocument
 
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
@@ -66,7 +66,7 @@ fun AppWidgetView(size: DpSize, content: @Composable @GlanceComposable () -> Uni
  */
 @OptIn(ExperimentalGlanceRemoteViewsApi::class)
 @Composable
-fun AppWidgetView(size: DpSize, layout: WidgetLayoutDocument, renderer: GlanceRenderer) {
+fun AppWidgetView(size: DpSize, layout: WidgetLayoutDocument, renderer: WidgetRenderer) {
     val context = LocalContext.current
     val glanceRemoteViews = remember { GlanceRemoteViews() }
 

@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.composetoglance.editor.draganddrop.DragTarget
 import com.example.dsl.WidgetLayout
-import com.example.dsl.localprovider.WidgetLocalContext
-import com.example.dsl.localprovider.WidgetLocalPreview
-import com.example.dsl.localprovider.WidgetLocalProvider
-import com.example.dsl.localprovider.WidgetLocalSize
-import com.example.dsl.widget.GlanceRenderer
+import com.example.dsl.widgetlocalprovider.WidgetLocalContext
+import com.example.dsl.widgetlocalprovider.WidgetLocalPreview
+import com.example.dsl.widgetlocalprovider.WidgetLocalProvider
+import com.example.dsl.widgetlocalprovider.WidgetLocalSize
+import com.example.dsl.widget.WidgetRenderer
 import com.example.widget.SizeType
 import com.example.widget.WidgetComponentRegistry
 import com.example.widget.component.WidgetComponent
@@ -135,7 +135,7 @@ private fun WidgetItemContent(
                 if (component != null) {
                     // DSL 컴포넌트를 AppWidgetView로 렌더링
                     // renderer를 remember로 캐싱하여 재렌더링 방지
-                    val renderer = remember(key) { GlanceRenderer(context) }
+                    val renderer = remember(key) { WidgetRenderer(context) }
 
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
                     val layout = remember(key) {

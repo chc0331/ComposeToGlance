@@ -1,13 +1,14 @@
 package com.example.widget.component
 
-import android.R.attr.text
-import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
 import com.example.dsl.component.Text
-import com.example.dsl.modifier.*
+import com.example.dsl.dsl.modifier.WidgetModifier
+import com.example.dsl.dsl.modifier.backgroundColor
+import com.example.dsl.dsl.modifier.fillMaxHeight
+import com.example.dsl.dsl.modifier.fillMaxWidth
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.proto.TextAlign

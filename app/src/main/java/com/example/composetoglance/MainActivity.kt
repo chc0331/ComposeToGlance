@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModel
 import com.example.composetoglance.editor.viewmodel.WidgetEditorViewModelFactory
 import com.example.composetoglance.service.WidgetForegroundService
-import com.example.dsl.widget.renderer.RendererInitializer
+import com.example.dsl.widget.RendererInitializer
 import com.example.widget.repository.WidgetLayoutRepository
 import com.example.widget.WidgetComponentRegistry
 import com.example.widget.initializeWidgetComponents

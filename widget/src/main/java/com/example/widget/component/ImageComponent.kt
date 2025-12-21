@@ -1,11 +1,13 @@
 package com.example.widget.component
 
-import android.graphics.Color.argb
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.modifier.*
+import com.example.dsl.dsl.modifier.WidgetModifier
+import com.example.dsl.dsl.modifier.backgroundColor
+import com.example.dsl.dsl.modifier.fillMaxHeight
+import com.example.dsl.dsl.modifier.fillMaxWidth
 import com.example.dsl.proto.AlignmentType
 import com.example.widget.SizeType
 import com.example.widget.WidgetCategory

@@ -27,20 +27,20 @@ import androidx.glance.text.Text
 import com.example.dsl.WidgetLayout
 import com.example.dsl.WidgetScope
 import com.example.dsl.component.Box
-import com.example.dsl.localprovider.WidgetLocalBackgroundRadius
-import com.example.dsl.localprovider.WidgetLocalContentRadius
-import com.example.dsl.localprovider.WidgetLocalContext
-import com.example.dsl.localprovider.WidgetLocalGlanceId
-import com.example.dsl.localprovider.WidgetLocalProvider
-import com.example.dsl.localprovider.WidgetLocalSize
-import com.example.dsl.localprovider.WidgetLocalState
-import com.example.dsl.modifier.WidgetModifier
-import com.example.dsl.modifier.backgroundColor
-import com.example.dsl.modifier.cornerRadius
-import com.example.dsl.modifier.height
-import com.example.dsl.modifier.width
+import com.example.dsl.widgetlocalprovider.WidgetLocalBackgroundRadius
+import com.example.dsl.widgetlocalprovider.WidgetLocalContentRadius
+import com.example.dsl.widgetlocalprovider.WidgetLocalContext
+import com.example.dsl.widgetlocalprovider.WidgetLocalGlanceId
+import com.example.dsl.widgetlocalprovider.WidgetLocalProvider
+import com.example.dsl.widgetlocalprovider.WidgetLocalSize
+import com.example.dsl.widgetlocalprovider.WidgetLocalState
+import com.example.dsl.dsl.modifier.WidgetModifier
+import com.example.dsl.dsl.modifier.backgroundColor
+import com.example.dsl.dsl.modifier.cornerRadius
+import com.example.dsl.dsl.modifier.height
+import com.example.dsl.dsl.modifier.width
 import com.example.dsl.proto.WidgetLayoutDocument
-import com.example.dsl.widget.GlanceRenderer
+import com.example.dsl.widget.WidgetRenderer
 import com.example.widget.R
 import com.example.widget.util.getSystemBackgroundRadius
 import com.example.widget.util.getSystemContentRadius
@@ -75,7 +75,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val context = LocalContext.current
         val dpSize = LocalSize.current
         val glanceId = LocalGlanceId.current
-        val renderer = remember { GlanceRenderer(context) }
+        val renderer = remember { WidgetRenderer(context) }
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
         var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }

@@ -1,13 +1,13 @@
 package com.example.dsl.component
 
 import com.example.dsl.WidgetScope
-import com.example.dsl.modifier.WidgetModifier
-import com.example.dsl.syntax.ButtonDsl
-import com.example.dsl.syntax.CheckboxDsl
-import com.example.dsl.syntax.ImageDsl
-import com.example.dsl.syntax.ProgressDsl
-import com.example.dsl.syntax.SpacerDsl
-import com.example.dsl.syntax.TextDsl
+import com.example.dsl.dsl.modifier.WidgetModifier
+import com.example.dsl.dsl.ButtonDsl
+import com.example.dsl.dsl.CheckboxDsl
+import com.example.dsl.dsl.ImageDsl
+import com.example.dsl.dsl.ProgressDsl
+import com.example.dsl.dsl.SpacerDsl
+import com.example.dsl.dsl.TextDsl
 import com.example.dsl.proto.WidgetNode
 
 /**

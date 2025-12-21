@@ -1,0 +1,278 @@
+package com.example.dsl.widget.strategy
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.widget.RemoteViews
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressBackgroundTintList
+import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressTintList
+import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
+import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.appwidget.LinearProgressIndicator
+import androidx.glance.layout.Box
+import com.example.dsl.R
+import com.example.dsl.dsl.builder.Color
+import com.example.dsl.dsl.builder.ColorProvider
+import com.example.dsl.proto.ProgressProperty
+import com.example.dsl.proto.ProgressType
+import com.example.dsl.proto.ViewProperty
+import com.example.dsl.proto.WidgetNode
+import com.example.dsl.widget.RenderContext
+import com.example.dsl.widget.WidgetRenderer
+import com.example.dsl.widget.glance.GlanceModifierBuilder
+import com.example.dsl.widget.glance.converter.ColorConverter
+import com.example.dsl.widget.remoteviews.RemoteViewsBuilder
+
+/**
+ * Progress 노드 렌더링 전략
+ */
+internal object ProgressRenderStrategy {
+    /**
+     * Glance 전략
+     */
+    object Glance : GlanceRenderStrategy() {
+        @Composable
+        override fun renderGlance(
+            node: WidgetNode,
+            context: RenderContext,
+            renderer: WidgetRenderer
+        ) {
+            if (!node.hasProgress()) {
+                Box {}
+                return
+            }
+
+            val progressProperty = node.progress
+            val viewProperty = progressProperty.viewProperty
+
+            // Modifier 생성
+            val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+                .then(context.modifier)
+
+            // Progress 타입에 따라 렌더링
+            when (progressProperty.progressType) {
+                ProgressType.PROGRESS_TYPE_LINEAR -> {
+                    renderLinearProgress(progressProperty, modifier, context)
+                }
+
+                ProgressType.PROGRESS_TYPE_CIRCULAR -> {
+                    renderCircularProgress(progressProperty, modifier, context)
+                }
+
+                else -> {
+                    renderLinearProgress(progressProperty, modifier, context)
+                }
+            }
+        }
+
+        @Composable
+        private fun renderLinearProgress(
+            progressProperty: ProgressProperty,
+            modifier: GlanceModifier,
+            context: RenderContext
+        ) {
+            val progressColor = ColorConverter.toGlanceColor(
+                progressProperty.progressColor,
+                context.context
+            )
+
+            val backgroundColor = ColorConverter.toGlanceColor(
+                progressProperty.backgroundColor,
+                context.context
+            )
+
+            val progress = if (progressProperty.maxValue > 0) {
+                progressProperty.progressValue / progressProperty.maxValue
+            } else {
+                0f
+            }
+
+            LinearProgressIndicator(
+                progress = progress.coerceIn(0f, 1f),
+                modifier = modifier,
+                color = ColorConverter.toGlanceColorProvider(
+                    ColorProvider(
+                        color = Color(
+                            progressColor.toArgb()
+                        )
+                    )
+                ),
+                backgroundColor = ColorConverter.toGlanceColorProvider(
+                    ColorProvider(
+                        color = Color(
+                            backgroundColor.toArgb()
+                        )
+                    )
+                )
+            )
+        }
+
+        @Composable
+        private fun renderCircularProgress(
+            progressProperty: ProgressProperty,
+            modifier: GlanceModifier,
+            context: RenderContext
+        ) {
+            val progressColor = if (progressProperty.progressColor.resId != 0) {
+                context.context.getColor(progressProperty.progressColor.resId)
+            } else progressProperty.progressColor.color.argb
+            val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+                context.context.getColor(progressProperty.backgroundColor.resId)
+            } else progressProperty.backgroundColor.color.argb
+
+            AndroidRemoteViews(
+                modifier = modifier,
+                remoteViews = RemoteViews(
+                    LocalContext.current.packageName,
+                    R.layout.circular_progress_component
+                ).apply {
+                    setProgressBar(
+                        R.id.progress_bar,
+                        progressProperty.maxValue.toInt(),
+                        progressProperty.progressValue.toInt(),
+                        false
+                    )
+                    setProgressBarProgressTintList(
+                        R.id.progress_bar,
+                        ColorStateList.valueOf(progressColor)
+                    )
+                    setProgressBarProgressBackgroundTintList(
+                        R.id.progress_bar,
+                        ColorStateList.valueOf(backgroundColor)
+                    )
+                }
+            )
+        }
+    }
+
+    /**
+     * RemoteViews 전략
+     */
+    object RemoteViews : RemoteViewsRenderStrategy() {
+        override fun createRemoteViews(
+            node: WidgetNode,
+            context: RenderContext
+        ): android.widget.RemoteViews? {
+            if (!node.hasProgress()) {
+                return null
+            }
+
+            val progressProperty = node.progress
+            val viewProperty = progressProperty.viewProperty
+
+            // Progress 타입에 따라 렌더링
+            return when (progressProperty.progressType) {
+                ProgressType.PROGRESS_TYPE_LINEAR -> {
+                    renderLinearProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
+                }
+
+                ProgressType.PROGRESS_TYPE_CIRCULAR -> {
+                    renderCircularProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
+                }
+
+                else -> {
+                    renderLinearProgressToRemoteViews(
+                        progressProperty,
+                        viewProperty,
+                        context.context
+                    )
+                }
+            }
+        }
+
+        private fun renderLinearProgressToRemoteViews(
+            progressProperty: ProgressProperty,
+            viewProperty: ViewProperty,
+            context: Context
+        ): android.widget.RemoteViews {
+            val viewId = viewProperty.viewId
+            // RemoteViews 생성 시 viewId를 전달하여 레이아웃의 ProgressBar ID를 viewId로 설정
+            val remoteViews = RemoteViews(
+                context.packageName,
+                R.layout.linear_progress_component,
+                viewId
+            )
+
+            val max = progressProperty.maxValue.toInt()
+            val progress = progressProperty.progressValue.toInt()
+
+            remoteViews.setProgressBar(viewId, max, progress, false)
+
+            val progressColor = if (progressProperty.progressColor.resId != 0) {
+                context.getColor(progressProperty.progressColor.resId)
+            } else progressProperty.progressColor.color.argb
+            val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+                context.getColor(progressProperty.backgroundColor.resId)
+            } else progressProperty.backgroundColor.color.argb
+
+            remoteViews.setColorStateList(
+                viewId,
+                "setProgressTintList",
+                ColorStateList.valueOf(progressColor)
+            )
+            remoteViews.setColorStateList(
+                viewId, "setProgressBackgroundTintList",
+                ColorStateList.valueOf(backgroundColor)
+            )
+
+            RemoteViewsBuilder.applyViewProperties(
+                remoteViews,
+                viewId,
+                viewProperty,
+                context
+            )
+
+            return remoteViews
+        }
+
+        private fun renderCircularProgressToRemoteViews(
+            progressProperty: ProgressProperty,
+            viewProperty: ViewProperty,
+            context: Context
+        ): android.widget.RemoteViews {
+            val viewId = viewProperty.viewId
+            val remoteViews = RemoteViews(
+                context.packageName,
+                R.layout.circular_progress_component,
+                viewId
+            )
+            val max = progressProperty.maxValue.toInt()
+            val progress = progressProperty.progressValue.toInt()
+
+            remoteViews.setProgressBar(viewId, max, progress, false)
+
+            val progressColor = if (progressProperty.progressColor.resId != 0) {
+                context.getColor(progressProperty.progressColor.resId)
+            } else progressProperty.progressColor.color.argb
+            val backgroundColor = if (progressProperty.backgroundColor.resId != 0) {
+                context.getColor(progressProperty.backgroundColor.resId)
+            } else progressProperty.backgroundColor.color.argb
+
+            remoteViews.setColorStateList(
+                viewId,
+                "setProgressTintList",
+                ColorStateList.valueOf(progressColor)
+            )
+            remoteViews.setColorStateList(
+                viewId, "setProgressBackgroundTintList",
+                ColorStateList.valueOf(backgroundColor)
+            )
+
+            // ViewProperty 속성 적용
+            RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context)
+
+            return remoteViews
+        }
+    }
+}
+

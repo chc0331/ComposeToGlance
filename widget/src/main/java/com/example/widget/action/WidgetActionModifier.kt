@@ -5,8 +5,8 @@ import com.example.dsl.action.RunWidgetCallbackAction
 import com.example.dsl.action.WidgetActionCallback
 import com.example.dsl.action.WidgetActionParameters
 import com.example.dsl.action.widgetActionParametersOf
-import com.example.dsl.modifier.WidgetModifier
-import com.example.dsl.modifier.clickAction
+import com.example.dsl.dsl.modifier.WidgetModifier
+import com.example.dsl.dsl.modifier.clickAction
 
 fun WidgetModifier.runCallbackBroadcastReceiver(
     context: Context,
