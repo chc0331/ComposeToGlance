@@ -14,7 +14,6 @@ enum WidgetType {
 // Top-level document storing the full widget layout tree.
 message WidgetLayoutDocument {
   WidgetNode root = 1;
-  WidgetType widget_type = 2;  // Defaults to WIDGET_TYPE_GLANCE (0)
 }
 
 // Recursive node representation so layouts are stored as a hierarchy.
@@ -31,6 +30,7 @@ message WidgetNode {
     CheckboxProperty checkbox = 9;
   }
   repeated WidgetNode children = 10;
+  WidgetType widget_type = 11;  // Defaults to WIDGET_TYPE_GLANCE (0)
 }
 
 // --------------------------
