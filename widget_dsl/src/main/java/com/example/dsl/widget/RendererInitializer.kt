@@ -1,14 +1,14 @@
 package com.example.dsl.widget
 
-import com.example.dsl.widget.glance.render.Box
-import com.example.dsl.widget.glance.render.Button
-import com.example.dsl.widget.glance.render.CheckBox
-import com.example.dsl.widget.glance.render.Column
-import com.example.dsl.widget.glance.render.Image
-import com.example.dsl.widget.glance.render.Progress
-import com.example.dsl.widget.glance.render.Row
-import com.example.dsl.widget.glance.render.Spacer
-import com.example.dsl.widget.glance.render.Text
+import com.example.dsl.widget.glance.render.GlanceBox
+import com.example.dsl.widget.glance.render.GlanceButton
+import com.example.dsl.widget.glance.render.GlanceCheckBox
+import com.example.dsl.widget.glance.render.GlanceColumn
+import com.example.dsl.widget.glance.render.GlanceImage
+import com.example.dsl.widget.glance.render.GlanceProgress
+import com.example.dsl.widget.glance.render.GlanceRow
+import com.example.dsl.widget.glance.render.GlanceSpacer
+import com.example.dsl.widget.glance.render.GlanceText
 
 /**
  * 기본 Renderer들을 NodeRendererRegistry에 등록하는 초기화 클래스
@@ -27,17 +27,17 @@ object RendererInitializer {
      */
     fun initialize() {
         // Layout Renderers
-        NodeRendererRegistry.register("box", Box)
-        NodeRendererRegistry.register("column", Column)
-        NodeRendererRegistry.register("row", Row)
+        NodeRendererRegistry.register("box", GlanceBox)
+        NodeRendererRegistry.register("column", GlanceColumn)
+        NodeRendererRegistry.register("row", GlanceRow)
 
         // Component Renderers
-        NodeRendererRegistry.register("text", Text)
-        NodeRendererRegistry.register("image", Image)
-        NodeRendererRegistry.register("button", Button)
-        NodeRendererRegistry.register("progress", Progress)
-        NodeRendererRegistry.register("spacer", Spacer)
-        NodeRendererRegistry.register("checkbox", CheckBox)
+        NodeRendererRegistry.register("text", GlanceText)
+        NodeRendererRegistry.register("image", GlanceImage)
+        NodeRendererRegistry.register("button", GlanceButton)
+        NodeRendererRegistry.register("progress", GlanceProgress)
+        NodeRendererRegistry.register("spacer", GlanceSpacer)
+        NodeRendererRegistry.register("checkbox", GlanceCheckBox)
     }
 
     /**

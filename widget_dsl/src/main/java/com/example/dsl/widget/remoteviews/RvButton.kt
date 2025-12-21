@@ -8,13 +8,13 @@ import android.widget.RemoteViews
 import com.example.dsl.proto.FontWeight
 import com.example.dsl.widget.WidgetRenderer
 import com.example.dsl.widget.glance.converter.ColorConverter
-import com.example.dsl.widget.glance.render.Button
+import com.example.dsl.widget.glance.render.GlanceButton
 import com.example.dsl.proto.WidgetNode
 
 /**
  * ButtonRenderer의 RemoteViews 확장 함수
  */
-internal fun Button.renderToRemoteViews(
+internal fun GlanceButton.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: WidgetRenderer

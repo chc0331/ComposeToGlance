@@ -8,18 +8,17 @@ import com.example.dsl.widget.NodeRenderer
 import com.example.dsl.widget.strategy.RenderStrategyFactory
 
 /**
- * Text 노드 렌더러
+ * Image 노드 렌더러
  * Strategy 패턴을 사용하여 Glance와 RemoteViews 렌더링을 분리
  */
-internal object Text : NodeRenderer {
+internal object GlanceImage : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,
         context: RenderContext,
         renderer: WidgetRenderer
     ) {
-        val strategy = RenderStrategyFactory.getTextStrategy(node)
+        val strategy = RenderStrategyFactory.getImageStrategy(node)
         strategy.render(node, context, renderer)
     }
 }
-

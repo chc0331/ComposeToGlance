@@ -21,7 +21,7 @@ import com.example.dsl.widget.NodeRenderer
 /**
  * Button 노드 렌더러
  */
-internal object Button : NodeRenderer {
+internal object GlanceButton : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,

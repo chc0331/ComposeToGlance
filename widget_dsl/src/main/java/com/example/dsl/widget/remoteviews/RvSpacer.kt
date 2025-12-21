@@ -5,13 +5,13 @@ import android.content.Context
 import android.view.View
 import android.widget.RemoteViews
 import com.example.dsl.widget.WidgetRenderer
-import com.example.dsl.widget.glance.render.Spacer
+import com.example.dsl.widget.glance.render.GlanceSpacer
 import com.example.dsl.proto.WidgetNode
 
 /**
  * SpacerRenderer의 RemoteViews 확장 함수
  */
-internal fun Spacer.renderToRemoteViews(
+internal fun GlanceSpacer.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: WidgetRenderer

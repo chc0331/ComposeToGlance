@@ -13,7 +13,7 @@ import com.example.dsl.widget.NodeRenderer
 /**
  * Row 노드 렌더러
  */
-internal object Row : NodeRenderer {
+internal object GlanceRow : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,

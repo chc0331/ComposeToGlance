@@ -5,14 +5,14 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.RemoteViews
 import com.example.dsl.widget.WidgetRenderer
-import com.example.dsl.widget.glance.render.Box
+import com.example.dsl.widget.glance.render.GlanceBox
 import com.example.dsl.proto.AlignmentType
 import com.example.dsl.proto.WidgetNode
 
 /**
  * BoxRenderer의 RemoteViews 확장 함수
  */
-internal fun Box.renderToRemoteViews(
+internal fun GlanceBox.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: WidgetRenderer

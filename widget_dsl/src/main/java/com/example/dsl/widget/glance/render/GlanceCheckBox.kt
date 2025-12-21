@@ -8,17 +8,17 @@ import com.example.dsl.widget.NodeRenderer
 import com.example.dsl.widget.strategy.RenderStrategyFactory
 
 /**
- * Progress 노드 렌더러
+ * Checkbox 노드 렌더러
  * Strategy 패턴을 사용하여 Glance와 RemoteViews 렌더링을 분리
  */
-internal object Progress : NodeRenderer {
+internal object GlanceCheckBox : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,
         context: RenderContext,
         renderer: WidgetRenderer
     ) {
-        val strategy = RenderStrategyFactory.getProgressStrategy(node)
+        val strategy = RenderStrategyFactory.getCheckboxStrategy(node)
         strategy.render(node, context, renderer)
     }
 }

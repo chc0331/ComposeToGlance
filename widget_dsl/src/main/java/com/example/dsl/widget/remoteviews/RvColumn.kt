@@ -6,7 +6,7 @@ import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.RemoteViews
 import com.example.dsl.widget.WidgetRenderer
-import com.example.dsl.widget.glance.render.Column
+import com.example.dsl.widget.glance.render.GlanceColumn
 import com.example.dsl.proto.HorizontalAlignment
 import com.example.dsl.proto.VerticalAlignment
 import com.example.dsl.proto.WidgetNode
@@ -14,7 +14,7 @@ import com.example.dsl.proto.WidgetNode
 /**
  * ColumnRenderer의 RemoteViews 확장 함수
  */
-internal fun Column.renderToRemoteViews(
+internal fun GlanceColumn.renderToRemoteViews(
     node: WidgetNode,
     context: Context,
     renderer: WidgetRenderer
