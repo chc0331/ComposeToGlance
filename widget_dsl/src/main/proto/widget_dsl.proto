@@ -5,9 +5,16 @@ package widget.dsl.proto;
 option java_package = "com.example.dsl.proto";
 option java_multiple_files = true;
 
+// Widget rendering type
+enum WidgetType {
+  WIDGET_TYPE_GLANCE = 0;  // Default type
+  WIDGET_TYPE_REMOTE_VIEWS = 1;
+}
+
 // Top-level document storing the full widget layout tree.
 message WidgetLayoutDocument {
   WidgetNode root = 1;
+  WidgetType widget_type = 2;  // Defaults to WIDGET_TYPE_GLANCE (0)
 }
 
 // Recursive node representation so layouts are stored as a hierarchy.
