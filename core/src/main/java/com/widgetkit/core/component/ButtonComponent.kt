@@ -5,11 +5,11 @@ import androidx.compose.ui.graphics.toArgb
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.component.Box
 import com.widgetkit.dsl.component.Button
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.modifier.backgroundColor
-import com.widgetkit.dsl.dsl.modifier.cornerRadius
-import com.widgetkit.dsl.dsl.modifier.fillMaxHeight
-import com.widgetkit.dsl.dsl.modifier.fillMaxWidth
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.modifier.backgroundColor
+import com.widgetkit.dsl.proto.modifier.cornerRadius
+import com.widgetkit.dsl.proto.modifier.fillMaxHeight
+import com.widgetkit.dsl.proto.modifier.fillMaxWidth
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.core.SizeType

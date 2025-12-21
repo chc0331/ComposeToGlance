@@ -1,20 +1,10 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto
 
-import com.widgetkit.dsl.proto.ButtonProperty
-import com.widgetkit.dsl.proto.CheckboxProperty
-import com.widgetkit.dsl.proto.Color
-import com.widgetkit.dsl.proto.ColorProvider
-import com.widgetkit.dsl.proto.ContentScale
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.dsl.proto.ImageProperty
-import com.widgetkit.dsl.proto.ImageProvider
-import com.widgetkit.dsl.proto.ProgressProperty
-import com.widgetkit.dsl.proto.ProgressType
-import com.widgetkit.dsl.proto.SpacerProperty
-import com.widgetkit.dsl.proto.TextAlign
-import com.widgetkit.dsl.proto.TextContent
-import com.widgetkit.dsl.proto.TextProperty
-import com.widgetkit.dsl.proto.ViewProperty
+import com.widgetkit.dsl.proto.property.ColorDsl
+import com.widgetkit.dsl.proto.property.ColorProviderDsl
+import com.widgetkit.dsl.proto.property.ImageProviderDsl
+import com.widgetkit.dsl.proto.property.TextContentDsl
+import com.widgetkit.dsl.proto.property.ViewPropertyDsl
 
 /**
  * ComponentProperty 관련 DSL 클래스 및 DSL 빌더 함수

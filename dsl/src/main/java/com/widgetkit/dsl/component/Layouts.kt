@@ -1,10 +1,10 @@
 package com.widgetkit.dsl.component
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.BoxLayoutDsl
-import com.widgetkit.dsl.dsl.ColumnLayoutDsl
-import com.widgetkit.dsl.dsl.RowLayoutDsl
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.layout.BoxLayoutDsl
+import com.widgetkit.dsl.proto.layout.ColumnLayoutDsl
+import com.widgetkit.dsl.proto.layout.RowLayoutDsl
 import com.widgetkit.dsl.proto.WidgetNode
 
 /**

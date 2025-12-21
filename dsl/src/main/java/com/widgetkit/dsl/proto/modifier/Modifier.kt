@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl.modifier
+package com.widgetkit.dsl.proto.modifier
 
 import android.content.ComponentName
 import android.content.Context

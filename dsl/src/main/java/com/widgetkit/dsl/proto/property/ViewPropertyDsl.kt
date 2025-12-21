@@ -1,10 +1,13 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto.property
 
 import com.widgetkit.dsl.proto.Action
+import com.widgetkit.dsl.proto.ActionDsl
 import com.widgetkit.dsl.proto.ColorProvider
 import com.widgetkit.dsl.proto.CornerRadius
 import com.widgetkit.dsl.proto.Dimension
 import com.widgetkit.dsl.proto.Padding
+import com.widgetkit.dsl.proto.Semantics
+import com.widgetkit.dsl.proto.SemanticsDsl
 import com.widgetkit.dsl.proto.ViewProperty
 
 /**
@@ -52,7 +55,7 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
     }
 
     fun Semantics(block: SemanticsDsl.() -> Unit) {
-        val semanticsBuilder = com.widgetkit.dsl.proto.Semantics.newBuilder()
+        val semanticsBuilder = Semantics.newBuilder()
         SemanticsDsl(semanticsBuilder).block()
         builder.setSemantics(semanticsBuilder.build())
     }
@@ -81,4 +84,3 @@ class ViewPropertyDsl(private val builder: ViewProperty.Builder) {
             builder.setHide(value)
         }
 }
-

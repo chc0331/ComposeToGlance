@@ -1,13 +1,14 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto.layout
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.AlignmentType
-import com.widgetkit.dsl.proto.ColumnLayoutProperty
-import com.widgetkit.dsl.proto.RowLayoutProperty
+import com.widgetkit.dsl.proto.BaseComponentDsl
 import com.widgetkit.dsl.proto.BoxLayoutProperty
+import com.widgetkit.dsl.proto.ColumnLayoutProperty
 import com.widgetkit.dsl.proto.HorizontalAlignment
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.HorizontalAlignment.H_ALIGN_START
+import com.widgetkit.dsl.proto.RowLayoutProperty
 import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.VerticalAlignment.V_ALIGN_TOP
 

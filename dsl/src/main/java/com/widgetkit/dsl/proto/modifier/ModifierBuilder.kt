@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl.modifier
+package com.widgetkit.dsl.proto.modifier
 
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.ViewProperty

@@ -34,11 +34,11 @@ import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalGlanceId
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalProvider
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalState
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.modifier.backgroundColor
-import com.widgetkit.dsl.dsl.modifier.cornerRadius
-import com.widgetkit.dsl.dsl.modifier.height
-import com.widgetkit.dsl.dsl.modifier.width
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.modifier.backgroundColor
+import com.widgetkit.dsl.proto.modifier.cornerRadius
+import com.widgetkit.dsl.proto.modifier.height
+import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.WidgetLayoutDocument
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.R

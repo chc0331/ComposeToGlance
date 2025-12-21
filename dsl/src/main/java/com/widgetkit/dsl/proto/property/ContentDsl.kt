@@ -1,11 +1,11 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto.property
 
 import android.graphics.Bitmap
+import com.google.protobuf.ByteString
 import com.widgetkit.dsl.proto.Color
 import com.widgetkit.dsl.proto.ColorProvider
 import com.widgetkit.dsl.proto.ImageProvider
 import com.widgetkit.dsl.proto.TextContent
-import com.google.protobuf.ByteString
 import java.io.ByteArrayOutputStream
 
 /**

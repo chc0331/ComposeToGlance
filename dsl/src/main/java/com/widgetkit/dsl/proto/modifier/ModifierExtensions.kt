@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl.modifier
+package com.widgetkit.dsl.proto.modifier
 
 import com.widgetkit.dsl.proto.Color
 import com.widgetkit.dsl.proto.ColorProvider
@@ -6,7 +6,7 @@ import com.widgetkit.dsl.proto.CornerRadius
 import com.widgetkit.dsl.proto.Dimension
 import com.widgetkit.dsl.proto.Dp
 import com.widgetkit.dsl.proto.Padding
-import com.widgetkit.dsl.dsl.builder.Dp as DpBuilder
+import com.widgetkit.dsl.proto.builder.Dp as DpBuilder
 
 /**
  * Modifier 편의 확장 함수들

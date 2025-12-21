@@ -1,9 +1,9 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.modifier.ModifierBuilder
-import com.widgetkit.dsl.proto.ViewProperty
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.modifier.ModifierBuilder
+import com.widgetkit.dsl.proto.property.ViewPropertyDsl
 
 /**
  * 컴포넌트 DSL의 공통 베이스 클래스

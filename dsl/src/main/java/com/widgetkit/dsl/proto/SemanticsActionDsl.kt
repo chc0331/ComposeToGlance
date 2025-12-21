@@ -1,8 +1,4 @@
-package com.widgetkit.dsl.dsl
-
-import com.widgetkit.dsl.proto.Action
-import com.widgetkit.dsl.proto.Component
-import com.widgetkit.dsl.proto.Semantics
+package com.widgetkit.dsl.proto
 
 /**
  * Semantics / Component / Action DSL 클래스 및 DSL 빌더 함수

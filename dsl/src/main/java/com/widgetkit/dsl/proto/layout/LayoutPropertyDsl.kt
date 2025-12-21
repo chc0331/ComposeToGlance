@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto.layout
 
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.BoxLayoutProperty
@@ -7,6 +7,7 @@ import com.widgetkit.dsl.proto.HorizontalAlignment
 import com.widgetkit.dsl.proto.RowLayoutProperty
 import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.ViewProperty
+import com.widgetkit.dsl.proto.property.ViewPropertyDsl
 
 /**
  * LayoutProperty 관련 DSL 클래스 및 DSL 빌더 함수

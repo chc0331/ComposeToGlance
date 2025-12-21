@@ -9,11 +9,11 @@ import com.widgetkit.dsl.component.Column
 import com.widgetkit.dsl.component.Image
 import com.widgetkit.dsl.component.Row
 import com.widgetkit.dsl.component.Text
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.modifier.backgroundColor
-import com.widgetkit.dsl.dsl.modifier.fillMaxHeight
-import com.widgetkit.dsl.dsl.modifier.fillMaxWidth
-import com.widgetkit.dsl.dsl.modifier.height
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.modifier.backgroundColor
+import com.widgetkit.dsl.proto.modifier.fillMaxHeight
+import com.widgetkit.dsl.proto.modifier.fillMaxWidth
+import com.widgetkit.dsl.proto.modifier.height
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -26,13 +26,13 @@ import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.dsl.dsl.modifier.viewId
-import com.widgetkit.dsl.dsl.modifier.partiallyUpdate
-import com.widgetkit.dsl.dsl.modifier.hide
-import com.widgetkit.dsl.dsl.modifier.padding
-import com.widgetkit.dsl.dsl.modifier.width
-import com.widgetkit.dsl.dsl.modifier.wrapContentHeight
-import com.widgetkit.dsl.dsl.modifier.wrapContentWidth
+import com.widgetkit.dsl.proto.modifier.viewId
+import com.widgetkit.dsl.proto.modifier.partiallyUpdate
+import com.widgetkit.dsl.proto.modifier.hide
+import com.widgetkit.dsl.proto.modifier.padding
+import com.widgetkit.dsl.proto.modifier.width
+import com.widgetkit.dsl.proto.modifier.wrapContentHeight
+import com.widgetkit.dsl.proto.modifier.wrapContentWidth
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 

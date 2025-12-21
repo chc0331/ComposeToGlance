@@ -1,13 +1,13 @@
 package com.widgetkit.dsl.component
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.dsl.ButtonDsl
-import com.widgetkit.dsl.dsl.CheckboxDsl
-import com.widgetkit.dsl.dsl.ImageDsl
-import com.widgetkit.dsl.dsl.ProgressDsl
-import com.widgetkit.dsl.dsl.SpacerDsl
-import com.widgetkit.dsl.dsl.TextDsl
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.ButtonDsl
+import com.widgetkit.dsl.proto.CheckboxDsl
+import com.widgetkit.dsl.proto.ImageDsl
+import com.widgetkit.dsl.proto.ProgressDsl
+import com.widgetkit.dsl.proto.SpacerDsl
+import com.widgetkit.dsl.proto.TextDsl
 import com.widgetkit.dsl.proto.WidgetNode
 
 /**

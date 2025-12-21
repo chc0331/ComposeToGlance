@@ -1,18 +1,12 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.dsl.modifier.WidgetModifier
-import com.widgetkit.dsl.proto.ButtonProperty
-import com.widgetkit.dsl.proto.ContentScale
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.dsl.proto.ImageProperty
-import com.widgetkit.dsl.proto.CheckboxProperty
-import com.widgetkit.dsl.proto.ProgressProperty
-import com.widgetkit.dsl.proto.ProgressType
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.ProgressType.PROGRESS_TYPE_LINEAR
-import com.widgetkit.dsl.proto.SpacerProperty
-import com.widgetkit.dsl.proto.TextAlign
-import com.widgetkit.dsl.proto.TextProperty
+import com.widgetkit.dsl.proto.property.ColorDsl
+import com.widgetkit.dsl.proto.property.ColorProviderDsl
+import com.widgetkit.dsl.proto.property.ImageProviderDsl
+import com.widgetkit.dsl.proto.property.TextContentDsl
 
 /**
  * 컴포넌트 DSL 클래스

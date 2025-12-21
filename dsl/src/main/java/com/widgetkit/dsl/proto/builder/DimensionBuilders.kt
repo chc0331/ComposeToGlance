@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl.builder
+package com.widgetkit.dsl.proto.builder
 
 import com.widgetkit.dsl.proto.Dimension
 import com.widgetkit.dsl.proto.Dp

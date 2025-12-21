@@ -57,7 +57,7 @@ message NewComponentProperty {
 복잡한 속성이 있는 경우 `builder/NewComponentPropertyDsl.kt` 파일을 생성합니다.
 
 ```kotlin
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto
 
 import com.example.dsl.proto.NewComponentProperty
 

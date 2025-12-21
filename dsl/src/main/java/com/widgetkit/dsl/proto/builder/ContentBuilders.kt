@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl.builder
+package com.widgetkit.dsl.proto.builder
 
 import com.widgetkit.dsl.proto.Color
 import com.widgetkit.dsl.proto.ColorProvider

@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.dsl
+package com.widgetkit.dsl.proto.property
 
 import com.widgetkit.dsl.proto.CornerRadius
 import com.widgetkit.dsl.proto.Dimension
@@ -69,25 +69,25 @@ class PaddingDsl(private val builder: Padding.Builder) {
     var start: Float
         get() = if (builder.hasStart()) builder.start.value else 0f
         set(value) {
-            builder.setStart(com.widgetkit.dsl.dsl.builder.Dp(value))
+            builder.setStart(com.widgetkit.dsl.proto.builder.Dp(value))
         }
 
     var top: Float
         get() = if (builder.hasTop()) builder.top.value else 0f
         set(value) {
-            builder.setTop(com.widgetkit.dsl.dsl.builder.Dp(value))
+            builder.setTop(com.widgetkit.dsl.proto.builder.Dp(value))
         }
 
     var end: Float
         get() = if (builder.hasEnd()) builder.end.value else 0f
         set(value) {
-            builder.setEnd(com.widgetkit.dsl.dsl.builder.Dp(value))
+            builder.setEnd(com.widgetkit.dsl.proto.builder.Dp(value))
         }
 
     var bottom: Float
         get() = if (builder.hasBottom()) builder.bottom.value else 0f
         set(value) {
-            builder.setBottom(com.widgetkit.dsl.dsl.builder.Dp(value))
+            builder.setBottom(com.widgetkit.dsl.proto.builder.Dp(value))
         }
 }
 
