@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.widgetlocalprovider
+package com.widgetkit.dsl.widget.widgetlocalprovider
 
 import android.content.Context
 import androidx.compose.ui.unit.Dp

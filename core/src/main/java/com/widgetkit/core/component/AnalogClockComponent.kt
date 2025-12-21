@@ -13,7 +13,7 @@ import com.widgetkit.dsl.proto.modifier.height
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.ProgressType
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager

@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.widgetkit.widget.editor.draganddrop.DragTarget
 import com.widgetkit.dsl.WidgetLayout
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalProvider
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetComponentRegistry

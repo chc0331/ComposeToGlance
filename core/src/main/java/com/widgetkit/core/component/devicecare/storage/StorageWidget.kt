@@ -37,10 +37,10 @@ import com.widgetkit.dsl.ui.Text
 import com.widgetkit.dsl.ui.layout.Box
 import com.widgetkit.dsl.ui.layout.Column
 import com.widgetkit.dsl.ui.layout.Row
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalSize
-import com.widgetkit.dsl.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
 
 class StorageWidget : WidgetComponent() {
 
