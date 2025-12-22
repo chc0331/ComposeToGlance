@@ -6,8 +6,8 @@ import androidx.glance.layout.Spacer
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.glance.GlanceModifierBuilder
 import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.RenderContext
-import com.widgetkit.dsl.widget.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
 
 /**
  * Spacer 노드 렌더러

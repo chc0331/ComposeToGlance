@@ -11,8 +11,8 @@ import com.widgetkit.dsl.proto.ProgressProperty
 import com.widgetkit.dsl.proto.ProgressType
 import com.widgetkit.dsl.proto.ViewProperty
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
 
 internal object RvProgress : NodeRenderer {

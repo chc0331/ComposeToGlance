@@ -1,14 +1,14 @@
-package com.widgetkit.dsl.widget
+package com.widgetkit.dsl.widget.rendernode
 
-import com.widgetkit.dsl.widget.render.component.ButtonNode
-import com.widgetkit.dsl.widget.render.component.CheckBoxNode
-import com.widgetkit.dsl.widget.render.component.ImageNode
-import com.widgetkit.dsl.widget.render.component.ProgressNode
-import com.widgetkit.dsl.widget.render.component.SpacerNode
-import com.widgetkit.dsl.widget.render.component.TextNode
-import com.widgetkit.dsl.widget.render.layout.BoxNode
-import com.widgetkit.dsl.widget.render.layout.ColumnNode
-import com.widgetkit.dsl.widget.render.layout.RowNode
+import com.widgetkit.dsl.widget.rendernode.component.ButtonNode
+import com.widgetkit.dsl.widget.rendernode.component.CheckBoxNode
+import com.widgetkit.dsl.widget.rendernode.component.ImageNode
+import com.widgetkit.dsl.widget.rendernode.component.ProgressNode
+import com.widgetkit.dsl.widget.rendernode.component.SpacerNode
+import com.widgetkit.dsl.widget.rendernode.component.TextNode
+import com.widgetkit.dsl.widget.rendernode.layout.BoxNode
+import com.widgetkit.dsl.widget.rendernode.layout.ColumnNode
+import com.widgetkit.dsl.widget.rendernode.layout.RowNode
 
 /**
  * 기본 Renderer들을 NodeRendererRegistry에 등록하는 초기화 클래스

@@ -1,10 +1,11 @@
-package com.widgetkit.dsl.widget
+package com.widgetkit.dsl.widget.rendernode
 
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
 import com.widgetkit.dsl.proto.WidgetNode
+import com.widgetkit.dsl.widget.WidgetRenderer
 
 /**
  * 노드 렌더러 인터페이스

@@ -1,14 +1,14 @@
-package com.widgetkit.dsl.widget.render.component
+package com.widgetkit.dsl.widget.rendernode.layout
 
 import androidx.compose.runtime.Composable
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.WidgetType
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.glance.render.GlanceButton
+import com.widgetkit.dsl.widget.glance.render.GlanceColumn
 
-internal class CheckBoxNode : NodeRenderer {
+internal class ColumnNode : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,
@@ -16,7 +16,7 @@ internal class CheckBoxNode : NodeRenderer {
         renderer: WidgetRenderer
     ) {
         if (node.widgetType == WidgetType.WIDGET_TYPE_GLANCE) {
-            GlanceButton.render(node, context, renderer)
+            GlanceColumn.render(node, context, renderer)
         } else {
 
         }

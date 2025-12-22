@@ -13,10 +13,10 @@ import androidx.glance.unit.ColorProvider
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.glance.GlanceModifierBuilder
 import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.glance.converter.ActionConverter
 import com.widgetkit.dsl.widget.glance.converter.ColorConverter
-import com.widgetkit.dsl.widget.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
 
 /**
  * Button 노드 렌더러

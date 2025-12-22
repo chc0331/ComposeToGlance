@@ -1,15 +1,14 @@
-package com.widgetkit.dsl.widget.render.component
+package com.widgetkit.dsl.widget.rendernode.layout
 
 import androidx.compose.runtime.Composable
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.WidgetType
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.glance.render.GlanceText
-import com.widgetkit.dsl.widget.remoteviews.RvText
+import com.widgetkit.dsl.widget.glance.render.GlanceRow
 
-internal class TextNode : NodeRenderer {
+internal class RowNode : NodeRenderer {
     @Composable
     override fun render(
         node: WidgetNode,
@@ -17,9 +16,9 @@ internal class TextNode : NodeRenderer {
         renderer: WidgetRenderer
     ) {
         if (node.widgetType == WidgetType.WIDGET_TYPE_GLANCE) {
-            GlanceText.render(node, context, renderer)
+            GlanceRow.render(node, context, renderer)
         } else {
-            RvText.render(node, context, renderer)
+
         }
     }
 }

@@ -9,8 +9,8 @@ import androidx.glance.appwidget.AndroidRemoteViews
 import com.widgetkit.dsl.R
 import com.widgetkit.dsl.proto.TextAlign
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.glance.converter.ColorConverter
 

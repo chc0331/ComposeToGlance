@@ -5,8 +5,8 @@ import androidx.core.widget.RemoteViewsCompat.setProgressBarIndeterminate
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.AndroidRemoteViews
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
 
 internal object RvAnimationImage : NodeRenderer {

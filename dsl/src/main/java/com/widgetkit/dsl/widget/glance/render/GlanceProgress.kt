@@ -17,8 +17,8 @@ import com.widgetkit.dsl.proto.ProgressType
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.util.Color
 import com.widgetkit.dsl.proto.util.ColorProvider
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.glance.GlanceModifierBuilder
 import com.widgetkit.dsl.widget.glance.converter.ColorConverter

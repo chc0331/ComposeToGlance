@@ -1,11 +1,10 @@
 package com.widgetkit.dsl.widget.glance.render
 
 import androidx.compose.runtime.Composable
-import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.layout.Box
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.rendernode.NodeRenderer
+import com.widgetkit.dsl.widget.rendernode.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.glance.GlanceModifierBuilder
 

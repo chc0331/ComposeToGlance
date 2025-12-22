@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.widget
+package com.widgetkit.dsl.widget.rendernode
 
 import com.widgetkit.dsl.proto.WidgetNode
 
