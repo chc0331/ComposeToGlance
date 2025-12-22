@@ -11,6 +11,12 @@ enum WidgetType {
   WIDGET_TYPE_REMOTE_VIEWS = 1;
 }
 
+// Widget mode (normal vs preview)
+enum WidgetMode {
+  WIDGET_MODE_NORMAL = 0;   // Default mode
+  WIDGET_MODE_PREVIEW = 1;
+}
+
 // Top-level document storing the full widget layout tree.
 message WidgetLayoutDocument {
   WidgetNode root = 1;
@@ -32,6 +38,7 @@ message WidgetNode {
   }
   repeated WidgetNode children = 11;
   WidgetType widget_type = 12;  // Defaults to WIDGET_TYPE_GLANCE (0)
+  WidgetMode widget_mode = 13;  // Defaults to WIDGET_MODE_NORMAL (0)
 }
 
 // --------------------------

@@ -1,6 +1,7 @@
 package com.widgetkit.dsl.frontend.layout
 
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.layout.ListDsl
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
@@ -13,6 +14,7 @@ class ListScope : WidgetScope() {
 
 fun WidgetScope.List(
     modifier: WidgetModifier = WidgetModifier,
+    mode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL,
     contentProperty: ListDsl.() -> Unit = {},
     content: ListScope.() -> Unit
 ) {
@@ -25,6 +27,7 @@ fun WidgetScope.List(
 
     val listNode = WidgetNode.newBuilder()
         .setList(dsl.build())
+        .setWidgetMode(mode)
         .apply {
             childScope.children.forEach { addChildren(it) }
         }.build()
