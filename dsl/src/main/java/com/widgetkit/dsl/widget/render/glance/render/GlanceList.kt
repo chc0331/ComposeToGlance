@@ -1,9 +1,10 @@
 package com.widgetkit.dsl.widget.render.glance.render
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.node.RenderContext
@@ -33,13 +34,24 @@ internal object GlanceList : RenderNode {
         )
         val children = node.childrenList
 
-        LazyColumn(
-            modifier = modifier,
-            horizontalAlignment = horizontalAlignment
-        ) {
-            children.forEach { child ->
-                item {
+        if (node.widgetMode == WidgetMode.WIDGET_MODE_PREVIEW) {
+            Column(
+                modifier = modifier,
+                horizontalAlignment = horizontalAlignment
+            ) {
+                children.forEach { child ->
                     renderer.renderNode(child, context)
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = modifier,
+                horizontalAlignment = horizontalAlignment
+            ) {
+                children.forEach { child ->
+                    item {
+                        renderer.renderNode(child, context)
+                    }
                 }
             }
         }
