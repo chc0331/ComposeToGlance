@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.glance.layout.Box
 import com.widgetkit.dsl.proto.WidgetLayoutDocument
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.rendernode.NodeRenderer
-import com.widgetkit.dsl.widget.rendernode.NodeRendererRegistry
-import com.widgetkit.dsl.widget.rendernode.RenderContext
+import com.widgetkit.dsl.widget.node.RenderNode
+import com.widgetkit.dsl.widget.node.RenderNodeRegistry
+import com.widgetkit.dsl.widget.node.RenderContext
 
 class WidgetRenderer(private val context: Context) {
 
@@ -27,7 +27,7 @@ class WidgetRenderer(private val context: Context) {
         return renderer.render(node, context, this)
     }
 
-    private fun getRenderer(node: WidgetNode): NodeRenderer? {
-        return NodeRendererRegistry.getRendererForNode(node)
+    private fun getRenderer(node: WidgetNode): RenderNode? {
+        return RenderNodeRegistry.getRendererForNode(node)
     }
 }
