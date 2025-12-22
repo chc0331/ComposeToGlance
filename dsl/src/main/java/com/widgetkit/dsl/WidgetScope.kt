@@ -13,7 +13,7 @@ fun WidgetLayout(block: WidgetScope.() -> Unit): WidgetLayoutDocument {
         .build()
 }
 
-class WidgetScope {
+open class WidgetScope {
     private var viewIdCounter = 0
     internal val children = mutableListOf<WidgetNode>()
     private val locals = mutableMapOf<WidgetLocal<out Any?>, Any?>()

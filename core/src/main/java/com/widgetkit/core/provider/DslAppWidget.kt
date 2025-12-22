@@ -1,6 +1,7 @@
 package com.widgetkit.core.provider
 
 import android.content.Context
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +20,7 @@ import androidx.glance.LocalSize
 import androidx.glance.LocalState
 import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -53,18 +55,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.fillMaxSize().background(Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
-                val remoteviews = remember {
-                    RemoteViews(
-                        context.packageName,
-                        R.layout.root_layout
-                    )
-                }
-                AndroidRemoteViews(
-                    remoteViews = remoteviews,
-                    containerViewId = R.id.widgetRoot
-                ) {
-                    RenderDsl()
-                }
+                RenderDsl()
             }
         }
     }

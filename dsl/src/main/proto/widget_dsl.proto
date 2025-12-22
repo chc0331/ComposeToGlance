@@ -22,15 +22,16 @@ message WidgetNode {
     BoxLayoutProperty box = 1;
     RowLayoutProperty row = 2;
     ColumnLayoutProperty column = 3;
-    TextProperty text = 4;
-    ImageProperty image = 5;
-    ButtonProperty button = 6;
-    SpacerProperty spacer = 7;
-    ProgressProperty progress = 8;
-    CheckboxProperty checkbox = 9;
+    ListLayoutProperty list = 4;
+    TextProperty text = 5;
+    ImageProperty image = 6;
+    ButtonProperty button = 7;
+    SpacerProperty spacer = 8;
+    ProgressProperty progress = 9;
+    CheckboxProperty checkbox = 10;
   }
-  repeated WidgetNode children = 10;
-  WidgetType widget_type = 11;  // Defaults to WIDGET_TYPE_GLANCE (0)
+  repeated WidgetNode children = 11;
+  WidgetType widget_type = 12;  // Defaults to WIDGET_TYPE_GLANCE (0)
 }
 
 // --------------------------
@@ -209,6 +210,11 @@ message ColumnLayoutProperty {
   ViewProperty view_property = 1;
   HorizontalAlignment horizontal_alignment = 2;
   VerticalAlignment vertical_alignment = 3;
+}
+
+message ListLayoutProperty {
+  ViewProperty view_property = 1;
+  HorizontalAlignment horizontal_alignment = 2;
 }
 
 // --------------------------

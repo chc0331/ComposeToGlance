@@ -8,6 +8,7 @@ import com.widgetkit.dsl.widget.node.component.SpacerNode
 import com.widgetkit.dsl.widget.node.component.TextNode
 import com.widgetkit.dsl.widget.node.layout.BoxNode
 import com.widgetkit.dsl.widget.node.layout.ColumnNode
+import com.widgetkit.dsl.widget.node.layout.ListNode
 import com.widgetkit.dsl.widget.node.layout.RowNode
 
 /**
@@ -30,6 +31,7 @@ object RendererInitializer {
         RenderNodeRegistry.register("box", BoxNode())
         RenderNodeRegistry.register("column", ColumnNode())
         RenderNodeRegistry.register("row", RowNode())
+        RenderNodeRegistry.register("list", ListNode())
 
         // Component Renderers
         RenderNodeRegistry.register("text", TextNode())
