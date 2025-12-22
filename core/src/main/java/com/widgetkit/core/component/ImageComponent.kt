@@ -11,7 +11,7 @@ import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
-import com.widgetkit.dsl.ui.layout.Box
+import com.widgetkit.dsl.frontend.layout.Box
 
 class ImageComponent : WidgetComponent() {
     override fun getName(): String {

@@ -43,7 +43,7 @@ import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.R
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.util.getSystemContentRadius
-import com.widgetkit.dsl.ui.layout.Box
+import com.widgetkit.dsl.frontend.layout.Box
 
 abstract class DslAppWidget : GlanceAppWidget() {
 

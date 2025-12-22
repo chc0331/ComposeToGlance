@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.ui.layout
+package com.widgetkit.dsl.frontend.layout
 
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.WidgetNode

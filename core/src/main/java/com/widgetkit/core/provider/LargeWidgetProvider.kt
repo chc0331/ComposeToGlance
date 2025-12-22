@@ -51,7 +51,7 @@ import com.widgetkit.core.component.devicecare.storage.checkStorageWidgetExist
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.proto.WidgetLayout
 import com.widgetkit.core.repository.WidgetLayoutRepository
-import com.widgetkit.dsl.ui.layout.Box
+import com.widgetkit.dsl.frontend.layout.Box
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.widgetkit.dsl.ui
+package com.widgetkit.dsl.frontend
 
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.Padding

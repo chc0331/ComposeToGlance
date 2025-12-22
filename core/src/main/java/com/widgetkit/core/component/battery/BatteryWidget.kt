@@ -26,11 +26,11 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.ui.Image
-import com.widgetkit.dsl.ui.Text
-import com.widgetkit.dsl.ui.layout.Box
-import com.widgetkit.dsl.ui.layout.Column
-import com.widgetkit.dsl.ui.layout.Row
+import com.widgetkit.dsl.frontend.Image
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
