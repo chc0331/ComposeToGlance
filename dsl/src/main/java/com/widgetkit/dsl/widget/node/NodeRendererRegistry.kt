@@ -69,6 +69,7 @@ internal object RenderNodeRegistry {
             node.hasButton() -> "button"
             node.hasProgress() -> "progress"
             node.hasSpacer() -> "spacer"
+            node.hasCheckbox() -> "checkbox"
             else -> null
         }
     }

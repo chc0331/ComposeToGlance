@@ -5,7 +5,7 @@ import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.component.CheckBoxDsl
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 
-fun WidgetScope.Checkbox(
+fun WidgetScope.CheckBox(
     modifier: WidgetModifier = WidgetModifier,
     contentProperty: CheckBoxDsl.() -> Unit
 ) {
