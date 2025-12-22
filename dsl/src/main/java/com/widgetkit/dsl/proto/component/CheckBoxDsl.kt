@@ -1,14 +1,13 @@
 package com.widgetkit.dsl.proto.component
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.proto.component.BaseComponentDsl
 import com.widgetkit.dsl.proto.CheckboxProperty
 import com.widgetkit.dsl.proto.ColorProvider
-import com.widgetkit.dsl.proto.TextContent
+import com.widgetkit.dsl.proto.TextProperty
 import com.widgetkit.dsl.proto.ViewProperty
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.property.ColorProviderDsl
-import com.widgetkit.dsl.proto.property.TextContentDsl
+import com.widgetkit.dsl.proto.property.TextPropertyDsl
 import com.widgetkit.dsl.proto.property.ViewPropertyDsl
 
 class CheckBoxDsl(
@@ -39,7 +38,7 @@ class CheckBoxDsl(
     /**
      * 체크박스 텍스트 설정 블록
      */
-    fun TextContent(block: TextContentDsl.() -> Unit) {
+    fun TextProperty(block: TextPropertyDsl.() -> Unit) {
         textSet = true
         propertyDsl.Text(block)
     }
@@ -68,7 +67,9 @@ class CheckBoxDsl(
         propertyBuilder.viewProperty = viewProperty
         if (!textSet) {
             propertyDsl.Text {
-                text = ""
+                TextContent {
+                    text = ""
+                }
             }
         }
         if (!checkedColorSet) {
@@ -102,10 +103,11 @@ internal class CheckBoxPropertyDsl(private val builder: CheckboxProperty.Builder
             builder.setChecked(value)
         }
 
-    fun Text(block: TextContentDsl.() -> Unit) {
-        val textContentBuilder = TextContent.newBuilder()
-        TextContentDsl(textContentBuilder).block()
-        builder.setText(textContentBuilder.build())
+    fun Text(block: TextPropertyDsl.() -> Unit) {
+        val textPropertyBuilder = TextProperty.newBuilder()
+        TextPropertyDsl(textPropertyBuilder).block()
+        val textProperty = textPropertyBuilder.build()
+        builder.setTextProperty(textProperty)
     }
 
     fun CheckedColor(block: ColorProviderDsl.() -> Unit) {

@@ -1,19 +1,13 @@
 package com.widgetkit.dsl.widget.render.glance.render
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.sp
 import androidx.glance.layout.Box
 import androidx.glance.text.Text
-import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.dsl.proto.TextAlign
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.node.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
+import com.widgetkit.dsl.widget.node.RenderContext
 import com.widgetkit.dsl.widget.node.RenderNode
 import com.widgetkit.dsl.widget.render.glance.GlanceModifierBuilder
-import com.widgetkit.dsl.widget.render.glance.converter.ColorConverter
 
 /**
  * Text 노드 렌더러
@@ -39,28 +33,9 @@ internal object GlanceText : RenderNode {
         val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
             .then(context.modifier)
 
-        // 텍스트 내용
-        val textContent = when {
-            textProperty.text.text.isNotEmpty() -> textProperty.text.text
-            textProperty.text.resId != 0 -> {
-                context.context.resources.getString(textProperty.text.resId)
-            }
-
-            else -> ""
-        }
-
-        // 색상
-        val textColor = ColorConverter.toGlanceColor(
-            textProperty.fontColor,
-            context.context
-        )
-
-        // 텍스트 스타일
-        val textStyle = TextStyle(
-            color = ColorProvider(textColor),
-            fontSize = textProperty.fontSize.sp,
-            fontWeight = textProperty.fontWeight.toGlanceFontWeight(),
-            textAlign = textProperty.textAlign.toGlanceTextAlign()
+        val (textContent, textStyle) = TextRenderUtils.buildTextAndStyle(
+            textProperty = textProperty,
+            context = context.context
         )
 
         Text(
@@ -70,22 +45,5 @@ internal object GlanceText : RenderNode {
         )
     }
 
-    private fun FontWeight.toGlanceFontWeight(): androidx.glance.text.FontWeight {
-        return when (this) {
-            FontWeight.FONT_WEIGHT_NORMAL -> androidx.glance.text.FontWeight.Normal
-            FontWeight.FONT_WEIGHT_MEDIUM -> androidx.glance.text.FontWeight.Medium
-            FontWeight.FONT_WEIGHT_BOLD -> androidx.glance.text.FontWeight.Bold
-            else -> androidx.glance.text.FontWeight.Normal
-        }
-    }
-
-    private fun TextAlign.toGlanceTextAlign(): androidx.glance.text.TextAlign {
-        return when (this) {
-            TextAlign.TEXT_ALIGN_START -> androidx.glance.text.TextAlign.Start
-            TextAlign.TEXT_ALIGN_CENTER -> androidx.glance.text.TextAlign.Center
-            TextAlign.TEXT_ALIGN_END -> androidx.glance.text.TextAlign.End
-            else -> androidx.glance.text.TextAlign.Start
-        }
-    }
 }
 

@@ -261,7 +261,8 @@ message ProgressProperty {
 message CheckboxProperty {
   ViewProperty view_property = 1;
   bool checked = 2;
-  TextContent text = 3;
   ColorProvider checked_color = 4;
   ColorProvider unchecked_color = 5;
+  // 체크박스 라벨 텍스트 스타일 속성
+  TextProperty text_property = 6;
 }

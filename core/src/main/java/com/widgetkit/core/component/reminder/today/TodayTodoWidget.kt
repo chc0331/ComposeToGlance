@@ -11,13 +11,20 @@ import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
 import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.reminder.today.ui.TodoActivity
+import com.widgetkit.core.component.reminder.today.ui.TodoItem
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.database.TodoDatabase
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.CheckBox
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
+import com.widgetkit.dsl.proto.TextContent
 import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
@@ -29,11 +36,7 @@ import com.widgetkit.dsl.proto.modifier.padding
 import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.frontend.Checkbox
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
-import com.widgetkit.dsl.frontend.layout.Row
+import com.widgetkit.dsl.proto.property.TextPropertyDsl
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
@@ -61,7 +64,7 @@ class TodayTodoWidget : WidgetComponent() {
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         val localSize = getLocal(WidgetLocalSize) as DpSize
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
-        
+
         // 오늘 날짜의 Todo 조회
         val todayDate = TodoDateUtils.getTodayDateString()
         val todos = if (isPreview) {
@@ -71,22 +74,22 @@ class TodayTodoWidget : WidgetComponent() {
             // 실제 모드: Room DB에서 조회
             loadTodayTodos(context, todayDate)
         }
-        
+
         val incompleteCount = todos.count { it.status != TodoStatus.COMPLETED }
         val completedCount = todos.count { it.status == TodoStatus.COMPLETED }
-        
+
         // 클릭 액션: TodayTodoActivity 열기
         var backgroundModifier = WidgetModifier
             .fillMaxWidth()
             .fillMaxHeight()
             .backgroundColor(Color.White.toArgb())
-        
+
         if (!isPreview) {
             backgroundModifier = backgroundModifier.clickAction(
-                ComponentName(context, TodoActivity ::class.java)
+                ComponentName(context, TodoActivity::class.java)
             )
         }
-        
+
         Box(
             modifier = backgroundModifier,
             contentProperty = {
@@ -103,18 +106,29 @@ class TodayTodoWidget : WidgetComponent() {
                     verticalAlignment = VerticalAlignment.V_ALIGN_TOP
                 }
             ) {
+                CheckBox(
+                    modifier = WidgetModifier.wrapContentHeight().wrapContentWidth()
+                ) {
+                    checked = true
+                    TextProperty {
+                        TextContent {
+                            text = "CheckBox"
+                        }
+                    }
+                }
+
                 // 헤더: "Today" 또는 날짜
                 HeaderText(
                     date = todayDate,
                     gridIndex = gridIndex
                 )
-                
+
                 // Todo 리스트 (최대 3개)
                 TodoList(
                     todos = todos.take(3),
                     modifier = WidgetModifier.fillMaxWidth()
                 )
-                
+
                 // 완료/미완료 개수
                 if (todos.isNotEmpty()) {
                     CountText(
@@ -149,7 +163,7 @@ class TodayTodoWidget : WidgetComponent() {
         } else {
             TodoDateUtils.formatHeaderDate(java.util.Date(System.currentTimeMillis()))
         }
-        
+
         Text(
             modifier = WidgetModifier
                 .viewId(generateViewId(TodayTodoViewIdType.HeaderText, gridIndex))
@@ -193,7 +207,7 @@ class TodayTodoWidget : WidgetComponent() {
             )
             return
         }
-        
+
         Column(
             modifier = modifier.padding(top = 4f),
             contentProperty = {
@@ -208,7 +222,7 @@ class TodayTodoWidget : WidgetComponent() {
                         modifier = WidgetModifier
                             .fillMaxWidth()
                             .height(2f)
-                    ){}
+                    ) {}
                 }
             }
         }
@@ -230,16 +244,13 @@ class TodayTodoWidget : WidgetComponent() {
             }
         ) {
             // 체크박스 컴포넌트 사용
-            Checkbox(
+            CheckBox(
                 modifier = WidgetModifier
                     .wrapContentWidth()
                     .wrapContentHeight()
                     .padding(end = 4f),
                 contentProperty = {
                     checked = todo.status == TodoStatus.COMPLETED
-                    TextContent {
-                        text = "" // 체크박스만 표시, 텍스트는 별도로
-                    }
                     CheckedColor {
                         Color {
                             argb = Color(0xFF4CAF50).toArgb() // 완료 시 녹색
@@ -252,7 +263,7 @@ class TodayTodoWidget : WidgetComponent() {
                     }
                 }
             )
-            
+
             // Todo 제목
             Text(
                 modifier = WidgetModifier.fillMaxWidth(),
@@ -297,7 +308,7 @@ class TodayTodoWidget : WidgetComponent() {
         } else {
             ""
         }
-        
+
         if (countText.isNotEmpty()) {
             Text(
                 modifier = WidgetModifier
@@ -322,7 +333,10 @@ class TodayTodoWidget : WidgetComponent() {
     /**
      * Room DB에서 오늘 날짜의 Todo를 조회
      */
-    private fun loadTodayTodos(context: Context, date: String): List<com.widgetkit.core.database.TodoEntity> {
+    private fun loadTodayTodos(
+        context: Context,
+        date: String
+    ): List<com.widgetkit.core.database.TodoEntity> {
         return try {
             runBlocking {
                 val todoDao = TodoDatabase.getDatabase(context).todoDao()

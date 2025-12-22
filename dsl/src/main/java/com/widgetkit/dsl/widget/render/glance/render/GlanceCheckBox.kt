@@ -1,11 +1,9 @@
 package com.widgetkit.dsl.widget.render.glance.render
 
-import android.R.attr.text
 import androidx.compose.runtime.Composable
 import androidx.glance.appwidget.CheckBox
 import androidx.glance.appwidget.CheckboxDefaults
 import androidx.glance.layout.Box
-import androidx.glance.text.TextStyle
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.node.RenderContext
@@ -37,19 +35,20 @@ internal object GlanceCheckBox : RenderNode {
 
         val checked = checkBoxProperty.checked
 
+        // TextProperty 기반 라벨 텍스트
+        val textProperty = checkBoxProperty.textProperty
 
-        val textContent = checkBoxProperty.text.text
-
-
-        // Action
-
+        val (textContent, textStyle) = TextRenderUtils.buildTextAndStyle(
+            textProperty = textProperty,
+            context = context.context
+        )
 
         CheckBox(
             checked = checked,
             onCheckedChange = null,
             modifier = modifier,
             text = textContent,
-            style = null,
+            style = textStyle,
             colors = CheckboxDefaults.colors(
                 checkedColor = ColorConverter.toGlanceColorProvider(checkBoxProperty.checkedColor),
                 uncheckedColor = ColorConverter.toGlanceColorProvider(checkBoxProperty.uncheckedColor)

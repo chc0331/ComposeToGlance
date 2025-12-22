@@ -1,19 +1,13 @@
 package com.widgetkit.dsl.proto.component
 
-import android.R.attr.text
-import android.graphics.Color.argb
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.proto.component.BaseComponentDsl
-import com.widgetkit.dsl.proto.ColorProvider
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
-import com.widgetkit.dsl.proto.TextContent
 import com.widgetkit.dsl.proto.TextProperty
-import com.widgetkit.dsl.proto.ViewProperty
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.property.ColorProviderDsl
 import com.widgetkit.dsl.proto.property.TextContentDsl
-import com.widgetkit.dsl.proto.property.ViewPropertyDsl
+import com.widgetkit.dsl.proto.property.TextPropertyDsl
 
 class TextDsl(
     scope: WidgetScope,
@@ -33,7 +27,16 @@ class TextDsl(
      */
     fun TextContent(block: TextContentDsl.() -> Unit) {
         textSet = true
-        propertyDsl.Text(block)
+        propertyDsl.TextContent(block)
+    }
+
+    /**
+     * TextPropertyDsl 전체를 사용하는 텍스트 설정 블록
+     * - CheckBoxDsl의 Text 블록과 동일한 스타일로 사용 가능
+     */
+    fun Text(block: TextPropertyDsl.() -> Unit) {
+        textSet = true
+        propertyDsl.block()
     }
 
     /**
@@ -88,7 +91,7 @@ class TextDsl(
         propertyBuilder.viewProperty = viewProperty
 
         if (!textSet) {
-            propertyDsl.Text {
+            propertyDsl.TextContent {
                 text = ""
             }
         }
@@ -101,48 +104,4 @@ class TextDsl(
         }
         return propertyBuilder.build()
     }
-}
-
-internal class TextPropertyDsl(private val builder: TextProperty.Builder) {
-    fun ViewProperty(block: ViewPropertyDsl.() -> Unit) {
-        val viewPropertyBuilder = ViewProperty.newBuilder()
-        ViewPropertyDsl(viewPropertyBuilder).block()
-        builder.setViewProperty(viewPropertyBuilder.build())
-    }
-
-    fun Text(block: TextContentDsl.() -> Unit) {
-        val textContentBuilder = TextContent.newBuilder()
-        TextContentDsl(textContentBuilder).block()
-        builder.setText(textContentBuilder.build())
-    }
-
-    var maxLine: Int
-        get() = builder.maxLine
-        set(value) {
-            builder.setMaxLine(value)
-        }
-
-    fun FontColor(block: ColorProviderDsl.() -> Unit) {
-        val colorProviderBuilder = ColorProvider.newBuilder()
-        ColorProviderDsl(colorProviderBuilder).block()
-        builder.setFontColor(colorProviderBuilder.build())
-    }
-
-    var fontSize: Float
-        get() = builder.fontSize
-        set(value) {
-            builder.setFontSize(value)
-        }
-
-    var fontWeight: FontWeight
-        get() = builder.fontWeight
-        set(value) {
-            builder.setFontWeight(value)
-        }
-
-    var textAlign: TextAlign
-        get() = builder.textAlign
-        set(value) {
-            builder.setTextAlign(value)
-        }
 }
