@@ -1,11 +1,13 @@
 package com.widgetkit.dsl.widget.glance.render
 
 import androidx.compose.runtime.Composable
+import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.layout.Box
 import com.widgetkit.dsl.proto.WidgetNode
-import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.RenderContext
 import com.widgetkit.dsl.widget.NodeRenderer
-import com.widgetkit.dsl.widget.strategy.RenderStrategyFactory
+import com.widgetkit.dsl.widget.RenderContext
+import com.widgetkit.dsl.widget.WidgetRenderer
+import com.widgetkit.dsl.widget.glance.GlanceModifierBuilder
 
 /**
  * Checkbox 노드 렌더러
@@ -18,8 +20,17 @@ internal object GlanceCheckBox : NodeRenderer {
         context: RenderContext,
         renderer: WidgetRenderer
     ) {
-        val strategy = RenderStrategyFactory.getCheckboxStrategy(node)
-        strategy.render(node, context, renderer)
+        if (!node.hasCheckbox()) {
+            Box {}
+            return
+        }
+
+        val checkboxProperty = node.checkbox
+        val viewProperty = checkboxProperty.viewProperty
+
+        // Modifier 생성
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+            .then(context.modifier)
     }
 }
 
