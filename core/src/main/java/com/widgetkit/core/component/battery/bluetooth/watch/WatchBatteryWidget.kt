@@ -114,13 +114,11 @@ class WatchBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.WatchTitle() {
-        Text {
-            TextContent {
-                text = "Watch"
-            }
-            fontSize = 12f
+        Text(
+            text = "Watch",
+            fontSize = 12f,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-        }
+        )
     }
 
     private fun WidgetScope.WatchBatteryText() {
@@ -146,22 +144,14 @@ class WatchBatteryWidget : WidgetComponent() {
                 .partiallyUpdate(true)
                 .wrapContentWidth()
                 .wrapContentHeight(),
-            contentProperty = {
-                TextContent {
-                    text = if (isConnected) {
-                        "${batteryLevel.toInt()}%"
-                    } else {
-                        "--"
-                    }
-                }
-                fontSize = textSize
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Black.toArgb()
-                    }
-                }
-            }
+            text = if (isConnected) {
+                "${batteryLevel.toInt()}%"
+            } else {
+                "--"
+            },
+            fontSize = textSize,
+            fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+            fontColor = Color.Black
         )
     }
 

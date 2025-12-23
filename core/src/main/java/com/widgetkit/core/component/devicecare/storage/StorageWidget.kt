@@ -119,13 +119,11 @@ class StorageWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.StorageTitle() {
-        Text {
-            TextContent {
-                text = "Storage"
-            }
-            fontSize = 12f
+        Text(
+            text = "Storage",
+            fontSize = 12f,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-        }
+        )
     }
 
     private fun WidgetScope.StorageUsageProgress(
@@ -166,18 +164,10 @@ class StorageWidget : WidgetComponent() {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }) {
                 Text(
-                    contentProperty = {
-                        TextContent {
-                            text = "${String.format("%.1f", currentRamUsage)}%"
-                        }
-                        fontSize = 8f
-                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                        FontColor {
-                            Color {
-                                argb = Color(0xFF000000).toArgb()
-                            }
-                        }
-                    }
+                    text = "${String.format("%.1f", currentRamUsage)}%",
+                    fontSize = 8f,
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                    fontColor = Color(0xFF000000)
                 )
             }
         }

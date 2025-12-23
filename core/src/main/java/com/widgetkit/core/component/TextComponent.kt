@@ -49,19 +49,11 @@ class TextComponent : WidgetComponent() {
             }
         ) {
             Text(
-                contentProperty = {
-                    TextContent {
-                        text = "Hello World"
-                    }
-                    fontSize = 18f
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                    FontColor {
-                        Color {
-                            argb = Color.Black.toArgb()
-                        }
-                    }
-                    textAlign = TextAlign.TEXT_ALIGN_CENTER
-                }
+                text = "Hello World",
+                fontSize = 18f,
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                fontColor = Color.Black,
+                textAlign = TextAlign.TEXT_ALIGN_CENTER
             )
         }
     }

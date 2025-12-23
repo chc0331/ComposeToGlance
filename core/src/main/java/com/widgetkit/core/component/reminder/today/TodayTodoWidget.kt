@@ -99,7 +99,7 @@ class TodayTodoWidget : WidgetComponent() {
         ) {
             List {
                 item {
-                    Text { TextContent { text = "List Item 1" } }
+                    Text(text = "List Item 1")
                 }
             }
         }
@@ -136,18 +136,10 @@ class TodayTodoWidget : WidgetComponent() {
             modifier = WidgetModifier
                 .viewId(generateViewId(TodayTodoViewIdType.TitleDate, gridIndex))
                 .wrapContentHeight(),
-            contentProperty = {
-                TextContent {
-                    text = headerText
-                }
-                fontSize = 14f
-                fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                FontColor {
-                    Color {
-                        argb = Color.Black.toArgb()
-                    }
-                }
-            }
+            text = headerText,
+            fontSize = 14f,
+            fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+            fontColor = Color.Black
         )
     }
 
@@ -161,17 +153,9 @@ class TodayTodoWidget : WidgetComponent() {
         if (todos.isEmpty()) {
             Text(
                 modifier = modifier.padding(top = 4f),
-                contentProperty = {
-                    TextContent {
-                        text = "No todos"
-                    }
-                    fontSize = 10f
-                    FontColor {
-                        Color {
-                            argb = Color.Gray.toArgb()
-                        }
-                    }
-                }
+                text = "No todos",
+                fontSize = 10f,
+                fontColor = Color.Gray
             )
             return
         }
@@ -235,25 +219,17 @@ class TodayTodoWidget : WidgetComponent() {
             // Todo 제목
             Text(
                 modifier = WidgetModifier.fillMaxWidth(),
-                contentProperty = {
-                    TextContent {
-                        text = todo.title
-                    }
-                    fontSize = 10f
-                    fontWeight = if (todo.status == TodoStatus.COMPLETED) {
-                        FontWeight.FONT_WEIGHT_NORMAL
-                    } else {
-                        FontWeight.FONT_WEIGHT_MEDIUM
-                    }
-                    FontColor {
-                        Color {
-                            argb = if (todo.status == TodoStatus.COMPLETED) {
-                                Color.Gray.toArgb()
-                            } else {
-                                Color.Black.toArgb()
-                            }
-                        }
-                    }
+                text = todo.title,
+                fontSize = 10f,
+                fontWeight = if (todo.status == TodoStatus.COMPLETED) {
+                    FontWeight.FONT_WEIGHT_NORMAL
+                } else {
+                    FontWeight.FONT_WEIGHT_MEDIUM
+                },
+                fontColor = if (todo.status == TodoStatus.COMPLETED) {
+                    Color.Gray
+                } else {
+                    Color.Black
                 }
             )
         }

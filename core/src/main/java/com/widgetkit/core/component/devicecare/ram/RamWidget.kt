@@ -142,13 +142,11 @@ class RamWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.RamTitle() {
-        Text {
-            TextContent {
-                text = "RAM"
-            }
-            fontSize = 12f
+        Text(
+            text = "RAM",
+            fontSize = 12f,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-        }
+        )
     }
 
     private fun WidgetScope.RamUsageProgress(
@@ -196,18 +194,10 @@ class RamWidget : WidgetComponent() {
                     modifier = WidgetModifier.wrapContentWidth().wrapContentHeight().viewId(
                         generateViewId(RamViewIdType.Text, gridIndex)
                     ).partiallyUpdate(true),
-                    contentProperty = {
-                        TextContent {
-                            text = "${String.format("%.1f", currentRamUsage)}%"
-                        }
-                        fontSize = 8f
-                        fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                        FontColor {
-                            Color {
-                                argb = Color(0xFF000000).toArgb()
-                            }
-                        }
-                    }
+                    text = "${String.format("%.1f", currentRamUsage)}%",
+                    fontSize = 8f,
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                    fontColor = Color(0xFF000000)
                 )
             }
         }

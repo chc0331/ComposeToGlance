@@ -71,13 +71,11 @@ class BatteryWidget : WidgetComponent() {
 
 
     private fun WidgetScope.BatteryDescription() {
-        Text {
-            TextContent {
-                text = "Battery"
-            }
-            fontSize = 12f
+        Text(
+            text = "Battery",
+            fontSize = 12f,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
-        }
+        )
     }
 
     private fun WidgetScope.BatteryText() {
@@ -100,36 +98,20 @@ class BatteryWidget : WidgetComponent() {
                     .partiallyUpdate(true)
                     .wrapContentWidth()
                     .wrapContentHeight(),
-                contentProperty = {
-                    TextContent {
-                        text = batteryValueText
-                    }
-                    fontSize = textSize
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                    FontColor {
-                        Color {
-                            argb = Color.Black.toArgb()
-                        }
-                    }
-                }
+                text = batteryValueText,
+                fontSize = textSize,
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                fontColor = Color.Black
             )
             Text(
                 modifier = WidgetModifier
                     .wrapContentWidth()
                     .wrapContentHeight()
                     .padding(bottom = 2f),
-                contentProperty = {
-                    TextContent {
-                        text = "%"
-                    }
-                    fontSize = textSize * 0.6f
-                    FontColor {
-                        Color {
-                            argb = Color.Black.toArgb()
-                        }
-                    }
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD
-                }
+                text = "%",
+                fontSize = textSize * 0.6f,
+                fontColor = Color.Black,
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
             )
         }
     }
