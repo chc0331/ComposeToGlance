@@ -35,6 +35,7 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class EarbudsBatteryWidget : WidgetComponent() {
 
@@ -49,10 +50,13 @@ class EarbudsBatteryWidget : WidgetComponent() {
     override fun getWidgetTag(): String = "EarbudsBattery"
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
         val localSize = getLocal(WidgetLocalSize) as DpSize
+        
         Box(
             modifier = WidgetModifier
-                .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb()),
+                .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }) {
@@ -114,14 +118,20 @@ class EarbudsBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.EarbudsTitle() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        
         Text(
             text = "EarBuds",
             fontSize = 12f,
-            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
+            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+            fontColor = Color(textColor)
         )
     }
 
     private fun WidgetScope.EarbudsBatteryText() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val currentState = getLocal(WidgetLocalState) ?: emptyPreferences()
         val isPreview = getLocal(WidgetLocalPreview) ?: false
@@ -151,7 +161,7 @@ class EarbudsBatteryWidget : WidgetComponent() {
             },
             fontSize = textSize,
             fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-            fontColor = Color.Black
+            fontColor = Color(textColor)
         )
     }
 

@@ -15,6 +15,7 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class TextComponent : WidgetComponent() {
 
@@ -39,11 +40,15 @@ class TextComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        val textColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(Color.White.toArgb()),
+                .backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -52,7 +57,7 @@ class TextComponent : WidgetComponent() {
                 text = "Hello World",
                 fontSize = 18f,
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                fontColor = Color.Black,
+                fontColor = Color(textColor),
                 textAlign = TextAlign.TEXT_ALIGN_CENTER
             )
         }

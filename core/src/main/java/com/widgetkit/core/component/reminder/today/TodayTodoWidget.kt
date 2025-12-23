@@ -50,6 +50,7 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlin.collections.isNotEmpty
@@ -86,10 +87,13 @@ class TodayTodoWidget : WidgetComponent() {
         }
 
         // 클릭 액션: TodayTodoActivity 열기
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        
         var backgroundModifier = WidgetModifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .backgroundColor(Color.White.toArgb())
+            .backgroundColor(backgroundColor)
             .cornerRadius(context.getSystemBackgroundRadius().value)
 
         if (!isPreview) {
@@ -116,12 +120,15 @@ class TodayTodoWidget : WidgetComponent() {
                 TodoTitle(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight())
                 TodoList(modifier = WidgetModifier.fillMaxWidth().expandHeight(), todos = todos)
                 // 구분선
+                val theme = getLocal(WidgetLocalTheme)
+                val dividerColor = (theme?.outlineVariant as? Int) ?: Color(0xFFE0E0E0).toArgb()
+                
                 Box(
                     modifier = WidgetModifier
                         .fillMaxWidth()
                         .height(1f)
                         .padding(vertical = 8f)
-                        .backgroundColor(Color(0xFFE0E0E0).toArgb())
+                        .backgroundColor(dividerColor)
                 ) {}
                 Footer(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(), todos = todos)
             }
@@ -161,19 +168,25 @@ class TodayTodoWidget : WidgetComponent() {
                     }
                 )
                 // "Today" 텍스트
+                val theme = getLocal(WidgetLocalTheme)
+                val titleColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+                
                 Text(
                     text = "Today",
                     fontSize = 14f,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color.Black
+                    fontColor = Color(titleColor)
                 )
             }
             // 날짜 텍스트
+            val theme = getLocal(WidgetLocalTheme)
+            val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+            
             Text(
                 text = TodoDateUtils.formatWidgetDate(currentDate),
                 fontSize = 12f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                fontColor = Color.Gray
+                fontColor = Color(secondaryTextColor)
             )
         }
 
@@ -209,12 +222,16 @@ class TodayTodoWidget : WidgetComponent() {
                         } else {
                             FontWeight.FONT_WEIGHT_MEDIUM
                         }
+                        val theme = getLocal(WidgetLocalTheme)
+                        val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+                        val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+                        
                         FontColor {
                             Color {
                                 argb = if (isCompleted) {
-                                    Color.Gray.toArgb()
+                                    completedColor
                                 } else {
-                                    Color.Black.toArgb()
+                                    activeColor
                                 }
                             }
                         }
@@ -223,12 +240,15 @@ class TodayTodoWidget : WidgetComponent() {
 
                 // 시간 표시 (dateTime이 있는 경우)
                 if (todo.dateTime != null) {
+                    val theme = getLocal(WidgetLocalTheme)
+                    val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+                    
                     Text(
                         modifier = WidgetModifier.wrapContentWidth(),
                         text = TodoDateUtils.formatTime(todo.dateTime),
                         fontSize = 10f,
                         fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                        fontColor = Color.Gray
+                        fontColor = Color(secondaryTextColor)
                     )
                 }
             }
@@ -256,12 +276,15 @@ class TodayTodoWidget : WidgetComponent() {
         val totalCount = todos.size
         val completedCount = todos.count { it.status == TodoStatus.COMPLETED }
         // 푸터: 요약 정보
+        val theme = getLocal(WidgetLocalTheme)
+        val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+        
         Row(modifier = modifier) {
             Text(
                 text = "$totalCount tasks • $completedCount completed",
                 fontSize = 10f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                fontColor = Color.Gray
+                fontColor = Color(secondaryTextColor)
             )
         }
     }

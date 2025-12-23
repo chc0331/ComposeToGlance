@@ -14,6 +14,7 @@ import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.ProgressType
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
@@ -42,11 +43,16 @@ class AnalogClockComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.Black.toArgb()
+        val clockBgColor = (theme?.surfaceVariant as? Int) ?: Color.DarkGray.toArgb()
+        val clockColor = (theme?.onSurface as? Int) ?: Color.White.toArgb()
+        
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(Color.Black.toArgb()),
+                .backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -65,12 +71,12 @@ class AnalogClockComponent : WidgetComponent() {
                     progressValue = 100f
                     ProgressColor {
                         Color {
-                            argb = Color.White.toArgb()
+                            argb = clockColor
                         }
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color.DarkGray.toArgb()
+                            argb = clockBgColor
                         }
                     }
                 }
@@ -87,7 +93,7 @@ class AnalogClockComponent : WidgetComponent() {
                     progressValue = 100f
                     ProgressColor {
                         Color {
-                            argb = Color.White.toArgb()
+                            argb = clockColor
                         }
                     }
                 }

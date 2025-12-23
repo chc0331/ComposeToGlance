@@ -28,6 +28,9 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalRootPadding
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.dsl.theme.GlanceThemeConverter
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.cornerRadius
@@ -73,6 +76,8 @@ class LargeAppWidget : DslAppWidget() {
         val currentState = getLocal(WidgetLocalState) as Preferences?
         val currentLayout = WidgetLayout.parseFrom(currentState?.get(layoutKey))
         val widgetSize = getLocal(WidgetLocalSize) as DpSize
+        val context = getLocal(WidgetLocalContext) as Context
+        val glanceTheme = GlanceThemeConverter.createDefaultTheme(context)
 
         val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / 4
         val cellHeight = (widgetSize.height - ROOT_PADDING.dp * 2) / 2
@@ -81,7 +86,8 @@ class LargeAppWidget : DslAppWidget() {
             WidgetLocalRootPadding provides ROOT_PADDING.dp,
             WidgetLocalContentPadding provides CONTENT_PADDING.dp,
             WidgetLocalCellWidth provides cellWidth,
-            WidgetLocalCellHeight provides cellHeight
+            WidgetLocalCellHeight provides cellHeight,
+            WidgetLocalTheme provides glanceTheme
         ) {
             Box(
                 modifier = WidgetModifier
@@ -127,12 +133,16 @@ class LargeAppWidget : DslAppWidget() {
                         end = contentPadding.value
                     )
             ) {
+                val context = getLocal(WidgetLocalContext) as Context
+                val glanceTheme = GlanceThemeConverter.createDefaultTheme(context)
+                
                 WidgetLocalProvider(
                     WidgetLocalSize provides DpSize(
                         componentWidth - contentPadding * 2,
                         componentHeight - contentPadding * 2
                     ),
-                    WidgetLocalGridIndex provides gridIndex
+                    WidgetLocalGridIndex provides gridIndex,
+                    WidgetLocalTheme provides glanceTheme
                 ) {
                     val contentRadius = getLocal(WidgetLocalContentRadius) ?: 0.dp
                     WidgetComponentRegistry.getComponent(widget.widgetTag)?.let {

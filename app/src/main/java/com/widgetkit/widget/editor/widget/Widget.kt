@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,6 +28,8 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.dsl.theme.GlanceThemeConverter
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetComponentRegistry
@@ -67,14 +68,13 @@ fun DragTargetWidgetItem(
                     modifier = Modifier
                         .matchParentSize()
                         .clip(RoundedCornerShape(cornerRadius))
-                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f))
+                        .background(Color.Black.copy(alpha = 0.5f))
                         .clickable { onAddClick(data) },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "추가",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyLarge
+                        color = Color.White
                     )
                 }
             }
@@ -124,7 +124,7 @@ private fun WidgetItemContent(
                 .width(size.width)
                 .height(size.height)
                 .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
-                .background(MaterialTheme.colorScheme.surfaceVariant), // Use theme surface variant
+                .background(Color(0xFFF5F5F5)), // Default surface variant color
             contentAlignment = Alignment.Center
         ) {
             // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
@@ -137,13 +137,19 @@ private fun WidgetItemContent(
                     // renderer를 remember로 캐싱하여 재렌더링 방지
                     val renderer = remember(key) { WidgetRenderer(context) }
 
+                    // Preview 모드에서는 Context 기반 기본 테마 사용
+                    val glanceTheme = remember(key) { 
+                        GlanceThemeConverter.createDefaultTheme(context) 
+                    }
+
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
-                    val layout = remember(key) {
+                    val layout = remember(key, glanceTheme) {
                         WidgetLayout {
                             WidgetLocalProvider(
                                 WidgetLocalPreview provides true,
                                 WidgetLocalSize provides size,
-                                WidgetLocalContext provides context
+                                WidgetLocalContext provides context,
+                                WidgetLocalTheme provides glanceTheme
                             ) {
                                 // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
                                 // this는 WidgetLocalProvider가 생성한 childScope를 가리킴
@@ -172,21 +178,9 @@ private fun WidgetItemContent(
 
 @Composable
 private fun DefaultWidgetContent(data: WidgetComponent) {
-    // MaterialTheme을 먼저 읽고, remember 블록 안에서는 복사만 수행
-    val typography = MaterialTheme.typography
-    val colorScheme = MaterialTheme.colorScheme
-
-    // MaterialTheme 스타일 객체를 remember로 캐싱하여 불필요한 재생성 방지
-    val titleStyle = remember(typography) {
-        typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-    }
-    val bodyStyle = remember(typography) {
-        typography.bodySmall
-    }
-    val titleColor = colorScheme.onSurfaceVariant
-    val bodyColor = remember(colorScheme) {
-        colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-    }
+    // 기본 색상 사용
+    val titleColor = Color(0xFF616161) // onSurfaceVariant
+    val bodyColor = Color(0xFF616161).copy(alpha = 0.7f)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,12 +188,11 @@ private fun DefaultWidgetContent(data: WidgetComponent) {
     ) {
         Text(
             text = data.getName(),
-            style = titleStyle,
-            color = titleColor
+            color = titleColor,
+            fontWeight = FontWeight.Bold
         )
         Text(
             text = data.getSizeType().toString(),
-            style = bodyStyle,
             color = bodyColor
         )
     }

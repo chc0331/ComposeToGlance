@@ -41,6 +41,7 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class StorageWidget : WidgetComponent() {
 
@@ -55,11 +56,13 @@ class StorageWidget : WidgetComponent() {
     override fun getWidgetTag(): String = "Storage"
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
         val localSize = getLocal(WidgetLocalSize) as DpSize
         val context = getLocal(WidgetLocalContext) as Context
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         var backgroundModifier = WidgetModifier
-            .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
+            .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor)
         if (!isPreview) {
             backgroundModifier = backgroundModifier.clickAction(
                 ComponentName(
@@ -119,10 +122,14 @@ class StorageWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.StorageTitle() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        
         Text(
             text = "Storage",
             fontSize = 12f,
-            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
+            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+            fontColor = Color(textColor)
         )
     }
 
@@ -138,6 +145,10 @@ class StorageWidget : WidgetComponent() {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
             }
         ) {
+            val theme = getLocal(WidgetLocalTheme)
+            val progressColor = (theme?.primary as? Int) ?: Color(0x80000000).toArgb()
+            val progressBgColor = (theme?.surfaceVariant as? Int) ?: Color(0xFFFFFFFF).toArgb()
+            
             Progress(
                 modifier = WidgetModifier
                     .fillMaxWidth().fillMaxHeight()
@@ -148,12 +159,12 @@ class StorageWidget : WidgetComponent() {
                     maxValue = 100f
                     ProgressColor {
                         Color {
-                            argb = Color(0x80000000).toArgb()
+                            argb = progressColor
                         }
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color(0xFFFFFFFF).toArgb()
+                            argb = progressBgColor
                         }
                     }
                 }
@@ -163,11 +174,14 @@ class StorageWidget : WidgetComponent() {
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }) {
+                val theme = getLocal(WidgetLocalTheme)
+                val textColor = (theme?.onSurface as? Int) ?: Color(0xFF000000).toArgb()
+                
                 Text(
                     text = "${String.format("%.1f", currentRamUsage)}%",
                     fontSize = 8f,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color(0xFF000000)
+                    fontColor = Color(textColor)
                 )
             }
         }

@@ -12,6 +12,7 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class ImageComponent : WidgetComponent() {
     override fun getName(): String {
@@ -35,11 +36,14 @@ class ImageComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surfaceVariant as? Int) ?: Color.LightGray.toArgb()
+        
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(Color.LightGray.toArgb()),
+                .backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }

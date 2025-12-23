@@ -35,6 +35,8 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGlanceId
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.dsl.theme.GlanceThemeConverter
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.cornerRadius
@@ -69,6 +71,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val renderer = remember { WidgetRenderer(context) }
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
+        val glanceTheme = GlanceThemeConverter.fromGlanceTheme(context)
         var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
 
         LaunchedEffect(state) {
@@ -79,7 +82,8 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     WidgetLocalState provides state,
                     WidgetLocalGlanceId provides glanceId,
                     WidgetLocalBackgroundRadius provides backgroundRadius,
-                    WidgetLocalContentRadius provides contentRadius
+                    WidgetLocalContentRadius provides contentRadius,
+                    WidgetLocalTheme provides glanceTheme
                 ) {
                     Box(
                         modifier = WidgetModifier

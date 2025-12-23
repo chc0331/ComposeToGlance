@@ -35,6 +35,7 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class BatteryWidget : WidgetComponent() {
 
@@ -49,11 +50,14 @@ class BatteryWidget : WidgetComponent() {
     override fun getSizeType() = SizeType.TINY
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(Color.White.toArgb()),
+                .backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -71,14 +75,20 @@ class BatteryWidget : WidgetComponent() {
 
 
     private fun WidgetScope.BatteryDescription() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        
         Text(
             text = "Battery",
             fontSize = 12f,
-            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
+            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+            fontColor = Color(textColor)
         )
     }
 
     private fun WidgetScope.BatteryText() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(WidgetLocalSize) as DpSize
@@ -101,7 +111,7 @@ class BatteryWidget : WidgetComponent() {
                 text = batteryValueText,
                 fontSize = textSize,
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                fontColor = Color.Black
+                fontColor = Color(textColor)
             )
             Text(
                 modifier = WidgetModifier
@@ -110,7 +120,7 @@ class BatteryWidget : WidgetComponent() {
                     .padding(bottom = 2f),
                 text = "%",
                 fontSize = textSize * 0.6f,
-                fontColor = Color.Black,
+                fontColor = Color(textColor),
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
             )
         }

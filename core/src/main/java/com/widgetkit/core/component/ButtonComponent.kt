@@ -15,6 +15,7 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class ButtonComponent : WidgetComponent() {
     override fun getName(): String {
@@ -38,11 +39,16 @@ class ButtonComponent : WidgetComponent() {
     }
 
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        val buttonBgColor = (theme?.primary as? Int) ?: Color.Blue.toArgb()
+        val buttonTextColor = (theme?.onSurface as? Int) ?: Color.White.toArgb()
+        
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(Color.White.toArgb()),
+                .backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -58,12 +64,12 @@ class ButtonComponent : WidgetComponent() {
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD
                     FontColor {
                         Color {
-                            argb = Color.White.toArgb()
+                            argb = buttonTextColor
                         }
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color.Blue.toArgb()
+                            argb = buttonBgColor
                         }
                     }
                 }

@@ -48,6 +48,7 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class RamWidget : WidgetComponent() {
 
@@ -63,12 +64,14 @@ class RamWidget : WidgetComponent() {
 
     @SuppressLint("RestrictedApi")
     override fun WidgetScope.Content() {
+        val theme = getLocal(WidgetLocalTheme)
+        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
         val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val localSize = getLocal(WidgetLocalSize) as DpSize
         val context = getLocal(WidgetLocalContext) as Context
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         var backgroundModifier = WidgetModifier
-            .fillMaxWidth().fillMaxHeight().backgroundColor(Color.White.toArgb())
+            .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor)
         if (!isPreview)
             backgroundModifier = backgroundModifier.runCallbackBroadcastReceiver(
                 context, widgetId?.appWidgetId ?: 0, RamWidgetAction()
@@ -142,10 +145,14 @@ class RamWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.RamTitle() {
+        val theme = getLocal(WidgetLocalTheme)
+        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        
         Text(
             text = "RAM",
             fontSize = 12f,
-            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM
+            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+            fontColor = Color(textColor)
         )
     }
 
@@ -163,6 +170,10 @@ class RamWidget : WidgetComponent() {
             }
         ) {
             val progressWidth = (getLocal(WidgetLocalSize) as DpSize).width - (8.dp * 2)
+            val theme = getLocal(WidgetLocalTheme)
+            val progressColor = (theme?.primary as? Int) ?: Color(0x808A8A8A).toArgb()
+            val progressBgColor = (theme?.surfaceVariant as? Int) ?: Color(0xFFE3E3E3).toArgb()
+            
             Progress(
                 modifier = WidgetModifier
                     .width(progressWidth.value).fillMaxHeight()
@@ -175,12 +186,12 @@ class RamWidget : WidgetComponent() {
                     maxValue = 100f
                     ProgressColor {
                         Color {
-                            argb = Color(0x808A8A8A).toArgb()
+                            argb = progressColor
                         }
                     }
                     BackgroundColor {
                         Color {
-                            argb = Color(0xFFE3E3E3).toArgb()
+                            argb = progressBgColor
                         }
                     }
                 }
@@ -190,6 +201,9 @@ class RamWidget : WidgetComponent() {
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }) {
+                val theme = getLocal(WidgetLocalTheme)
+                val textColor = (theme?.onSurface as? Int) ?: Color(0xFF000000).toArgb()
+                
                 Text(
                     modifier = WidgetModifier.wrapContentWidth().wrapContentHeight().viewId(
                         generateViewId(RamViewIdType.Text, gridIndex)
@@ -197,7 +211,7 @@ class RamWidget : WidgetComponent() {
                     text = "${String.format("%.1f", currentRamUsage)}%",
                     fontSize = 8f,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color(0xFF000000)
+                    fontColor = Color(textColor)
                 )
             }
         }
