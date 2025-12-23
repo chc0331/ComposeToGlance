@@ -1,5 +1,7 @@
 package com.widgetkit.dsl.proto.component
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
@@ -82,6 +84,56 @@ class TextDsl(
         set(value) {
             propertyDsl.textAlign = value
         }
+
+    /**
+     * 텍스트 내용을 직접 설정 (파라미터 기반 API용)
+     */
+    internal fun setText(text: String?) {
+        if (text != null) {
+            textSet = true
+            propertyDsl.TextContent {
+                this.text = text
+            }
+        }
+    }
+
+    /**
+     * 리소스 ID로 텍스트 설정 (파라미터 기반 API용)
+     */
+    internal fun setTextResId(resId: Int) {
+        if (resId != 0) {
+            textSet = true
+            propertyDsl.TextContent {
+                this.resId = resId
+            }
+        }
+    }
+
+    /**
+     * Compose Color로 폰트 색상 설정 (파라미터 기반 API용)
+     */
+    internal fun setFontColor(color: Color) {
+        fontColorSet = true
+        propertyDsl.FontColor {
+            Color {
+                argb = color.toArgb()
+            }
+        }
+    }
+
+    /**
+     * ARGB Int로 폰트 색상 설정 (파라미터 기반 API용)
+     */
+    internal fun setFontColorArgb(argb: Int) {
+        if (argb != 0) {
+            fontColorSet = true
+            propertyDsl.FontColor {
+                Color {
+                    this.argb = argb
+                }
+            }
+        }
+    }
 
     /**
      * TextProperty 빌드
