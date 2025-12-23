@@ -17,12 +17,12 @@ internal class ImageNode : RenderNode {
         context: RenderContext,
         renderer: WidgetRenderer
     ) {
-        if (node.widgetType == WidgetType.WIDGET_TYPE_GLANCE) {
-            GlanceImage.render(node, context, renderer)
-        } else if (node.image.animation) {
+        if (node.image.animation) {
             RvAnimationImage.render(node, context, renderer)
         } else if ((node.image.viewProperty.partiallyUpdate)) {
             RvImage.render(node, context, renderer)
+        } else {
+            GlanceImage.render(node, context, renderer)
         }
     }
 }
