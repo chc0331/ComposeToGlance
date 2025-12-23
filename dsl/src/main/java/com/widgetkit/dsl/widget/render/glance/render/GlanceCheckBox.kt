@@ -44,9 +44,9 @@ internal object GlanceCheckBox : RenderNode {
         )
 
         CheckBox(
+            modifier = modifier,
             checked = checked,
             onCheckedChange = null,
-            modifier = modifier,
             text = textContent,
             style = textStyle,
             colors = CheckboxDefaults.colors(

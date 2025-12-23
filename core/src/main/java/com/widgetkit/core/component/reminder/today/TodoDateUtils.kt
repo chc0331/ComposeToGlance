@@ -31,5 +31,21 @@ object TodoDateUtils {
         val dateFormat = SimpleDateFormat("M월 d일 (E)", Locale.getDefault())
         return dateFormat.format(date)
     }
+
+    /**
+     * 위젯 헤더용 날짜 포맷 (예: "April 23")
+     */
+    fun formatWidgetDate(date: Date): String {
+        val dateFormat = SimpleDateFormat("MMMM d", Locale.ENGLISH)
+        return dateFormat.format(date)
+    }
+
+    /**
+     * 시간 포맷 (예: "5:00 PM")
+     */
+    fun formatTime(dateTime: Long): String {
+        val dateFormat = SimpleDateFormat("h:mm a", Locale.ENGLISH)
+        return dateFormat.format(Date(dateTime))
+    }
 }
 
