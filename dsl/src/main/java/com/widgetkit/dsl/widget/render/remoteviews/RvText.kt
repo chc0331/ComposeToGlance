@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.toArgb
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.layout.wrapContentSize
 import com.widgetkit.dsl.R
 import com.widgetkit.dsl.proto.TextAlign
 import com.widgetkit.dsl.proto.WidgetNode
@@ -56,7 +57,7 @@ internal object RvText : RenderNode {
                 TextAlign.TEXT_ALIGN_START -> Gravity.START
                 TextAlign.TEXT_ALIGN_CENTER -> Gravity.CENTER
                 TextAlign.TEXT_ALIGN_END -> Gravity.END
-                else -> Gravity.START
+                else -> Gravity.END
             }
             remoteViews.setInt(viewId, "setGravity", gravity)
 
@@ -73,7 +74,7 @@ internal object RvText : RenderNode {
 
             AndroidRemoteViews(
                 remoteViews = remoteViews,
-                modifier = GlanceModifier
+                modifier = GlanceModifier.wrapContentSize()
             )
         }
     }

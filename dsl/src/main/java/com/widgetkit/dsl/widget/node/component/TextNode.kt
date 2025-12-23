@@ -16,10 +16,10 @@ internal class TextNode : RenderNode {
         context: RenderContext,
         renderer: WidgetRenderer
     ) {
-        if (node.widgetType == WidgetType.WIDGET_TYPE_GLANCE) {
-            GlanceText.render(node, context, renderer)
-        } else {
+        if (node.text.viewProperty.partiallyUpdate) {
             RvText.render(node, context, renderer)
+        } else {
+            GlanceText.render(node, context, renderer)
         }
     }
 }
