@@ -20,6 +20,7 @@ import com.widgetkit.dsl.frontend.CheckBox
 import com.widgetkit.dsl.frontend.Text
 import com.widgetkit.dsl.frontend.layout.Box
 import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.List
 import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
@@ -96,46 +97,9 @@ class TodayTodoWidget : WidgetComponent() {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
         ) {
-            Column(
-                modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(horizontal = 8f, vertical = 6f),
-                contentProperty = {
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                    verticalAlignment = VerticalAlignment.V_ALIGN_TOP
-                }
-            ) {
-                CheckBox(
-                    modifier = WidgetModifier.wrapContentHeight().wrapContentWidth()
-                ) {
-                    checked = true
-                    TextProperty {
-                        TextContent {
-                            text = "CheckBox"
-                        }
-                    }
-                }
-
-                // 헤더: "Today" 또는 날짜
-                HeaderText(
-                    date = todayDate,
-                    gridIndex = gridIndex
-                )
-
-                // Todo 리스트 (최대 3개)
-                TodoList(
-                    todos = todos.take(3),
-                    modifier = WidgetModifier.fillMaxWidth()
-                )
-
-                // 완료/미완료 개수
-                if (todos.isNotEmpty()) {
-                    CountText(
-                        incompleteCount = incompleteCount,
-                        completedCount = completedCount,
-                        gridIndex = gridIndex
-                    )
+            List {
+                item {
+                    Text { TextContent { text = "List Item 1" } }
                 }
             }
         }
@@ -164,9 +128,13 @@ class TodayTodoWidget : WidgetComponent() {
             TodoDateUtils.formatHeaderDate(java.util.Date(System.currentTimeMillis()))
         }
 
+        Row(modifier = WidgetModifier.fillMaxWidth().height(20f)) {
+
+        }
+
         Text(
             modifier = WidgetModifier
-                .viewId(generateViewId(TodayTodoViewIdType.HeaderText, gridIndex))
+                .viewId(generateViewId(TodayTodoViewIdType.TitleDate, gridIndex))
                 .wrapContentHeight(),
             contentProperty = {
                 TextContent {
@@ -291,44 +259,6 @@ class TodayTodoWidget : WidgetComponent() {
         }
     }
 
-    /**
-     * 완료/미완료 개수 표시
-     */
-    private fun WidgetScope.CountText(
-        incompleteCount: Int,
-        completedCount: Int,
-        gridIndex: Int
-    ) {
-        val countText = if (incompleteCount > 0 && completedCount > 0) {
-            "$incompleteCount incomplete, $completedCount completed"
-        } else if (incompleteCount > 0) {
-            "$incompleteCount incomplete"
-        } else if (completedCount > 0) {
-            "$completedCount completed"
-        } else {
-            ""
-        }
-
-        if (countText.isNotEmpty()) {
-            Text(
-                modifier = WidgetModifier
-                    .viewId(generateViewId(TodayTodoViewIdType.CountText, gridIndex))
-                    .padding(top = 4f)
-                    .wrapContentHeight(),
-                contentProperty = {
-                    TextContent {
-                        text = countText
-                    }
-                    fontSize = 8f
-                    FontColor {
-                        Color {
-                            argb = Color.Gray.toArgb()
-                        }
-                    }
-                }
-            )
-        }
-    }
 
     /**
      * Room DB에서 오늘 날짜의 Todo를 조회
@@ -376,12 +306,20 @@ class TodayTodoWidget : WidgetComponent() {
         )
     }
 
-    fun getCountTextId(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.CountText, gridIndex)
+    fun getTitleDate(gridIndex: Int): Int {
+        return generateViewId(TodayTodoViewIdType.TitleDate, gridIndex)
     }
 
-    fun getHeaderTextId(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.HeaderText, gridIndex)
+    fun getSelectedDate(gridIndex: Int): Int {
+        return generateViewId(TodayTodoViewIdType.SelectedDate, gridIndex)
+    }
+
+    fun getAllTodoNumber(gridIndex: Int): Int {
+        return generateViewId(TodayTodoViewIdType.AllTodoNumber, gridIndex)
+    }
+
+    fun getCompletedTodoNumber(gridIndex: Int): Int {
+        return generateViewId(TodayTodoViewIdType.AllTodoNumber, gridIndex)
     }
 }
 

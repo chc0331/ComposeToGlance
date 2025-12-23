@@ -7,18 +7,16 @@ import com.widgetkit.core.component.viewid.ViewIdType
  * 부분 업데이트를 위한 ViewId를 관리합니다.
  */
 sealed class TodayTodoViewIdType(override val typeName: String) : ViewIdType() {
-    /**
-     * 완료/미완료 개수를 표시하는 텍스트
-     */
-    object CountText : TodayTodoViewIdType("today_todo_count_text")
-    
-    /**
-     * 헤더 날짜 텍스트
-     */
-    object HeaderText : TodayTodoViewIdType("today_todo_header_text")
-    
+
+    object TitleDate : TodayTodoViewIdType("todo_title_date")
+    object SelectedDate : TodayTodoViewIdType("todo_selected_date")
+    object AllTodoNumber : TodayTodoViewIdType("all_todo_number")
+    object CompletedTodoNumber : TodayTodoViewIdType("completed_todo_number")
+
     companion object {
-        fun all(): List<TodayTodoViewIdType> = listOf(CountText, HeaderText)
+        fun all(): List<TodayTodoViewIdType> = listOf(
+            TitleDate, SelectedDate, AllTodoNumber, CompletedTodoNumber
+        )
     }
 }
 
