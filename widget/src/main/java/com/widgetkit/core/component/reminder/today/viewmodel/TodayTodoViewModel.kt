@@ -3,11 +3,15 @@ package com.widgetkit.core.component.reminder.today.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.widgetkit.core.component.reminder.today.TodayTodoUpdateManager
 import com.widgetkit.core.component.reminder.today.TodoDateUtils
 import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.reminder.today.TodoStatus
-import com.widgetkit.core.component.reminder.today.TodayTodoUpdateManager
 import com.widgetkit.core.database.TodoEntity
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,10 +21,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 /**
  * TodayTodo 화면의 UI 상태
@@ -93,13 +93,15 @@ class TodayTodoViewModel(
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         val dateMillis = values[0] as Long
+
         @Suppress("UNCHECKED_CAST")
         val todos = values[1] as List<TodoEntity>
         val addDialog = values[2] as Boolean
+
         @Suppress("UNCHECKED_CAST")
         val editTodo = values[3] as TodoEntity?
         val calendarPicker = values[4] as Boolean
-        
+
         TodayTodoUiState(
             selectedDateMillis = dateMillis,
             todos = todos,
@@ -109,7 +111,7 @@ class TodayTodoViewModel(
             inlineTitle = _inlineTitle.value
         )
     }
-    
+
     val uiState: StateFlow<TodayTodoUiState> = combine(
         baseUiState,
         inlineTitle
@@ -302,4 +304,3 @@ class TodayTodoViewModel(
         }
     }
 }
-

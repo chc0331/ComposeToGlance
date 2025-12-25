@@ -29,4 +29,3 @@ interface ComponentUpdateManager<T> {
         // 기본 구현은 비어있음 - 필요시 오버라이드
     }
 }
-

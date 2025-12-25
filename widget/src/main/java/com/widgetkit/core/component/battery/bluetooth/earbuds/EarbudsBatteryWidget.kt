@@ -13,6 +13,10 @@ import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.Image
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -27,10 +31,6 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.frontend.Image
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
@@ -53,19 +53,21 @@ class EarbudsBatteryWidget : WidgetComponent() {
         val theme = getLocal(WidgetLocalTheme)
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        
+
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }) {
+            }
+        ) {
             Column(
                 modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }) {
+                }
+            ) {
                 EarbudsIcon()
                 EarbudsTitle()
                 EarbudsBatteryText()
@@ -120,7 +122,7 @@ class EarbudsBatteryWidget : WidgetComponent() {
     private fun WidgetScope.EarbudsTitle() {
         val theme = getLocal(WidgetLocalTheme)
         val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
-        
+
         Text(
             text = "EarBuds",
             fontSize = 12f,

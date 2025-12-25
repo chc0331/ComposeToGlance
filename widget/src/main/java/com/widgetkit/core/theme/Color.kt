@@ -2,7 +2,6 @@ package com.widgetkit.core.theme
 
 import androidx.compose.ui.graphics.Color
 
-
 val primaryLight = Color(0xFF2C638B)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFCCE5FF)
@@ -218,4 +217,3 @@ val surfaceContainerLowDarkHighContrast = Color(0xFF1C2024)
 val surfaceContainerDarkHighContrast = Color(0xFF2D3135)
 val surfaceContainerHighDarkHighContrast = Color(0xFF383C40)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF43474C)
-

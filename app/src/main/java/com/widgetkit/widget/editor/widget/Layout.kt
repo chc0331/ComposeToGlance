@@ -40,9 +40,9 @@ data class LayoutGridSpec(val rows: Int, val columns: Int)
 
 private val layoutGridSpecs = mapOf(
     "Full" to mapOf(
-        "Small" to LayoutGridSpec(rows = 1, columns = 2),
-        "Medium" to LayoutGridSpec(rows = 2, columns = 2),
-        "Large" to LayoutGridSpec(rows = 2, columns = 4)
+        "Small" to LayoutGridSpec(rows = 2, columns = 4),
+        "Medium" to LayoutGridSpec(rows = 4, columns = 4),
+        "Large" to LayoutGridSpec(rows = 4, columns = 8)
     )
 )
 
@@ -117,9 +117,9 @@ fun LayoutComponent(
 @Composable
 private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
     when (layoutType) {
-        "Small" -> createGridRow(columns = 2, showText = showText)
-        "Medium" -> createGridLayout(rows = 2, columns = 2, showText = showText)
-        "Large" -> createGridLayout(rows = 2, columns = 4, showText = showText)
+        "Small" -> createGridRow(columns = 4, showText = showText)
+        "Medium" -> createGridLayout(rows = 4, columns = 4, showText = showText)
+        "Large" -> createGridLayout(rows = 4, columns = 8, showText = showText)
     }
 }
 

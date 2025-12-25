@@ -15,6 +15,12 @@ import com.widgetkit.core.component.reminder.today.ui.TodoActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.Image
+import com.widgetkit.dsl.frontend.Progress
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -31,12 +37,6 @@ import com.widgetkit.dsl.proto.modifier.padding
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.frontend.Image
-import com.widgetkit.dsl.frontend.Progress
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
-import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
@@ -75,13 +75,15 @@ class StorageWidget : WidgetComponent() {
             modifier = backgroundModifier,
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }) {
+            }
+        ) {
             Column(
                 modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }) {
+                }
+            ) {
                 StorageIcon()
                 StorageTitle()
                 StorageUsageProgress(
@@ -104,9 +106,11 @@ class StorageWidget : WidgetComponent() {
     private fun WidgetScope.StorageIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
-        Box(modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(), contentProperty = {
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }
+        Box(
+            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
         ) {
             Image(
                 modifier = WidgetModifier
@@ -124,7 +128,7 @@ class StorageWidget : WidgetComponent() {
     private fun WidgetScope.StorageTitle() {
         val theme = getLocal(WidgetLocalTheme)
         val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
-        
+
         Text(
             text = "Storage",
             fontSize = 12f,
@@ -133,9 +137,7 @@ class StorageWidget : WidgetComponent() {
         )
     }
 
-    private fun WidgetScope.StorageUsageProgress(
-        modifier: WidgetModifier = WidgetModifier
-    ) {
+    private fun WidgetScope.StorageUsageProgress(modifier: WidgetModifier = WidgetModifier) {
         val context = getLocal(WidgetLocalContext) as Context
         val currentRamUsage = getStorageValue()
 
@@ -148,7 +150,7 @@ class StorageWidget : WidgetComponent() {
             val theme = getLocal(WidgetLocalTheme)
             val progressColor = (theme?.primary as? Int) ?: Color(0x80000000).toArgb()
             val progressBgColor = (theme?.surfaceVariant as? Int) ?: Color(0xFFFFFFFF).toArgb()
-            
+
             Progress(
                 modifier = WidgetModifier
                     .fillMaxWidth().fillMaxHeight()
@@ -173,10 +175,11 @@ class StorageWidget : WidgetComponent() {
                 modifier = WidgetModifier.fillMaxWidth().wrapContentHeight().padding(end = 4f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-                }) {
+                }
+            ) {
                 val theme = getLocal(WidgetLocalTheme)
                 val textColor = (theme?.onSurface as? Int) ?: Color(0xFF000000).toArgb()
-                
+
                 Text(
                     text = "${String.format("%.1f", currentRamUsage)}%",
                     fontSize = 8f,
@@ -204,5 +207,4 @@ class StorageWidget : WidgetComponent() {
     fun getStorageProgressId(gridIndex: Int): Int {
         return generateViewId(StorageViewIdType.Progress, gridIndex)
     }
-
 }

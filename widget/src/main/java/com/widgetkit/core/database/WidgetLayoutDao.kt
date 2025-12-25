@@ -108,4 +108,3 @@ interface WidgetLayoutDao {
     @Query("SELECT COUNT(*) FROM widget_layouts")
     fun getLayoutCountFlow(): Flow<Int>
 }
-

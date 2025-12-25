@@ -18,12 +18,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -52,10 +52,7 @@ import com.widgetkit.core.component.reminder.today.viewmodel.TodayTodoViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TodoContent(
-    viewModel: TodayTodoViewModel,
-    onDismiss: () -> Unit
-) {
+fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
@@ -141,7 +138,9 @@ fun TodoContent(
                         val isFirst = index == 0
                         val isLast = index == uiState.todos.lastIndex
                         val cellShape = when {
-                            isFirst && isLast -> RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
+                            isFirst && isLast -> RoundedCornerShape(
+                                TodoDesignConstants.CORNER_RADIUS
+                            )
                             isFirst -> RoundedCornerShape(
                                 topStart = TodoDesignConstants.CORNER_RADIUS,
                                 topEnd = TodoDesignConstants.CORNER_RADIUS
@@ -172,7 +171,9 @@ fun TodoContent(
                                 )
                                 if (!isLast) {
                                     HorizontalDivider(
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(
+                                            alpha = 0.6f
+                                        ),
                                         modifier = Modifier.padding(start = 44.dp)
                                     )
                                 }
@@ -229,7 +230,7 @@ fun TodoContent(
                             viewModel.selectDate(it)
                         }
                         viewModel.hideCalendarPicker()
-                    },
+                    }
                 ) {
                     Text("확인")
                 }
@@ -244,7 +245,6 @@ fun TodoContent(
         }
     }
 }
-
 
 @Composable
 private fun Header(
@@ -358,8 +358,10 @@ private fun InlineAddTodoRow(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { onAdd() }),
                 shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS),
-                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             )
             IconButton(onClick = onAdd) {
                 Icon(
@@ -378,4 +380,3 @@ private fun InlineAddTodoRow(
         }
     }
 }
-

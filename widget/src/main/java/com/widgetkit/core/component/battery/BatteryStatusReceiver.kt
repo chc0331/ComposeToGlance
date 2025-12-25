@@ -59,7 +59,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
         }
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL
+            status == BatteryManager.BATTERY_STATUS_FULL
         val batteryData = BatteryData(
             batteryPct,
             isCharging

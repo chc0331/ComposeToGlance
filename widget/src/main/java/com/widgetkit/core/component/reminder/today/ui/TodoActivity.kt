@@ -14,10 +14,10 @@ import com.widgetkit.core.theme.AppTheme
 class TodoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         val viewModelFactory = TodayTodoViewModelFactory(this)
         val viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
-        
+
         setContent {
             AppTheme {
                 TodoContent(
@@ -28,4 +28,3 @@ class TodoActivity : ComponentActivity() {
         }
     }
 }
-

@@ -39,7 +39,8 @@ object StorageUpdateManager : ComponentUpdateManager<StorageData> {
                     data.usagePercent.toString()
                 )
                 remoteViews.setProgressBar(
-                    widget.getStorageProgressId(gridIndex), 100,
+                    widget.getStorageProgressId(gridIndex),
+                    100,
                     data.usagePercent.toInt(),
                     false
                 )
@@ -47,11 +48,7 @@ object StorageUpdateManager : ComponentUpdateManager<StorageData> {
             }
     }
 
-    private suspend fun updateWidgetState(
-        context: Context,
-        widgetId: Int,
-        data: StorageData
-    ) {
+    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: StorageData) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
@@ -59,10 +56,7 @@ object StorageUpdateManager : ComponentUpdateManager<StorageData> {
         }
     }
 
-    private suspend fun updateWidget(
-        context: Context,
-        widgetId: Int
-    ) {
+    private suspend fun updateWidget(context: Context, widgetId: Int) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->

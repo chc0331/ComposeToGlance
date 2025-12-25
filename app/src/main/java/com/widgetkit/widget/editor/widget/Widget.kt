@@ -34,6 +34,7 @@ import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.component.WidgetComponent
+import com.widgetkit.core.getSizeInCells
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.view.AppWidgetView
@@ -206,15 +207,12 @@ data class PositionedWidget(
     val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
 ) {
     fun toProto(): PlacedWidgetComponent {
-        val (row, col) = when (cellIndices.size) {
-            1 -> Pair(1, 1)
-            2 -> Pair(1, 2)
-            else -> Pair(2, 2)
-        }
+        // getSizeInCells()를 사용하여 새로운 그리드 기준에 맞게 row_span과 col_span 계산
+        val (colSpan, rowSpan) = widget.getSizeInCells()
         return PlacedWidgetComponent.newBuilder()
             .setGridIndex((cellIndex?.plus(1)) ?: 1)
-            .setRowSpan(row)
-            .setColSpan(col)
+            .setRowSpan(rowSpan)
+            .setColSpan(colSpan)
             .setWidgetTag(widget.getWidgetTag())
             .setWidgetCategory(widget.getWidgetCategory().toProto())
             .build()
@@ -253,9 +251,18 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
     val containerSize = layout.getDpSize()
     val cellWidth = (containerSize.width - rootPadding * 2) / colCell
     val cellHeight = (containerSize.height - rootPadding * 2) / rowCell
-    return when (getSizeType()) {
-        SizeType.TINY -> DpSize(cellWidth, cellHeight)
-        SizeType.SMALL -> DpSize((cellWidth * 2) - contentPadding * 2, cellHeight)
-        else -> DpSize((cellWidth * 2) - contentPadding, (cellHeight * 2) - contentPadding)
-    }
+    
+    // getSizeInCells()를 사용하여 위젯이 차지하는 셀 수를 동적으로 계산
+    val sizeInCells = getSizeInCells()
+    val widthCells: Int = sizeInCells.first
+    val heightCells: Int = sizeInCells.second
+    
+    // 여러 셀을 차지할 때 셀 사이의 패딩을 고려
+    val widthPadding = if (widthCells > 1) contentPadding * (widthCells - 1) else 0.dp
+    val heightPadding = if (heightCells > 1) contentPadding * (heightCells - 1) else 0.dp
+    
+    return DpSize(
+        (cellWidth * widthCells) - widthPadding,
+        (cellHeight * heightCells) - heightPadding
+    )
 }

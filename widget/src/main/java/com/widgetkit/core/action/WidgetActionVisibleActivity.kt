@@ -52,7 +52,7 @@ import kotlinx.coroutines.withContext
 class WidgetActionVisibleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         setContent {
             MaterialTheme {
                 StorageDetailContent(
@@ -62,7 +62,7 @@ class WidgetActionVisibleActivity : ComponentActivity() {
             }
         }
     }
-    
+
     override fun onResume() {
         super.onResume()
         // When returning from settings, recreate to check permission again
@@ -71,10 +71,7 @@ class WidgetActionVisibleActivity : ComponentActivity() {
 }
 
 @Composable
-private fun StorageDetailContent(
-    context: ComponentActivity,
-    onDismiss: () -> Unit
-) {
+private fun StorageDetailContent(context: ComponentActivity, onDismiss: () -> Unit) {
     var storageInfo by remember { mutableStateOf<StorageDetailInfo?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -86,7 +83,7 @@ private fun StorageDetailContent(
             try {
                 val collector = StorageCollector()
                 val info = collector.collectDetailed(context)
-                
+
                 // If no apps were found and we have queryable packages, likely permission issue
                 if (info.appStorageList.isEmpty() || info.appStorageList.size == 1) {
                     // Check if permission might be needed by trying to query a known app
@@ -97,7 +94,7 @@ private fun StorageDetailContent(
                         return@withContext
                     }
                 }
-                
+
                 storageInfo = info
                 isLoading = false
             } catch (e: SecurityException) {
@@ -141,7 +138,7 @@ private fun StorageDetailContent(
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
-                
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 when {
@@ -205,10 +202,7 @@ private fun StorageDetailContent(
 }
 
 @Composable
-private fun StorageInfoContent(
-    storageInfo: StorageDetailInfo,
-    onDismiss: () -> Unit
-) {
+private fun StorageInfoContent(storageInfo: StorageDetailInfo, onDismiss: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -246,7 +240,7 @@ private fun StorageInfoContent(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
@@ -264,31 +258,31 @@ private fun StorageInfoContent(
                     value = "${storageInfo.storageBreakdown.totalAppStorageGb} GB",
                     isTotal = true
                 )
-                
+
                 // 앱 크기
                 StorageBreakdownRow(
                     label = "  • 앱 크기",
                     value = "${storageInfo.storageBreakdown.appSizeGb} GB",
                     indent = true
                 )
-                
+
                 // 앱 데이터
                 StorageBreakdownRow(
                     label = "  • 앱 데이터",
                     value = "${storageInfo.storageBreakdown.appDataGb} GB",
                     indent = true
                 )
-                
+
                 // 앱 캐시
                 StorageBreakdownRow(
                     label = "  • 앱 캐시",
                     value = "${storageInfo.storageBreakdown.appCacheGb} GB",
                     indent = true
                 )
-                
+
                 // 구분선
                 Divider(modifier = Modifier.padding(vertical = 4.dp))
-                
+
                 // 기타 (시스템, 미디어 등)
                 StorageBreakdownRow(
                     label = "기타",
@@ -338,10 +332,7 @@ private fun StorageInfoContent(
 }
 
 @Composable
-private fun StorageInfoRow(
-    label: String,
-    value: String
-) {
+private fun StorageInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -408,9 +399,7 @@ private fun StorageBreakdownRow(
 }
 
 @Composable
-private fun AppStorageItem(
-    appInfo: com.widgetkit.core.component.devicecare.AppStorageInfo
-) {
+private fun AppStorageItem(appInfo: com.widgetkit.core.component.devicecare.AppStorageInfo) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
@@ -457,10 +446,10 @@ private fun checkUsageStatsPermission(context: Context): Boolean {
             ?: return false
         val storageStatsManager = context.getSystemService(Context.STORAGE_STATS_SERVICE) as? StorageStatsManager
             ?: return false
-        
+
         val uuid = storageManager.getUuidForPath(Environment.getDataDirectory())
         val userHandle = Process.myUserHandle()
-        
+
         // Try to query storage stats for current app
         // If permission is not granted, this will throw SecurityException
         storageStatsManager.queryStatsForPackage(
@@ -504,10 +493,7 @@ private fun openUsageAccessSettings(context: ComponentActivity) {
 }
 
 @Composable
-private fun PermissionRequiredContent(
-    onRequestPermission: () -> Unit,
-    onDismiss: () -> Unit
-) {
+private fun PermissionRequiredContent(onRequestPermission: () -> Unit, onDismiss: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -521,7 +507,7 @@ private fun PermissionRequiredContent(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "앱별 스토리지 사용량을 확인하려면\n" +
-                    "사용 통계 접근 권한이 필요합니다.",
+                "사용 통계 접근 권한이 필요합니다.",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -541,4 +527,3 @@ private fun PermissionRequiredContent(
         }
     }
 }
-

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import com.widgetkit.dsl.widget.action.WidgetActionCallbackBroadcastReceiver
 
-
 internal class CustomWidgetActionCallbackBroadcastReceiver :
     WidgetActionCallbackBroadcastReceiver() {
 

@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.first
 
 /**
  * TodayTodo 위젯의 업데이트를 관리하는 Manager
- * 
- * Room 데이터베이스에서 오늘 날짜의 Todo를 조회하고 위젯을 업데이트합니다.
+ * * Room 데이터베이스에서 오늘 날짜의 Todo를 조회하고 위젯을 업데이트합니다.
  */
 object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
 
@@ -32,12 +31,15 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
         val todayDate = TodoDateUtils.getTodayDateString()
         val todos = loadTodayTodos(context, todayDate)
         val data = TodayTodoData.fromTodos(todos, todayDate)
-        
-        Log.i(TAG, "Sync widget state: ${data.incompleteCount} incomplete, ${data.completedCount} completed")
-        
+
+        Log.i(
+            TAG,
+            "Sync widget state: ${data.incompleteCount} incomplete, ${data.completedCount} completed"
+        )
+
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
-        
+
         // 위젯 업데이트
         updateComponent(context, data)
     }
@@ -47,11 +49,14 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
      * Todo 데이터가 변경되었을 때 호출됩니다.
      */
     override suspend fun updateComponent(context: Context, data: TodayTodoData) {
-        Log.i(TAG, "Update component: ${data.todos.size} todos, ${data.incompleteCount} incomplete, ${data.completedCount} completed")
-        
+        Log.i(
+            TAG,
+            "Update component: ${data.todos.size} todos, ${data.incompleteCount} incomplete, ${data.completedCount} completed"
+        )
+
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
-        
+
         // 배치된 위젯들을 찾아서 업데이트
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
@@ -65,14 +70,10 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
      * 위젯 상태를 업데이트합니다.
      * GlanceAppWidget state에 데이터를 저장합니다.
      */
-    private suspend fun updateWidgetState(
-        context: Context,
-        widgetId: Int,
-        data: TodayTodoData
-    ) {
+    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: TodayTodoData) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        
+
         // Widget state에 간단한 값들만 저장 (Todo 리스트는 복잡하므로 위젯 렌더링 시 DB에서 조회)
         updateAppWidgetState(context, glanceId) { pref ->
             pref[TodayTodoWidgetStateKey.Date] = data.date
@@ -84,13 +85,10 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
     /**
      * 위젯을 전체 업데이트합니다.
      */
-    private suspend fun updateWidget(
-        context: Context,
-        widgetId: Int
-    ) {
+    private suspend fun updateWidget(context: Context, widgetId: Int) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        
+
         // LargeAppWidget을 통해 전체 위젯 업데이트
         glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
             if (id == glanceId) {
@@ -102,7 +100,10 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
     /**
      * Room 데이터베이스에서 오늘 날짜의 Todo를 조회합니다.
      */
-    private suspend fun loadTodayTodos(context: Context, date: String): List<com.widgetkit.core.database.TodoEntity> {
+    private suspend fun loadTodayTodos(
+        context: Context,
+        date: String
+    ): List<com.widgetkit.core.database.TodoEntity> {
         return try {
             val todoDao = TodoDatabase.getDatabase(context).todoDao()
             todoDao.getTodosByDate(date).first()
@@ -122,4 +123,3 @@ internal object TodayTodoWidgetStateKey {
     val IncompleteCount = intPreferencesKey("today_todo_widget_incomplete_count")
     val CompletedCount = intPreferencesKey("today_todo_widget_completed_count")
 }
-

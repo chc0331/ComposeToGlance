@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -25,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.widgetkit.core.database.TodoEntity
@@ -44,16 +44,16 @@ fun TodoEditDialog(
     val initialTitle = todo?.title ?: ""
     val initialDescription = todo?.description ?: ""
     val initialDateTime = todo?.dateTime
-    
+
     var title by remember { mutableStateOf(initialTitle) }
     var description by remember { mutableStateOf(initialDescription) }
-    
+
     // 날짜/시간 선택 상태
     val calendar = Calendar.getInstance()
     if (initialDateTime != null) {
         calendar.timeInMillis = initialDateTime
     }
-    
+
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialDateTime ?: System.currentTimeMillis(),
         initialDisplayMode = DisplayMode.Picker
@@ -62,12 +62,16 @@ fun TodoEditDialog(
         initialHour = calendar.get(Calendar.HOUR_OF_DAY),
         initialMinute = calendar.get(Calendar.MINUTE)
     )
-    
+
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
-    
+
     // 날짜/시간 표시 텍스트
-    val dateTimeText = remember(datePickerState.selectedDateMillis, timePickerState.hour, timePickerState.minute) {
+    val dateTimeText = remember(
+        datePickerState.selectedDateMillis,
+        timePickerState.hour,
+        timePickerState.minute
+    ) {
         if (datePickerState.selectedDateMillis != null) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             val calendar = Calendar.getInstance().apply {
@@ -80,7 +84,7 @@ fun TodoEditDialog(
             "날짜/시간 미설정"
         }
     }
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -101,9 +105,9 @@ fun TodoEditDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
@@ -113,9 +117,9 @@ fun TodoEditDialog(
                     maxLines = 5,
                     shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // 날짜/시간 선택 버튼
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -128,7 +132,7 @@ fun TodoEditDialog(
                     ) {
                         Text("날짜 선택")
                     }
-                    
+
                     OutlinedButton(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.weight(1f),
@@ -137,9 +141,9 @@ fun TodoEditDialog(
                         Text("시간 선택")
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // 선택된 날짜/시간 표시
                 Text(
                     text = "선택된 날짜/시간: $dateTimeText",
@@ -178,7 +182,7 @@ fun TodoEditDialog(
             }
         }
     )
-    
+
     // Date Picker Dialog
     if (showDatePicker) {
         DatePickerDialog(
@@ -197,7 +201,7 @@ fun TodoEditDialog(
             DatePicker(state = datePickerState)
         }
     }
-    
+
     // Time Picker Dialog
     if (showTimePicker) {
         AlertDialog(
@@ -219,4 +223,3 @@ fun TodoEditDialog(
         )
     }
 }
-

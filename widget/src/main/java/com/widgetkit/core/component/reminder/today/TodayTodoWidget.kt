@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
-import androidx.glance.appwidget.lazy.LazyColumn
+import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
@@ -16,6 +16,7 @@ import com.widgetkit.core.component.reminder.today.ui.TodoItem
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.database.TodoDatabase
+import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.CheckBox
 import com.widgetkit.dsl.frontend.Image
@@ -24,10 +25,6 @@ import com.widgetkit.dsl.frontend.layout.Box
 import com.widgetkit.dsl.frontend.layout.Column
 import com.widgetkit.dsl.frontend.layout.List
 import com.widgetkit.dsl.frontend.layout.Row
-import com.widgetkit.core.R
-import com.widgetkit.core.util.getSystemBackgroundRadius
-import com.widgetkit.dsl.proto.modifier.cornerRadius
-import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -36,16 +33,16 @@ import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.clickAction
+import com.widgetkit.dsl.proto.modifier.cornerRadius
 import com.widgetkit.dsl.proto.modifier.expandHeight
 import com.widgetkit.dsl.proto.modifier.expandWidth
 import com.widgetkit.dsl.proto.modifier.fillMaxHeight
 import com.widgetkit.dsl.proto.modifier.fillMaxWidth
 import com.widgetkit.dsl.proto.modifier.height
 import com.widgetkit.dsl.proto.modifier.padding
-import com.widgetkit.dsl.proto.modifier.viewId
+import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.proto.property.TextPropertyDsl
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
@@ -53,7 +50,6 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlin.collections.isNotEmpty
 
 /**
  * 오늘 날짜의 Todo를 표시하는 위젯
@@ -89,7 +85,7 @@ class TodayTodoWidget : WidgetComponent() {
         // 클릭 액션: TodayTodoActivity 열기
         val theme = getLocal(WidgetLocalTheme)
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
-        
+
         var backgroundModifier = WidgetModifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -122,7 +118,7 @@ class TodayTodoWidget : WidgetComponent() {
                 // 구분선
                 val theme = getLocal(WidgetLocalTheme)
                 val dividerColor = (theme?.outlineVariant as? Int) ?: Color(0xFFE0E0E0).toArgb()
-                
+
                 Box(
                     modifier = WidgetModifier
                         .fillMaxWidth()
@@ -135,9 +131,7 @@ class TodayTodoWidget : WidgetComponent() {
         }
     }
 
-    private fun WidgetScope.TodoTitle(
-        modifier: WidgetModifier = WidgetModifier
-    ) {
+    private fun WidgetScope.TodoTitle(modifier: WidgetModifier = WidgetModifier) {
         val currentDate = java.util.Date()
 
         // 헤더: 캘린더 아이콘 + "Today" + 날짜
@@ -170,7 +164,7 @@ class TodayTodoWidget : WidgetComponent() {
                 // "Today" 텍스트
                 val theme = getLocal(WidgetLocalTheme)
                 val titleColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
-                
+
                 Text(
                     text = "Today",
                     fontSize = 14f,
@@ -181,7 +175,7 @@ class TodayTodoWidget : WidgetComponent() {
             // 날짜 텍스트
             val theme = getLocal(WidgetLocalTheme)
             val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-            
+
             Text(
                 text = TodoDateUtils.formatWidgetDate(currentDate),
                 fontSize = 12f,
@@ -189,16 +183,13 @@ class TodayTodoWidget : WidgetComponent() {
                 fontColor = Color(secondaryTextColor)
             )
         }
-
     }
 
     private fun WidgetScope.TodoList(
         modifier: WidgetModifier = WidgetModifier,
         todos: List<com.widgetkit.core.database.TodoEntity>
     ) {
-        fun WidgetScope.TodoItem(
-            todo: com.widgetkit.core.database.TodoEntity
-        ) {
+        fun WidgetScope.TodoItem(todo: com.widgetkit.core.database.TodoEntity) {
             Row(
                 modifier = WidgetModifier
                     .fillMaxWidth()
@@ -225,7 +216,7 @@ class TodayTodoWidget : WidgetComponent() {
                         val theme = getLocal(WidgetLocalTheme)
                         val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
                         val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
-                        
+
                         FontColor {
                             Color {
                                 argb = if (isCompleted) {
@@ -242,7 +233,7 @@ class TodayTodoWidget : WidgetComponent() {
                 if (todo.dateTime != null) {
                     val theme = getLocal(WidgetLocalTheme)
                     val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-                    
+
                     Text(
                         modifier = WidgetModifier.wrapContentWidth(),
                         text = TodoDateUtils.formatTime(todo.dateTime),
@@ -278,7 +269,7 @@ class TodayTodoWidget : WidgetComponent() {
         // 푸터: 요약 정보
         val theme = getLocal(WidgetLocalTheme)
         val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-        
+
         Row(modifier = modifier) {
             Text(
                 text = "$totalCount tasks • $completedCount completed",
@@ -299,11 +290,9 @@ class TodayTodoWidget : WidgetComponent() {
 
     override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
 
-
     /**
      * 개별 Todo 아이템 표시
      */
-
 
     /**
      * Room DB에서 오늘 날짜의 Todo를 조회
@@ -382,4 +371,3 @@ class TodayTodoWidget : WidgetComponent() {
         return generateViewId(TodayTodoViewIdType.AllTodoNumber, gridIndex)
     }
 }
-

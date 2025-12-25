@@ -54,11 +54,7 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             }
     }
 
-    private suspend fun updateWidgetState(
-        context: Context,
-        widgetId: Int,
-        data: BatteryData
-    ) {
+    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: BatteryData) {
         // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
         val isValidBatteryLevel = data.level in 0f..100f
 
@@ -72,10 +68,7 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         }
     }
 
-    private suspend fun updateWidget(
-        context: Context,
-        widgetId: Int
-    ) {
+    private suspend fun updateWidget(context: Context, widgetId: Int) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->

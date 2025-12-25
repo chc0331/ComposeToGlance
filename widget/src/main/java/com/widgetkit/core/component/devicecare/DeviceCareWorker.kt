@@ -28,7 +28,7 @@ class DeviceCareWorker(
             RamWidgetDataStore.saveData(context, ramData)
             RamUpdateManager.updateComponent(context, ramData)
 
-            //DeviceCare위젯 컴포넌트가 추가되어 있으면 registe
+            // DeviceCare위젯 컴포넌트가 추가되어 있으면 registe
             registerWorker(context)
             Result.success()
         } catch (e: Exception) {
@@ -42,14 +42,17 @@ class DeviceCareWorker(
         private const val WORK_NAME = "device_care_worker"
 
         fun buildRequest() = PeriodicWorkRequestBuilder<DeviceCareWorker>(
-            15, TimeUnit.MINUTES
+            15,
+            TimeUnit.MINUTES
         ).addTag("device_care_worker_tag").build()
 
         fun registerWorker(context: Context) {
             val workRequest = buildRequest()
             Log.i(TAG, "registerWorker - ${System.currentTimeMillis()}")
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, workRequest
+                WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
             )
         }
     }

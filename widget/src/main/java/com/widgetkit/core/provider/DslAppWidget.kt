@@ -1,8 +1,6 @@
 package com.widgetkit.core.provider
 
 import android.content.Context
-import android.util.Log
-import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,16 +16,25 @@ import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
 import androidx.glance.LocalSize
 import androidx.glance.LocalState
-import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.text.Text
+import com.widgetkit.core.util.getSystemBackgroundRadius
+import com.widgetkit.core.util.getSystemContentRadius
 import com.widgetkit.dsl.WidgetLayout
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.dsl.proto.modifier.WidgetModifier
+import com.widgetkit.dsl.proto.modifier.backgroundColor
+import com.widgetkit.dsl.proto.modifier.cornerRadius
+import com.widgetkit.dsl.proto.modifier.height
+import com.widgetkit.dsl.proto.modifier.width
+import com.widgetkit.dsl.theme.GlanceThemeConverter
+import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalBackgroundRadius
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContentRadius
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
@@ -36,18 +43,6 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
-import com.widgetkit.dsl.theme.GlanceThemeConverter
-import com.widgetkit.dsl.proto.modifier.WidgetModifier
-import com.widgetkit.dsl.proto.modifier.backgroundColor
-import com.widgetkit.dsl.proto.modifier.cornerRadius
-import com.widgetkit.dsl.proto.modifier.height
-import com.widgetkit.dsl.proto.modifier.width
-import com.widgetkit.dsl.proto.WidgetLayoutDocument
-import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.core.R
-import com.widgetkit.core.util.getSystemBackgroundRadius
-import com.widgetkit.core.util.getSystemContentRadius
-import com.widgetkit.dsl.frontend.layout.Box
 
 abstract class DslAppWidget : GlanceAppWidget() {
 

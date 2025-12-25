@@ -41,9 +41,9 @@ enum class SizeType {
  */
 fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
     return when (getSizeType()) {
-        SizeType.TINY -> 1 to 1
-        SizeType.SMALL -> 2 to 1
-        SizeType.MEDIUM -> 2 to 2
-        else -> 4 to 2
+        SizeType.TINY -> 2 to 2
+        SizeType.SMALL -> 4 to 2
+        SizeType.MEDIUM -> 4 to 4
+        else -> 8 to 4
     }
 }

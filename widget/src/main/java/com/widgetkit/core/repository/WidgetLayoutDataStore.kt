@@ -2,8 +2,8 @@ package com.widgetkit.core.repository
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.widgetkit.core.proto.WidgetLayout
 import com.google.protobuf.InvalidProtocolBufferException
+import com.widgetkit.core.proto.WidgetLayout
 import java.io.InputStream
 import java.io.OutputStream
 

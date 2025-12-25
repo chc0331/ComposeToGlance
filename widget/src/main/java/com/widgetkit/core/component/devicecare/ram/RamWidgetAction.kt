@@ -6,9 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.glance.GlanceId
+import com.widgetkit.core.component.devicecare.DeviceStateCollector
 import com.widgetkit.dsl.widget.action.WidgetActionCallback
 import com.widgetkit.dsl.widget.action.WidgetActionParameters
-import com.widgetkit.core.component.devicecare.DeviceStateCollector
 import kotlinx.coroutines.delay
 
 class RamWidgetAction : WidgetActionCallback {

@@ -42,4 +42,3 @@ abstract class TodoDatabase : RoomDatabase() {
         }
     }
 }
-

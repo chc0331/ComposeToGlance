@@ -8,4 +8,3 @@ import androidx.compose.ui.unit.dp
 object TodoDesignConstants {
     val CORNER_RADIUS = 12.dp
 }
-

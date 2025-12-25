@@ -46,7 +46,8 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                     "${data.usagePercent}%"
                 )
                 remoteViews.setProgressBar(
-                    widget.getRamProgressId(gridIndex), 100,
+                    widget.getRamProgressId(gridIndex),
+                    100,
                     data.usagePercent.toInt(),
                     false
                 )
@@ -60,18 +61,18 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
                 remoteViews.setViewVisibility(
-                    widget.getRamAnimationId(gridIndex), if (show) View.VISIBLE
-                    else View.GONE
+                    widget.getRamAnimationId(gridIndex),
+                    if (show) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
                 )
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
             }
     }
 
-    private suspend fun updateWidgetState(
-        context: Context,
-        widgetId: Int,
-        data: RamData
-    ) {
+    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: RamData) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
@@ -79,10 +80,7 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
         }
     }
 
-    private suspend fun updateWidget(
-        context: Context,
-        widgetId: Int
-    ) {
+    private suspend fun updateWidget(context: Context, widgetId: Int) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->

@@ -18,6 +18,12 @@ import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.Image
+import com.widgetkit.dsl.frontend.Progress
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -36,12 +42,6 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.frontend.Image
-import com.widgetkit.dsl.frontend.Progress
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
-import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGlanceId
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
@@ -72,22 +72,27 @@ class RamWidget : WidgetComponent() {
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         var backgroundModifier = WidgetModifier
             .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor)
-        if (!isPreview)
+        if (!isPreview) {
             backgroundModifier = backgroundModifier.runCallbackBroadcastReceiver(
-                context, widgetId?.appWidgetId ?: 0, RamWidgetAction()
+                context,
+                widgetId?.appWidgetId ?: 0,
+                RamWidgetAction()
             )
+        }
 
         Box(
             modifier = backgroundModifier,
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }) {
+            }
+        ) {
             Column(
                 modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }) {
+                }
+            ) {
                 RamIcon()
                 RamTitle()
                 RamUsageProgress(
@@ -112,9 +117,11 @@ class RamWidget : WidgetComponent() {
         val height = size.height.value
         val iconSize = height * 0.34f
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
-        Box(modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(), contentProperty = {
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }
+        Box(
+            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
         ) {
             Image(
                 modifier = WidgetModifier
@@ -147,7 +154,7 @@ class RamWidget : WidgetComponent() {
     private fun WidgetScope.RamTitle() {
         val theme = getLocal(WidgetLocalTheme)
         val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
-        
+
         Text(
             text = "RAM",
             fontSize = 12f,
@@ -156,9 +163,7 @@ class RamWidget : WidgetComponent() {
         )
     }
 
-    private fun WidgetScope.RamUsageProgress(
-        modifier: WidgetModifier = WidgetModifier
-    ) {
+    private fun WidgetScope.RamUsageProgress(modifier: WidgetModifier = WidgetModifier) {
         val context = getLocal(WidgetLocalContext) as Context
         val currentRamUsage = getRamValue()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
@@ -173,7 +178,7 @@ class RamWidget : WidgetComponent() {
             val theme = getLocal(WidgetLocalTheme)
             val progressColor = (theme?.primary as? Int) ?: Color(0x808A8A8A).toArgb()
             val progressBgColor = (theme?.surfaceVariant as? Int) ?: Color(0xFFE3E3E3).toArgb()
-            
+
             Progress(
                 modifier = WidgetModifier
                     .width(progressWidth.value).fillMaxHeight()
@@ -200,10 +205,11 @@ class RamWidget : WidgetComponent() {
                 modifier = WidgetModifier.fillMaxWidth().wrapContentHeight().padding(end = 4f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-                }) {
+                }
+            ) {
                 val theme = getLocal(WidgetLocalTheme)
                 val textColor = (theme?.onSurface as? Int) ?: Color(0xFF000000).toArgb()
-                
+
                 Text(
                     modifier = WidgetModifier.wrapContentWidth().wrapContentHeight().viewId(
                         generateViewId(RamViewIdType.Text, gridIndex)

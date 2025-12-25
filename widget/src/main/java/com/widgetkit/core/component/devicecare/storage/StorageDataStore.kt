@@ -9,7 +9,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.widgetkit.core.component.datastore.ComponentDataStore
 import kotlinx.coroutines.flow.first
 
-
 data class StorageData(
     val usagePercent: Float
 )

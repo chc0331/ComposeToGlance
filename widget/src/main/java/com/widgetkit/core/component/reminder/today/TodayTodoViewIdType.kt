@@ -15,8 +15,10 @@ sealed class TodayTodoViewIdType(override val typeName: String) : ViewIdType() {
 
     companion object {
         fun all(): List<TodayTodoViewIdType> = listOf(
-            TitleDate, SelectedDate, AllTodoNumber, CompletedTodoNumber
+            TitleDate,
+            SelectedDate,
+            AllTodoNumber,
+            CompletedTodoNumber
         )
     }
 }
-

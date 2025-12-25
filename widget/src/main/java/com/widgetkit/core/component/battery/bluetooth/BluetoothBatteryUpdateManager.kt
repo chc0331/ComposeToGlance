@@ -18,7 +18,9 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     // 더 이상 직접 위젯을 가지지 않음 (라우터 역할만 수행)
     override val widget: com.widgetkit.core.component.WidgetComponent
-        get() = throw UnsupportedOperationException("BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers")
+        get() = throw UnsupportedOperationException(
+            "BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers"
+        )
 
     override suspend fun updateComponent(context: Context, data: BatteryData) {
         when (data.deviceType) {

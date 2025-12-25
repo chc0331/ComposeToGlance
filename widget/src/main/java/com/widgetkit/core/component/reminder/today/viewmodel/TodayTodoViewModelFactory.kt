@@ -22,4 +22,3 @@ class TodayTodoViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-

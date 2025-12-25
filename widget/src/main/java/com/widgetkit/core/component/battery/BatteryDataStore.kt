@@ -19,18 +19,17 @@ internal object BatteryPreferenceKey {
 
 /**
  * Battery 컴포넌트의 DataStore
- * 
- * ComponentDataStore를 상속하여 표준화된 데이터 저장/로드를 제공합니다.
+ * * ComponentDataStore를 상속하여 표준화된 데이터 저장/로드를 제공합니다.
  */
 object BatteryComponentDataStore : ComponentDataStore<BatteryData>() {
-    
+
     override val datastoreName = "battery_info_pf"
-    
+
     // DataStore 인스턴스 생성
     private val Context.batteryDataStore: DataStore<Preferences> by preferencesDataStore(
         name = datastoreName
     )
-    
+
     override suspend fun saveData(context: Context, data: BatteryData) {
         context.batteryDataStore.updateData { preferences ->
             preferences.toMutablePreferences().apply {
@@ -39,7 +38,7 @@ object BatteryComponentDataStore : ComponentDataStore<BatteryData>() {
             }
         }
     }
-    
+
     override suspend fun loadData(context: Context): BatteryData {
         val preferences = context.batteryDataStore.data.first()
         return BatteryData(
@@ -47,9 +46,8 @@ object BatteryComponentDataStore : ComponentDataStore<BatteryData>() {
             charging = preferences[BatteryPreferenceKey.Charging] ?: false
         )
     }
-    
+
     override fun getDefaultData(): BatteryData {
         return BatteryData(level = 0f, charging = false)
     }
 }
-

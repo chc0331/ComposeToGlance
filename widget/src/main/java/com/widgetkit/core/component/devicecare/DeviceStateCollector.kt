@@ -26,11 +26,11 @@ data class StorageDetailInfo(
 )
 
 data class StorageBreakdown(
-    val appSizeGb: Float,        // 앱 크기 (APK)
-    val appDataGb: Float,        // 앱 데이터
-    val appCacheGb: Float,       // 앱 캐시
+    val appSizeGb: Float, // 앱 크기 (APK)
+    val appDataGb: Float, // 앱 데이터
+    val appCacheGb: Float, // 앱 캐시
     val totalAppStorageGb: Float, // 앱 관련 총합
-    val otherStorageGb: Float    // 기타 (시스템, 미디어 등)
+    val otherStorageGb: Float // 기타 (시스템, 미디어 등)
 )
 
 data class AppStorageInfo(
@@ -64,7 +64,6 @@ class MemoryCollector {
         val totalRamBytes = memoryInfo.totalMem // Total memory in bytes
         val availRamBytes = memoryInfo.availMem // Currently available memory in bytes
         val usedRamBytes = totalRamBytes - availRamBytes // Used memory in bytes
-
 
         // Constant for converting bytes to gigabytes
         val bytesToGb = 1024.0 * 1024.0 * 1024.0 // 1 GB = 1024^3 bytes
@@ -109,7 +108,6 @@ class StorageCollector {
         // Format to two decimal places
         val formattedTotalStorageGb = String.format("%.1f", totalStorageGb).toFloat()
         val formattedUsedStorageGb = String.format("%.1f", usedStorageGb).toFloat()
-
 
         return Pair(formattedUsedStorageGb, formattedTotalStorageGb)
     }
@@ -156,10 +154,10 @@ class StorageCollector {
         var totalAppBytes: Long = 0
         var totalDataBytes: Long = 0
         var totalCacheBytes: Long = 0
-        
+
         try {
             val userHandle = android.os.Process.myUserHandle()
-            
+
             // Get packages that can be queried (launcher apps from queries tag)
             // This works without QUERY_ALL_PACKAGES permission on Android 11+
             val launcherIntent = android.content.Intent(android.content.Intent.ACTION_MAIN).apply {
@@ -167,29 +165,28 @@ class StorageCollector {
             }
             val launcherApps = packageManager.queryIntentActivities(launcherIntent, 0)
             val queryablePackages = launcherApps.map { it.activityInfo.packageName }.distinct()
-            
+
             Log.d("StorageCollector", "Found ${launcherApps.size} launcher activities")
             Log.d("StorageCollector", "Unique queryable packages: ${queryablePackages.size}")
             Log.d("StorageCollector", "Android version: ${Build.VERSION.SDK_INT}")
-            
+
             // Also include current app package if not already in list
             val packagesToQuery = if (context.packageName !in queryablePackages) {
                 queryablePackages + context.packageName
             } else {
                 queryablePackages
             }
-            
+
             Log.d("StorageCollector", "Total packages to query: ${packagesToQuery.size}")
-            
+
             var skippedApplicationInfo = 0
             var skippedStorageStats = 0
             var skippedZeroStorage = 0
             var processedCount = 0
-            
+
             // Process each queryable package directly
             for (packageName in packagesToQuery) {
                 try {
-                    
                     // First, try to get ApplicationInfo to filter and get app name
                     val applicationInfo = try {
                         packageManager.getApplicationInfo(
@@ -198,17 +195,20 @@ class StorageCollector {
                         )
                     } catch (e: Exception) {
                         skippedApplicationInfo++
-                        Log.d("StorageCollector", "Failed to get ApplicationInfo for $packageName: ${e.message}")
+                        Log.d(
+                            "StorageCollector",
+                            "Failed to get ApplicationInfo for $packageName: ${e.message}"
+                        )
                         continue
                     }
-                    
+
                     // Get app name
                     val appName = try {
                         packageManager.getApplicationLabel(applicationInfo).toString()
                     } catch (e: Exception) {
                         packageName
                     }
-                    
+
                     // Try to query storage stats
                     val appBytes = try {
                         storageStatsManager.queryStatsForPackage(
@@ -219,7 +219,10 @@ class StorageCollector {
                     } catch (e: SecurityException) {
                         // PACKAGE_USAGE_STATS permission not granted
                         if (e.message?.contains("PACKAGE_USAGE_STATS") == true) {
-                            Log.w("StorageCollector", "PACKAGE_USAGE_STATS permission required for $packageName")
+                            Log.w(
+                                "StorageCollector",
+                                "PACKAGE_USAGE_STATS permission required for $packageName"
+                            )
                             // If this is the first app and we get permission error, we might want to throw
                             // But for now, just skip
                         }
@@ -227,20 +230,23 @@ class StorageCollector {
                         continue
                     } catch (e: Exception) {
                         skippedStorageStats++
-                        Log.d("StorageCollector", "Failed to query storage stats for $packageName: ${e.message}")
+                        Log.d(
+                            "StorageCollector",
+                            "Failed to query storage stats for $packageName: ${e.message}"
+                        )
                         continue
                     }
-                    
+
                     val appStorageBytes = appBytes.appBytes + appBytes.dataBytes + appBytes.cacheBytes
                     if (appStorageBytes > 0) {
                         // Accumulate totals for breakdown
                         totalAppBytes += appBytes.appBytes
                         totalDataBytes += appBytes.dataBytes
                         totalCacheBytes += appBytes.cacheBytes
-                        
+
                         val appStorageGb = appStorageBytes.toDouble() / bytesToGb
                         val formattedAppStorageGb = String.format("%.2f", appStorageGb).toFloat()
-                        
+
                         appStorageList.add(
                             AppStorageInfo(
                                 packageName = packageName,
@@ -249,7 +255,10 @@ class StorageCollector {
                             )
                         )
                         processedCount++
-                        Log.d("StorageCollector", "Added: $appName ($packageName) - ${formattedAppStorageGb} GB")
+                        Log.d(
+                            "StorageCollector",
+                            "Added: $appName ($packageName) - $formattedAppStorageGb GB"
+                        )
                     } else {
                         skippedZeroStorage++
                     }
@@ -258,30 +267,27 @@ class StorageCollector {
                     continue
                 }
             }
-            
-            Log.d("StorageCollector", "Summary: processed=$processedCount, " +
+
+            Log.d(
+                "StorageCollector",
+                "Summary: processed=$processedCount, " +
                     "skippedApplicationInfo=$skippedApplicationInfo, skippedStorageStats=$skippedStorageStats, " +
-                    "skippedZeroStorage=$skippedZeroStorage, totalApps=${appStorageList.size}")
-            
+                    "skippedZeroStorage=$skippedZeroStorage, totalApps=${appStorageList.size}"
+            )
+
             // Sort by storage usage (descending)
             appStorageList.sortByDescending { it.storageGb }
-            
+
             // Limit to top 50 apps
             val limitedList = appStorageList.take(50)
-            
+
             // Calculate breakdown
-            val appSizeGb = (totalAppBytes.toDouble() / bytesToGb).let { 
-                String.format("%.2f", it).toFloat() 
-            }
-            val appDataGb = (totalDataBytes.toDouble() / bytesToGb).let { 
-                String.format("%.2f", it).toFloat() 
-            }
-            val appCacheGb = (totalCacheBytes.toDouble() / bytesToGb).let { 
-                String.format("%.2f", it).toFloat() 
-            }
+            val appSizeGb = (totalAppBytes.toDouble() / bytesToGb).let { String.format("%.2f", it).toFloat() }
+            val appDataGb = (totalDataBytes.toDouble() / bytesToGb).let { String.format("%.2f", it).toFloat() }
+            val appCacheGb = (totalCacheBytes.toDouble() / bytesToGb).let { String.format("%.2f", it).toFloat() }
             val totalAppStorageGb = appSizeGb + appDataGb + appCacheGb
             val otherStorageGb = formattedUsedStorageGb - totalAppStorageGb
-            
+
             val breakdown = StorageBreakdown(
                 appSizeGb = appSizeGb,
                 appDataGb = appDataGb,
@@ -289,7 +295,7 @@ class StorageCollector {
                 totalAppStorageGb = totalAppStorageGb,
                 otherStorageGb = if (otherStorageGb >= 0) otherStorageGb else 0f
             )
-            
+
             return StorageDetailInfo(
                 totalStorageGb = formattedTotalStorageGb,
                 usedStorageGb = formattedUsedStorageGb,
@@ -307,7 +313,7 @@ class StorageCollector {
                 totalAppStorageGb = 0f,
                 otherStorageGb = formattedUsedStorageGb
             )
-            
+
             return StorageDetailInfo(
                 totalStorageGb = formattedTotalStorageGb,
                 usedStorageGb = formattedUsedStorageGb,

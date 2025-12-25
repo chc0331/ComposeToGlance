@@ -2,19 +2,19 @@ package com.widgetkit.core.component
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.widgetkit.core.SizeType
+import com.widgetkit.core.WidgetCategory
+import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.Button
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.proto.AlignmentType
+import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.cornerRadius
 import com.widgetkit.dsl.proto.modifier.fillMaxHeight
 import com.widgetkit.dsl.proto.modifier.fillMaxWidth
-import com.widgetkit.dsl.proto.AlignmentType
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.core.SizeType
-import com.widgetkit.core.WidgetCategory
-import com.widgetkit.core.component.update.ComponentUpdateManager
-import com.widgetkit.dsl.frontend.layout.Box
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 class ButtonComponent : WidgetComponent() {
@@ -43,7 +43,7 @@ class ButtonComponent : WidgetComponent() {
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
         val buttonBgColor = (theme?.primary as? Int) ?: Color.Blue.toArgb()
         val buttonTextColor = (theme?.onSurface as? Int) ?: Color.White.toArgb()
-        
+
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()

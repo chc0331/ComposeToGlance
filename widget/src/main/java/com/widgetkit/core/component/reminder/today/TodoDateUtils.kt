@@ -48,4 +48,3 @@ object TodoDateUtils {
         return dateFormat.format(Date(dateTime))
     }
 }
-

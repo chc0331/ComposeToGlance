@@ -10,6 +10,11 @@ import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.Image
+import com.widgetkit.dsl.frontend.Text
+import com.widgetkit.dsl.frontend.layout.Box
+import com.widgetkit.dsl.frontend.layout.Column
+import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
@@ -26,11 +31,6 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.frontend.Image
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
-import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
@@ -52,7 +52,7 @@ class BatteryWidget : WidgetComponent() {
     override fun WidgetScope.Content() {
         val theme = getLocal(WidgetLocalTheme)
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
-        
+
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
@@ -73,11 +73,10 @@ class BatteryWidget : WidgetComponent() {
         }
     }
 
-
     private fun WidgetScope.BatteryDescription() {
         val theme = getLocal(WidgetLocalTheme)
         val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
-        
+
         Text(
             text = "Battery",
             fontSize = 12f,
@@ -129,9 +128,11 @@ class BatteryWidget : WidgetComponent() {
     private fun WidgetScope.BatteryIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
-        Box(modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(), contentProperty = {
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }
+        Box(
+            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
         ) {
             Image(
                 modifier = WidgetModifier
@@ -145,7 +146,6 @@ class BatteryWidget : WidgetComponent() {
             )
             ChargingIcon()
         }
-
     }
 
     private fun WidgetScope.ChargingIcon() {
