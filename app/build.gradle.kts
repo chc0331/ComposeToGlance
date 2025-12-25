@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.protobuf.javalite)
-    implementation(project(":dsl"))
+    implementation(project(":core"))
     implementation(project(":widget"))
     implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
     implementation("androidx.core:core-remoteviews:1.1.0")

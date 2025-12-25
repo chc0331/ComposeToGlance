@@ -67,7 +67,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.protobuf.javalite)
-    implementation(project(":dsl"))
+    implementation(project(":core"))
     implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
