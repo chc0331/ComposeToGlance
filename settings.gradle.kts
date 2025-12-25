@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ComposeToGlance"
+rootProject.name = "WidgetKit"
 include(":app")
 include(":core")
 include(":widget")
