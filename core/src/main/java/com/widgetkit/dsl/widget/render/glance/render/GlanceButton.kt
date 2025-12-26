@@ -37,7 +37,7 @@ internal object GlanceButton : RenderNode {
         val viewProperty = buttonProperty.viewProperty
 
         // Modifier 생성
-        var modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        var modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         // 텍스트 내용
@@ -73,8 +73,8 @@ internal object GlanceButton : RenderNode {
             fontWeight = toGlanceFontWeight(buttonProperty.fontWeight)
         )
 
-        // Click Action
-        val clickAction = if (viewProperty.hasClickAction()) {
+        // Click Action - PREVIEW 모드에서는 설정하지 않음
+        val clickAction = if (viewProperty.hasClickAction() && context.document.widgetMode != com.widgetkit.dsl.proto.WidgetMode.WIDGET_MODE_PREVIEW) {
             ActionConverter.toGlanceAction(viewProperty.clickAction, context.context)
         } else {
             null

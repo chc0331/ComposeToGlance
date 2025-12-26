@@ -44,7 +44,7 @@ internal object GlanceProgress : RenderNode {
         val viewProperty = progressProperty.viewProperty
 
         // Modifier 생성
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         // Progress 타입에 따라 렌더링

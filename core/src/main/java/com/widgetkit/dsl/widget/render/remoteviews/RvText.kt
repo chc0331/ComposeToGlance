@@ -69,7 +69,8 @@ internal object RvText : RenderNode {
                 remoteViews,
                 viewId,
                 viewProperty,
-                context.context
+                context.context,
+                context.document.widgetMode
             )
 
             AndroidRemoteViews(

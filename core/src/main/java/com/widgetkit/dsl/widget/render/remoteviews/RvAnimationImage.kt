@@ -37,7 +37,8 @@ internal object RvAnimationImage : RenderNode {
             remoteViews,
             viewId,
             viewProperty,
-            context.context
+            context.context,
+            context.document.widgetMode
         )
         AndroidRemoteViews(
             remoteViews = remoteViews,

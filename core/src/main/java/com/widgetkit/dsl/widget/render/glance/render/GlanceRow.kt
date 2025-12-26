@@ -29,7 +29,7 @@ internal object GlanceRow : RenderNode {
         val viewProperty = rowProperty.viewProperty
 
         // Modifier 생성
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         // Horizontal Alignment

@@ -30,7 +30,7 @@ internal object GlanceCheckBox : RenderNode {
         val checkBoxProperty = node.checkbox
         val viewProperty = checkBoxProperty.viewProperty
 
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         val checked = checkBoxProperty.checked

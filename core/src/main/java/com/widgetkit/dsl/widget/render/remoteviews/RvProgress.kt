@@ -36,7 +36,8 @@ internal object RvProgress : RenderNode {
                 renderLinearProgressToRemoteViews(
                     progressProperty,
                     viewProperty,
-                    context.context
+                    context.context,
+                    context.document.widgetMode
                 )
             }
 
@@ -44,7 +45,8 @@ internal object RvProgress : RenderNode {
                 renderCircularProgressToRemoteViews(
                     progressProperty,
                     viewProperty,
-                    context.context
+                    context.context,
+                    context.document.widgetMode
                 )
             }
 
@@ -52,7 +54,8 @@ internal object RvProgress : RenderNode {
                 renderLinearProgressToRemoteViews(
                     progressProperty,
                     viewProperty,
-                    context.context
+                    context.context,
+                    context.document.widgetMode
                 )
             }
         }
@@ -65,7 +68,8 @@ internal object RvProgress : RenderNode {
     private fun renderLinearProgressToRemoteViews(
         progressProperty: ProgressProperty,
         viewProperty: ViewProperty,
-        context: Context
+        context: Context,
+        widgetMode: com.widgetkit.dsl.proto.WidgetMode
     ): android.widget.RemoteViews {
         val viewId = viewProperty.viewId
         // RemoteViews 생성 시 viewId를 전달하여 레이아웃의 ProgressBar ID를 viewId로 설정
@@ -101,7 +105,8 @@ internal object RvProgress : RenderNode {
             remoteViews,
             viewId,
             viewProperty,
-            context
+            context,
+            widgetMode
         )
 
         return remoteViews
@@ -110,7 +115,8 @@ internal object RvProgress : RenderNode {
     private fun renderCircularProgressToRemoteViews(
         progressProperty: ProgressProperty,
         viewProperty: ViewProperty,
-        context: Context
+        context: Context,
+        widgetMode: com.widgetkit.dsl.proto.WidgetMode
     ): android.widget.RemoteViews {
         val viewId = viewProperty.viewId
         val remoteViews = RemoteViews(
@@ -141,7 +147,7 @@ internal object RvProgress : RenderNode {
         )
 
         // ViewProperty 속성 적용
-        RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context)
+        RemoteViewsBuilder.applyViewProperties(remoteViews, viewId, viewProperty, context, widgetMode)
 
         return remoteViews
     }

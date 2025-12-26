@@ -28,7 +28,7 @@ internal object GlanceSpacer : RenderNode {
         val viewProperty = spacerProperty.viewProperty
 
         // Modifier 생성
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         // Spacer는 빈 Box로 렌더링

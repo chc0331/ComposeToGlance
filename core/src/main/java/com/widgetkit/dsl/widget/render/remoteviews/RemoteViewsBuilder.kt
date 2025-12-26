@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RemoteViews
 import com.widgetkit.dsl.proto.ViewProperty
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.widget.render.glance.converter.ColorConverter
 import com.widgetkit.dsl.widget.render.glance.converter.PaddingConverter
 
@@ -23,7 +24,8 @@ internal object RemoteViewsBuilder {
         remoteViews: RemoteViews,
         viewId: Int,
         viewProperty: ViewProperty,
-        context: Context
+        context: Context,
+        widgetMode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL
     ) {
         // Width 적용: hasDp() 우선 체크 (DimensionConverter 패턴과 동일)
         when {
@@ -120,8 +122,8 @@ internal object RemoteViewsBuilder {
             remoteViews.setInt(viewId, "setBackgroundColor", backgroundColor.value.toInt())
         }
 
-        // Click Action
-        if (viewProperty.hasClickAction()) {
+        // Click Action - PREVIEW 모드에서는 설정하지 않음
+        if (viewProperty.hasClickAction() && widgetMode != WidgetMode.WIDGET_MODE_PREVIEW) {
             val protoAction = viewProperty.clickAction
             if (protoAction.hasComponent()) {
                 val component = protoAction.component

@@ -27,7 +27,7 @@ internal object GlanceList : RenderNode {
 
         val listProperty = node.list
         val viewProperty = listProperty.viewProperty
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
         val horizontalAlignment = AlignmentConverter.toGlanceHorizontalAlignment(
             listProperty.horizontalAlignment

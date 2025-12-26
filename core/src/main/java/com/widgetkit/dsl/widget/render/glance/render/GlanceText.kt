@@ -30,7 +30,7 @@ internal object GlanceText : RenderNode {
         val viewProperty = textProperty.viewProperty
 
         // Modifier 생성
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         val (textContent, textStyle) = TextRenderUtils.buildTextAndStyle(

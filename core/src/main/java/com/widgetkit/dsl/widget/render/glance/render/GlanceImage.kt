@@ -36,7 +36,7 @@ internal object GlanceImage : RenderNode {
         val viewProperty = imageProperty.viewProperty
 
         // Modifier 생성
-        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context.context)
+        val modifier = GlanceModifierBuilder.buildModifier(viewProperty, context)
             .then(context.modifier)
 
         // ImageProvider 생성

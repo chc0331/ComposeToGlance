@@ -19,6 +19,8 @@ import androidx.glance.layout.wrapContentWidth
 import androidx.glance.unit.Dimension
 import com.widgetkit.dsl.R
 import com.widgetkit.dsl.proto.ViewProperty
+import com.widgetkit.dsl.proto.WidgetMode
+import com.widgetkit.dsl.widget.node.RenderContext
 import com.widgetkit.dsl.widget.render.glance.converter.ActionConverter
 import com.widgetkit.dsl.widget.render.glance.converter.ColorConverter
 import com.widgetkit.dsl.widget.render.glance.converter.DimensionConverter
@@ -31,11 +33,11 @@ internal object GlanceModifierBuilder {
     /**
      * ViewProperty를 GlanceModifier로 변환
      * @param viewProperty Proto ViewProperty
-     * @param context Context
+     * @param context RenderContext
      * @return GlanceModifier
      */
     @SuppressLint("RestrictedApi")
-    fun buildModifier(viewProperty: ViewProperty, context: Context): GlanceModifier {
+    fun buildModifier(viewProperty: ViewProperty, context: RenderContext): GlanceModifier {
         var modifier: GlanceModifier = GlanceModifier.Companion
 
         // Width
@@ -65,9 +67,9 @@ internal object GlanceModifierBuilder {
             )
         }
 
-        // Click Action
-        if (viewProperty.hasClickAction()) {
-            val action = ActionConverter.toGlanceAction(viewProperty.clickAction, context)
+        // Click Action - PREVIEW 모드에서는 설정하지 않음
+        if (viewProperty.hasClickAction() && context.document.widgetMode != WidgetMode.WIDGET_MODE_PREVIEW) {
+            val action = ActionConverter.toGlanceAction(viewProperty.clickAction, context.context)
             action?.let {
                 modifier = modifier.clickable(it, rippleOverride = R.drawable.click_effect)
             }

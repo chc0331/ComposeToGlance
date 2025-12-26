@@ -78,7 +78,8 @@ internal object RvImage : RenderNode {
             remoteViews,
             viewId,
             viewProperty,
-            context.context
+            context.context,
+            context.document.widgetMode
         )
 
         AndroidRemoteViews(remoteViews = remoteViews, modifier = GlanceModifier)
