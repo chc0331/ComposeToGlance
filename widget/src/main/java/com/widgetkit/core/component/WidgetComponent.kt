@@ -75,14 +75,4 @@ abstract class WidgetComponent : ViewIdProvider {
      * * @return ComponentDataStore 또는 null
      */
     open fun getDataStore(): ComponentDataStore<*>? = null
-
-    /**
-     * Lifecycle 자동 등록 여부를 반환합니다.
-     * * true: 앱 시작 시 자동으로 lifecycle을 등록합니다. (기본값)
-     * false: 컴포넌트가 위젯에 배치될 때만 lifecycle을 등록합니다.
-     * * 대부분의 경우 true를 사용하는 것이 권장됩니다.
-     * Battery처럼 항상 모니터링이 필요한 경우 true를 사용하세요.
-     * * @return 자동 등록 여부
-     */
-    open fun requiresAutoLifecycle(): Boolean = true
 }

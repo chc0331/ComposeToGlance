@@ -281,8 +281,6 @@ class TodayTodoWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
 
-    override fun requiresAutoLifecycle(): Boolean = false
-
     override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
 
     /**

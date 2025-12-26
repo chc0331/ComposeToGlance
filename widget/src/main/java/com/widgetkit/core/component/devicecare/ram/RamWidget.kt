@@ -107,8 +107,6 @@ class RamWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = RamWidgetDataStore
 
-    override fun requiresAutoLifecycle(): Boolean = false
-
     private fun WidgetScope.RamIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value

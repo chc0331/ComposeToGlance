@@ -78,8 +78,6 @@ class WatchBatteryWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = WatchBatteryDataStore
 
-    override fun requiresAutoLifecycle(): Boolean = false
-
     private fun WidgetScope.WatchIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int

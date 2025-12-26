@@ -98,8 +98,6 @@ class StorageWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = StorageDataStore
 
-    override fun requiresAutoLifecycle(): Boolean = false
-
     private fun WidgetScope.StorageIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value

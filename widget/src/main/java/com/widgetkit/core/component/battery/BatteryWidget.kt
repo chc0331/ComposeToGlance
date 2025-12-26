@@ -218,6 +218,4 @@ class BatteryWidget : WidgetComponent() {
     override fun getUpdateManager(): ComponentUpdateManager<*> = BatteryUpdateManager
 
     override fun getDataStore() = BatteryComponentDataStore
-
-    override fun requiresAutoLifecycle() = false
 }

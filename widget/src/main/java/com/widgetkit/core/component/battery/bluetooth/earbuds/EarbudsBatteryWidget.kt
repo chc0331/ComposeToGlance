@@ -78,8 +78,6 @@ class EarbudsBatteryWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = EarbudsBatteryDataStore
 
-    override fun requiresAutoLifecycle(): Boolean = false
-
     private fun WidgetScope.EarbudsIcon() {
         val size = getLocal(WidgetLocalSize) as DpSize
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
