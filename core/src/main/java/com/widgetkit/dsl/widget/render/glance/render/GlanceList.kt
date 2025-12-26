@@ -34,7 +34,7 @@ internal object GlanceList : RenderNode {
         )
         val children = node.childrenList
 
-        if (node.widgetMode == WidgetMode.WIDGET_MODE_PREVIEW) {
+        if (context.document.widgetMode == WidgetMode.WIDGET_MODE_PREVIEW) {
             Column(
                 modifier = modifier,
                 horizontalAlignment = horizontalAlignment

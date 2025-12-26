@@ -1,15 +1,17 @@
 package com.widgetkit.dsl
 
 import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocal
 
 
-fun WidgetLayout(block: WidgetScope.() -> Unit): WidgetLayoutDocument {
+fun WidgetLayout(mode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL, block: WidgetScope.() -> Unit): WidgetLayoutDocument {
     val scope = WidgetScope()
     scope.block()
     return WidgetLayoutDocument.newBuilder()
         .setRoot(scope.build())
+        .setWidgetMode(mode)
         .build()
 }
 

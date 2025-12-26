@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.widgetkit.widget.editor.draganddrop.DragTarget
 import com.widgetkit.dsl.WidgetLayout
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
@@ -145,7 +146,7 @@ private fun WidgetItemContent(
 
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
                     val layout = remember(key, glanceTheme) {
-                        WidgetLayout {
+                        WidgetLayout(mode = WidgetMode.WIDGET_MODE_PREVIEW) {
                             WidgetLocalProvider(
                                 WidgetLocalPreview provides true,
                                 WidgetLocalSize provides size,

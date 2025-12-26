@@ -17,7 +17,7 @@ class WidgetRenderer(private val context: Context) {
             return Box {}
         }
 
-        val rootContext = RenderContext(context = context)
+        val rootContext = RenderContext(context = context, document = document)
         renderNode(document.root, rootContext)
     }
 

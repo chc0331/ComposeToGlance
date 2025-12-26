@@ -20,6 +20,7 @@ enum WidgetMode {
 // Top-level document storing the full widget layout tree.
 message WidgetLayoutDocument {
   WidgetNode root = 1;
+  WidgetMode widget_mode = 2;  // Defaults to WIDGET_MODE_NORMAL (0)
 }
 
 // Recursive node representation so layouts are stored as a hierarchy.
@@ -38,7 +39,6 @@ message WidgetNode {
   }
   repeated WidgetNode children = 11;
   WidgetType widget_type = 12;  // Defaults to WIDGET_TYPE_GLANCE (0)
-  WidgetMode widget_mode = 13;  // Defaults to WIDGET_MODE_NORMAL (0)
 }
 
 // --------------------------

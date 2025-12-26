@@ -1,14 +1,12 @@
 package com.widgetkit.dsl.frontend.layout
 
 import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.layout.RowLayoutDsl
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 
 fun WidgetScope.Row(
     modifier: WidgetModifier = WidgetModifier,
-    mode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL,
     contentProperty: RowLayoutDsl.() -> Unit = {},
     content: WidgetScope.() -> Unit
 ) {
@@ -21,7 +19,6 @@ fun WidgetScope.Row(
 
     val rowNode = WidgetNode.newBuilder()
         .setRow(dsl.build())
-        .setWidgetMode(mode)
         .apply {
             childScope.children.forEach { addChildren(it) }
         }

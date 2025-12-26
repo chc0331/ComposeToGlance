@@ -4,21 +4,18 @@ import androidx.compose.ui.graphics.Color
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
-import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.component.TextDsl
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 
 fun WidgetScope.Text(
     modifier: WidgetModifier = WidgetModifier,
-    mode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL,
     contentProperty: TextDsl.() -> Unit
 ) {
     val dsl = TextDsl(this, modifier)
     dsl.contentProperty()
     val textNode = WidgetNode.newBuilder()
         .setText(dsl.build())
-        .setWidgetMode(mode)
         .build()
     addChild(textNode)
 }
@@ -29,7 +26,6 @@ fun WidgetScope.Text(
 @JvmOverloads
 fun WidgetScope.Text(
     modifier: WidgetModifier = WidgetModifier,
-    mode: WidgetMode = WidgetMode.WIDGET_MODE_NORMAL,
     text: String? = null,
     textResId: Int = 0,
     fontSize: Float = 0f,
@@ -76,7 +72,6 @@ fun WidgetScope.Text(
     
     val textNode = WidgetNode.newBuilder()
         .setText(dsl.build())
-        .setWidgetMode(mode)
         .build()
     addChild(textNode)
 }

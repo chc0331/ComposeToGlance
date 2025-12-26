@@ -28,6 +28,7 @@ import com.widgetkit.dsl.WidgetLayout
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.layout.Box
 import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.cornerRadius
@@ -70,7 +71,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
         var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
 
         LaunchedEffect(state) {
-            renderContent = WidgetLayout {
+            renderContent = WidgetLayout(mode = WidgetMode.WIDGET_MODE_NORMAL) {
                 WidgetLocalProvider(
                     WidgetLocalSize provides dpSize,
                     WidgetLocalContext provides context,

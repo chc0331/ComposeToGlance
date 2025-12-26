@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
+import com.widgetkit.dsl.proto.WidgetLayoutDocument
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.WidgetRenderer
 
@@ -33,6 +34,7 @@ internal interface RenderNode {
  */
 internal data class RenderContext(
     val context: Context,
+    val document: WidgetLayoutDocument,
     val modifier: GlanceModifier = GlanceModifier,
     val parentAlignment: Alignment? = null
 )
