@@ -13,7 +13,6 @@ import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.action.runCallbackBroadcastReceiver
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
-import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.util.getSystemBackgroundRadius
@@ -107,8 +106,6 @@ class RamWidget : WidgetComponent() {
     override fun getUpdateManager(): ComponentUpdateManager<*> = RamUpdateManager
 
     override fun getDataStore(): ComponentDataStore<*> = RamWidgetDataStore
-
-    override fun getLifecycle(): ComponentLifecycle? = null
 
     override fun requiresAutoLifecycle(): Boolean = false
 

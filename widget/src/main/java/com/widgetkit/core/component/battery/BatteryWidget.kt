@@ -219,8 +219,5 @@ class BatteryWidget : WidgetComponent() {
 
     override fun getDataStore() = BatteryComponentDataStore
 
-    // BroadcastReceiver는 WidgetForegroundService에서 관리하므로 Lifecycle 불필요
-    override fun getLifecycle() = null
-
     override fun requiresAutoLifecycle() = false
 }

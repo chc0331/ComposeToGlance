@@ -13,7 +13,6 @@ import com.widgetkit.core.component.battery.bluetooth.earbuds.EarbudsBatteryWidg
 import com.widgetkit.core.component.battery.bluetooth.watch.WatchBatteryWidget
 import com.widgetkit.core.component.devicecare.ram.RamWidget
 import com.widgetkit.core.component.devicecare.storage.StorageWidget
-import com.widgetkit.core.component.lifecycle.ComponentLifecycleManager
 import com.widgetkit.core.component.reminder.today.TodayTodoWidget
 import com.widgetkit.core.component.viewid.ViewIdAllocator
 
@@ -61,40 +60,6 @@ object WidgetComponentRegistry {
     }
 
     /**
-     * 모든 컴포넌트의 lifecycle을 초기화합니다.
-     * 앱 시작 시 한 번만 호출되어야 합니다.
-     *
-     * @param context Context
-     */
-    fun initializeLifecycles(context: Context) {
-        if (lifecycleInitialized) {
-            Log.w(TAG, "Lifecycles already initialized, skipping")
-            return
-        }
-
-        Log.i(TAG, "Initializing component lifecycles")
-        ComponentLifecycleManager.initializeComponents(context, getAllComponents())
-        lifecycleInitialized = true
-    }
-
-    /**
-     * 모든 컴포넌트의 lifecycle을 종료합니다.
-     * 앱 종료 시 호출되어야 합니다.
-     *
-     * @param context Context
-     */
-    fun shutdownLifecycles(context: Context) {
-        if (!lifecycleInitialized) {
-            Log.w(TAG, "Lifecycles not initialized, nothing to shutdown")
-            return
-        }
-
-        Log.i(TAG, "Shutting down component lifecycles")
-        ComponentLifecycleManager.shutdownAll(context)
-        lifecycleInitialized = false
-    }
-
-    /**
      * 등록된 컴포넌트를 조회합니다.
      * @param componentId 컴포넌트 고유 ID
      * @return DSL 컴포넌트 함수, 없으면 null
@@ -105,13 +70,6 @@ object WidgetComponentRegistry {
 
     fun getAllComponents(): List<WidgetComponent> {
         return registry.values.toList()
-    }
-
-    /**
-     * 모든 등록된 컴포넌트 ID 목록을 반환합니다.
-     */
-    fun getAllComponentIds(): Set<String> {
-        return registry.keys.toSet()
     }
 
     /**
@@ -126,18 +84,4 @@ object WidgetComponentRegistry {
         }
         return viewIdAllocator.getBaseId(componentTag)
     }
-
-    /**
-     * ViewIdAllocator 인스턴스를 조회합니다.
-     * (디버깅 및 테스트 용도)
-     * @return ViewIdAllocator 인스턴스
-     */
-    fun getViewIdAllocator(): ViewIdAllocator = viewIdAllocator
-
-    /**
-     * Lifecycle 초기화 상태를 반환합니다.
-     * (디버깅 및 테스트 용도)
-     * @return 초기화 여부
-     */
-    fun isLifecycleInitialized(): Boolean = lifecycleInitialized
 }

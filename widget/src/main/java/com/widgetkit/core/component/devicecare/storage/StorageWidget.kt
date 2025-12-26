@@ -10,7 +10,6 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
-import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.reminder.today.ui.TodoActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.util.getSystemBackgroundRadius
@@ -98,8 +97,6 @@ class StorageWidget : WidgetComponent() {
     override fun getUpdateManager(): ComponentUpdateManager<*> = StorageUpdateManager
 
     override fun getDataStore(): ComponentDataStore<*> = StorageDataStore
-
-    override fun getLifecycle(): ComponentLifecycle? = null
 
     override fun requiresAutoLifecycle(): Boolean = false
 

@@ -10,9 +10,7 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
-import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.reminder.today.ui.TodoActivity
-import com.widgetkit.core.component.reminder.today.ui.TodoItem
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.database.TodoDatabase
@@ -28,7 +26,6 @@ import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
-import com.widgetkit.dsl.proto.TextContent
 import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
@@ -283,8 +280,6 @@ class TodayTodoWidget : WidgetComponent() {
     override fun getUpdateManager(): ComponentUpdateManager<*> = TodayTodoUpdateManager
 
     override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
-
-    override fun getLifecycle(): ComponentLifecycle? = null
 
     override fun requiresAutoLifecycle(): Boolean = false
 

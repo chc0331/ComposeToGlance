@@ -4,7 +4,6 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.component.datastore.ComponentDataStore
-import com.widgetkit.core.component.lifecycle.ComponentLifecycle
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdProvider
 import com.widgetkit.core.component.viewid.ViewIdType
@@ -76,13 +75,6 @@ abstract class WidgetComponent : ViewIdProvider {
      * * @return ComponentDataStore 또는 null
      */
     open fun getDataStore(): ComponentDataStore<*>? = null
-
-    /**
-     * 컴포넌트의 Lifecycle을 반환합니다.
-     * BroadcastReceiver, WorkManager 등 생명주기 관리가 필요한 컴포넌트만 오버라이드합니다.
-     * * @return ComponentLifecycle 또는 null
-     */
-    open fun getLifecycle(): ComponentLifecycle? = null
 
     /**
      * Lifecycle 자동 등록 여부를 반환합니다.

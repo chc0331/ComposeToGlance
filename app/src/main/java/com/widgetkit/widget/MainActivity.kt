@@ -91,12 +91,6 @@ class MainActivity : ComponentActivity() {
         }
     }
     
-    override fun onDestroy() {
-        super.onDestroy()
-        // Widget 컴포넌트 Lifecycle 정리
-        WidgetComponentRegistry.shutdownLifecycles(applicationContext)
-    }
-    
     private fun requestBluetoothPermissionsIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val permissionsToRequest = mutableListOf<String>()
