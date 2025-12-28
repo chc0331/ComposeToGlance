@@ -97,6 +97,23 @@ class WidgetEditorViewModel(
     }
     
     /**
+     * 그리드 설정 업데이트 및 위젯 클리어
+     * 그리드 배수가 변경될 때 호출됨
+     */
+    fun updateGridSettingsAndClearWidgets(settings: GridSettings) {
+        // 그리드 설정 업데이트
+        _gridSettings.value = settings
+        
+        // 레이아웃의 그리드 배수 업데이트
+        selectedLayout?.let { layout ->
+            selectedLayout = layout.copy(gridMultiplier = settings.globalMultiplier)
+        }
+        
+        // 배치된 위젯들 클리어
+        clearPositionedWidgets()
+    }
+    
+    /**
      * 레이아웃 선택 (그리드 설정 고려)
      */
     fun selectLayout(layout: Layout?, migrateWidgets: Boolean = false) {

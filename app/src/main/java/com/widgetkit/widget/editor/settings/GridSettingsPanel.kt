@@ -30,13 +30,16 @@ fun GridSettingsPanel(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var currentSettings by remember { mutableStateOf(GridSettings.DEFAULT) }
+    var initialSettings by remember { mutableStateOf<GridSettings?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     
     // 설정 로드
     LaunchedEffect(isVisible) {
         if (isVisible) {
             scope.launch {
-                currentSettings = GridSettingsDataStore.loadSettings(context)
+                val loadedSettings = GridSettingsDataStore.loadSettings(context)
+                currentSettings = loadedSettings
+                initialSettings = loadedSettings
                 isLoading = false
             }
         }
@@ -75,7 +78,16 @@ fun GridSettingsPanel(
                         )
                     }
                     
-                    TextButton(onClick = onDismiss) {
+                    TextButton(onClick = {
+                        scope.launch {
+                            // 변경사항이 있으면 저장하고 콜백 호출
+                            if (initialSettings?.globalMultiplier != currentSettings.globalMultiplier) {
+                                GridSettingsDataStore.saveSettings(context, currentSettings)
+                                onSettingsChanged(currentSettings)
+                            }
+                            onDismiss()
+                        }
+                    }) {
                         Text("완료")
                     }
                 }
@@ -94,12 +106,8 @@ fun GridSettingsPanel(
                     GlobalMultiplierSection(
                         currentMultiplier = currentSettings.globalMultiplier,
                         onMultiplierChanged = { newMultiplier ->
-                            scope.launch {
-                                val updatedSettings = currentSettings.withGlobalMultiplier(newMultiplier)
-                                GridSettingsDataStore.saveSettings(context, updatedSettings)
-                                currentSettings = updatedSettings
-                                onSettingsChanged(updatedSettings)
-                            }
+                            // 로컬 상태만 업데이트 (즉시 저장하지 않음)
+                            currentSettings = currentSettings.withGlobalMultiplier(newMultiplier)
                         }
                     )
                 }

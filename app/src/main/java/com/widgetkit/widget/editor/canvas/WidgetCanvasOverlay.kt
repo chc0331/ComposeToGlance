@@ -86,16 +86,16 @@ fun DragStateOverlay(
         previousHoveredIndices = hoveredCellIndices
     }
 
-    if (hoveredCellIndices.isNotEmpty()) {
-        WidgetPreview(
-            draggedWidget = draggedWidget,
-            hoveredCellIndices = hoveredCellIndices,
-            layoutBounds = layoutBounds,
-            selectedLayout = selectedLayout,
-            canvasPosition = canvasPosition,
-            density = density
-        )
-    }
+//    if (hoveredCellIndices.isNotEmpty()) {
+//        WidgetPreview(
+//            draggedWidget = draggedWidget,
+//            hoveredCellIndices = hoveredCellIndices,
+//            layoutBounds = layoutBounds,
+//            selectedLayout = selectedLayout,
+//            canvasPosition = canvasPosition,
+//            density = density
+//        )
+//    }
 
     val currentOccupiedCells = remember(draggedPositionedWidget?.id, occupiedCells, viewModel.positionedWidgets) {
         derivedStateOf {

@@ -137,7 +137,7 @@ fun MainContent(
             isVisible = viewModel.showGridSettings,
             onDismiss = { viewModel.hideGridSettingsPanel() },
             onSettingsChanged = { newSettings ->
-                // GridSettingsPanel에서 직접 DataStore에 저장하므로 별도 처리 불필요
+                viewModel.updateGridSettingsAndClearWidgets(newSettings)
             }
         )
     }
