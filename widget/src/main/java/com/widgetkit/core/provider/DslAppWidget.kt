@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
@@ -46,6 +47,10 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
 abstract class DslAppWidget : GlanceAppWidget() {
+
+    companion object {
+        internal val WIDGET_SYNC_KEY = longPreferencesKey("widget_sync_key")
+    }
 
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {

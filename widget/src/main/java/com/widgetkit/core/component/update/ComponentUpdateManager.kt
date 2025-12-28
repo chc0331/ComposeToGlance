@@ -1,7 +1,12 @@
 package com.widgetkit.core.component.update
 
 import android.content.Context
+import androidx.glance.GlanceId
+import androidx.glance.appwidget.state.updateAppWidgetState
+import com.widgetkit.core.SizeType
 import com.widgetkit.core.component.WidgetComponent
+import com.widgetkit.core.provider.DslAppWidget
+import com.widgetkit.core.provider.LargeAppWidget
 
 /**
  * 위젯 컴포넌트의 업데이트 관리를 위한 인터페이스
@@ -27,5 +32,17 @@ interface ComponentUpdateManager<T> {
      */
     suspend fun syncComponentState(context: Context) {
         // 기본 구현은 비어있음 - 필요시 오버라이드
+    }
+
+    suspend fun forceSyncLargeWidget(
+        context: Context, widgetId: GlanceId,
+        sizeType: SizeType
+    ) {
+        updateAppWidgetState(context, widgetId) { state ->
+            state[DslAppWidget.WIDGET_SYNC_KEY] = System.currentTimeMillis()
+        }
+        if (sizeType == SizeType.LARGE) {
+            LargeAppWidget().update(context, widgetId)
+        }
     }
 }

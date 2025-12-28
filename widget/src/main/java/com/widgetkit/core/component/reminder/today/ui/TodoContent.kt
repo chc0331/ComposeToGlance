@@ -111,7 +111,6 @@ fun TodoContent(
                         onCalendarClick = { viewModel.showDatePicker() },
                         onSave = { 
                             viewModel.saveAndUpdateWidget()
-                            onDismiss()
                         },
                         onDismiss = onDismiss
                     )

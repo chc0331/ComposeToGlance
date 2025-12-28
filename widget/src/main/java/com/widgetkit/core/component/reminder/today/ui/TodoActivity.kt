@@ -26,7 +26,9 @@ class TodoActivity : ComponentActivity() {
             AppTheme {
                 TodoContent(
                     viewModel = viewModel,
-                    onDismiss = { finish() }
+                    onDismiss = {
+                        finish()
+                    }
                 )
             }
         }
