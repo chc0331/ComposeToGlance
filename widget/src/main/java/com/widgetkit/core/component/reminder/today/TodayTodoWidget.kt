@@ -4,7 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.unit.DpSize
+import androidx.glance.appwidget.AppWidgetId
 import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
@@ -41,7 +41,10 @@ import com.widgetkit.dsl.proto.modifier.padding
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
+import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.dsl.widget.action.widgetActionParametersOf
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGlanceId
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 import kotlinx.coroutines.flow.first
@@ -278,6 +281,9 @@ class TodayTodoWidget : WidgetComponent() {
      */
     private fun WidgetScope.TodoItem(todo: TodoEntity) {
         val theme = getLocal(WidgetLocalTheme)
+        val context = getLocal(WidgetLocalContext) as Context
+        val isPreview = getLocal(WidgetLocalPreview) as Boolean
+        val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
         val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
         
@@ -293,11 +299,33 @@ class TodayTodoWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
+            // CheckBox with click action
+            var checkboxModifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+            
+            // Add click action only if not in preview mode
+            if (!isPreview) {
+                checkboxModifier = checkboxModifier.clickAction(
+                    context,
+                    com.widgetkit.dsl.widget.action.RunWidgetCallbackAction(
+                        com.widgetkit.core.action.CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                        TodayTodoAction::class.java,
+                        widgetActionParametersOf(
+                            WidgetActionParameters.Key<String>("actionClass") to TodayTodoAction::class.java.canonicalName,
+                            WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId ?: 0),
+                            WidgetActionParameters.Key<Long>(TodayTodoAction.PARAM_TODO_ID) to todo.id
+                        )
+                    )
+                )
+            }
+            
             CheckBox(
-                modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
+                modifier = checkboxModifier
             ) {
+                // Set checked state based on todo completion status
+                checked = isCompleted
+                
                 TextProperty {
                     TextContent {
                         text = todo.title

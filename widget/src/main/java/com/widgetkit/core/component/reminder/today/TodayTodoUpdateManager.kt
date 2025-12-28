@@ -25,9 +25,11 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
      * 위젯 상태 동기화
      */
     override suspend fun syncComponentState(context: Context) {
-        val todayDate = TodoDateUtils.getTodayDateString()
-        val data = loadTodayTodos(context, todayDate)
-        Log.d(TAG, "Sync widget state: ${data.totalCount} tasks, ${data.completedCount} completed")
+        // DataStore에서 현재 선택된 날짜 로드
+        val currentData = TodayTodoDataStore.loadData(context)
+        val selectedDate = currentData.selectedDate
+        val data = loadTodayTodos(context, selectedDate)
+        Log.d(TAG, "Sync widget state for date $selectedDate: ${data.totalCount} tasks, ${data.completedCount} completed")
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
         // 위젯 업데이트
