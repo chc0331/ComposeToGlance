@@ -58,6 +58,26 @@ class TodayTodoViewModel(
     private val _showDatePicker = MutableStateFlow(false)
     private val _inlineTitle = MutableStateFlow("")
 
+    init {
+        // DataStore에서 선택된 날짜 로드
+        viewModelScope.launch {
+            try {
+                val dataStore = com.widgetkit.core.component.reminder.today.TodayTodoDataStore
+                val data = dataStore.loadData(applicationContext)
+                val selectedDate = data.selectedDate
+                
+                // 날짜 문자열을 milliseconds로 변환
+                val dateMillis = TodoDateUtils.parseDate(selectedDate)?.time 
+                    ?: System.currentTimeMillis()
+                
+                _selectedDateMillis.value = dateMillis
+            } catch (e: Exception) {
+                // 에러 발생 시 오늘 날짜 사용
+                _selectedDateMillis.value = System.currentTimeMillis()
+            }
+        }
+    }
+
     // 선택된 날짜에 따른 Todo 리스트
     @OptIn(ExperimentalCoroutinesApi::class)
     private val todosFlow = _selectedDateMillis.flatMapLatest { dateMillis ->
@@ -279,7 +299,14 @@ class TodayTodoViewModel(
     fun saveAndUpdateWidget() {
         viewModelScope.launch {
             coroutineScope {
-                TodayTodoUpdateManager.syncComponentState(applicationContext)
+                // 현재 선택된 날짜를 DataStore에 저장하고 위젯 업데이트
+                val currentDate = uiState.value.selectedDateString
+                val data = TodayTodoUpdateManager.loadTodosForDate(applicationContext, currentDate)
+                com.widgetkit.core.component.reminder.today.TodayTodoDataStore.saveData(
+                    applicationContext, 
+                    data
+                )
+                TodayTodoUpdateManager.updateComponent(applicationContext, data)
                 delay(1000)
             }
         }

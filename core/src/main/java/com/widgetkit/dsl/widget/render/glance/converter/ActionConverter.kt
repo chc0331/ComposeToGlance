@@ -33,6 +33,19 @@ internal object ActionConverter {
 
         val intent = Intent().apply {
             this.component = componentName
+            // Add intent extras from proto action
+            protoAction.intentExtrasMap.forEach { (key, value) ->
+                when (value.lowercase()) {
+                    "true" -> putExtra(key, true)
+                    "false" -> putExtra(key, false)
+                    else -> {
+                        // Try to parse as int, long, or keep as string
+                        value.toLongOrNull()?.let { putExtra(key, it) }
+                            ?: value.toIntOrNull()?.let { putExtra(key, it) }
+                            ?: putExtra(key, value)
+                    }
+                }
+            }
         }
 
         return when {

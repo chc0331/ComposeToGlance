@@ -132,6 +132,19 @@ internal object RemoteViewsBuilder {
                     if (protoAction.activity) {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     }
+                    // Add intent extras from proto action
+                    protoAction.intentExtrasMap.forEach { (key, value) ->
+                        when (value.lowercase()) {
+                            "true" -> putExtra(key, true)
+                            "false" -> putExtra(key, false)
+                            else -> {
+                                // Try to parse as int, long, or keep as string
+                                value.toLongOrNull()?.let { putExtra(key, it) }
+                                    ?: value.toIntOrNull()?.let { putExtra(key, it) }
+                                    ?: putExtra(key, value)
+                            }
+                        }
+                    }
                 }
                 val flags =
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

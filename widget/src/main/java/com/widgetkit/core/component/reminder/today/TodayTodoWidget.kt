@@ -68,12 +68,20 @@ class TodayTodoWidget : WidgetComponent() {
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         val theme = getLocal(WidgetLocalTheme)
         
-        // 오늘 날짜의 Todo 조회
-        val todayDate = TodoDateUtils.getTodayDateString()
+        // DataStore에서 선택된 날짜 로드
+        val selectedDate = if (isPreview) {
+            TodoDateUtils.getTodayDateString()
+        } else {
+            runBlocking {
+                TodayTodoDataStore.loadData(context).selectedDate
+            }
+        }
+        
+        // 선택된 날짜의 Todo 조회
         val todos = if (isPreview) {
             getPreviewTodos()
         } else {
-            loadTodosFromDb(context, todayDate)
+            loadTodosFromDb(context, selectedDate)
         }
         
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
@@ -98,7 +106,7 @@ class TodayTodoWidget : WidgetComponent() {
                 }
             ) {
                 // 헤더: 캘린더 아이콘 + "Today" + 날짜 + 추가 버튼
-                Header(context, isPreview)
+                Header(context, isPreview, selectedDate)
                 
                 // Todo 리스트
                 TodoList(todos = todos)
@@ -115,11 +123,17 @@ class TodayTodoWidget : WidgetComponent() {
     /**
      * 헤더: 아이콘 + "Today" + 날짜 + 추가 버튼
      */
-    private fun WidgetScope.Header(context: Context, isPreview: Boolean) {
+    private fun WidgetScope.Header(context: Context, isPreview: Boolean, selectedDate: String) {
         val theme = getLocal(WidgetLocalTheme)
         val titleColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
         val secondaryColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
         val primaryColor = (theme?.primary as? Int) ?: Color(0xFF6750A4).toArgb()
+        
+        // 선택된 날짜가 오늘인지 확인
+        val isToday = TodoDateUtils.isToday(selectedDate)
+        val displayText = if (isToday) "Today" else selectedDate
+        val dateMillis = TodoDateUtils.parseDate(selectedDate)?.time ?: System.currentTimeMillis()
+        val formattedDate = TodoDateUtils.formatWidgetDate(Date(dateMillis))
         
         Row(
             modifier = WidgetModifier
@@ -141,12 +155,21 @@ class TodayTodoWidget : WidgetComponent() {
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                // 캘린더 아이콘
+                // 캘린더 아이콘 (클릭 가능)
+                var calendarIconModifier = WidgetModifier
+                    .width(20f)
+                    .height(20f)
+                    .padding(end = 6f)
+                
+                if (!isPreview) {
+                    calendarIconModifier = calendarIconModifier.clickAction(
+                        ComponentName(context, TodoActivity::class.java),
+                        mapOf("SHOW_DATE_PICKER" to "true")
+                    )
+                }
+                
                 Image(
-                    modifier = WidgetModifier
-                        .width(20f)
-                        .height(20f)
-                        .padding(end = 6f),
+                    modifier = calendarIconModifier,
                     contentProperty = {
                         Provider {
                             drawableResId = R.drawable.ic_calendar
@@ -154,10 +177,10 @@ class TodayTodoWidget : WidgetComponent() {
                     }
                 )
                 
-                // "Today" 텍스트
+                // "Today" 또는 날짜 텍스트
                 Text(
                     modifier = WidgetModifier.padding(end = 8f),
-                    text = "Today",
+                    text = displayText,
                     fontSize = 16f,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
                     fontColor = Color(titleColor)
@@ -165,7 +188,7 @@ class TodayTodoWidget : WidgetComponent() {
                 
                 // 날짜 표시
                 Text(
-                    text = TodoDateUtils.formatWidgetDate(Date()),
+                    text = formattedDate,
                     fontSize = 13f,
                     fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                     fontColor = Color(secondaryColor)

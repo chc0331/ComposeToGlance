@@ -171,6 +171,41 @@ fun WidgetModifier.clickAction(componentName: ComponentName): WidgetModifier {
     return this then WidgetModifier.ClickActionModifier(action)
 }
 
+/**
+ * ClickAction 설정 (Activity Component와 Intent extras 함께 전달)
+ *
+ * @param componentName Activity의 ComponentName
+ * @param intentExtras Intent에 추가할 extras (String key-value pairs만 지원)
+ *
+ * 사용 예시:
+ * ```
+ * Image(
+ *     modifier = WidgetModifier
+ *         .clickAction(
+ *             ComponentName(context, TodoActivity::class.java),
+ *             mapOf("SHOW_DATE_PICKER" to "true")
+ *         )
+ * )
+ * ```
+ */
+fun WidgetModifier.clickAction(
+    componentName: ComponentName,
+    intentExtras: Map<String, String>
+): WidgetModifier {
+    val component = Component.newBuilder()
+        .setPackageName(componentName.packageName)
+        .setClassName(componentName.className)
+        .build()
+
+    val action = Action.newBuilder()
+        .setActivity(true)
+        .setComponent(component)
+        .putAllIntentExtras(intentExtras)
+        .build()
+
+    return this then WidgetModifier.ClickActionModifier(action)
+}
+
 fun WidgetModifier.clickAction(
     context: Context,
     action: RunWidgetCallbackAction

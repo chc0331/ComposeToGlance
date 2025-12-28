@@ -3,6 +3,7 @@ package com.widgetkit.core.component.reminder.today
 import android.content.Context
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.component.update.ComponentUpdateHelper
 import com.widgetkit.core.component.update.ComponentUpdateManager
@@ -37,7 +38,7 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
      * 컴포넌트 업데이트
      */
     override suspend fun updateComponent(context: Context, data: TodayTodoData) {
-        Log.d(TAG, "Update component: ${data.totalCount} tasks, ${data.completedCount} completed")
+        Log.d(TAG, "Update component: date=${data.selectedDate}, ${data.totalCount} tasks, ${data.completedCount} completed")
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
         // 배치된 위젯 찾아서 업데이트
@@ -62,11 +63,17 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
             val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
 
-            // RamUpdateManager 패턴 참고: getGlanceIds로 확인 후 업데이트
-            glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
-                forceSyncLargeWidget(context, glanceId, SizeType.LARGE)
-                Log.d(TAG, "Widget updated: $widgetId -> $id")
+            Log.d(TAG, "Updating widget $widgetId with glanceId $glanceId")
+            
+            // WIDGET_SYNC_KEY를 업데이트하여 위젯 갱신 트리거
+            updateAppWidgetState(context, glanceId) { state ->
+                state[com.widgetkit.core.provider.DslAppWidget.WIDGET_SYNC_KEY] = System.currentTimeMillis()
             }
+            
+            // LargeAppWidget을 직접 업데이트
+            LargeAppWidget().update(context, glanceId)
+            
+            Log.d(TAG, "Widget updated: $widgetId")
         } catch (e: Exception) {
             Log.e(TAG, "Error updating widget: $widgetId", e)
         }

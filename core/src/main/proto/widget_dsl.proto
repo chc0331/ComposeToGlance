@@ -81,6 +81,7 @@ message Action {
   bool lambda = 4;
   Component component = 5;
   bytes action_parameters = 6;
+  map<string, string> intent_extras = 7;
 }
 
 message Semantics {
