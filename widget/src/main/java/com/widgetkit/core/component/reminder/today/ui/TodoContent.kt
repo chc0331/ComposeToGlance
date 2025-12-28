@@ -1,6 +1,8 @@
 package com.widgetkit.core.component.reminder.today.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +43,10 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -62,16 +66,29 @@ fun TodoContent(
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
     
+    val backgroundInteractionSource = remember { MutableInteractionSource() }
+    val surfaceInteractionSource = remember { MutableInteractionSource() }
+    
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .clickable(
+                indication = null, // 리플 효과 제거
+                interactionSource = backgroundInteractionSource,
+                onClick = onDismiss
+            ), // 바깥쪽 터치 시 종료
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(450.dp),
+                .height(450.dp)
+                .clickable(
+                    indication = null, // 리플 효과 제거
+                    interactionSource = surfaceInteractionSource,
+                    onClick = {}
+                ), // Surface 내부 클릭은 이벤트 소비 (전파 방지)
             shape = RoundedCornerShape(
                 topStart = 20.dp,
                 topEnd = 20.dp

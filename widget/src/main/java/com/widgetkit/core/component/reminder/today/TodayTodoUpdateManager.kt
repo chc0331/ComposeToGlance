@@ -39,16 +39,22 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
      * 컴포넌트 업데이트
      */
     override suspend fun updateComponent(context: Context, data: TodayTodoData) {
-        Log.d(TAG, "Update component: ${data.totalCount} tasks")
+        Log.d(TAG, "Update component: ${data.totalCount} tasks, ${data.completedCount} completed")
         
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
         
         // 배치된 위젯 찾아서 업데이트
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidget(context, widgetId)
-            }
+        val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+        Log.d(TAG, "Found ${placedComponents.size} placed components")
+        
+        placedComponents.forEach { (widgetId, _) ->
+            updateWidget(context, widgetId)
+        }
+        
+        if (placedComponents.isEmpty()) {
+            Log.w(TAG, "No placed components found for tag: ${widget.getWidgetTag()}")
+        }
     }
     
     /**
@@ -59,10 +65,13 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
             val glanceAppWidgetManager = GlanceAppWidgetManager(context)
             val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
             
-            // LargeAppWidget을 통해 업데이트
-            LargeAppWidget().update(context, glanceId)
-            
-            Log.d(TAG, "Widget updated: $widgetId")
+            // RamUpdateManager 패턴 참고: getGlanceIds로 확인 후 업데이트
+            glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
+                if (id == glanceId) {
+                    LargeAppWidget().update(context, id)
+                    Log.d(TAG, "Widget updated: $widgetId -> $id")
+                }
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Error updating widget: $widgetId", e)
         }

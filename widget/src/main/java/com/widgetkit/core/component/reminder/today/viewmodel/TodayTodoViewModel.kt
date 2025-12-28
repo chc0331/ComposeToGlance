@@ -187,8 +187,7 @@ class TodayTodoViewModel(
             repository.insertTodo(newTodo)
             _inlineTitle.value = ""
             
-            // 위젯 업데이트
-            TodayTodoUpdateManager.syncComponentState(applicationContext)
+            // 위젯 업데이트는 저장 버튼 클릭 시에만 수행
         }
     }
     
@@ -215,8 +214,7 @@ class TodayTodoViewModel(
             repository.insertTodo(newTodo)
             _showAddDialog.value = false
             
-            // 위젯 업데이트
-            TodayTodoUpdateManager.syncComponentState(applicationContext)
+            // 위젯 업데이트는 저장 버튼 클릭 시에만 수행
         }
     }
     
@@ -242,8 +240,7 @@ class TodayTodoViewModel(
             repository.updateTodo(updatedTodo)
             _editingTodo.value = null
             
-            // 위젯 업데이트
-            TodayTodoUpdateManager.syncComponentState(applicationContext)
+            // 위젯 업데이트는 저장 버튼 클릭 시에만 수행
         }
     }
     
@@ -258,8 +255,7 @@ class TodayTodoViewModel(
             }
             repository.toggleTodoStatus(todo.id, newStatus)
             
-            // 위젯 업데이트
-            TodayTodoUpdateManager.syncComponentState(applicationContext)
+            // 위젯 업데이트는 저장 버튼 클릭 시에만 수행
         }
     }
     
@@ -270,16 +266,17 @@ class TodayTodoViewModel(
         viewModelScope.launch {
             repository.deleteTodo(todo)
             
-            // 위젯 업데이트
-            TodayTodoUpdateManager.syncComponentState(applicationContext)
+            // 위젯 업데이트는 저장 버튼 클릭 시에만 수행
         }
     }
     
     /**
      * 위젯 업데이트
+     * 저장 버튼 클릭 시 최종 데이터를 위젯에 반영합니다.
      */
     fun saveAndUpdateWidget() {
         viewModelScope.launch {
+            // 위젯은 오늘 날짜의 Todo만 표시하므로 항상 오늘 날짜 기준으로 업데이트
             TodayTodoUpdateManager.syncComponentState(applicationContext)
         }
     }

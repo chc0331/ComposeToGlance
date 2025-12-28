@@ -16,6 +16,9 @@ class TodoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        // 바깥쪽 터치 시 액티비티 종료
+        setFinishOnTouchOutside(true)
+        
         val viewModelFactory = TodayTodoViewModelFactory(this)
         val viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
         
