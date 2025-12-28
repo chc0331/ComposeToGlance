@@ -39,16 +39,17 @@ enum class SizeType {
 }
 
 /**
- * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환 (기본 그리드 기준)
+ * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환 (1x 그리드 기준)
+ * 1x 그리드 기준: Tiny = 1x1, Small = 2x1, Medium = 2x2
  * @return Pair<width in cells, height in cells>
  */
 fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
     return when (getSizeType()) {
-        SizeType.TINY -> 2 to 2
-        SizeType.SMALL -> 4 to 2
-        SizeType.MEDIUM -> 4 to 4
-        SizeType.MEDIUM_PLUS -> 6 to 4
-        else -> 8 to 4
+        SizeType.TINY -> 1 to 1
+        SizeType.SMALL -> 2 to 1
+        SizeType.MEDIUM -> 2 to 2
+        SizeType.MEDIUM_PLUS -> 3 to 2
+        else -> 4 to 2
     }
 }
 

@@ -208,9 +208,19 @@ data class PositionedWidget(
     val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
     val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
 ) {
-    fun toProto(): PlacedWidgetComponent {
-        // getSizeInCells()를 사용하여 새로운 그리드 기준에 맞게 row_span과 col_span 계산
-        val (colSpan, rowSpan) = widget.getSizeInCells()
+    /**
+     * Proto로 변환 시 실제 배치된 셀 정보를 기반으로 row_span과 col_span 계산
+     * @param gridColumns 현재 그리드의 열 수 (cellIndices를 row/col로 변환하기 위해 필요)
+     */
+    fun toProto(gridColumns: Int): PlacedWidgetComponent {
+        // cellIndices가 있으면 실제 배치된 셀 정보를 기반으로 span 계산
+        val (colSpan, rowSpan) = if (cellIndices.isNotEmpty() && gridColumns > 0) {
+            calculateSpansFromIndices(cellIndices, gridColumns)
+        } else {
+            // fallback: 기본 1x 사이즈 사용
+            widget.getSizeInCells()
+        }
+        
         return PlacedWidgetComponent.newBuilder()
             .setGridIndex((cellIndex?.plus(1)) ?: 1)
             .setRowSpan(rowSpan)
@@ -218,6 +228,23 @@ data class PositionedWidget(
             .setWidgetTag(widget.getWidgetTag())
             .setWidgetCategory(widget.getWidgetCategory().toProto())
             .build()
+    }
+    
+    /**
+     * cellIndices로부터 실제 row_span과 col_span 계산
+     */
+    private fun calculateSpansFromIndices(indices: List<Int>, gridColumns: Int): Pair<Int, Int> {
+        if (indices.isEmpty()) return 1 to 1
+        
+        // 각 셀의 row와 col 계산
+        val rows = indices.map { it / gridColumns }
+        val cols = indices.map { it % gridColumns }
+        
+        // span = max - min + 1
+        val rowSpan = (rows.maxOrNull() ?: 0) - (rows.minOrNull() ?: 0) + 1
+        val colSpan = (cols.maxOrNull() ?: 0) - (cols.minOrNull() ?: 0) + 1
+        
+        return colSpan to rowSpan
     }
 }
 
@@ -238,12 +265,14 @@ fun WidgetComponent.toPixels(density: Density, layout: Layout): Pair<Float, Floa
 
 private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
     if (layout == null) {
+        // 1x 그리드 기준 기본 사이즈 (1셀 = 약 70dp 기준)
+        // Tiny(1x1), Small(2x1), Medium(2x2)
         return when (getSizeType()) {
-            SizeType.TINY -> DpSize(68.dp, 80.dp)
-            SizeType.SMALL -> DpSize(148.dp, 80.dp)
-            SizeType.MEDIUM -> DpSize(148.dp, 160.dp)
-            SizeType.MEDIUM_PLUS -> DpSize(220.dp, 160.dp)
-            else -> DpSize(50.dp, 50.dp)
+            SizeType.TINY -> DpSize(70.dp, 70.dp)      // 1x1
+            SizeType.SMALL -> DpSize(144.dp, 70.dp)    // 2x1
+            SizeType.MEDIUM -> DpSize(144.dp, 144.dp)  // 2x2
+            SizeType.MEDIUM_PLUS -> DpSize(218.dp, 144.dp)  // 3x2
+            else -> DpSize(292.dp, 144.dp)             // 4x2 (LARGE)
         }
     }
 

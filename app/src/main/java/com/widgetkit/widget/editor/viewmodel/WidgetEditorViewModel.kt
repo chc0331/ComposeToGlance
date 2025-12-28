@@ -310,12 +310,13 @@ class WidgetEditorViewModel(
      */
     fun save(context: Context) {
         viewModelScope.launch {
+            val gridColumns = selectedLayout?.gridSpec()?.columns ?: 2
             repository.updateData(
                 sizeType = com.widgetkit.core.SizeType.getSizeType(
                     selectedLayout?.sizeType ?: "Large"
                 )?.toProto() ?: SizeType.SIZE_TYPE_LARGE,
                 positionedWidgets = positionedWidgets.map {
-                    it.toProto()
+                    it.toProto(gridColumns)
                 }
             )
             AppWidgetManager.getInstance(context).requestPinAppWidget(

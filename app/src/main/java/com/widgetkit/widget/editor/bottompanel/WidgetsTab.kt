@@ -130,7 +130,8 @@ fun WidgetsList(
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션
-                    // 1x1 기준으로 가로 8개가 들어가도록 8열로 설정 (MEDIUM_PLUS: 6열, LARGE: 8열 수용)
+                    // 8열 그리드로 설정하고 1x 기준 사이즈에 2배수 적용하여 적절한 크기로 표시
+                    // Tiny(1x1)→2span, Small(2x1)→4span, Medium(2x2)→4span, Medium_Plus(3x2)→6span, Large(4x2)→8span
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(8),
                         modifier = Modifier
@@ -143,9 +144,9 @@ fun WidgetsList(
                         items(
                             items = filteredWidgets.withIndex().toList(),
                             span = { (_, widget) ->
-                                // 위젯의 col_span에 따라 span 설정
+                                // 위젯의 col_span에 2배수를 적용하여 적절한 크기로 표시
                                 val (colSpan, _) = widget.getSizeInCells()
-                                GridItemSpan(colSpan)
+                                GridItemSpan(colSpan * 2)
                             },
                             key = { (_, widget) -> widget.getWidgetTag() }
                         ) { (index, widget) ->
