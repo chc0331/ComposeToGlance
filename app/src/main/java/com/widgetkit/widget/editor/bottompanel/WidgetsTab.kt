@@ -118,7 +118,7 @@ fun WidgetsList(
                             Icon(
                                 imageVector = Icons.Filled.ChevronLeft,
                                 contentDescription = "뒤로가기",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Text(
@@ -126,7 +126,7 @@ fun WidgetsList(
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션
