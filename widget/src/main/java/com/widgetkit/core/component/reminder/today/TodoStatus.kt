@@ -1,21 +1,17 @@
 package com.widgetkit.core.component.reminder.today
 
 /**
- * Todo 상태를 나타내는 Enum
+ * Todo 완료 상태
  */
 enum class TodoStatus {
     /**
-     * 완료된 상태
-     */
-    COMPLETED,
-
-    /**
-     * 미완료 상태
+     * 미완료
      */
     INCOMPLETE,
-
+    
     /**
-     * Pending 상태 - 과거 날짜의 미완료 항목 (해야 했지만 지나간 상태)
+     * 완료
      */
-    PENDING
+    COMPLETED
 }
+

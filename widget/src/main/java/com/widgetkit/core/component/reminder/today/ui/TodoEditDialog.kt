@@ -34,38 +34,42 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Todo 추가/수정 다이얼로그
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoEditDialog(
     todo: TodoEntity?,
     onDismiss: () -> Unit,
-    onSave: (title: String, description: String, dateTime: Long?) -> Unit
+    onSave: (title: String, description: String?, dateTime: Long?) -> Unit
 ) {
     val initialTitle = todo?.title ?: ""
     val initialDescription = todo?.description ?: ""
     val initialDateTime = todo?.dateTime
-
+    
     var title by remember { mutableStateOf(initialTitle) }
     var description by remember { mutableStateOf(initialDescription) }
-
-    // 날짜/시간 선택 상태
+    
+    // 날짜/시간 선택
     val calendar = Calendar.getInstance()
     if (initialDateTime != null) {
         calendar.timeInMillis = initialDateTime
     }
-
+    
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialDateTime ?: System.currentTimeMillis(),
         initialDisplayMode = DisplayMode.Picker
     )
+    
     val timePickerState = rememberTimePickerState(
         initialHour = calendar.get(Calendar.HOUR_OF_DAY),
         initialMinute = calendar.get(Calendar.MINUTE)
     )
-
+    
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
-
+    
     // 날짜/시간 표시 텍스트
     val dateTimeText = remember(
         datePickerState.selectedDateMillis,
@@ -74,29 +78,27 @@ fun TodoEditDialog(
     ) {
         if (datePickerState.selectedDateMillis != null) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            val calendar = Calendar.getInstance().apply {
+            val cal = Calendar.getInstance().apply {
                 timeInMillis = datePickerState.selectedDateMillis!!
                 set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                 set(Calendar.MINUTE, timePickerState.minute)
             }
-            dateFormat.format(Date(calendar.timeInMillis))
+            dateFormat.format(Date(cal.timeInMillis))
         } else {
             "날짜/시간 미설정"
         }
     }
-
+    
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = if (todo == null) "Todo 추가" else "Todo 수정",
+                text = if (todo == null) "할 일 추가" else "할 일 수정",
                 style = MaterialTheme.typography.headlineSmall
             )
         },
         text = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
@@ -105,9 +107,9 @@ fun TodoEditDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
-
+                
                 Spacer(modifier = Modifier.height(16.dp))
-
+                
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
@@ -117,9 +119,9 @@ fun TodoEditDialog(
                     maxLines = 5,
                     shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                 )
-
+                
                 Spacer(modifier = Modifier.height(16.dp))
-
+                
                 // 날짜/시간 선택 버튼
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -132,7 +134,7 @@ fun TodoEditDialog(
                     ) {
                         Text("날짜 선택")
                     }
-
+                    
                     OutlinedButton(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.weight(1f),
@@ -141,9 +143,9 @@ fun TodoEditDialog(
                         Text("시간 선택")
                     }
                 }
-
+                
                 Spacer(modifier = Modifier.height(8.dp))
-
+                
                 // 선택된 날짜/시간 표시
                 Text(
                     text = "선택된 날짜/시간: $dateTimeText",
@@ -157,18 +159,22 @@ fun TodoEditDialog(
                 onClick = {
                     if (title.isNotBlank()) {
                         val dateTime = if (datePickerState.selectedDateMillis != null) {
-                            val calendar = Calendar.getInstance().apply {
+                            val cal = Calendar.getInstance().apply {
                                 timeInMillis = datePickerState.selectedDateMillis!!
                                 set(Calendar.HOUR_OF_DAY, timePickerState.hour)
                                 set(Calendar.MINUTE, timePickerState.minute)
                                 set(Calendar.SECOND, 0)
                                 set(Calendar.MILLISECOND, 0)
                             }
-                            calendar.timeInMillis
+                            cal.timeInMillis
                         } else {
                             null
                         }
-                        onSave(title, description, dateTime)
+                        onSave(
+                            title,
+                            description.ifBlank { null },
+                            dateTime
+                        )
                     }
                 },
                 enabled = title.isNotBlank()
@@ -182,7 +188,7 @@ fun TodoEditDialog(
             }
         }
     )
-
+    
     // Date Picker Dialog
     if (showDatePicker) {
         DatePickerDialog(
@@ -201,7 +207,7 @@ fun TodoEditDialog(
             DatePicker(state = datePickerState)
         }
     }
-
+    
     // Time Picker Dialog
     if (showTimePicker) {
         AlertDialog(
@@ -223,3 +229,4 @@ fun TodoEditDialog(
         )
     }
 }
+

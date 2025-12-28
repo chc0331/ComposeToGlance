@@ -28,6 +28,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * 개별 Todo 아이템
+ */
 @Composable
 fun TodoItem(
     todo: TodoEntity,
@@ -35,13 +38,9 @@ fun TodoItem(
     onEdit: (TodoEntity) -> Unit,
     onDelete: (TodoEntity) -> Unit
 ) {
-    val textDecoration = if (todo.status == TodoStatus.COMPLETED) {
-        TextDecoration.LineThrough
-    } else {
-        null
-    }
-
-    // iOS-like "cell" row (actions like edit/delete are expected to be swipe-driven by caller)
+    val isCompleted = todo.status == TodoStatus.COMPLETED
+    val textDecoration = if (isCompleted) TextDecoration.LineThrough else null
+    
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,22 +54,23 @@ fun TodoItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // 체크 아이콘
             Icon(
-                imageVector = if (todo.status == TodoStatus.COMPLETED) {
+                imageVector = if (isCompleted) {
                     Icons.Filled.CheckCircle
                 } else {
                     Icons.Outlined.CheckCircle
                 },
-                contentDescription = if (todo.status == TodoStatus.COMPLETED) "완료" else "미완료",
-                tint = if (todo.status == TodoStatus.COMPLETED) {
+                contentDescription = if (isCompleted) "완료" else "미완료",
+                tint = if (isCompleted) {
                     MaterialTheme.colorScheme.secondary
                 } else {
                     MaterialTheme.colorScheme.outline
                 },
-                modifier = Modifier
-                    .clickable { onToggleStatus(todo) }
+                modifier = Modifier.clickable { onToggleStatus(todo) }
             )
-
+            
+            // Todo 내용
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = todo.title,
@@ -79,21 +79,24 @@ fun TodoItem(
                     textDecoration = textDecoration,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (todo.status == TodoStatus.COMPLETED) {
+                    color = if (isCompleted) {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     } else {
                         MaterialTheme.colorScheme.onSurface
                     }
                 )
-
-                // Subtitle line: time first, then description
+                
+                // 부가 정보 (시간, 설명)
                 val subtitleParts = buildList {
                     if (todo.dateTime != null) {
                         val dateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.getDefault())
                         add(dateFormat.format(Date(todo.dateTime)))
                     }
-                    if (!todo.description.isNullOrBlank()) add(todo.description!!)
+                    if (!todo.description.isNullOrBlank()) {
+                        add(todo.description)
+                    }
                 }
+                
                 if (subtitleParts.isNotEmpty()) {
                     Text(
                         text = subtitleParts.joinToString(" · "),
@@ -105,16 +108,16 @@ fun TodoItem(
                     )
                 }
             }
-
-            IconButton(
-                onClick = { onDelete(todo) }
-            ) {
+            
+            // 삭제 버튼
+            IconButton(onClick = { onDelete(todo) }) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "삭제",
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }
     }
 }
+

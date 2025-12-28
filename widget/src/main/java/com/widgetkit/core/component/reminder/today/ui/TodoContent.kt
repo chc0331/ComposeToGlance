@@ -50,12 +50,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.widgetkit.core.component.reminder.today.viewmodel.TodayTodoViewModel
 
-@Composable
+/**
+ * Todo 메인 컨텐츠
+ */
 @OptIn(ExperimentalMaterial3Api::class)
-fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
+@Composable
+fun TodoContent(
+    viewModel: TodayTodoViewModel,
+    onDismiss: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
-
+    
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,37 +71,36 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
-            shape = MaterialTheme.shapes.large
+                .height(450.dp),
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp
+            )
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
+                    .height(450.dp)
             ) {
-                // iOS-like header (nav-bar feel)
+                // 헤더
                 item {
                     Header(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surfaceContainer),
-                        viewModel,
-                        onPreviewClick = {
-                            viewModel.selectPreviousDate()
-                        },
-                        onNextClick = {
-                            viewModel.selectNextDate()
-                        },
-                        onCalendarClick = {
-                            viewModel.showCalendarPicker()
-                        },
-                        onSave = {
+                        viewModel = viewModel,
+                        onPreviousClick = { viewModel.selectPreviousDate() },
+                        onNextClick = { viewModel.selectNextDate() },
+                        onCalendarClick = { viewModel.showDatePicker() },
+                        onSave = { 
                             viewModel.saveAndUpdateWidget()
+                            onDismiss()
                         },
                         onDismiss = onDismiss
                     )
                 }
-
+                
+                // 인라인 추가 입력
                 item {
                     Column(
                         modifier = Modifier
@@ -114,7 +119,8 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
-
+                
+                // Todo 리스트
                 if (uiState.todos.isEmpty()) {
                     item {
                         Box(
@@ -124,7 +130,7 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Todo가 없습니다",
+                                text = "할 일이 없습니다",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -138,22 +144,18 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
                         val isFirst = index == 0
                         val isLast = index == uiState.todos.lastIndex
                         val cellShape = when {
-                            isFirst && isLast -> RoundedCornerShape(
-                                TodoDesignConstants.CORNER_RADIUS
-                            )
+                            isFirst && isLast -> RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS)
                             isFirst -> RoundedCornerShape(
                                 topStart = TodoDesignConstants.CORNER_RADIUS,
                                 topEnd = TodoDesignConstants.CORNER_RADIUS
                             )
-
                             isLast -> RoundedCornerShape(
                                 bottomStart = TodoDesignConstants.CORNER_RADIUS,
                                 bottomEnd = TodoDesignConstants.CORNER_RADIUS
                             )
-
                             else -> RoundedCornerShape(0.dp)
                         }
-
+                        
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -171,20 +173,18 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
                                 )
                                 if (!isLast) {
                                     HorizontalDivider(
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(
-                                            alpha = 0.6f
-                                        ),
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                                         modifier = Modifier.padding(start = 44.dp)
                                     )
                                 }
                             }
                         }
-
+                        
                         if (!isLast) {
                             Spacer(modifier = Modifier.height(6.dp))
                         }
                     }
-
+                    
                     item {
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -192,7 +192,7 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
             }
         }
     }
-
+    
     // Add Dialog
     if (uiState.showAddDialog) {
         TodoEditDialog(
@@ -203,7 +203,7 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
             }
         )
     }
-
+    
     // Edit Dialog
     uiState.editingTodo?.let { todo ->
         TodoEditDialog(
@@ -214,29 +214,29 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
             }
         )
     }
-
-    // Calendar picker
-    if (uiState.showCalendarPicker) {
+    
+    // Date Picker
+    if (uiState.showDatePicker) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = uiState.selectedDateMillis,
             initialDisplayMode = DisplayMode.Picker
         )
         DatePickerDialog(
-            onDismissRequest = { viewModel.hideCalendarPicker() },
+            onDismissRequest = { viewModel.hideDatePicker() },
             confirmButton = {
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             viewModel.selectDate(it)
                         }
-                        viewModel.hideCalendarPicker()
+                        viewModel.hideDatePicker()
                     }
                 ) {
                     Text("확인")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { viewModel.hideCalendarPicker() }) {
+                TextButton(onClick = { viewModel.hideDatePicker() }) {
                     Text("취소")
                 }
             }
@@ -246,19 +246,23 @@ fun TodoContent(viewModel: TodayTodoViewModel, onDismiss: () -> Unit) {
     }
 }
 
+/**
+ * 헤더 (날짜 네비게이션, 저장/닫기 버튼)
+ */
 @Composable
 private fun Header(
     modifier: Modifier = Modifier,
     viewModel: TodayTodoViewModel,
-    onPreviewClick: () -> Unit,
+    onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
     onCalendarClick: () -> Unit,
     onSave: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    
     Row(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -267,69 +271,70 @@ private fun Header(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            IconButton(onClick = onPreviewClick) {
+            IconButton(onClick = onPreviousClick) {
                 Icon(
                     imageVector = Icons.Filled.ChevronLeft,
-                    contentDescription = "이전 날짜",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    contentDescription = "이전 날짜"
                 )
             }
+            
             Box(
-                modifier = Modifier
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (uiState.isToday) "Today" else uiState.headerDateText,
-                    style = if (uiState.isToday) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleSmall,
-                    maxLines = 2,
+                    style = if (uiState.isToday) {
+                        MaterialTheme.typography.titleMedium
+                    } else {
+                        MaterialTheme.typography.titleSmall
+                    },
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface
+                    textAlign = TextAlign.Center
                 )
             }
+            
             IconButton(onClick = onNextClick) {
                 Icon(
                     imageVector = Icons.Filled.ChevronRight,
-                    contentDescription = "다음 날짜",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    contentDescription = "다음 날짜"
                 )
             }
+            
             IconButton(onClick = onCalendarClick) {
                 Icon(
                     imageVector = Icons.Filled.DateRange,
-                    contentDescription = "날짜 선택",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    contentDescription = "날짜 선택"
                 )
             }
         }
+        
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            IconButton(
-                onClick = onSave,
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
+            IconButton(onClick = onSave) {
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = "저장",
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(
-                onClick = onDismiss
-            ) {
+            
+            IconButton(onClick = onDismiss) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "닫기",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    contentDescription = "닫기"
                 )
             }
         }
     }
 }
 
+/**
+ * 인라인 Todo 추가 Row
+ */
 @Composable
 private fun InlineAddTodoRow(
     title: String,
@@ -354,7 +359,7 @@ private fun InlineAddTodoRow(
                 onValueChange = onTitleChange,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
-                placeholder = { Text("New item") },
+                placeholder = { Text("새 항목 추가") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { onAdd() }),
                 shape = RoundedCornerShape(TodoDesignConstants.CORNER_RADIUS),
@@ -363,6 +368,7 @@ private fun InlineAddTodoRow(
                     focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
+            
             IconButton(onClick = onAdd) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -370,6 +376,7 @@ private fun InlineAddTodoRow(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
+            
             IconButton(onClick = onMore) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -380,3 +387,4 @@ private fun InlineAddTodoRow(
         }
     }
 }
+

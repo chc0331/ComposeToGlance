@@ -9,15 +9,16 @@ import com.widgetkit.core.component.reminder.today.viewmodel.TodayTodoViewModelF
 import com.widgetkit.core.theme.AppTheme
 
 /**
- * Today Todo를 표시하는 Dialog 스타일 Activity
+ * Todo 관리 Activity (Dialog 스타일)
  */
 class TodoActivity : ComponentActivity() {
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        
         val viewModelFactory = TodayTodoViewModelFactory(this)
         val viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
-
+        
         setContent {
             AppTheme {
                 TodoContent(
@@ -28,3 +29,4 @@ class TodoActivity : ComponentActivity() {
         }
     }
 }
+

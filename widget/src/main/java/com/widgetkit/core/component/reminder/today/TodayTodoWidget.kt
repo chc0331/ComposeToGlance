@@ -14,6 +14,7 @@ import com.widgetkit.core.component.reminder.today.ui.TodoActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.component.viewid.ViewIdType
 import com.widgetkit.core.database.TodoDatabase
+import com.widgetkit.core.database.TodoEntity
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.CheckBox
@@ -41,62 +42,48 @@ import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 
 /**
- * 오늘 날짜의 Todo를 표시하는 위젯
+ * 오늘의 Todo를 표시하는 위젯
  */
 class TodayTodoWidget : WidgetComponent() {
-
+    
     override fun getName(): String = "Today Todo"
-
-    override fun getDescription(): String = "오늘의 Todo를 표시합니다"
-
+    
+    override fun getDescription(): String = "오늘의 할 일 목록"
+    
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.BASIC
-
+    
     override fun getSizeType(): SizeType = SizeType.MEDIUM
-
+    
     override fun getWidgetTag(): String = "TodayTodo"
-
+    
     override fun WidgetScope.Content() {
         val context = getLocal(WidgetLocalContext) as Context
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
-        val localSize = getLocal(WidgetLocalSize) as DpSize
-        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
-
+        val theme = getLocal(WidgetLocalTheme)
+        
         // 오늘 날짜의 Todo 조회
         val todayDate = TodoDateUtils.getTodayDateString()
         val todos = if (isPreview) {
-            // Preview 모드: 샘플 데이터
             getPreviewTodos()
         } else {
-            // 실제 모드: Room DB에서 조회
-            loadTodayTodos(context, todayDate)
+            loadTodosFromDb(context, todayDate)
         }
-
-        // 클릭 액션: TodayTodoActivity 열기
-        val theme = getLocal(WidgetLocalTheme)
+        
         val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
-
-        var backgroundModifier = WidgetModifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .backgroundColor(backgroundColor)
-            .cornerRadius(context.getSystemBackgroundRadius().value)
-
-        if (!isPreview) {
-            backgroundModifier = backgroundModifier.clickAction(
-                ComponentName(context, TodoActivity::class.java)
-            )
-        }
-
+        
         Box(
-            modifier = backgroundModifier,
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .backgroundColor(backgroundColor)
+                .cornerRadius(context.getSystemBackgroundRadius().value),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_START
             }
@@ -105,42 +92,50 @@ class TodayTodoWidget : WidgetComponent() {
                 modifier = WidgetModifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(4f),
+                    .padding(12f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                 }
             ) {
-                TodoTitle(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight())
-                TodoList(modifier = WidgetModifier.fillMaxWidth().expandHeight(), todos = todos)
+                // 헤더: 캘린더 아이콘 + "Today" + 날짜 + 추가 버튼
+                Header(context, isPreview)
+                
+                // Todo 리스트
+                TodoList(todos = todos)
+                
                 // 구분선
-                val theme = getLocal(WidgetLocalTheme)
-                val dividerColor = (theme?.outlineVariant as? Int) ?: Color(0xFFE0E0E0).toArgb()
-
-                Box(
-                    modifier = WidgetModifier
-                        .fillMaxWidth()
-                        .height(1f)
-                        .padding(vertical = 8f)
-                        .backgroundColor(dividerColor)
-                ) {}
-                Footer(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(), todos = todos)
+                Divider()
+                
+                // 푸터: 완료 개수 표시
+                Footer(todos = todos)
             }
         }
     }
-
-    private fun WidgetScope.TodoTitle(modifier: WidgetModifier = WidgetModifier) {
-        val currentDate = java.util.Date()
-
-        // 헤더: 캘린더 아이콘 + "Today" + 날짜
+    
+    /**
+     * 헤더: 아이콘 + "Today" + 날짜 + 추가 버튼
+     */
+    private fun WidgetScope.Header(context: Context, isPreview: Boolean) {
+        val theme = getLocal(WidgetLocalTheme)
+        val titleColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        val secondaryColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+        val primaryColor = (theme?.primary as? Int) ?: Color(0xFF6750A4).toArgb()
+        
         Row(
-            modifier = modifier,
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = 8f),
             contentProperty = {
                 horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
+            // 왼쪽: 캘린더 아이콘 + "Today" + 날짜
             Row(
-                modifier = WidgetModifier.expandWidth(),
+                modifier = WidgetModifier
+                    .expandWidth()
+                    .wrapContentHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
@@ -151,149 +146,212 @@ class TodayTodoWidget : WidgetComponent() {
                     modifier = WidgetModifier
                         .width(20f)
                         .height(20f)
-                        .padding(end = 4f),
+                        .padding(end = 6f),
                     contentProperty = {
                         Provider {
                             drawableResId = R.drawable.ic_calendar
                         }
                     }
                 )
+                
                 // "Today" 텍스트
-                val theme = getLocal(WidgetLocalTheme)
-                val titleColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
-
                 Text(
+                    modifier = WidgetModifier.padding(end = 8f),
                     text = "Today",
-                    fontSize = 14f,
+                    fontSize = 16f,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
                     fontColor = Color(titleColor)
                 )
+                
+                // 날짜 표시
+                Text(
+                    text = TodoDateUtils.formatWidgetDate(Date()),
+                    fontSize = 13f,
+                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                    fontColor = Color(secondaryColor)
+                )
             }
-            // 날짜 텍스트
-            val theme = getLocal(WidgetLocalTheme)
-            val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-
-            Text(
-                text = TodoDateUtils.formatWidgetDate(currentDate),
-                fontSize = 12f,
-                fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                fontColor = Color(secondaryTextColor)
-            )
+            
+            // 오른쪽: 추가 버튼
+            var addButtonModifier = WidgetModifier
+                .width(28f)
+                .height(28f)
+                .backgroundColor(primaryColor)
+                .cornerRadius(14f)
+            
+            if (!isPreview) {
+                addButtonModifier = addButtonModifier.clickAction(
+                    ComponentName(context, TodoActivity::class.java)
+                )
+            }
+            
+            Box(
+                modifier = addButtonModifier,
+                contentProperty = {
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                }
+            ) {
+                Text(
+                    text = "+",
+                    fontSize = 18f,
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                    fontColor = Color.White
+                )
+            }
         }
     }
-
-    private fun WidgetScope.TodoList(
-        modifier: WidgetModifier = WidgetModifier,
-        todos: List<com.widgetkit.core.database.TodoEntity>
-    ) {
-        fun WidgetScope.TodoItem(todo: com.widgetkit.core.database.TodoEntity) {
-            Row(
+    
+    /**
+     * Todo 리스트
+     */
+    private fun WidgetScope.TodoList(todos: List<TodoEntity>) {
+        if (todos.isEmpty()) {
+            EmptyState()
+        } else {
+            List(
                 modifier = WidgetModifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
+                    .expandHeight()
                     .padding(vertical = 4f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                val isCompleted = todo.status == TodoStatus.COMPLETED
-
-                CheckBox(modifier = WidgetModifier.wrapContentHeight().fillMaxWidth()) {
-                    TextProperty {
-                        TextContent {
-                            text = todo.title
-                        }
-                        fontSize = 12f
-                        fontWeight = if (isCompleted) {
-                            FontWeight.FONT_WEIGHT_NORMAL
-                        } else {
-                            FontWeight.FONT_WEIGHT_MEDIUM
-                        }
-                        val theme = getLocal(WidgetLocalTheme)
-                        val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-                        val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
-
-                        FontColor {
-                            Color {
-                                argb = if (isCompleted) {
-                                    completedColor
-                                } else {
-                                    activeColor
-                                }
-                            }
-                        }
+                todos.take(5).forEach { todo ->
+                    item {
+                        TodoItem(todo)
                     }
-                }
-
-                // 시간 표시 (dateTime이 있는 경우)
-                if (todo.dateTime != null) {
-                    val theme = getLocal(WidgetLocalTheme)
-                    val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-
-                    Text(
-                        modifier = WidgetModifier.wrapContentWidth(),
-                        text = TodoDateUtils.formatTime(todo.dateTime),
-                        fontSize = 10f,
-                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                        fontColor = Color(secondaryTextColor)
-                    )
-                }
-            }
-        }
-
-        List(
-            modifier = modifier
-                .padding(top = 12f),
-            contentProperty = {
-                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-            }
-        ) {
-            todos.forEach { todo ->
-                item {
-                    TodoItem(todo = todo)
                 }
             }
         }
     }
-
-    private fun WidgetScope.Footer(
-        modifier: WidgetModifier = WidgetModifier,
-        todos: List<com.widgetkit.core.database.TodoEntity>
-    ) {
-        val totalCount = todos.size
-        val completedCount = todos.count { it.status == TodoStatus.COMPLETED }
-        // 푸터: 요약 정보
+    
+    /**
+     * 빈 상태 표시
+     */
+    private fun WidgetScope.EmptyState() {
         val theme = getLocal(WidgetLocalTheme)
-        val secondaryTextColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-
-        Row(modifier = modifier) {
+        val secondaryColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+        
+        Box(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .expandHeight(),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
+        ) {
             Text(
-                text = "$totalCount tasks • $completedCount completed",
-                fontSize = 10f,
+                text = "할 일이 없습니다",
+                fontSize = 13f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                fontColor = Color(secondaryTextColor)
+                fontColor = Color(secondaryColor)
             )
         }
     }
-
-    override fun getUpdateManager(): ComponentUpdateManager<*> = TodayTodoUpdateManager
-
-    override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
-
-    override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
-
+    
     /**
-     * 개별 Todo 아이템 표시
+     * 개별 Todo 아이템
      */
-
+    private fun WidgetScope.TodoItem(todo: TodoEntity) {
+        val theme = getLocal(WidgetLocalTheme)
+        val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+        val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        
+        val isCompleted = todo.status == TodoStatus.COMPLETED
+        
+        Row(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(vertical = 3f),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+            }
+        ) {
+            CheckBox(
+                modifier = WidgetModifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                TextProperty {
+                    TextContent {
+                        text = todo.title
+                    }
+                    fontSize = 13f
+                    fontWeight = if (isCompleted) {
+                        FontWeight.FONT_WEIGHT_NORMAL
+                    } else {
+                        FontWeight.FONT_WEIGHT_MEDIUM
+                    }
+                    FontColor {
+                        Color {
+                            argb = if (isCompleted) completedColor else activeColor
+                        }
+                    }
+                }
+            }
+            
+            // 시간 표시
+            if (todo.dateTime != null) {
+                Text(
+                    modifier = WidgetModifier
+                        .wrapContentWidth()
+                        .padding(start = 4f),
+                    text = TodoDateUtils.formatTime(todo.dateTime),
+                    fontSize = 10f,
+                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                    fontColor = Color(completedColor)
+                )
+            }
+        }
+    }
+    
     /**
-     * Room DB에서 오늘 날짜의 Todo를 조회
+     * 구분선
      */
-    private fun loadTodayTodos(
-        context: Context,
-        date: String
-    ): List<com.widgetkit.core.database.TodoEntity> {
+    private fun WidgetScope.Divider() {
+        val theme = getLocal(WidgetLocalTheme)
+        val dividerColor = (theme?.outlineVariant as? Int) ?: Color(0xFFE0E0E0).toArgb()
+        
+        Box(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .height(1f)
+                .padding(vertical = 8f)
+                .backgroundColor(dividerColor)
+        ) {}
+    }
+    
+    /**
+     * 푸터: 완료 개수 표시
+     */
+    private fun WidgetScope.Footer(todos: List<TodoEntity>) {
+        val theme = getLocal(WidgetLocalTheme)
+        val secondaryColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
+        
+        val totalCount = todos.size
+        val completedCount = todos.count { it.status == TodoStatus.COMPLETED }
+        
+        Row(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Text(
+                text = "$totalCount tasks • $completedCount completed",
+                fontSize = 11f,
+                fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                fontColor = Color(secondaryColor)
+            )
+        }
+    }
+    
+    /**
+     * DB에서 Todo 로드
+     */
+    private fun loadTodosFromDb(context: Context, date: String): List<TodoEntity> {
         return try {
             runBlocking {
                 val todoDao = TodoDatabase.getDatabase(context).todoDao()
@@ -303,64 +361,40 @@ class TodayTodoWidget : WidgetComponent() {
             emptyList()
         }
     }
-
+    
     /**
-     * Preview 모드용 샘플 Todo 데이터
+     * Preview용 샘플 데이터
      */
-    private fun getPreviewTodos(): List<com.widgetkit.core.database.TodoEntity> {
+    private fun getPreviewTodos(): List<TodoEntity> {
         val todayDate = TodoDateUtils.getTodayDateString()
-        val calendar = java.util.Calendar.getInstance()
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 17) // 5:00 PM
-        calendar.set(java.util.Calendar.MINUTE, 0)
-        val dateTime = calendar.timeInMillis
-
         return listOf(
-            com.widgetkit.core.database.TodoEntity(
+            TodoEntity(
                 id = 1,
-                title = "Finish project report",
-                description = null,
+                title = "팀 미팅 준비",
                 date = todayDate,
-                dateTime = null,
-                status = TodoStatus.COMPLETED,
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
+                dateTime = System.currentTimeMillis() + 3600000,
+                status = TodoStatus.INCOMPLETE
             ),
-            com.widgetkit.core.database.TodoEntity(
+            TodoEntity(
                 id = 2,
-                title = "Grocery shopping",
-                description = null,
+                title = "프로젝트 리뷰",
                 date = todayDate,
-                dateTime = dateTime,
-                status = TodoStatus.PENDING,
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
+                status = TodoStatus.COMPLETED
             ),
-            com.widgetkit.core.database.TodoEntity(
+            TodoEntity(
                 id = 3,
-                title = "Gym workout",
-                description = null,
+                title = "점심 약속",
                 date = todayDate,
-                dateTime = null,
-                status = TodoStatus.INCOMPLETE,
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
+                dateTime = System.currentTimeMillis() + 7200000,
+                status = TodoStatus.INCOMPLETE
             )
         )
     }
-
-    fun getTitleDate(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.TitleDate, gridIndex)
-    }
-
-    fun getSelectedDate(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.SelectedDate, gridIndex)
-    }
-
-    fun getAllTodoNumber(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.AllTodoNumber, gridIndex)
-    }
-
-    fun getCompletedTodoNumber(gridIndex: Int): Int {
-        return generateViewId(TodayTodoViewIdType.AllTodoNumber, gridIndex)
-    }
+    
+    override fun getUpdateManager(): ComponentUpdateManager<*> = TodayTodoUpdateManager
+    
+    override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
+    
+    override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
 }
+
