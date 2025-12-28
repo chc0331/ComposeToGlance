@@ -3,13 +3,14 @@ package com.widgetkit.core
 import com.widgetkit.core.component.WidgetComponent
 
 enum class SizeType {
-    TINY, SMALL, MEDIUM, LARGE;
+    TINY, SMALL, MEDIUM, MEDIUM_PLUS, LARGE;
 
     override fun toString(): String {
         return when (this) {
             TINY -> "Tiny"
             SMALL -> "Small"
             MEDIUM -> "Medium"
+            MEDIUM_PLUS -> "Medium Plus"
             else -> "Large"
         }
     }
@@ -19,6 +20,7 @@ enum class SizeType {
             TINY -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_TINY
             SMALL -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_SMALL
             MEDIUM -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_MEDIUM
+            MEDIUM_PLUS -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_MEDIUM_PLUS
             else -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_LARGE
         }
     }
@@ -29,6 +31,7 @@ enum class SizeType {
                 "Tiny" -> TINY
                 "Small" -> SMALL
                 "Medium" -> MEDIUM
+                "Medium Plus" -> MEDIUM_PLUS
                 else -> LARGE
             }
         }
@@ -44,6 +47,7 @@ fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
         SizeType.TINY -> 2 to 2
         SizeType.SMALL -> 4 to 2
         SizeType.MEDIUM -> 4 to 4
+        SizeType.MEDIUM_PLUS -> 6 to 4
         else -> 8 to 4
     }
 }

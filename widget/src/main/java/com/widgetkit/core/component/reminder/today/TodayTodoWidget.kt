@@ -59,7 +59,7 @@ class TodayTodoWidget : WidgetComponent() {
     
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.BASIC
     
-    override fun getSizeType(): SizeType = SizeType.MEDIUM
+    override fun getSizeType(): SizeType = SizeType.MEDIUM_PLUS
     
     override fun getWidgetTag(): String = "TodayTodo"
     

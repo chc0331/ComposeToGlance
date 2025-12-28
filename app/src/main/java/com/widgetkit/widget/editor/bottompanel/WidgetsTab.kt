@@ -130,9 +130,9 @@ fun WidgetsList(
                         )
                     }
                     // 위젯 리스트 - 순차적으로 나타나는 애니메이션
-                    // 1x1 기준으로 가로 4개가 들어가도록 4열로 설정
+                    // 1x1 기준으로 가로 8개가 들어가도록 8열로 설정 (MEDIUM_PLUS: 6열, LARGE: 8열 수용)
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(4),
+                        columns = GridCells.Fixed(8),
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.surface),

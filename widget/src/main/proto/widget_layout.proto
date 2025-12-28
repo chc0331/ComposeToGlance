@@ -11,7 +11,8 @@ enum SizeType {
   SIZE_TYPE_TINY = 1;
   SIZE_TYPE_SMALL = 2;
   SIZE_TYPE_MEDIUM = 3;
-  SIZE_TYPE_LARGE = 4;
+  SIZE_TYPE_MEDIUM_PLUS = 4;
+  SIZE_TYPE_LARGE = 5;
 }
 
 // 위젯 카테고리

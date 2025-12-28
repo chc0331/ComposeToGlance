@@ -85,6 +85,7 @@ class LargeAppWidget : DslAppWidget() {
         val (rows, columns) = when (currentLayout.sizeType) {
             SizeType.SIZE_TYPE_SMALL -> 2 to 4
             SizeType.SIZE_TYPE_MEDIUM -> 4 to 4
+            SizeType.SIZE_TYPE_MEDIUM_PLUS -> 4 to 6
             SizeType.SIZE_TYPE_LARGE -> 4 to 8
             else -> 4 to 8 // 기본값 (LARGE)
         }

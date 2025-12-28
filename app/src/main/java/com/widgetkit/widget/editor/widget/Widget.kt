@@ -241,6 +241,7 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
             SizeType.TINY -> DpSize(68.dp, 80.dp)
             SizeType.SMALL -> DpSize(148.dp, 80.dp)
             SizeType.MEDIUM -> DpSize(148.dp, 160.dp)
+            SizeType.MEDIUM_PLUS -> DpSize(220.dp, 160.dp)
             else -> DpSize(50.dp, 50.dp)
         }
     }

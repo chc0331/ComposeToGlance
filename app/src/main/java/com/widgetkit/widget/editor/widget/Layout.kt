@@ -119,6 +119,7 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
     when (layoutType) {
         "Small" -> createGridRow(columns = 4, showText = showText)
         "Medium" -> createGridLayout(rows = 4, columns = 4, showText = showText)
+        "Medium Plus" -> createGridLayout(rows = 4, columns = 6, showText = showText)
         "Large" -> createGridLayout(rows = 4, columns = 8, showText = showText)
     }
 }
