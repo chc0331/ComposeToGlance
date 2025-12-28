@@ -29,24 +29,66 @@ import androidx.compose.ui.unit.dp
 import com.widgetkit.core.LayoutDpSize
 import com.widgetkit.core.util.getSystemBackgroundRadius
 
-data class Layout(val sizeType: String) {
+/**
+ * 레이아웃 타입 열거형
+ */
+enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumns: Int) {
+    SMALL("Small", 1, 2),
+    MEDIUM("Medium", 2, 2),
+    LARGE("Large", 2, 4);
+    
+    companion object {
+        fun fromString(sizeType: String): LayoutType {
+            return when (sizeType) {
+                "Small" -> SMALL
+                "Medium" -> MEDIUM
+                "Large" -> LARGE
+                else -> MEDIUM
+            }
+        }
+    }
+}
+
+data class Layout(val sizeType: String, val gridMultiplier: Int = 1) {
+    val layoutType: LayoutType get() = LayoutType.fromString(sizeType)
+    
     fun getDpSize(): DpSize {
         val size = LayoutDpSize[sizeType] ?: Pair(155.dp, 185.dp)
         return DpSize(size.first, size.second)
+    }
+    
+    /**
+     * 동적 그리드 스펙 계산 (기본 그리드 × 배수)
+     */
+    fun getDynamicGridSpec(): LayoutGridSpec {
+        val baseSpec = layoutType
+        return LayoutGridSpec(
+            rows = baseSpec.baseRows * gridMultiplier,
+            columns = baseSpec.baseColumns * gridMultiplier
+        )
     }
 }
 
 data class LayoutGridSpec(val rows: Int, val columns: Int)
 
+/**
+ * 기존 호환성을 위한 정적 그리드 스펙
+ */
 private val layoutGridSpecs = mapOf(
     "Full" to mapOf(
-        "Small" to LayoutGridSpec(rows = 2, columns = 4),
-        "Medium" to LayoutGridSpec(rows = 4, columns = 4),
-        "Large" to LayoutGridSpec(rows = 4, columns = 8)
+        "Small" to LayoutGridSpec(rows = 1, columns = 2),
+        "Medium" to LayoutGridSpec(rows = 2, columns = 2),
+        "Large" to LayoutGridSpec(rows = 2, columns = 4)
     )
 )
 
-fun Layout.gridSpec(): LayoutGridSpec? = layoutGridSpecs["Full"]?.get(sizeType)
+/**
+ * 레이아웃의 그리드 스펙을 반환 (항상 동적 계산 사용)
+ */
+fun Layout.gridSpec(): LayoutGridSpec? {
+    return getDynamicGridSpec()
+}
+
 
 @Composable
 fun ClickableLayoutComponent(
@@ -111,16 +153,56 @@ fun LayoutComponent(
     }
 }
 
+@Composable
+fun LayoutComponent(
+    layout: Layout,
+    showText: Boolean = false,
+    isPreview: Boolean = false
+) {
+    val context = LocalContext.current
+    var (width, height) = LayoutDpSize[layout.sizeType] ?: Pair(180.dp, 80.dp)
+    var cornerRadius = context.getSystemBackgroundRadius()
+    if (isPreview) {
+        width = width * 0.4f
+        height = height * 0.4f
+        cornerRadius = cornerRadius * 0.4f
+    }
+    Box(
+        modifier = Modifier
+            .size(width, height)
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        DynamicLayoutComponent(layout, showText)
+    }
+}
+
 /**
- * Full 레이아웃 타입의 컴포넌트
+ * Full 레이아웃 타입의 컴포넌트 (정적 그리드)
  */
 @Composable
 private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
     when (layoutType) {
-        "Small" -> createGridRow(columns = 4, showText = showText)
-        "Medium" -> createGridLayout(rows = 4, columns = 4, showText = showText)
+        "Small" -> createGridLayout(rows = 1, columns = 2, showText = showText)
+        "Medium" -> createGridLayout(rows = 2, columns = 2, showText = showText)
         "Medium Plus" -> createGridLayout(rows = 4, columns = 6, showText = showText)
-        "Large" -> createGridLayout(rows = 4, columns = 8, showText = showText)
+        "Large" -> createGridLayout(rows = 2, columns = 4, showText = showText)
+        else -> createGridLayout(rows = 2, columns = 2, showText = showText)
+    }
+}
+
+/**
+ * 동적 그리드 배수를 고려한 레이아웃 컴포넌트
+ */
+@Composable
+private fun DynamicLayoutComponent(layout: Layout, showText: Boolean) {
+    val gridSpec = layout.gridSpec()
+    if (gridSpec != null) {
+        createGridLayout(rows = gridSpec.rows, columns = gridSpec.columns, showText = showText)
+    } else {
+        // fallback to static layout
+        FullLayoutComponent(layout.sizeType, showText)
     }
 }
 

@@ -39,7 +39,7 @@ enum class SizeType {
 }
 
 /**
- * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환
+ * 위젯 사이즈 타입을 파싱하여 그리드에서 차지하는 셀 수를 반환 (기본 그리드 기준)
  * @return Pair<width in cells, height in cells>
  */
 fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
@@ -50,4 +50,29 @@ fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
         SizeType.MEDIUM_PLUS -> 6 to 4
         else -> 8 to 4
     }
+}
+
+/**
+ * 동적 그리드에서 위젯이 차지하는 셀 수를 계산 (기본 사이즈 × 그리드 배수)
+ * @param gridMultiplier 그리드 배수 (1, 2, 4, 6)
+ * @return Pair<width in cells, height in cells>
+ */
+fun WidgetComponent.getSizeInCells(gridMultiplier: Int): Pair<Int, Int> {
+    val baseSizeInCells = getSizeInCells()
+    val validMultiplier = if (gridMultiplier in listOf(1, 2, 4, 6)) gridMultiplier else 1
+    
+    return Pair(
+        baseSizeInCells.first * validMultiplier,
+        baseSizeInCells.second * validMultiplier
+    )
+}
+
+/**
+ * 레이아웃 타입에 따른 위젯 사이즈 계산
+ * @param layoutType 레이아웃 타입
+ * @param gridMultiplier 그리드 배수
+ * @return Pair<width in cells, height in cells>
+ */
+fun WidgetComponent.getSizeInCellsForLayout(layoutType: String, gridMultiplier: Int = 1): Pair<Int, Int> {
+    return getSizeInCells(gridMultiplier)
 }

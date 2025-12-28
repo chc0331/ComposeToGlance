@@ -16,6 +16,7 @@ import com.widgetkit.widget.editor.widget.PositionedWidget
 import com.widgetkit.widget.editor.widget.toPixels
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.getSizeInCells
+import com.widgetkit.core.getSizeInCellsForLayout
 
 @Composable
 fun WidgetDropHandler(
@@ -80,7 +81,13 @@ fun WidgetDropHandler(
         if (bounds == null || spec == null) {
             return@DropTarget
         }
-        val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
+        val currentLayout = selectedLayout ?: return@DropTarget
+        val widgetSizeInCells = widget.getSizeInCellsForLayout(
+            currentLayout.sizeType,
+            currentLayout.gridMultiplier
+        )
+        val widgetWidthCells = widgetSizeInCells.first
+        val widgetHeightCells = widgetSizeInCells.second
         val gridCells = GridCalculator.calculateGridCells(spec, bounds)
 
         val bestStart = GridCalculator.calculateBestCellPosition(

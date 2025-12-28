@@ -35,6 +35,7 @@ import com.widgetkit.widget.editor.widget.WidgetItem
 import com.widgetkit.widget.editor.widget.toPixels
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.getSizeInCells
+import com.widgetkit.core.getSizeInCellsForLayout
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import kotlin.math.roundToInt
 
@@ -140,7 +141,13 @@ private fun rememberHoveredCellIndices(
         }
 
         val spec = selectedLayout.gridSpec() ?: return@remember emptyList()
-        val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
+        val currentLayout = selectedLayout ?: return@remember emptyList()
+        val widgetSizeInCells = draggedWidget.getSizeInCellsForLayout(
+            currentLayout.sizeType,
+            currentLayout.gridMultiplier
+        )
+        val widgetWidthCells = widgetSizeInCells.first
+        val widgetHeightCells = widgetSizeInCells.second
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
 
         val bestStart = GridCalculator.calculateBestCellPosition(

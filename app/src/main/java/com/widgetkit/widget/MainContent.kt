@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +34,8 @@ import com.widgetkit.widget.editor.canvas.WidgetCanvas
 import com.widgetkit.widget.editor.WidgetEditorContainer
 import com.widgetkit.widget.editor.canvas.CanvasConstants
 import com.widgetkit.widget.editor.canvas.canvasBorder
+import com.widgetkit.widget.editor.settings.GridSettingsButton
+import com.widgetkit.widget.editor.settings.GridSettingsPanel
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetkit.core.component.WidgetComponent
 
@@ -55,6 +59,10 @@ fun MainContent(
                 },
                 modifier = Modifier.height(72.dp),
                 actions = {
+                    // 그리드 설정 버튼
+                    GridSettingsButton(
+                        onClick = { viewModel.showGridSettingsPanel() }
+                    )
                     TextButton(onClick = { viewModel.save(context) }) {
                         Text(
                             "저장",
@@ -71,6 +79,13 @@ fun MainContent(
             )
         }
     ) { paddingValues ->
+        val gridSettings by viewModel.gridSettings.collectAsState()
+        
+        // 그리드 설정 초기화
+        LaunchedEffect(Unit) {
+            viewModel.initializeGridSettings(context)
+        }
+        
         WidgetEditorContainer(
             modifier = Modifier
                 .fillMaxSize()
@@ -116,5 +131,14 @@ fun MainContent(
                 )
             }
         }
+        
+        // 그리드 설정 패널
+        GridSettingsPanel(
+            isVisible = viewModel.showGridSettings,
+            onDismiss = { viewModel.hideGridSettingsPanel() },
+            onSettingsChanged = { newSettings ->
+                // GridSettingsPanel에서 직접 DataStore에 저장하므로 별도 처리 불필요
+            }
+        )
     }
 }

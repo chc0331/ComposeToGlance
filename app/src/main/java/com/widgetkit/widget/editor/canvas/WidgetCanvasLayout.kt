@@ -36,7 +36,7 @@ fun BoxScope.LayoutDisplay(
                 }
         ) {
             LayoutComponent(
-                layoutType = layout.sizeType,
+                layout = layout,
                 showText = false
             )
         }

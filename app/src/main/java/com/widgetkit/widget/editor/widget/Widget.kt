@@ -36,6 +36,7 @@ import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.getSizeInCells
+import com.widgetkit.core.getSizeInCellsForLayout
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.view.AppWidgetView
@@ -248,14 +249,15 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
 
     val rootPadding = 8.dp
     val contentPadding = 4.dp
-    val rowCell = layout.gridSpec()?.rows ?: 1
-    val colCell = layout.gridSpec()?.columns ?: 1
+    val gridSpec = layout.gridSpec()
+    val rowCell = gridSpec?.rows ?: 1
+    val colCell = gridSpec?.columns ?: 1
     val containerSize = layout.getDpSize()
     val cellWidth = (containerSize.width - rootPadding * 2) / colCell
     val cellHeight = (containerSize.height - rootPadding * 2) / rowCell
     
-    // getSizeInCells()를 사용하여 위젯이 차지하는 셀 수를 동적으로 계산
-    val sizeInCells = getSizeInCells()
+    // 레이아웃 타입과 그리드 배수를 고려한 동적 사이즈 계산
+    val sizeInCells = this.getSizeInCellsForLayout(layout.sizeType, layout.gridMultiplier)
     val widthCells: Int = sizeInCells.first
     val heightCells: Int = sizeInCells.second
     

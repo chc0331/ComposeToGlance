@@ -28,6 +28,7 @@ import com.widgetkit.widget.editor.util.GridCalculator
 import com.widgetkit.widget.editor.util.LayoutBounds
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetkit.widget.editor.widget.PositionedWidget
+import com.widgetkit.core.getSizeInCellsForLayout
 import com.widgetkit.widget.editor.widget.WidgetItem
 import com.widgetkit.widget.editor.widget.toPixels
 import com.widgetkit.widget.editor.widget.gridSpec
@@ -70,7 +71,13 @@ fun WidgetCanvas(
         }
 
         val (startRow, startCol) = position
-        val (widgetWidthCells, widgetHeightCells) = widget.getSizeInCells()
+        val currentLayout = selectedLayout ?: return@LaunchedEffect
+        val widgetSizeInCells = widget.getSizeInCellsForLayout(
+            currentLayout.sizeType,
+            currentLayout.gridMultiplier
+        )
+        val widgetWidthCells = widgetSizeInCells.first
+        val widgetHeightCells = widgetSizeInCells.second
         val cellIndices = GridCalculator.calculateCellIndices(
             startRow,
             startCol,

@@ -83,11 +83,11 @@ class LargeAppWidget : DslAppWidget() {
 
         // currentLayout.sizeType에 따라 그리드 스펙 계산
         val (rows, columns) = when (currentLayout.sizeType) {
-            SizeType.SIZE_TYPE_SMALL -> 2 to 4
-            SizeType.SIZE_TYPE_MEDIUM -> 4 to 4
+            SizeType.SIZE_TYPE_SMALL -> 1 to 2
+            SizeType.SIZE_TYPE_MEDIUM -> 2 to 2
             SizeType.SIZE_TYPE_MEDIUM_PLUS -> 4 to 6
-            SizeType.SIZE_TYPE_LARGE -> 4 to 8
-            else -> 4 to 8 // 기본값 (LARGE)
+            SizeType.SIZE_TYPE_LARGE -> 2 to 4
+            else -> 2 to 4 // 기본값 (LARGE)
         }
 
         val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / columns

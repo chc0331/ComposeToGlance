@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
 import com.widgetkit.widget.editor.widget.LayoutGridSpec
+import com.widgetkit.widget.editor.settings.GridSettings
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -19,6 +20,7 @@ data class GridCell(val index: Int, val rect: Rect)
 
 /**
  * 그리드 계산 유틸리티 클래스
+ * 2N 배수 기반 동적 그리드 계산 지원
  */
 object GridCalculator {
     /**
@@ -44,6 +46,21 @@ object GridCalculator {
             }
         }
         return cells
+    }
+    
+    /**
+     * 동적 그리드 스펙 계산 (기본 그리드 × 2N 배수)
+     */
+    fun calculateDynamicGridSpec(
+        baseRows: Int,
+        baseColumns: Int,
+        multiplier: Int
+    ): LayoutGridSpec {
+        val validMultiplier = if (GridSettings.isValidMultiplier(multiplier)) multiplier else 1
+        return LayoutGridSpec(
+            rows = baseRows * validMultiplier,
+            columns = baseColumns * validMultiplier
+        )
     }
 
     /**
@@ -153,5 +170,55 @@ object GridCalculator {
             relativeCenter.x - widgetWidthPx / 2f,
             relativeCenter.y - widgetHeightPx / 2f
         )
+    }
+    
+    /**
+     * 동적 그리드에서 위젯 사이즈를 2N 배수에 맞게 조정
+     */
+    fun calculateScaledWidgetSize(
+        baseWidthCells: Int,
+        baseHeightCells: Int,
+        gridMultiplier: Int
+    ): Pair<Int, Int> {
+        val validMultiplier = if (GridSettings.isValidMultiplier(gridMultiplier)) gridMultiplier else 1
+        return Pair(
+            baseWidthCells * validMultiplier,
+            baseHeightCells * validMultiplier
+        )
+    }
+    
+    /**
+     * 그리드 배수 변경 시 기존 셀 인덱스를 새로운 그리드에 맞게 변환
+     */
+    fun migrateCellIndices(
+        oldIndices: List<Int>,
+        oldSpec: LayoutGridSpec,
+        newSpec: LayoutGridSpec
+    ): List<Int> {
+        if (oldSpec.rows == newSpec.rows && oldSpec.columns == newSpec.columns) {
+            return oldIndices // 변경사항 없음
+        }
+        
+        val newIndices = mutableListOf<Int>()
+        
+        for (oldIndex in oldIndices) {
+            // 기존 인덱스를 2D 좌표로 변환
+            val oldRow = oldIndex / oldSpec.columns
+            val oldCol = oldIndex % oldSpec.columns
+            
+            // 비율을 유지하여 새로운 그리드에서의 좌표 계산
+            val newRow = (oldRow * newSpec.rows) / oldSpec.rows
+            val newCol = (oldCol * newSpec.columns) / oldSpec.columns
+            
+            // 새로운 인덱스 계산
+            val newIndex = newRow * newSpec.columns + newCol
+            
+            // 유효한 범위 내에서만 추가
+            if (newIndex < newSpec.rows * newSpec.columns) {
+                newIndices.add(newIndex)
+            }
+        }
+        
+        return newIndices.distinct().sorted()
     }
 }
