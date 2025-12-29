@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
-import com.widgetkit.core.SizeType
 import com.widgetkit.core.component.update.ComponentUpdateHelper
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoDatabase
@@ -21,39 +20,28 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
     override val widget: TodayTodoWidget
         get() = TodayTodoWidget()
 
-    /**
-     * 위젯 상태 동기화
-     */
-    override suspend fun syncComponentState(context: Context) {
+    override suspend fun syncState(context: Context, data: TodayTodoData) {
         // DataStore에서 현재 선택된 날짜 로드
-        val currentData = TodayTodoDataStore.loadData(context)
-        val selectedDate = currentData.selectedDate
+        val selectedDate = data.selectedDate
         val data = loadTodayTodos(context, selectedDate)
-        Log.d(TAG, "Sync widget state for date $selectedDate: ${data.totalCount} tasks, ${data.completedCount} completed")
+        Log.d(
+            TAG,
+            "Sync widget state for date $selectedDate: ${data.totalCount} tasks, ${data.completedCount} completed"
+        )
         // DataStore에 저장
         TodayTodoDataStore.saveData(context, data)
-        // 위젯 업데이트
-        updateComponent(context, data)
+        updateByState(context, data)
     }
 
-    /**
-     * 컴포넌트 업데이트
-     */
-    override suspend fun updateComponent(context: Context, data: TodayTodoData) {
-        Log.d(TAG, "Update component: date=${data.selectedDate}, ${data.totalCount} tasks, ${data.completedCount} completed")
-        // DataStore에 저장
+    override suspend fun updateByPartially(context: Context, data: TodayTodoData) {
+    }
+
+    override suspend fun updateByState(context: Context, data: TodayTodoData) {
         TodayTodoDataStore.saveData(context, data)
-        // 배치된 위젯 찾아서 업데이트
         val placedComponents =
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-        Log.d(TAG, "Found ${placedComponents.size} placed components")
-
         placedComponents.forEach { (widgetId, _) ->
             updateWidget(context, widgetId)
-        }
-
-        if (placedComponents.isEmpty()) {
-            Log.w(TAG, "No placed components found for tag: ${widget.getWidgetTag()}")
         }
     }
 
@@ -66,15 +54,16 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
             val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
 
             Log.d(TAG, "Updating widget $widgetId with glanceId $glanceId")
-            
+
             // WIDGET_SYNC_KEY를 업데이트하여 위젯 갱신 트리거
             updateAppWidgetState(context, glanceId) { state ->
-                state[com.widgetkit.core.provider.DslAppWidget.WIDGET_SYNC_KEY] = System.currentTimeMillis()
+                state[com.widgetkit.core.provider.DslAppWidget.WIDGET_SYNC_KEY] =
+                    System.currentTimeMillis()
             }
-            
+
             // LargeAppWidget을 직접 업데이트
             LargeAppWidget().update(context, glanceId)
-            
+
             Log.d(TAG, "Widget updated: $widgetId")
         } catch (e: Exception) {
             Log.e(TAG, "Error updating widget: $widgetId", e)
@@ -94,7 +83,7 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
             TodayTodoData.empty(date)
         }
     }
-    
+
     /**
      * 특정 날짜의 Todo 데이터 로드
      */

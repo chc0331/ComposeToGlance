@@ -11,6 +11,7 @@ import com.widgetkit.core.R
 import com.widgetkit.core.component.update.ComponentUpdateHelper
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.proto.WidgetLayout
+import com.widgetkit.core.provider.LargeAppWidget
 
 object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
@@ -18,9 +19,18 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     override val widget: BatteryWidget
         get() = BatteryWidget()
 
-    override suspend fun updateComponent(context: Context, data: BatteryData) {
-        Log.i(TAG, "updateComponent $data")
-        // 새로운 ComponentDataStore 사용
+    override suspend fun updateByState(context: Context, data: BatteryData) {
+        val glanceManager = GlanceAppWidgetManager(context)
+        BatteryComponentDataStore.saveData(context, data)
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, component) ->
+                val glanceId = glanceManager.getGlanceIdBy(widgetId)
+                updateBatteryWidgetState(context, widgetId, data)
+                LargeAppWidget().update(context, glanceId)
+            }
+    }
+
+    override suspend fun updateByPartially(context: Context, data: BatteryData) {
         BatteryComponentDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
@@ -41,12 +51,12 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             }
     }
 
-    override suspend fun syncComponentState(context: Context) {
-        val batteryData = BatteryComponentDataStore.loadData(context)
+    override suspend fun syncState(context: Context, data: BatteryData) {
+//        val batteryData = BatteryComponentDataStore.loadData(context)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->
-                Log.i(TAG, "Sync widget state $widgetId $batteryData")
-                updateBatteryWidgetState(context, widgetId, batteryData)
+                Log.i(TAG, "Sync widget state $widgetId $data")
+                updateBatteryWidgetState(context, widgetId, data)
             }
     }
 

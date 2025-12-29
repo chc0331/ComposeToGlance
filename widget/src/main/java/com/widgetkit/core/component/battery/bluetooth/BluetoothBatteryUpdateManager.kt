@@ -22,24 +22,52 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             "BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers"
         )
 
-    override suspend fun updateComponent(context: Context, data: BatteryData) {
+    override suspend fun updateByPartially(context: Context, data: BatteryData) {
         when (data.deviceType) {
             DeviceType.BLUETOOTH_EARBUDS -> {
-                EarbudsBatteryUpdateManager.updateComponent(context, data)
+                EarbudsBatteryUpdateManager.updateByPartially(context, data)
             }
+
             DeviceType.BLUETOOTH_WATCH -> {
-                WatchBatteryUpdateManager.updateComponent(context, data)
+                WatchBatteryUpdateManager.updateByPartially(context, data)
             }
+
             else -> {
                 // 다른 타입은 무시
             }
         }
     }
 
-    override suspend fun syncComponentState(context: Context) {
-        // 각 디바이스 타입별로 상태 동기화
-        EarbudsBatteryUpdateManager.syncComponentState(context)
-        WatchBatteryUpdateManager.syncComponentState(context)
+    override suspend fun syncState(context: Context, data: BatteryData) {
+        when (data.deviceType) {
+            DeviceType.BLUETOOTH_EARBUDS -> {
+                EarbudsBatteryUpdateManager.updateByPartially(context, data)
+            }
+
+            DeviceType.BLUETOOTH_WATCH -> {
+                WatchBatteryUpdateManager.updateByPartially(context, data)
+            }
+
+            else -> {
+                // 다른 타입은 무시
+            }
+        }
+    }
+
+    override suspend fun updateByState(context: Context, data: BatteryData) {
+        when (data.deviceType) {
+            DeviceType.BLUETOOTH_EARBUDS -> {
+                EarbudsBatteryUpdateManager.updateByState(context, data)
+            }
+
+            DeviceType.BLUETOOTH_WATCH -> {
+                WatchBatteryUpdateManager.updateByState(context, data)
+            }
+
+            else -> {
+                // 다른 타입은 무시
+            }
+        }
     }
 }
 

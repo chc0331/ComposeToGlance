@@ -51,7 +51,8 @@ class TodayTodoAction : WidgetActionCallback {
                 
                 // 위젯 업데이트
                 val updateManager = TodayTodoUpdateManager
-                updateManager.syncComponentState(context)
+                val currentData = TodayTodoDataStore.loadData(context)
+                updateManager.syncState(context, currentData)
                 Log.d(TAG, "Widget updated successfully")
                 
             } else {

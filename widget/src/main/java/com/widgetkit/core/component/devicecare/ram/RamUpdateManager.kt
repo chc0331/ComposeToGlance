@@ -19,22 +19,18 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
     override val widget: RamWidget
         get() = RamWidget()
 
-    override suspend fun syncComponentState(context: Context) {
-        val syncData = DeviceStateCollector.collect(context)
-        val ramUsage = (syncData.memoryUsage * 100f) / syncData.totalMemory
-        val ramData = RamData(ramUsage)
-        RamWidgetDataStore.saveData(context, ramData)
+    override suspend fun updateByState(context: Context, data: RamData) {
+        RamWidgetDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, ramData)
+                updateWidgetState(context, widgetId, data)
                 updateWidget(context, widgetId)
             }
         DeviceCareWorker.registerWorker(context)
     }
 
-    override suspend fun updateComponent(context: Context, data: RamData) {
+    override suspend fun updateByPartially(context: Context, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
                 updateWidgetState(context, widgetId, data)
@@ -52,6 +48,14 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                     false
                 )
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
+            }
+    }
+
+    override suspend fun syncState(context: Context, data: RamData) {
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, _) ->
+                updateWidgetState(context, widgetId, data)
+                updateWidget(context, widgetId)
             }
     }
 

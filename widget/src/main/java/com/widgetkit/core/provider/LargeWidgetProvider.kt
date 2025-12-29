@@ -13,23 +13,26 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.byteArrayPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetkit.core.WidgetComponentRegistry
+import com.widgetkit.core.component.battery.BatteryComponentDataStore
 import com.widgetkit.core.component.battery.BatteryData
 import com.widgetkit.core.component.battery.BatteryStatusReceiver
 import com.widgetkit.core.component.battery.BatteryUpdateManager
-import com.widgetkit.core.component.battery.bluetooth.BluetoothBatteryUpdateManager
 import com.widgetkit.core.component.battery.bluetooth.checkBluetoothBatteryComponentExist
+import com.widgetkit.core.component.battery.bluetooth.earbuds.EarbudsBatteryDataStore
+import com.widgetkit.core.component.battery.bluetooth.earbuds.EarbudsBatteryUpdateManager
+import com.widgetkit.core.component.battery.bluetooth.watch.WatchBatteryDataStore
+import com.widgetkit.core.component.battery.bluetooth.watch.WatchBatteryUpdateManager
 import com.widgetkit.core.component.battery.checkBatteryComponentExist
+import com.widgetkit.core.component.devicecare.DeviceStateCollector
+import com.widgetkit.core.component.devicecare.ram.RamData
 import com.widgetkit.core.component.devicecare.ram.RamUpdateManager
 import com.widgetkit.core.component.devicecare.ram.checkRamWidgetExist
-import com.widgetkit.core.component.devicecare.storage.StorageUpdateManager
-import com.widgetkit.core.component.devicecare.storage.checkStorageWidgetExist
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.proto.SizeType
 import com.widgetkit.core.proto.WidgetLayout
@@ -57,10 +60,10 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalRootPadding
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
-import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 val layoutKey = byteArrayPreferencesKey("layout_key")
 
@@ -219,17 +222,24 @@ class LargeWidgetProvider : GlanceAppWidgetReceiver() {
                     it[layoutKey] = widgetLayoutData.toByteArray()
                 }
                 if (widgetLayoutData.checkBluetoothBatteryComponentExist()) {
-                    BluetoothBatteryUpdateManager.syncComponentState(context)
+                    val earbudsBatteryData = EarbudsBatteryDataStore.loadData(context)
+                    EarbudsBatteryUpdateManager.syncState(context, earbudsBatteryData)
+                    val watchBatteryData = WatchBatteryDataStore.loadData(context)
+                    WatchBatteryUpdateManager.syncState(context, watchBatteryData)
                 }
                 if (widgetLayoutData.checkBatteryComponentExist()) {
-                    BatteryUpdateManager.syncComponentState(context)
+                    val batteryData = BatteryComponentDataStore.loadData(context)
+                    BatteryUpdateManager.syncState(context, batteryData)
                 }
                 if (widgetLayoutData.checkRamWidgetExist()) {
-                    RamUpdateManager.syncComponentState(context)
+                    val syncData = DeviceStateCollector.collect(context)
+                    val ramUsage = (syncData.memoryUsage * 100f) / syncData.totalMemory
+                    val ramData = RamData(ramUsage)
+                    RamUpdateManager.syncState(context, data = ramData)
                 }
-                if (widgetLayoutData.checkStorageWidgetExist()) {
-                    StorageUpdateManager.syncComponentState(context)
-                }
+//                if (widgetLayoutData.checkStorageWidgetExist()) {
+//                    StorageUpdateManager.syncComponentState(context)
+//                }
             }
         }
     }

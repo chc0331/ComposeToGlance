@@ -90,7 +90,7 @@ class TodoActivity : ComponentActivity() {
                                                     TodayTodoDataStore.saveData(this@TodoActivity, data)
                                                     android.util.Log.d("TodoActivity", "Saved to DataStore")
                                                     
-                                                    TodayTodoUpdateManager.updateComponent(
+                                                    TodayTodoUpdateManager.updateByState(
                                                         this@TodoActivity,
                                                         data
                                                     )

@@ -18,9 +18,28 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     override val widget: EarbudsBatteryWidget
         get() = EarbudsBatteryWidget()
 
-    override suspend fun updateComponent(context: Context, data: BatteryData) {
-        EarbudsBatteryDataStore.saveData(context, data)
+    override suspend fun syncState(context: Context, data: BatteryData) {
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, _) ->
+                updateWidgetState(context, widgetId, data)
+                updateWidget(context, widgetId)
+            }
+    }
 
+    override suspend fun updateByState(context: Context, data: BatteryData) {
+        val glanceManager = GlanceAppWidgetManager(context)
+
+        EarbudsBatteryDataStore.saveData(context, data)
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, component) ->
+                val glanceId = glanceManager.getGlanceIdBy(widgetId)
+                updateWidgetState(context, widgetId, data)
+                LargeAppWidget().update(context, glanceId)
+            }
+    }
+
+    override suspend fun updateByPartially(context: Context, data: BatteryData) {
+        EarbudsBatteryDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
                 updateWidgetState(context, widgetId, data)
@@ -42,15 +61,6 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                     )
                 }
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
-            }
-    }
-
-    override suspend fun syncComponentState(context: Context) {
-        val batteryData = EarbudsBatteryDataStore.loadData(context)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, batteryData)
-                updateWidget(context, widgetId)
             }
     }
 

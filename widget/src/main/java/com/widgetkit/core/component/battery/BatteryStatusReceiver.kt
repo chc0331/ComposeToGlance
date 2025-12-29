@@ -81,10 +81,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
      */
     protected open fun onBatteryStatusChanged(context: Context, batteryData: BatteryData) {
         goAsync {
-            BatteryUpdateManager.updateComponent(
-                context,
-                data = batteryData
-            )
+            BatteryUpdateManager.updateByState(context, batteryData)
         }
     }
 

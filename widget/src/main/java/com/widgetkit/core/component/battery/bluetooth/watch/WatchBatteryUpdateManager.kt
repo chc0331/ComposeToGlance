@@ -18,9 +18,26 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     override val widget: WatchBatteryWidget
         get() = WatchBatteryWidget()
 
-    override suspend fun updateComponent(context: Context, data: BatteryData) {
-        WatchBatteryDataStore.saveData(context, data)
+    override suspend fun syncState(context: Context, data: BatteryData) {
+        val batteryData = WatchBatteryDataStore.loadData(context)
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, _) ->
+                updateWidgetState(context, widgetId, batteryData)
+                updateWidget(context, widgetId)
+            }
+    }
 
+    override suspend fun updateByState(context: Context, data: BatteryData) {
+        WatchBatteryDataStore.saveData(context, data)
+        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            .forEach { (widgetId, component) ->
+                updateWidgetState(context, widgetId, data)
+                updateWidget(context, widgetId)
+            }
+    }
+
+    override suspend fun updateByPartially(context: Context, data: BatteryData) {
+        WatchBatteryDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, component) ->
                 updateWidgetState(context, widgetId, data)
@@ -42,15 +59,7 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                     )
                 }
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
-            }
-    }
 
-    override suspend fun syncComponentState(context: Context) {
-        val batteryData = WatchBatteryDataStore.loadData(context)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, batteryData)
-                updateWidget(context, widgetId)
             }
     }
 

@@ -306,7 +306,7 @@ class TodayTodoViewModel(
                     applicationContext, 
                     data
                 )
-                TodayTodoUpdateManager.updateComponent(applicationContext, data)
+                TodayTodoUpdateManager.updateByState(applicationContext, data)
                 delay(1000)
             }
         }
