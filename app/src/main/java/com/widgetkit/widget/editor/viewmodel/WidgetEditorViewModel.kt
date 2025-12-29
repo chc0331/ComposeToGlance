@@ -74,7 +74,7 @@ class WidgetEditorViewModel(
     val gridSettings: StateFlow<GridSettings> = _gridSettings.asStateFlow()
 
     // 선택된 레이아웃 (기본값: Medium)
-    var selectedLayout by mutableStateOf<Layout?>(Layout("Medium"))
+    var selectedLayout by mutableStateOf<Layout?>(Layout("Large"))
         private set
 
     // 캔버스에 배치된 위젯들 (셀 기반 위치 정보 포함)
