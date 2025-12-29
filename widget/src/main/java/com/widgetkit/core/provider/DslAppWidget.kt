@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
 import androidx.glance.LocalSize
@@ -35,7 +36,6 @@ import com.widgetkit.dsl.proto.modifier.backgroundColor
 import com.widgetkit.dsl.proto.modifier.cornerRadius
 import com.widgetkit.dsl.proto.modifier.height
 import com.widgetkit.dsl.proto.modifier.width
-import com.widgetkit.dsl.theme.GlanceThemeConverter
 import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalBackgroundRadius
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContentRadius
@@ -72,7 +72,8 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val renderer = remember { WidgetRenderer(context) }
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
-        val glanceTheme = GlanceThemeConverter.fromGlanceTheme(context)
+        val theme = GlanceTheme.colors
+
         var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
 
         LaunchedEffect(state) {
@@ -84,7 +85,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
                     WidgetLocalGlanceId provides glanceId,
                     WidgetLocalBackgroundRadius provides backgroundRadius,
                     WidgetLocalContentRadius provides contentRadius,
-                    WidgetLocalTheme provides glanceTheme
+                    WidgetLocalTheme provides theme
                 ) {
                     Box(
                         modifier = WidgetModifier

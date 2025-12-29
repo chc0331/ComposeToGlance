@@ -22,16 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.widgetkit.widget.editor.draganddrop.DragTarget
-import com.widgetkit.dsl.WidgetLayout
-import com.widgetkit.dsl.proto.WidgetMode
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
-import com.widgetkit.dsl.theme.GlanceThemeConverter
-import com.widgetkit.dsl.widget.WidgetRenderer
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.component.WidgetComponent
@@ -40,6 +30,14 @@ import com.widgetkit.core.getSizeInCellsForLayout
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.view.AppWidgetView
+import com.widgetkit.dsl.WidgetLayout
+import com.widgetkit.dsl.proto.WidgetMode
+import com.widgetkit.dsl.widget.WidgetRenderer
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.widget.editor.draganddrop.DragTarget
 
 @Composable
 fun DragTargetWidgetItem(
@@ -139,20 +137,13 @@ private fun WidgetItemContent(
                     // DSL 컴포넌트를 AppWidgetView로 렌더링
                     // renderer를 remember로 캐싱하여 재렌더링 방지
                     val renderer = remember(key) { WidgetRenderer(context) }
-
-                    // Preview 모드에서는 Context 기반 기본 테마 사용
-                    val glanceTheme = remember(key) { 
-                        GlanceThemeConverter.createDefaultTheme(context) 
-                    }
-
                     // layout을 미리 생성하여 캐싱 (깜박임 방지)
-                    val layout = remember(key, glanceTheme) {
+                    val layout = remember(key) {
                         WidgetLayout(mode = WidgetMode.WIDGET_MODE_PREVIEW) {
                             WidgetLocalProvider(
                                 WidgetLocalPreview provides true,
                                 WidgetLocalSize provides size,
-                                WidgetLocalContext provides context,
-                                WidgetLocalTheme provides glanceTheme
+                                WidgetLocalContext provides context
                             ) {
                                 // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
                                 // this는 WidgetLocalProvider가 생성한 childScope를 가리킴

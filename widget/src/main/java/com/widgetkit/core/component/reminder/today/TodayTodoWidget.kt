@@ -364,7 +364,7 @@ class TodayTodoWidget : WidgetComponent() {
      */
     private fun WidgetScope.Divider() {
         val theme = getLocal(WidgetLocalTheme)
-        val dividerColor = (theme?.outlineVariant as? Int) ?: Color(0xFFE0E0E0).toArgb()
+        val dividerColor = (theme?.outline as? Int) ?: Color(0xFFE0E0E0).toArgb()
         
         Box(
             modifier = WidgetModifier
