@@ -1,12 +1,8 @@
 package com.widgetkit.core
 
-import android.content.Context
 import android.util.Log
 import com.widgetkit.core.component.AnalogClockComponent
-import com.widgetkit.core.component.ButtonComponent
 import com.widgetkit.core.component.DigitalClockComponent
-import com.widgetkit.core.component.ImageComponent
-import com.widgetkit.core.component.TextComponent
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.battery.BatteryWidget
 import com.widgetkit.core.component.battery.bluetooth.earbuds.EarbudsBatteryWidget
@@ -16,10 +12,6 @@ import com.widgetkit.core.component.reminder.today.TodayTodoWidget
 import com.widgetkit.core.component.viewid.ViewIdAllocator
 
 fun initializeWidgetComponents() {
-    WidgetComponentRegistry.registerComponent(TextComponent())
-    WidgetComponentRegistry.registerComponent(ImageComponent())
-    WidgetComponentRegistry.registerComponent(ButtonComponent())
-
     WidgetComponentRegistry.registerComponent(AnalogClockComponent())
     WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
@@ -27,7 +19,6 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(EarbudsBatteryWidget())
     WidgetComponentRegistry.registerComponent(WatchBatteryWidget())
     WidgetComponentRegistry.registerComponent(RamWidget())
-//    WidgetComponentRegistry.registerComponent(StorageWidget())
     WidgetComponentRegistry.registerComponent(TodayTodoWidget())
 }
 
