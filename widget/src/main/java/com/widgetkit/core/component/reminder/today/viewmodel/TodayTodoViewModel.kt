@@ -7,6 +7,7 @@ import com.widgetkit.core.component.reminder.today.TodayTodoUpdateManager
 import com.widgetkit.core.component.reminder.today.TodoDateUtils
 import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.reminder.today.TodoStatus
+import com.widgetkit.core.component.reminder.today.ui.SpeechRecognitionManager
 import com.widgetkit.core.database.TodoEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
@@ -32,7 +33,9 @@ data class TodayTodoUiState(
     val showAddDialog: Boolean = false,
     val editingTodo: TodoEntity? = null,
     val showDatePicker: Boolean = false,
-    val inlineTitle: String = ""
+    val inlineTitle: String = "",
+    val isListening: Boolean = false,
+    val speechError: String? = null
 ) {
     val selectedDateString: String
         get() = TodoDateUtils.formatDateString(Date(selectedDateMillis))
@@ -57,6 +60,10 @@ class TodayTodoViewModel(
     private val _editingTodo = MutableStateFlow<TodoEntity?>(null)
     private val _showDatePicker = MutableStateFlow(false)
     private val _inlineTitle = MutableStateFlow("")
+    private val _isListening = MutableStateFlow(false)
+    private val _speechError = MutableStateFlow<String?>(null)
+
+    private var speechRecognitionManager: SpeechRecognitionManager? = null
 
     init {
         // DataStore에서 선택된 날짜 로드
@@ -76,6 +83,47 @@ class TodayTodoViewModel(
                 _selectedDateMillis.value = System.currentTimeMillis()
             }
         }
+
+        // SpeechRecognitionManager 초기화
+        initializeSpeechRecognition()
+    }
+
+    /**
+     * Speech Recognition Manager 초기화
+     */
+    private fun initializeSpeechRecognition() {
+        speechRecognitionManager = SpeechRecognitionManager(
+            context = applicationContext,
+            onResult = { recognizedText ->
+                viewModelScope.launch {
+                    val trimmedText = recognizedText.trim()
+                    if (trimmedText.isNotEmpty()) {
+                        _inlineTitle.value = trimmedText
+                        _isListening.value = false
+                        _speechError.value = null
+                        
+                        // 음성 인식된 텍스트를 자동으로 Todo 항목으로 추가
+                        val currentState = uiState.value
+                        val newTodo = TodoEntity(
+                            title = trimmedText,
+                            date = currentState.selectedDateString,
+                            status = TodoStatus.INCOMPLETE
+                        )
+                        repository.insertTodo(newTodo)
+                        _inlineTitle.value = "" // 추가 후 입력 필드 초기화
+                    } else {
+                        _isListening.value = false
+                        _speechError.value = "인식된 텍스트가 없습니다"
+                    }
+                }
+            },
+            onError = { errorMessage ->
+                viewModelScope.launch {
+                    _isListening.value = false
+                    _speechError.value = errorMessage
+                }
+            }
+        )
     }
 
     // 선택된 날짜에 따른 Todo 리스트
@@ -85,7 +133,7 @@ class TodayTodoViewModel(
         repository.getTodosByDate(dateString)
     }
 
-    // UI 상태를 combine (두 단계로 나눔 - combine은 최대 5개만 지원)
+    // UI 상태를 combine (여러 단계로 나눔 - combine은 최대 5개만 지원)
     private val baseUiState = combine(
         _selectedDateMillis,
         todosFlow,
@@ -99,15 +147,25 @@ class TodayTodoViewModel(
             showAddDialog = showAdd,
             editingTodo = editing,
             showDatePicker = showDate,
-            inlineTitle = ""
+            inlineTitle = "",
+            isListening = false,
+            speechError = null
         )
     }
 
-    val uiState: StateFlow<TodayTodoUiState> = combine(
+    private val intermediateUiState = combine(
         baseUiState,
-        _inlineTitle
-    ) { base, inlineTitle ->
-        base.copy(inlineTitle = inlineTitle)
+        _inlineTitle,
+        _isListening
+    ) { base, inlineTitle, isListening ->
+        base.copy(inlineTitle = inlineTitle, isListening = isListening)
+    }
+
+    val uiState: StateFlow<TodayTodoUiState> = combine(
+        intermediateUiState,
+        _speechError
+    ) { intermediate, speechError ->
+        intermediate.copy(speechError = speechError)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -310,6 +368,40 @@ class TodayTodoViewModel(
                 delay(1000)
             }
         }
+    }
+
+    /**
+     * 음성 인식 시작
+     */
+    fun startSpeechRecognition() {
+        if (_isListening.value) {
+            return
+        }
+
+        _speechError.value = null
+        _isListening.value = true
+        speechRecognitionManager?.startListening()
+    }
+
+    /**
+     * 음성 인식 중지
+     */
+    fun stopSpeechRecognition() {
+        speechRecognitionManager?.stopListening()
+        _isListening.value = false
+    }
+
+    /**
+     * 음성 인식 에러 초기화
+     */
+    fun clearSpeechError() {
+        _speechError.value = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        speechRecognitionManager?.destroy()
+        speechRecognitionManager = null
     }
 }
 

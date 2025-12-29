@@ -1,8 +1,13 @@
 package com.widgetkit.core.component.reminder.today.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -30,6 +35,72 @@ import kotlinx.coroutines.launch
  */
 class TodoActivity : ComponentActivity() {
     
+    private var pendingSpeechRecognitionStart = false
+    private var viewModel: TodayTodoViewModel? = null
+    
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            android.util.Log.d("TodoActivity", "RECORD_AUDIO permission granted")
+            // 권한이 부여되면 대기 중인 음성 인식 시작
+            if (pendingSpeechRecognitionStart) {
+                viewModel?.startSpeechRecognition()
+                pendingSpeechRecognitionStart = false
+            }
+        } else {
+            android.util.Log.w("TodoActivity", "RECORD_AUDIO permission denied")
+            pendingSpeechRecognitionStart = false
+        }
+    }
+
+    /**
+     * RECORD_AUDIO 권한 확인 및 요청
+     * @param startSpeechRecognitionIfGranted 권한이 이미 있거나 부여되면 음성 인식을 시작할지 여부
+     */
+    fun checkAndRequestAudioPermission(startSpeechRecognitionIfGranted: Boolean = false): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    if (startSpeechRecognitionIfGranted) {
+                        viewModel?.startSpeechRecognition()
+                    }
+                    true
+                }
+                else -> {
+                    if (startSpeechRecognitionIfGranted) {
+                        pendingSpeechRecognitionStart = true
+                    }
+                    requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    false
+                }
+            }
+        } else {
+            // Android 6.0 미만에서는 권한이 자동으로 부여됨
+            if (startSpeechRecognitionIfGranted) {
+                viewModel?.startSpeechRecognition()
+            }
+            true
+        }
+    }
+
+    /**
+     * RECORD_AUDIO 권한이 있는지 확인
+     */
+    fun hasAudioPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+    
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +109,7 @@ class TodoActivity : ComponentActivity() {
         setFinishOnTouchOutside(true)
         
         val viewModelFactory = TodayTodoViewModelFactory(this)
-        val viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
         
         // Intent에서 SHOW_DATE_PICKER extra 확인
         val shouldShowDatePicker = intent.getBooleanExtra("SHOW_DATE_PICKER", false)
@@ -125,10 +196,14 @@ class TodoActivity : ComponentActivity() {
             setContent {
                 AppTheme {
                     TodoContent(
-                        viewModel = viewModel,
+                        viewModel = viewModel!! ,
                         onDismiss = {
                             finish()
-                        }
+                        },
+                        onRequestAudioPermission = {
+                            checkAndRequestAudioPermission(startSpeechRecognitionIfGranted = true)
+                        },
+                        hasAudioPermission = hasAudioPermission()
                     )
                 }
             }

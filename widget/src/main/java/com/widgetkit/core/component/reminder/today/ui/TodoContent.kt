@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -41,13 +42,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,10 +66,23 @@ import com.widgetkit.core.component.reminder.today.viewmodel.TodayTodoViewModel
 @Composable
 fun TodoContent(
     viewModel: TodayTodoViewModel,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onRequestAudioPermission: () -> Unit = {},
+    hasAudioPermission: Boolean = false
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    // 음성 인식 에러 처리
+    LaunchedEffect(Unit) {
+        snapshotFlow { uiState.speechError }
+            .filter { it != null }
+            .distinctUntilChanged()
+            .collect { error ->
+                // 에러는 ViewModel에서 관리하므로 여기서는 로그만 남김
+                android.util.Log.w("TodoContent", "Speech recognition error: $error")
+            }
+    }
     
     val backgroundInteractionSource = remember { MutableInteractionSource() }
     val surfaceInteractionSource = remember { MutableInteractionSource() }
@@ -130,7 +148,20 @@ fun TodoContent(
                                 viewModel.addTodoInline()
                                 focusManager.clearFocus()
                             },
-                            onMore = { viewModel.showAddDialog() }
+                            onMore = { viewModel.showAddDialog() },
+                            onMicClick = {
+                                if (hasAudioPermission) {
+                                    if (uiState.isListening) {
+                                        viewModel.stopSpeechRecognition()
+                                    } else {
+                                        viewModel.startSpeechRecognition()
+                                    }
+                                } else {
+                                    onRequestAudioPermission()
+                                }
+                            },
+                            isListening = uiState.isListening,
+                            hasAudioPermission = hasAudioPermission
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -356,7 +387,10 @@ private fun InlineAddTodoRow(
     title: String,
     onTitleChange: (String) -> Unit,
     onAdd: () -> Unit,
-    onMore: () -> Unit
+    onMore: () -> Unit,
+    onMicClick: () -> Unit,
+    isListening: Boolean = false,
+    hasAudioPermission: Boolean = false
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -384,6 +418,18 @@ private fun InlineAddTodoRow(
                     focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
+            
+            IconButton(onClick = onMicClick) {
+                Icon(
+                    imageVector = Icons.Filled.Mic,
+                    contentDescription = if (isListening) "음성 인식 중지" else "음성 입력",
+                    tint = if (isListening) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    }
+                )
+            }
             
             IconButton(onClick = onAdd) {
                 Icon(
