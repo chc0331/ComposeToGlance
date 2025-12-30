@@ -68,7 +68,7 @@ val layoutKey = byteArrayPreferencesKey("layout_key")
 class LargeAppWidget : DslAppWidget() {
 
     companion object {
-        private const val ROOT_PADDING = 8.0f
+        private const val ROOT_PADDING = 4.0f
         private const val CONTENT_PADDING = 2.0f
     }
 
@@ -93,6 +93,7 @@ class LargeAppWidget : DslAppWidget() {
         val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / columns
         val cellHeight = (widgetSize.height - ROOT_PADDING.dp * 2) / rows
 
+        Log.i("heec.choi","Size : $widgetSize $cellWidth $cellHeight")
         WidgetLocalProvider(
             WidgetLocalRootPadding provides ROOT_PADDING.dp,
             WidgetLocalContentPadding provides CONTENT_PADDING.dp,
@@ -132,6 +133,9 @@ class LargeAppWidget : DslAppWidget() {
         ) {
             val componentWidth = cellWidth?.times(widget.colSpan) ?: 0.dp
             val componentHeight = cellHeight?.times(widget.rowSpan) ?: 0.dp
+
+            Log.i("heec.choi","Component size : $componentWidth $componentHeight")
+
             Box(
                 modifier = WidgetModifier
                     .width(componentWidth.value)

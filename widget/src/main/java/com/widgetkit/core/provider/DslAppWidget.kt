@@ -2,13 +2,11 @@ package com.widgetkit.core.provider
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.GlanceId
@@ -16,20 +14,18 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.LocalContext
 import androidx.glance.LocalGlanceId
-import androidx.glance.LocalSize
 import androidx.glance.LocalState
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.LocalAppWidgetOptions
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.text.Text
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.util.getSystemContentRadius
 import com.widgetkit.dsl.WidgetLayout
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.proto.WidgetLayoutDocument
 import com.widgetkit.dsl.proto.WidgetMode
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
@@ -66,15 +62,17 @@ abstract class DslAppWidget : GlanceAppWidget() {
     @Composable
     private fun RenderDsl() {
         val state = LocalState.current as Preferences
+        val appWidgetOptions = LocalAppWidgetOptions.current
         val context = LocalContext.current
-        val dpSize = LocalSize.current
         val glanceId = LocalGlanceId.current
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
         val theme = GlanceTheme.colors
+
+        val dpSize = getExactWidgetSizeInDp(context, appWidgetOptions)
         WidgetRenderer(context).render(WidgetLayout(mode = WidgetMode.WIDGET_MODE_NORMAL) {
             WidgetLocalProvider(
-                WidgetLocalSize provides dpSize,
+                WidgetLocalSize provides DpSize(dpSize.width.dp, dpSize.height.dp),
                 WidgetLocalContext provides context,
                 WidgetLocalState provides state,
                 WidgetLocalGlanceId provides glanceId,
@@ -84,8 +82,8 @@ abstract class DslAppWidget : GlanceAppWidget() {
             ) {
                 Box(
                     modifier = WidgetModifier
-                        .width(dpSize.width.value)
-                        .height(dpSize.height.value)
+                        .width(dpSize.width)
+                        .height(dpSize.height)
                         .backgroundColor(Color.Transparent.toArgb())
                         .cornerRadius(backgroundRadius.value)
                 ) {
@@ -93,16 +91,6 @@ abstract class DslAppWidget : GlanceAppWidget() {
                 }
             }
         })
-    }
-
-    @Composable
-    private fun LoadingContent() {
-        androidx.glance.layout.Box(
-            modifier = GlanceModifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Loading...")
-        }
     }
 
     abstract fun WidgetScope.DslContent()
