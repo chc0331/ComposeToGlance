@@ -1,5 +1,6 @@
 package com.widgetkit.core.component.reminder.today
 
+import android.R.attr.checked
 import android.content.ComponentName
 import android.content.Context
 import androidx.compose.ui.graphics.Color
@@ -60,15 +61,15 @@ import java.util.Date
  * 오늘의 Todo를 표시하는 위젯
  */
 class TodayTodoWidget : WidgetComponent() {
-    
+
     override fun getName(): String = "Today Todo"
-    
+
     override fun getDescription(): String = "오늘의 할 일 목록"
-    
+
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.REMINDER
-    
+
     override fun getSizeType(): SizeType = SizeType.MEDIUM_PLUS
-    
+
     override fun getWidgetTag(): String = "TodayTodo"
 
     override fun WidgetScope.Content() {
@@ -133,7 +134,7 @@ class TodayTodoWidget : WidgetComponent() {
 
         val titleBarBackgroundColor = theme.surfaceVariant.getColor(context).toArgb()
         val iconColor = theme.primary.getColor(context).toArgb()
-        val iconContentColor = theme.inversePrimary.getColor(context)
+        val iconContentColor = theme.onSecondary.getColor(context)
         val mainTextColor = theme.onSurface.getColor(context).toArgb()
         val subTextColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
@@ -249,7 +250,7 @@ class TodayTodoWidget : WidgetComponent() {
                     item {
                         TodoItem(
                             modifier = WidgetModifier.fillMaxWidth()
-                                .height(widgetSize.height.value * 0.34f), todo
+                                .height(widgetSize.height.value * 0.24f), todo
                         )
                     }
                 }
@@ -263,7 +264,7 @@ class TodayTodoWidget : WidgetComponent() {
     private fun WidgetScope.EmptyState() {
         val theme = getLocal(WidgetLocalTheme)
         val secondaryColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
-        
+
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
@@ -282,7 +283,7 @@ class TodayTodoWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.TodoItem(modifier: WidgetModifier, todo: TodoEntity) {
-        val theme = getLocal(WidgetLocalTheme)
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val context = getLocal(WidgetLocalContext) as Context
         val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
@@ -298,8 +299,9 @@ class TodayTodoWidget : WidgetComponent() {
         ) {
             CheckBox(
                 modifier = WidgetModifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .wrapContentHeight()
+                    .wrapContentWidth()
+                    .padding(vertical = 4f, horizontal = 4f)
                     .clickAction(
                         context,
                         com.widgetkit.dsl.widget.action.RunWidgetCallbackAction(
@@ -314,26 +316,26 @@ class TodayTodoWidget : WidgetComponent() {
                         )
                     )
             ) {
-                // Set checked state based on todo completion status
                 checked = isCompleted
+                CheckedColor {
+                    Color {
+                        argb = theme.primary.getColor(context).toArgb()
+                    }
 
-                TextProperty {
-                    TextContent {
-                        text = todo.title
-                    }
-                    fontSize = 13f
-                    fontWeight = if (isCompleted) {
-                        FontWeight.FONT_WEIGHT_NORMAL
-                    } else {
-                        FontWeight.FONT_WEIGHT_MEDIUM
-                    }
-                    FontColor {
-                        Color {
-                            argb = if (isCompleted) completedColor else activeColor
-                        }
+                }
+                UncheckedColor {
+                    Color {
+                        argb = theme.outline.getColor(context).toArgb()
                     }
                 }
             }
+            Text(
+                modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+                text = todo.title,
+                fontSize = 13f,
+                fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_MEDIUM,
+                fontColor = if (isCompleted) Color(completedColor) else Color(activeColor)
+            )
 
             // 시간 표시
             if (todo.dateTime != null) {
@@ -389,7 +391,7 @@ class TodayTodoWidget : WidgetComponent() {
             )
         }
     }
-    
+
     /**
      * DB에서 Todo 로드
      */
@@ -403,7 +405,7 @@ class TodayTodoWidget : WidgetComponent() {
             emptyList()
         }
     }
-    
+
     /**
      * Preview용 샘플 데이터
      */
@@ -432,11 +434,11 @@ class TodayTodoWidget : WidgetComponent() {
             )
         )
     }
-    
+
     override fun getUpdateManager(): ComponentUpdateManager<*> = TodayTodoUpdateManager
-    
+
     override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
-    
+
     override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
 }
 
