@@ -32,6 +32,7 @@ import com.widgetkit.dsl.frontend.layout.Row
 import com.widgetkit.dsl.proto.AlignmentType
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.HorizontalAlignment
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.VerticalAlignment
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.modifier.backgroundColor
@@ -334,7 +335,8 @@ class TodayTodoWidget : WidgetComponent() {
                 text = todo.title,
                 fontSize = 13f,
                 fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_MEDIUM,
-                fontColor = if (isCompleted) Color(completedColor) else Color(activeColor)
+                fontColor = if (isCompleted) Color(completedColor) else Color(activeColor),
+                textDecoration = if(isCompleted) TextDecoration.TEXT_DECORATION_LINE_THROUGH else TextDecoration.TEXT_DECORATION_NONE
             )
 
             // 시간 표시

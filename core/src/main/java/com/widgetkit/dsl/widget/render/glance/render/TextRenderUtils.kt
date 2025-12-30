@@ -7,6 +7,7 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.TextProperty
 import com.widgetkit.dsl.widget.render.glance.converter.ColorConverter
 
@@ -46,7 +47,8 @@ internal object TextRenderUtils {
             color = ColorProvider(textColor),
             fontSize = fontSizeSp.sp,
             fontWeight = textProperty.fontWeight.toGlanceFontWeight(),
-            textAlign = textProperty.textAlign.toGlanceTextAlign()
+            textAlign = textProperty.textAlign.toGlanceTextAlign(),
+            textDecoration = textProperty.textDecoration.toGlanceTextDecoration()
         )
 
         return textContent to textStyle
@@ -67,6 +69,15 @@ internal object TextRenderUtils {
             TextAlign.TEXT_ALIGN_CENTER -> androidx.glance.text.TextAlign.Center
             TextAlign.TEXT_ALIGN_END -> androidx.glance.text.TextAlign.End
             else -> androidx.glance.text.TextAlign.Start
+        }
+    }
+
+    private fun TextDecoration.toGlanceTextDecoration(): androidx.glance.text.TextDecoration {
+        return when (this) {
+            TextDecoration.TEXT_DECORATION_NONE -> androidx.glance.text.TextDecoration.None
+            TextDecoration.TEXT_DECORATION_UNDERLINE -> androidx.glance.text.TextDecoration.Underline
+            TextDecoration.TEXT_DECORATION_LINE_THROUGH -> androidx.glance.text.TextDecoration.LineThrough
+            else -> androidx.glance.text.TextDecoration.None
         }
     }
 }

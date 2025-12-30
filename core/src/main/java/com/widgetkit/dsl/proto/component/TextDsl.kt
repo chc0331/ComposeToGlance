@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.TextProperty
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
 import com.widgetkit.dsl.proto.property.ColorProviderDsl
@@ -83,6 +84,15 @@ class TextDsl(
         get() = propertyDsl.textAlign
         set(value) {
             propertyDsl.textAlign = value
+        }
+
+    /**
+     * 텍스트 장식
+     */
+    var textDecoration: TextDecoration
+        get() = propertyDsl.textDecoration
+        set(value) {
+            propertyDsl.textDecoration = value
         }
 
     /**

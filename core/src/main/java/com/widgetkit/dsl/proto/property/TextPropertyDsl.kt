@@ -4,6 +4,7 @@ import com.widgetkit.dsl.proto.ColorProvider
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
 import com.widgetkit.dsl.proto.TextContent
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.TextProperty
 import com.widgetkit.dsl.proto.ViewProperty
 
@@ -52,6 +53,12 @@ class TextPropertyDsl(private val builder: TextProperty.Builder) {
         get() = builder.textAlign
         set(value) {
             builder.setTextAlign(value)
+        }
+
+    var textDecoration: TextDecoration
+        get() = builder.textDecoration
+        set(value) {
+            builder.setTextDecoration(value)
         }
 }
 

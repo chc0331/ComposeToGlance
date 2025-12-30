@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.proto.FontWeight
 import com.widgetkit.dsl.proto.TextAlign
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.proto.component.TextDsl
 import com.widgetkit.dsl.proto.modifier.WidgetModifier
@@ -33,6 +34,7 @@ fun WidgetScope.Text(
     fontColorArgb: Int = 0,
     fontWeight: FontWeight = FontWeight.FONT_WEIGHT_UNSPECIFIED,
     textAlign: TextAlign = TextAlign.TEXT_ALIGN_UNSPECIFIED,
+    textDecoration: TextDecoration = TextDecoration.TEXT_DECORATION_UNSPECIFIED,
     maxLine: Int = 0,
     contentProperty: (TextDsl.() -> Unit)? = null
 ) {
@@ -61,6 +63,10 @@ fun WidgetScope.Text(
     
     if (textAlign != TextAlign.TEXT_ALIGN_UNSPECIFIED) {
         dsl.textAlign = textAlign
+    }
+    
+    if (textDecoration != TextDecoration.TEXT_DECORATION_UNSPECIFIED) {
+        dsl.textDecoration = textDecoration
     }
     
     if (maxLine > 0) {

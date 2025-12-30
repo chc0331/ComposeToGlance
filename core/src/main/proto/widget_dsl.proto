@@ -102,6 +102,13 @@ enum TextAlign {
   TEXT_ALIGN_CENTER = 3;
 }
 
+enum TextDecoration {
+  TEXT_DECORATION_UNSPECIFIED = 0;
+  TEXT_DECORATION_NONE = 1;
+  TEXT_DECORATION_UNDERLINE = 2;
+  TEXT_DECORATION_LINE_THROUGH = 3;
+}
+
 message Color {
   uint32 argb = 1;
 }
@@ -237,6 +244,7 @@ message TextProperty {
   float font_size = 5;
   FontWeight font_weight = 6;
   TextAlign text_align = 7;
+  TextDecoration text_decoration = 8;
 }
 
 message ImageProperty {

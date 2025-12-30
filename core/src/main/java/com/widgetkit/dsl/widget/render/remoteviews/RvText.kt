@@ -1,5 +1,6 @@
 package com.widgetkit.dsl.widget.render.remoteviews
 
+import android.graphics.Paint
 import android.util.TypedValue
 import android.view.Gravity
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.layout.wrapContentSize
 import com.widgetkit.dsl.R
 import com.widgetkit.dsl.proto.TextAlign
+import com.widgetkit.dsl.proto.TextDecoration
 import com.widgetkit.dsl.proto.WidgetNode
 import com.widgetkit.dsl.widget.node.RenderContext
 import com.widgetkit.dsl.widget.WidgetRenderer
@@ -63,6 +65,23 @@ internal object RvText : RenderNode {
 
             if (maxLine > 0) {
                 remoteViews.setInt(viewId, "setMaxLines", maxLine)
+            }
+
+            // 텍스트 장식 처리
+            when (textDecoration) {
+                TextDecoration.TEXT_DECORATION_UNDERLINE -> {
+                    // TextView의 paint 객체를 통해 flags 설정
+                    remoteViews.setInt(viewId, "setPaintFlags", Paint.UNDERLINE_TEXT_FLAG)
+                }
+                TextDecoration.TEXT_DECORATION_LINE_THROUGH -> {
+                    remoteViews.setInt(viewId, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG)
+                }
+                TextDecoration.TEXT_DECORATION_NONE, TextDecoration.TEXT_DECORATION_UNSPECIFIED -> {
+                    // 기본값 - 장식 없음
+                }
+                else -> {
+                    // 기본값
+                }
             }
 
             RemoteViewsBuilder.applyViewProperties(
