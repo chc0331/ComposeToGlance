@@ -69,41 +69,30 @@ abstract class DslAppWidget : GlanceAppWidget() {
         val context = LocalContext.current
         val dpSize = LocalSize.current
         val glanceId = LocalGlanceId.current
-        val renderer = remember { WidgetRenderer(context) }
         val backgroundRadius = remember { context.getSystemBackgroundRadius() }
         val contentRadius = remember { context.getSystemContentRadius() }
         val theme = GlanceTheme.colors
-
-        var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
-
-        LaunchedEffect(dpSize, state) {
-            renderContent = WidgetLayout(mode = WidgetMode.WIDGET_MODE_NORMAL) {
-                WidgetLocalProvider(
-                    WidgetLocalSize provides dpSize,
-                    WidgetLocalContext provides context,
-                    WidgetLocalState provides state,
-                    WidgetLocalGlanceId provides glanceId,
-                    WidgetLocalBackgroundRadius provides backgroundRadius,
-                    WidgetLocalContentRadius provides contentRadius,
-                    WidgetLocalTheme provides theme
+        WidgetRenderer(context).render(WidgetLayout(mode = WidgetMode.WIDGET_MODE_NORMAL) {
+            WidgetLocalProvider(
+                WidgetLocalSize provides dpSize,
+                WidgetLocalContext provides context,
+                WidgetLocalState provides state,
+                WidgetLocalGlanceId provides glanceId,
+                WidgetLocalBackgroundRadius provides backgroundRadius,
+                WidgetLocalContentRadius provides contentRadius,
+                WidgetLocalTheme provides theme
+            ) {
+                Box(
+                    modifier = WidgetModifier
+                        .width(dpSize.width.value)
+                        .height(dpSize.height.value)
+                        .backgroundColor(Color.Transparent.toArgb())
+                        .cornerRadius(backgroundRadius.value)
                 ) {
-                    Box(
-                        modifier = WidgetModifier
-                            .width(dpSize.width.value)
-                            .height(dpSize.height.value)
-                            .backgroundColor(Color.Transparent.toArgb())
-                            .cornerRadius(backgroundRadius.value)
-                    ) {
-                        DslContent()
-                    }
+                    DslContent()
                 }
             }
-        }
-        if (renderContent == null) {
-            LoadingContent()
-        } else {
-            renderer.render(renderContent!!)
-        }
+        })
     }
 
     @Composable
