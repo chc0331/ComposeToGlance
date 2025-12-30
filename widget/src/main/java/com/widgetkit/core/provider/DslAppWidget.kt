@@ -76,7 +76,7 @@ abstract class DslAppWidget : GlanceAppWidget() {
 
         var renderContent by remember { mutableStateOf<WidgetLayoutDocument?>(null) }
 
-        LaunchedEffect(state) {
+        LaunchedEffect(dpSize, state) {
             renderContent = WidgetLayout(mode = WidgetMode.WIDGET_MODE_NORMAL) {
                 WidgetLocalProvider(
                     WidgetLocalSize provides dpSize,
