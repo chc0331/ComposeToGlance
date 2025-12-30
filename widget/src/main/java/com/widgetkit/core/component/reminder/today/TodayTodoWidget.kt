@@ -1,8 +1,8 @@
 package com.widgetkit.core.component.reminder.today
 
-import android.R.attr.checked
 import android.content.ComponentName
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -109,13 +109,13 @@ class TodayTodoWidget : WidgetComponent() {
                 }
             ) {
                 Header(
-                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.24f),
+                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.2f),
                     isPreview,
                     selectedDate
                 )
                 TodoList(modifier = WidgetModifier.fillMaxWidth().expandHeight(), todos = todos)
                 Divider(modifier = WidgetModifier.fillMaxWidth().height(1f))
-                Footer(modifier = WidgetModifier.fillMaxWidth().height(32f), todos = todos)
+                Footer(modifier = WidgetModifier.fillMaxWidth().height(28f), todos = todos)
             }
         }
     }
@@ -139,8 +139,8 @@ class TodayTodoWidget : WidgetComponent() {
         val mainTextColor = theme.onSurface.getColor(context).toArgb()
         val subTextColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
-        val iconSize = widgetSize.height.value * 0.14f
-        val mainTextSize = widgetSize.height.value * 0.1f
+        val iconSize = widgetSize.height.value * 0.12f
+        val mainTextSize = widgetSize.height.value * 0.09f
         val subTextSize = widgetSize.height.value * 0.06f
 
         Row(
@@ -330,14 +330,32 @@ class TodayTodoWidget : WidgetComponent() {
                     }
                 }
             }
-            Text(
-                modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
-                text = todo.title,
-                fontSize = 13f,
-                fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_MEDIUM,
-                fontColor = if (isCompleted) Color(completedColor) else Color(activeColor),
-                textDecoration = if(isCompleted) TextDecoration.TEXT_DECORATION_LINE_THROUGH else TextDecoration.TEXT_DECORATION_NONE
-            )
+            Column(
+                modifier = WidgetModifier.expandWidth().fillMaxHeight(),
+                contentProperty = {
+                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                }) {
+                Text(
+                    modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+                    text = todo.title,
+                    fontSize = 13f,
+                    fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_MEDIUM,
+                    fontColor = if (isCompleted) Color(completedColor) else Color(activeColor),
+                    textDecoration = if (isCompleted) TextDecoration.TEXT_DECORATION_LINE_THROUGH else TextDecoration.TEXT_DECORATION_NONE
+                )
+                todo.description?.let {
+                    Text(
+                        modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+                        text = it,
+                        fontSize = 8f,
+                        fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_NORMAL,
+                        fontColor = if (isCompleted) Color(completedColor) else Color(activeColor),
+                        textDecoration = if (isCompleted) TextDecoration.TEXT_DECORATION_LINE_THROUGH else TextDecoration.TEXT_DECORATION_NONE
+                    )
+
+                }
+            }
+
 
             // 시간 표시
             if (todo.dateTime != null) {
@@ -387,7 +405,7 @@ class TodayTodoWidget : WidgetComponent() {
         ) {
             Text(
                 text = "$totalCount tasks • $completedCount completed",
-                fontSize = 14f,
+                fontSize = 12f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                 fontColor = Color(subTextColor)
             )
