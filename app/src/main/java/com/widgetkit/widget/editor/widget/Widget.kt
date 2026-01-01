@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -124,6 +126,7 @@ private fun WidgetItemContent(
             modifier = Modifier
                 .width(size.width)
                 .height(size.height)
+                .padding(4.dp)
                 .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
                 .background(Color(0xFFF5F5F5)), // Default surface variant color
             contentAlignment = Alignment.Center
@@ -211,7 +214,7 @@ data class PositionedWidget(
             // fallback: 기본 1x 사이즈 사용
             widget.getSizeInCells()
         }
-        
+
         return PlacedWidgetComponent.newBuilder()
             .setGridIndex((cellIndex?.plus(1)) ?: 1)
             .setRowSpan(rowSpan)
@@ -220,21 +223,21 @@ data class PositionedWidget(
             .setWidgetCategory(widget.getWidgetCategory().toProto())
             .build()
     }
-    
+
     /**
      * cellIndices로부터 실제 row_span과 col_span 계산
      */
     private fun calculateSpansFromIndices(indices: List<Int>, gridColumns: Int): Pair<Int, Int> {
         if (indices.isEmpty()) return 1 to 1
-        
+
         // 각 셀의 row와 col 계산
         val rows = indices.map { it / gridColumns }
         val cols = indices.map { it % gridColumns }
-        
+
         // span = max - min + 1
         val rowSpan = (rows.maxOrNull() ?: 0) - (rows.minOrNull() ?: 0) + 1
         val colSpan = (cols.maxOrNull() ?: 0) - (cols.minOrNull() ?: 0) + 1
-        
+
         return colSpan to rowSpan
     }
 }
@@ -267,26 +270,20 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
         }
     }
 
-    val rootPadding = 8.dp
-    val contentPadding = 4.dp
     val gridSpec = layout.gridSpec()
     val rowCell = gridSpec?.rows ?: 1
     val colCell = gridSpec?.columns ?: 1
     val containerSize = layout.getDpSize()
-    val cellWidth = (containerSize.width - rootPadding * 2) / colCell
-    val cellHeight = (containerSize.height - rootPadding * 2) / rowCell
-    
+    val cellWidth = (containerSize.width) / colCell
+    val cellHeight = (containerSize.height) / rowCell
+
     // 레이아웃 타입과 그리드 배수를 고려한 동적 사이즈 계산
     val sizeInCells = this.getSizeInCellsForLayout(layout.sizeType, layout.gridMultiplier)
     val widthCells: Int = sizeInCells.first
     val heightCells: Int = sizeInCells.second
-    
-    // 여러 셀을 차지할 때 셀 사이의 패딩을 고려
-    val widthPadding = if (widthCells > 1) contentPadding * (widthCells - 1) else 0.dp
-    val heightPadding = if (heightCells > 1) contentPadding * (heightCells - 1) else 0.dp
-    
+
     return DpSize(
-        (cellWidth * widthCells) - widthPadding,
-        (cellHeight * heightCells) - heightPadding
+        (cellWidth * widthCells),
+        (cellHeight * heightCells)
     )
 }

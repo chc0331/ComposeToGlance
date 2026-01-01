@@ -99,7 +99,7 @@ fun ClickableLayoutComponent(
     onAddClick: (Layout) -> Unit,
 ) {
     val context = LocalContext.current
-    val cornerRadius = context.getSystemBackgroundRadius() * 0.4f
+    val cornerRadius = context.getSystemBackgroundRadius() * 0.7f
     Box(
         modifier = modifier
             .wrapContentSize()
@@ -138,9 +138,9 @@ fun LayoutComponent(
     var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
     var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
-        width = width * 0.4f
-        height = height * 0.4f
-        cornerRadius = cornerRadius * 0.4f
+        width = width * 0.7f
+        height = height * 0.7f
+        cornerRadius = cornerRadius * 0.7f
     }
     Box(
         modifier = Modifier
