@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.AppWidgetId
+import androidx.glance.color.DynamicThemeColorProviders
 import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
@@ -63,11 +64,11 @@ class RamWidget : WidgetComponent() {
 
     @SuppressLint("RestrictedApi")
     override fun WidgetScope.Content() {
-        val theme = getLocal(WidgetLocalTheme)
-        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val backgroundColor = theme.surface.getColor(context).toArgb()
         val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        val context = getLocal(WidgetLocalContext) as Context
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         var backgroundModifier = WidgetModifier
             .fillMaxWidth().fillMaxHeight().backgroundColor(backgroundColor)
@@ -108,6 +109,9 @@ class RamWidget : WidgetComponent() {
     override fun getDataStore(): ComponentDataStore<*> = RamWidgetDataStore
 
     private fun WidgetScope.RamIcon() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
         val iconSize = height * 0.34f
@@ -125,6 +129,9 @@ class RamWidget : WidgetComponent() {
                 contentProperty = {
                     Provider {
                         drawableResId = R.drawable.ic_memory
+                    }
+                    TintColor {
+                        argb = iconColor
                     }
                 }
             )
@@ -147,8 +154,9 @@ class RamWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.RamTitle() {
-        val theme = getLocal(WidgetLocalTheme)
-        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "RAM",
@@ -170,9 +178,10 @@ class RamWidget : WidgetComponent() {
             }
         ) {
             val progressWidth = (getLocal(WidgetLocalSize) as DpSize).width - (8.dp * 2)
-            val theme = getLocal(WidgetLocalTheme)
-            val progressColor = (theme?.primary as? Int) ?: Color(0x808A8A8A).toArgb()
-            val progressBgColor = (theme?.surfaceVariant as? Int) ?: Color(0xFFE3E3E3).toArgb()
+            val context = getLocal(WidgetLocalContext) as Context
+            val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+            val progressColor = theme.primary.getColor(context).toArgb()
+            val progressBgColor = theme.surfaceVariant.getColor(context).toArgb()
 
             Progress(
                 modifier = WidgetModifier
@@ -202,8 +211,9 @@ class RamWidget : WidgetComponent() {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_END
                 }
             ) {
-                val theme = getLocal(WidgetLocalTheme)
-                val textColor = (theme?.onSurface as? Int) ?: Color(0xFF000000).toArgb()
+                val context = getLocal(WidgetLocalContext) as Context
+                val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+                val textColor = theme.onSurface.getColor(context).toArgb()
 
                 Text(
                     modifier = WidgetModifier.wrapContentWidth().wrapContentHeight().viewId(

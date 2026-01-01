@@ -1,9 +1,11 @@
 package com.widgetkit.core.component.battery.bluetooth.earbuds
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.glance.color.DynamicThemeColorProviders
 import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
@@ -30,6 +32,7 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
@@ -49,8 +52,9 @@ class EarbudsBatteryWidget : WidgetComponent() {
     override fun getWidgetTag(): String = "EarbudsBattery"
 
     override fun WidgetScope.Content() {
-        val theme = getLocal(WidgetLocalTheme)
-        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val backgroundColor = theme.surface.getColor(context).toArgb()
         val localSize = getLocal(WidgetLocalSize) as DpSize
 
         Box(
@@ -79,6 +83,9 @@ class EarbudsBatteryWidget : WidgetComponent() {
     override fun getDataStore(): ComponentDataStore<*> = EarbudsBatteryDataStore
 
     private fun WidgetScope.EarbudsIcon() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
         val size = getLocal(WidgetLocalSize) as DpSize
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val currentState = getLocal(WidgetLocalState) ?: emptyPreferences()
@@ -107,7 +114,7 @@ class EarbudsBatteryWidget : WidgetComponent() {
                         drawableResId = R.drawable.ic_bluetooth_earbuds
                     }
                     TintColor {
-                        argb = if (isConnected) Color.Transparent.toArgb() else Color.LightGray.toArgb()
+                        argb = if (isConnected) iconColor else Color.LightGray.toArgb()
                     }
                 }
             )
@@ -115,8 +122,9 @@ class EarbudsBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.EarbudsTitle() {
-        val theme = getLocal(WidgetLocalTheme)
-        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "EarBuds",
@@ -127,8 +135,9 @@ class EarbudsBatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.EarbudsBatteryText() {
-        val theme = getLocal(WidgetLocalTheme)
-        val textColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val textColor = theme.onSurface.getColor(context).toArgb()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val currentState = getLocal(WidgetLocalState) ?: emptyPreferences()
         val isPreview = getLocal(WidgetLocalPreview) ?: false

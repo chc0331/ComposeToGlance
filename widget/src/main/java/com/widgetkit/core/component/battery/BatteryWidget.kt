@@ -1,8 +1,10 @@
 package com.widgetkit.core.component.battery
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
+import androidx.glance.color.DynamicThemeColorProviders
 import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
@@ -31,6 +33,7 @@ import com.widgetkit.dsl.proto.modifier.viewId
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
+import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGridIndex
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
@@ -50,8 +53,9 @@ class BatteryWidget : WidgetComponent() {
     override fun getSizeType() = SizeType.TINY
 
     override fun WidgetScope.Content() {
-        val theme = getLocal(WidgetLocalTheme)
-        val backgroundColor = (theme?.surface as? Int) ?: Color.White.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val backgroundColor = theme.surface.getColor(context).toArgb()
 
         Box(
             modifier = WidgetModifier
@@ -74,8 +78,9 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryDescription() {
-        val theme = getLocal(WidgetLocalTheme)
-        val textColor = (theme?.onSurfaceVariant as? Int) ?: Color.Black.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "Battery",
@@ -86,8 +91,9 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryText() {
-        val theme = getLocal(WidgetLocalTheme)
-        val textColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val textColor = theme.onSurface.getColor(context).toArgb()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
         val size = getLocal(WidgetLocalSize) as DpSize
@@ -126,6 +132,9 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.BatteryIcon() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
         Box(
@@ -141,6 +150,9 @@ class BatteryWidget : WidgetComponent() {
                 contentProperty = {
                     Provider {
                         drawableResId = R.drawable.ic_mobile_device
+                    }
+                    TintColor {
+                        argb = iconColor
                     }
                 }
             )
