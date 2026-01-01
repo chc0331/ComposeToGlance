@@ -30,7 +30,6 @@ object WidgetComponentRegistry {
     private const val TAG = "WidgetComponentRegistry"
     private val registry = mutableMapOf<String, WidgetComponent>()
     private val viewIdAllocator = ViewIdAllocator()
-    private var lifecycleInitialized = false
 
     /**
      * 위젯 컴포넌트를 등록합니다.
