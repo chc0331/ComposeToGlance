@@ -1,5 +1,6 @@
 package com.widgetkit.core.component.battery
 
+import android.R.attr.animation
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -161,6 +162,9 @@ class BatteryWidget : WidgetComponent() {
     }
 
     private fun WidgetScope.ChargingIcon() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
         fun WidgetScope.getChargingIconSize(): Float {
             val size = getLocal(WidgetLocalSize) as DpSize
             return size.height.value * 0.34f
@@ -177,6 +181,9 @@ class BatteryWidget : WidgetComponent() {
             contentProperty = {
                 Provider {
                     drawableResId = R.layout.battery_charging_avd
+                }
+                TintColor {
+                    argb = iconColor
                 }
                 animation = true
                 infiniteLoop = true

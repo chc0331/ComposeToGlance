@@ -155,12 +155,6 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                     device?.let {
                         val batteryLevel = intent.getBatteryLevel()
                         val deviceType = it.getDeviceType()
-
-                        Log.i(
-                            "heec.choi",
-                            "Battery level changed for ${it.name}: $batteryLevel%, Type: $deviceType"
-                        )
-
                         if (batteryLevel >= 0) {
                             // 배터리 정보를 위젯에 업데이트
                             val data = BatteryData(

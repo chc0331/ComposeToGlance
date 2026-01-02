@@ -1,7 +1,12 @@
 package com.widgetkit.dsl.widget.render.remoteviews
 
+import android.content.res.ColorStateList
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.core.widget.RemoteViewsCompat.setProgressBarIndeterminate
+import androidx.core.widget.RemoteViewsCompat.setProgressBarIndeterminateTintList
+import androidx.core.widget.RemoteViewsCompat.setProgressBarProgressTintList
+import androidx.core.widget.RemoteViewsCompat.setViewBackgroundTintList
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.AndroidRemoteViews
 import com.widgetkit.dsl.proto.WidgetNode
@@ -31,7 +36,13 @@ internal object RvAnimationImage : RenderNode {
             viewId
         )
         remoteViews.setProgressBarIndeterminate(viewId, imageProperty.infiniteLoop)
-
+        if (imageProperty.hasTintColor()) {
+            val tintColor = imageProperty.tintColor.argb
+            remoteViews.setProgressBarIndeterminateTintList(
+                viewId,
+                ColorStateList.valueOf(tintColor)
+            )
+        }
         // ViewProperty 속성 적용
         RemoteViewsBuilder.applyViewProperties(
             remoteViews,
