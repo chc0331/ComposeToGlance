@@ -5,7 +5,7 @@ import androidx.glance.GlanceId
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.core.provider.DslAppWidget
+import com.widgetkit.core.provider.common.DslAppWidget
 import com.widgetkit.core.provider.LargeAppWidget
 interface ComponentUpdateManager<T> {
 

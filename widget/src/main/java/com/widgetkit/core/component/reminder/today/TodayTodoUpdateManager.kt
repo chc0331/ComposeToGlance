@@ -8,6 +8,7 @@ import com.widgetkit.core.component.update.ComponentUpdateHelper
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoDatabase
 import com.widgetkit.core.provider.LargeAppWidget
+import com.widgetkit.core.provider.common.DslAppWidget
 import kotlinx.coroutines.flow.first
 
 /**
@@ -57,7 +58,7 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
 
             // WIDGET_SYNC_KEY를 업데이트하여 위젯 갱신 트리거
             updateAppWidgetState(context, glanceId) { state ->
-                state[com.widgetkit.core.provider.DslAppWidget.WIDGET_SYNC_KEY] =
+                state[DslAppWidget.WIDGET_SYNC_KEY] =
                     System.currentTimeMillis()
             }
 

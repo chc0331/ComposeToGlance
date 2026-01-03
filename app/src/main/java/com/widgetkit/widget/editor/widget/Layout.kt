@@ -35,7 +35,8 @@ import com.widgetkit.core.util.getSystemBackgroundRadius
 enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumns: Int) {
     SMALL("Small", 1, 2),
     MEDIUM("Medium", 2, 2),
-    LARGE("Large", 2, 4);
+    LARGE("Large", 2, 4),
+    EXTRA_LARGE("ExtraLarge", 4, 4);
     
     companion object {
         fun fromString(sizeType: String): LayoutType {
@@ -43,6 +44,7 @@ enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumn
                 "Small" -> SMALL
                 "Medium" -> MEDIUM
                 "Large" -> LARGE
+                "ExtraLarge" -> EXTRA_LARGE
                 else -> MEDIUM
             }
         }
@@ -188,6 +190,7 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
         "Medium" -> createGridLayout(rows = 2, columns = 2, showText = showText)
         "Medium Plus" -> createGridLayout(rows = 4, columns = 6, showText = showText)
         "Large" -> createGridLayout(rows = 2, columns = 4, showText = showText)
+        "ExtraLarge" -> createGridLayout(rows = 4, columns = 4, showText = showText)
         else -> createGridLayout(rows = 2, columns = 2, showText = showText)
     }
 }

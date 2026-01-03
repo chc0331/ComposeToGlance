@@ -14,7 +14,7 @@ import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.proto.WidgetLayout
 import com.widgetkit.core.provider.LargeWidgetProvider
-import com.widgetkit.core.provider.layoutKey
+import com.widgetkit.core.provider.common.CommonAppWidget.Companion.layoutKey
 
 /**
  * 위젯 컴포넌트 업데이트를 위한 공통 유틸리티 클래스

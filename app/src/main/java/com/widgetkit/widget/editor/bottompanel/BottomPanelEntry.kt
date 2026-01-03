@@ -33,7 +33,8 @@ import com.widgetkit.core.component.WidgetComponent
 val DefaultLayouts = listOf(
     Layout("Small"),
     Layout("Medium"),
-    Layout("Large")
+    Layout("Large"),
+    Layout("ExtraLarge")
 )
 
 object BottomPanelConstants {

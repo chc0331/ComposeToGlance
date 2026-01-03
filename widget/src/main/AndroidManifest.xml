@@ -47,7 +47,19 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/default_appwidget_info" />
+                android:resource="@xml/large_appwidget_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.widgetkit.core.provider.ExtraLargeWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.widget.test" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/extra_large_appwidget_info" />
         </receiver>
 
         <receiver

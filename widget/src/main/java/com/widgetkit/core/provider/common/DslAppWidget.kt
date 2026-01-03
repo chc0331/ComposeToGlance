@@ -1,4 +1,4 @@
-package com.widgetkit.core.provider
+package com.widgetkit.core.provider.common
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -17,10 +17,12 @@ import androidx.glance.LocalGlanceId
 import androidx.glance.LocalState
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.LocalAppWidgetOptions
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.fillMaxSize
+import com.widgetkit.core.provider.getExactWidgetSizeInDp
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.core.util.getSystemContentRadius
 import com.widgetkit.dsl.WidgetLayout
@@ -42,7 +44,10 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
 
-abstract class DslAppWidget : GlanceAppWidget() {
+internal abstract class DslAppWidget : GlanceAppWidget() {
+
+    override val sizeMode: SizeMode
+        get() = SizeMode.Exact
 
     companion object {
         internal val WIDGET_SYNC_KEY = longPreferencesKey("widget_sync_key")
@@ -51,8 +56,9 @@ abstract class DslAppWidget : GlanceAppWidget() {
     final override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             androidx.glance.layout.Box(
-                modifier = GlanceModifier.fillMaxSize().background(Color.Transparent),
-                contentAlignment = Alignment.Center
+                modifier = GlanceModifier.Companion.fillMaxSize()
+                    .background(Color.Companion.Transparent),
+                contentAlignment = Alignment.Companion.Center
             ) {
                 RenderDsl()
             }
@@ -81,10 +87,10 @@ abstract class DslAppWidget : GlanceAppWidget() {
                 WidgetLocalTheme provides theme
             ) {
                 Box(
-                    modifier = WidgetModifier
+                    modifier = WidgetModifier.Companion
                         .width(dpSize.width)
                         .height(dpSize.height)
-                        .backgroundColor(Color.Transparent.toArgb())
+                        .backgroundColor(Color.Companion.Transparent.toArgb())
                         .cornerRadius(backgroundRadius.value)
                 ) {
                     DslContent()

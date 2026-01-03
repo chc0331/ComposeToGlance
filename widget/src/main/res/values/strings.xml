@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="total_widget" translatable="false">TotalAppWidget</string>
+    <string name="widget_kit" translatable="false">WidgetKit</string>
 </resources>

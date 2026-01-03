@@ -32,6 +32,7 @@ enum class SizeType {
                 "Small" -> SMALL
                 "Medium" -> MEDIUM
                 "Medium Plus" -> MEDIUM_PLUS
+                "ExtraLarge" -> LARGE
                 else -> LARGE
             }
         }

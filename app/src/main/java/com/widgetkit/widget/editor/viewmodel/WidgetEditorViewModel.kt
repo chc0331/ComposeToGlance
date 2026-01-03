@@ -20,6 +20,7 @@ import com.widgetkit.core.getSizeInCellsForLayout
 import com.widgetkit.core.proto.SizeType
 import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.provider.LargeWidgetProvider
+import com.widgetkit.core.provider.ExtraLargeWidgetProvider
 import com.widgetkit.core.repository.WidgetLayoutRepository
 import com.widgetkit.widget.editor.settings.GridSettings
 import com.widgetkit.widget.editor.settings.GridSettingsDataStore
@@ -336,10 +337,17 @@ class WidgetEditorViewModel(
                     it.toProto(gridColumns)
                 }
             )
+            
+            // Select provider based on layout size type
+            val providerClass = when (selectedLayout?.sizeType) {
+                "ExtraLarge" -> ExtraLargeWidgetProvider::class.java.name
+                else -> LargeWidgetProvider::class.java.name
+            }
+            
             AppWidgetManager.getInstance(context).requestPinAppWidget(
                 ComponentName(
                     context.packageName,
-                    LargeWidgetProvider::class.java.name
+                    providerClass
                 ), null, null
             )
         }
