@@ -82,5 +82,12 @@ class TodoRepository(context: Context) {
     suspend fun getTotalCountByDate(date: String): Int {
         return todoDao.getTotalCountByDate(date)
     }
+    
+    /**
+     * 날짜 범위별 Todo 조회
+     */
+    fun getTodosByDateRange(startDate: String, endDate: String): Flow<List<TodoEntity>> {
+        return todoDao.getTodosByDateRange(startDate, endDate)
+    }
 }
 

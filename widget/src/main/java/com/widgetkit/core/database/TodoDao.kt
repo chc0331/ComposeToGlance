@@ -78,5 +78,11 @@ interface TodoDao {
      */
     @Query("SELECT COUNT(*) FROM todos WHERE date = :date")
     suspend fun getTotalCountByDate(date: String): Int
+    
+    /**
+     * 날짜 범위별 Todo 조회 (yyyy-MM-dd 형식)
+     */
+    @Query("SELECT * FROM todos WHERE date >= :startDate AND date <= :endDate ORDER BY date ASC, createdAt ASC")
+    fun getTodosByDateRange(startDate: String, endDate: String): Flow<List<TodoEntity>>
 }
 

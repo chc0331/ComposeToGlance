@@ -8,6 +8,7 @@ import com.widgetkit.core.component.battery.BatteryWidget
 import com.widgetkit.core.component.battery.bluetooth.earbuds.EarbudsBatteryWidget
 import com.widgetkit.core.component.battery.bluetooth.watch.WatchBatteryWidget
 import com.widgetkit.core.component.devicecare.ram.RamWidget
+import com.widgetkit.core.component.reminder.calendar.CalendarWidget
 import com.widgetkit.core.component.reminder.today.TodayTodoWidget
 import com.widgetkit.core.component.viewid.ViewIdAllocator
 
@@ -20,6 +21,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(WatchBatteryWidget())
     WidgetComponentRegistry.registerComponent(RamWidget())
     WidgetComponentRegistry.registerComponent(TodayTodoWidget())
+    WidgetComponentRegistry.registerComponent(CalendarWidget())
 }
 
 /**
