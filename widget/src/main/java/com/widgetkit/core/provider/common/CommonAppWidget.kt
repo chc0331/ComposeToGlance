@@ -1,6 +1,7 @@
 package com.widgetkit.core.provider.common
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -79,10 +80,10 @@ internal abstract class CommonAppWidget : DslAppWidget() {
         return when (sizeType) {
             SizeType.SIZE_TYPE_SMALL -> 1 to 2
             SizeType.SIZE_TYPE_MEDIUM -> 2 to 2
-            SizeType.SIZE_TYPE_MEDIUM_PLUS -> 4 to 6
+            SizeType.SIZE_TYPE_MEDIUM_PLUS -> 2 to 3
             SizeType.SIZE_TYPE_LARGE -> {
                 // ExtraLarge는 항상 4 rows × 4 columns
-                4 to 4
+                2 to 4
             }
 
             else -> 4 to 4 // 기본값 (ExtraLarge는 항상 4x4)
