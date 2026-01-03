@@ -3,6 +3,7 @@ package com.widgetkit.widget.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -327,6 +328,8 @@ class WidgetEditorViewModel(
      * 저장 기능 (나중에 구현)
      */
     fun save(context: Context) {
+        //TODO : Check logic.
+        Log.i("heec.choi","Selected layout : ${selectedLayout?.gridSpec()}")
         viewModelScope.launch {
             val gridColumns = selectedLayout?.gridSpec()?.columns ?: 2
             repository.updateData(

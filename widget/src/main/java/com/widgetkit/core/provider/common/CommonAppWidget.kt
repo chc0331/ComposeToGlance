@@ -46,14 +46,11 @@ internal abstract class CommonAppWidget : DslAppWidget() {
 
 
     override fun WidgetScope.DslContent() {
-        val widgetSize = getLocal(WidgetLocalSize) as DpSize
         val context = getLocal(WidgetLocalContext) as Context
         val currentState = getLocal(WidgetLocalState) as Preferences?
         val currentLayout = WidgetLayout.parseFrom(currentState?.get(layoutKey))
-
-        // 추상 메서드를 통해 그리드 스펙 계산
+        val widgetSize = getLocal(WidgetLocalSize) as DpSize
         val (rows, columns) = getGridSpec(currentLayout.sizeType, widgetSize)
-
         val cellWidth = (widgetSize.width - ROOT_PADDING.dp * 2) / columns
         val cellHeight = (widgetSize.height - ROOT_PADDING.dp * 2) / rows
         WidgetLocalProvider(
