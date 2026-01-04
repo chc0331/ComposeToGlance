@@ -412,22 +412,24 @@ class CalendarWidget : WidgetComponent() {
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                // 날짜 숫자
-                Text(
-                    text = day.dayOfMonth.toString(),
-                    fontSize = dateFontSize,
-                    fontWeight = if (day.isToday) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
-                    fontColor = Color(dateColor)
-                )
-
-                // Todo 개수
-                if (todoCount > 0) {
+                // 날짜 숫자 - 현재 달에 해당하는 날짜만 표시
+                if (day.isCurrentMonth) {
                     Text(
-                        text = todoCount.toString(),
-                        fontSize = countFontSize,
-                        fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
-                        fontColor = Color(countColor)
+                        text = day.dayOfMonth.toString(),
+                        fontSize = dateFontSize,
+                        fontWeight = if (day.isToday) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
+                        fontColor = Color(dateColor)
                     )
+
+                    // Todo 개수 - 현재 달에 해당하는 날짜만 표시
+                    if (todoCount > 0) {
+                        Text(
+                            text = todoCount.toString(),
+                            fontSize = countFontSize,
+                            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+                            fontColor = Color(countColor)
+                        )
+                    }
                 }
             }
         }
