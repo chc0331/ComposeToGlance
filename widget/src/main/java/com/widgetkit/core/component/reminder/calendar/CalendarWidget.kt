@@ -17,7 +17,9 @@ import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoEntity
 import com.widgetkit.core.util.getSystemBackgroundRadius
+import com.widgetkit.core.R
 import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.dsl.frontend.Image
 import com.widgetkit.dsl.frontend.Text
 import com.widgetkit.dsl.frontend.layout.Box
 import com.widgetkit.dsl.frontend.layout.Column
@@ -162,7 +164,7 @@ class CalendarWidget : WidgetComponent() {
         val textColor = theme.onSurface.getColor(context).toArgb()
         val iconColor = theme.primary.getColor(context).toArgb()
         val fontSize = headerSize.height.value * 0.4f
-        val buttonSize = headerSize.height * 0.6f
+        val buttonSize = headerSize.height * 0.8f
 
         Row(
             modifier = modifier,
@@ -193,11 +195,18 @@ class CalendarWidget : WidgetComponent() {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }
             ) {
-                Text(
-                    text = "‹",
-                    fontSize = fontSize * 1.5f,
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color(iconColor)
+                Image(
+                    modifier = WidgetModifier
+                        .width(buttonSize.value * 0.6f)
+                        .height(buttonSize.value * 0.6f),
+                    contentProperty = {
+                        Provider {
+                            drawableResId = R.drawable.ic_arrow_left
+                        }
+                        TintColor {
+                            argb = iconColor
+                        }
+                    }
                 )
             }
 
@@ -238,11 +247,18 @@ class CalendarWidget : WidgetComponent() {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }
             ) {
-                Text(
-                    text = "›",
-                    fontSize = fontSize * 1.5f,
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color(iconColor)
+                Image(
+                    modifier = WidgetModifier
+                        .width(buttonSize.value * 0.6f)
+                        .height(buttonSize.value * 0.6f),
+                    contentProperty = {
+                        Provider {
+                            drawableResId = R.drawable.ic_arrow_right
+                        }
+                        TintColor {
+                            argb = iconColor
+                        }
+                    }
                 )
             }
         }
@@ -300,7 +316,7 @@ class CalendarWidget : WidgetComponent() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val cellHeight = widgetSize.height.value * 0.12f
-        val dateFontSize = widgetSize.height.value * 0.04f
+        val dateFontSize = widgetSize.height.value * 0.05f
         val countFontSize = widgetSize.height.value * 0.03f
 
         Column(
@@ -346,17 +362,26 @@ class CalendarWidget : WidgetComponent() {
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val dateColor = if (day.isCurrentMonth) {
             if (day.isToday) {
-                theme.primary.getColor(context).toArgb()
+                theme.onPrimary.getColor(context).toArgb()
             } else {
                 theme.onSurface.getColor(context).toArgb()
             }
         } else {
-            Color.Transparent.toArgb()
+            if (day.isToday) {
+                theme.onPrimary.getColor(context).toArgb()
+            } else {
+                Color.Transparent.toArgb()
+            }
         }
 
-        val countColor = theme.primary.getColor(context).toArgb()
+        val countColor = if (day.isToday) {
+            theme.onPrimary.getColor(context).toArgb()
+        } else {
+            theme.primary.getColor(context).toArgb()
+        }
+        
         val todayBackgroundColor = if (day.isToday) {
-            theme.primaryContainer.getColor(context).toArgb()
+            theme.primary.getColor(context).toArgb()
         } else {
             null
         }
@@ -366,7 +391,9 @@ class CalendarWidget : WidgetComponent() {
                 .padding(all = 2f)
                 .let { mod ->
                     if (todayBackgroundColor != null) {
-                        mod.backgroundColor(todayBackgroundColor)
+                        mod
+                            .backgroundColor(todayBackgroundColor)
+                            .cornerRadius(8f)
                     } else {
                         mod
                     }
