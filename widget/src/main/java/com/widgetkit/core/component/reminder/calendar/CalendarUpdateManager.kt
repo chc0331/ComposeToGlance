@@ -43,6 +43,16 @@ object CalendarUpdateManager : ComponentUpdateManager<CalendarData> {
     }
 
     /**
+     * 특정 widget id만 업데이트
+     */
+    suspend fun updateWidgetById(context: Context, widgetId: Int, data: CalendarData) {
+        // widget id별 데이터 저장
+        CalendarDataStore.saveData(context, widgetId, data)
+        // 해당 위젯만 업데이트
+        updateWidget(context, widgetId)
+    }
+
+    /**
      * 위젯 전체 업데이트
      */
     private suspend fun updateWidget(context: Context, widgetId: Int) {

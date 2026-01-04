@@ -78,12 +78,13 @@ class CalendarWidget : WidgetComponent() {
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetSize = getLocal(WidgetLocalSize) ?: DpSize.Zero
+        val widgetId = (getLocal(WidgetLocalGlanceId) as AppWidgetId?)?.appWidgetId ?: 0
 
         val calendarData = if (isPreview) {
             CalendarData.empty()
         } else {
             runBlocking {
-                CalendarDataStore.loadData(context)
+                CalendarDataStore.loadData(context, widgetId)
             }
         }
         val yearMonth = calendarData.yearMonth
@@ -223,6 +224,8 @@ class CalendarWidget : WidgetComponent() {
                                 WidgetActionParameters.Key<String>("actionClass") to CalendarAction::class.java.canonicalName,
                                 WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId
                                     ?: 0),
+                                WidgetActionParameters.Key<Int>(CalendarAction.PARAM_YEAR) to yearMonth.year,
+                                WidgetActionParameters.Key<Int>(CalendarAction.PARAM_MONTH) to yearMonth.month,
                                 WidgetActionParameters.Key<String>(CalendarAction.PARAM_ACTION) to "prev"
                             )
                         )
@@ -275,6 +278,8 @@ class CalendarWidget : WidgetComponent() {
                                 WidgetActionParameters.Key<String>("actionClass") to CalendarAction::class.java.canonicalName,
                                 WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId
                                     ?: 0),
+                                WidgetActionParameters.Key<Int>(CalendarAction.PARAM_YEAR) to yearMonth.year,
+                                WidgetActionParameters.Key<Int>(CalendarAction.PARAM_MONTH) to yearMonth.month,
                                 WidgetActionParameters.Key<String>(CalendarAction.PARAM_ACTION) to "next"
                             )
                         )
