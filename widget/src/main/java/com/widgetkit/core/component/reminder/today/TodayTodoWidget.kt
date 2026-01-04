@@ -78,11 +78,12 @@ class TodayTodoWidget : WidgetComponent() {
         val isPreview = getLocal(WidgetLocalPreview) as Boolean
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetHeight = getLocal(WidgetLocalSize)?.height ?: 0.dp
+        val widgetId = (getLocal(WidgetLocalGlanceId) as AppWidgetId?)?.appWidgetId ?: 0
         val selectedDate = if (isPreview) {
             TodoDateUtils.getTodayDateString()
         } else {
             runBlocking {
-                TodayTodoDataStore.loadData(context).selectedDate
+                TodayTodoDataStore.loadData(context, widgetId).selectedDate
             }
         }
         val todos = if (isPreview) {

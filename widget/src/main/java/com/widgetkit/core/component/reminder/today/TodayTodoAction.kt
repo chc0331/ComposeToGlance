@@ -24,14 +24,21 @@ class TodayTodoAction : WidgetActionCallback {
     ) {
         Log.d(TAG, "Todo checkbox clicked")
         
-        // 파라미터에서 Todo ID 추출
+        // 파라미터에서 widgetId와 Todo ID 추출
+        val widgetId = parameters[WidgetActionParameters.Key<Int>("widgetId")]
         val todoId = parameters[WidgetActionParameters.Key<Long>(PARAM_TODO_ID)]
+        
+        if (widgetId == null) {
+            Log.e(TAG, "WidgetId not found in parameters")
+            return
+        }
+        
         if (todoId == null) {
             Log.e(TAG, "Todo ID not found in parameters")
             return
         }
         
-        Log.d(TAG, "Toggling Todo status for ID: $todoId")
+        Log.d(TAG, "Toggling Todo status for ID: $todoId in widget $widgetId")
         
         try {
             // TodoRepository를 통해 상태 토글
@@ -49,18 +56,20 @@ class TodayTodoAction : WidgetActionCallback {
                 repository.toggleTodoStatus(todoId, newStatus)
                 Log.d(TAG, "Todo status updated: $todoId -> $newStatus")
                 
-                // 위젯 업데이트
+                // 해당 위젯만 업데이트
                 val updateManager = TodayTodoUpdateManager
-                val currentData = TodayTodoDataStore.loadData(context)
-                updateManager.syncState(context, currentData)
-                Log.d(TAG, "Widget updated successfully")
+                val currentData = TodayTodoDataStore.loadData(context, widgetId)
+                // 선택된 날짜의 Todo를 다시 로드하여 업데이트
+                val updatedData = TodayTodoUpdateManager.loadTodosForDate(context, currentData.selectedDate)
+                updateManager.updateWidgetById(context, widgetId, updatedData)
+                Log.d(TAG, "Widget $widgetId updated successfully")
                 
             } else {
                 Log.e(TAG, "Todo not found with ID: $todoId")
             }
             
         } catch (e: Exception) {
-            Log.e(TAG, "Error toggling Todo status", e)
+            Log.e(TAG, "Error toggling Todo status for widget $widgetId", e)
         }
     }
 }
