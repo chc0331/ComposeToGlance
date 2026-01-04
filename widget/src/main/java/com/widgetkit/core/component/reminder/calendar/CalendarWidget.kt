@@ -53,6 +53,7 @@ import com.widgetkit.dsl.proto.modifier.expandHeight
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import java.util.Calendar
 import java.util.Locale
 
 /**
@@ -284,7 +285,14 @@ class CalendarWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
-            weekDayNames.forEach { dayName ->
+            weekDayNames.forEachIndexed { index, dayName ->
+                // 인덱스 0: 일요일 (빨간색), 인덱스 6: 토요일 (파란색)
+                val dayTextColor = when (index) {
+                    0 -> Color(0xFFFF0000).toArgb()  // 일요일: 빨간색
+                    6 -> Color(0xFF0000FF).toArgb()  // 토요일: 파란색
+                    else -> textColor  // 나머지: 기본 색상
+                }
+                
                 Box(
                     modifier = WidgetModifier
                         .expandWidth()
@@ -297,7 +305,7 @@ class CalendarWidget : WidgetComponent() {
                         text = dayName,
                         fontSize = fontSize,
                         fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
-                        fontColor = Color(textColor)
+                        fontColor = Color(dayTextColor)
                     )
                 }
             }
@@ -360,9 +368,22 @@ class CalendarWidget : WidgetComponent() {
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        
+        // 날짜 문자열에서 요일 계산
+        val dayOfWeek = getDayOfWeek(day.date)
+        val isSunday = dayOfWeek == Calendar.SUNDAY
+        val isSaturday = dayOfWeek == Calendar.SATURDAY
+        
         val dateColor = if (day.isCurrentMonth) {
             if (day.isToday) {
+                // 오늘인 경우: 배경이 primary이므로 onPrimary 색상
                 theme.onPrimary.getColor(context).toArgb()
+            } else if (isSunday) {
+                // 일요일: 빨간색
+                Color(0xFFFF0000).toArgb()
+            } else if (isSaturday) {
+                // 토요일: 파란색
+                Color(0xFF0000FF).toArgb()
             } else {
                 theme.onSurface.getColor(context).toArgb()
             }
@@ -417,7 +438,7 @@ class CalendarWidget : WidgetComponent() {
                     Text(
                         text = day.dayOfMonth.toString(),
                         fontSize = dateFontSize,
-                        fontWeight = if (day.isToday) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
+                        fontWeight = if (day.isToday) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_MEDIUM,
                         fontColor = Color(dateColor)
                     )
 
@@ -426,12 +447,34 @@ class CalendarWidget : WidgetComponent() {
                         Text(
                             text = todoCount.toString(),
                             fontSize = countFontSize,
-                            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+                            fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                             fontColor = Color(countColor)
                         )
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 날짜 문자열에서 요일 계산 (yyyy-MM-dd 형식)
+     * @return Calendar.SUNDAY(1) ~ Calendar.SATURDAY(7)
+     */
+    private fun getDayOfWeek(dateString: String): Int {
+        return try {
+            val parts = dateString.split("-")
+            if (parts.size == 3) {
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, parts[0].toInt())
+                    set(Calendar.MONTH, parts[1].toInt() - 1)  // Calendar.MONTH는 0부터 시작
+                    set(Calendar.DAY_OF_MONTH, parts[2].toInt())
+                }
+                calendar.get(Calendar.DAY_OF_WEEK)
+            } else {
+                Calendar.SUNDAY  // 기본값
+            }
+        } catch (e: Exception) {
+            Calendar.SUNDAY  // 기본값
         }
     }
 
