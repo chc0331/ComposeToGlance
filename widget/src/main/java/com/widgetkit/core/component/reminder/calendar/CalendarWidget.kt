@@ -344,7 +344,6 @@ class CalendarWidget : WidgetComponent() {
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-
         val dateColor = if (day.isCurrentMonth) {
             if (day.isToday) {
                 theme.primary.getColor(context).toArgb()
@@ -352,7 +351,7 @@ class CalendarWidget : WidgetComponent() {
                 theme.onSurface.getColor(context).toArgb()
             }
         } else {
-            theme.onSurfaceVariant.getColor(context).toArgb()
+            Color.Transparent.toArgb()
         }
 
         val countColor = theme.primary.getColor(context).toArgb()
