@@ -1,6 +1,7 @@
 package com.widgetkit.core.component.reminder.calendar
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -13,6 +14,7 @@ import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
 import com.widgetkit.core.component.reminder.calendar.CalendarDateUtils.CalendarDay
 import com.widgetkit.core.component.reminder.calendar.CalendarDateUtils.YearMonth
+import com.widgetkit.core.component.reminder.calendar.api.HolidayResponse
 import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoEntity
@@ -77,18 +79,50 @@ class CalendarWidget : WidgetComponent() {
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetSize = getLocal(WidgetLocalSize) ?: DpSize.Zero
 
-        val yearMonth = if (isPreview) {
-            CalendarDateUtils.getCurrentYearMonth()
+        val calendarData = if (isPreview) {
+            CalendarData.empty()
         } else {
             runBlocking {
-                CalendarDataStore.loadData(context).yearMonth
+                CalendarDataStore.loadData(context)
             }
         }
+        val yearMonth = calendarData.yearMonth
+        val countryCode = calendarData.countryCode
 
         val todosByDate = if (isPreview) {
             getPreviewTodosByDate()
         } else {
             loadTodosForMonth(context, yearMonth)
+        }
+
+        // 공휴일 데이터 로드
+        val holidaysByDate = if (isPreview) {
+            emptyMap<String, HolidayResponse>()
+        } else {
+            runBlocking {
+                try {
+                    // 현재 연도의 공휴일 로드
+                    val currentYear = yearMonth.year
+                    val holidays = mutableListOf<HolidayResponse>()
+                    holidays.addAll(HolidayManager.loadHolidays(context, currentYear, countryCode))
+                    
+                    // 다음 연도도 로드 시도 (12월인 경우, 실패해도 무방)
+                    val nextYear = if (yearMonth.month == 12) currentYear + 1 else null
+                    if (nextYear != null) {
+                        try {
+                            holidays.addAll(HolidayManager.loadHolidays(context, nextYear, countryCode))
+                        } catch (e: Exception) {
+                            // 다음 연도 데이터가 없어도 정상 (아직 API에 없을 수 있음)
+                            Log.d("CalendarWidget", "Next year holidays not available: $nextYear")
+                        }
+                    }
+                    
+                    HolidayManager.holidaysToMap(holidays)
+                } catch (e: Exception) {
+                    Log.e("CalendarWidget", "Error loading holidays", e)
+                    emptyMap()
+                }
+            }
         }
 
         val calendarGrid = CalendarDateUtils.generateCalendarGrid(yearMonth)
@@ -143,6 +177,7 @@ class CalendarWidget : WidgetComponent() {
                     modifier = WidgetModifier.fillMaxWidth().expandHeight(),
                     grid = calendarGrid,
                     todosByDate = todosByDate,
+                    holidaysByDate = holidaysByDate,
                     widgetSize = widgetSize
                 )
             }
@@ -319,6 +354,7 @@ class CalendarWidget : WidgetComponent() {
         modifier: WidgetModifier,
         grid: List<List<CalendarDay>>,
         todosByDate: Map<String, Int>,
+        holidaysByDate: Map<String, HolidayResponse>,
         widgetSize: DpSize
     ) {
         val context = getLocal(WidgetLocalContext) as Context
@@ -347,6 +383,7 @@ class CalendarWidget : WidgetComponent() {
                                 .height(cellHeight),
                             day = day,
                             todoCount = todosByDate[day.date] ?: 0,
+                            holiday = holidaysByDate[day.date],
                             dateFontSize = dateFontSize,
                             countFontSize = countFontSize
                         )
@@ -363,6 +400,7 @@ class CalendarWidget : WidgetComponent() {
         modifier: WidgetModifier,
         day: CalendarDay,
         todoCount: Int,
+        holiday: HolidayResponse?,
         dateFontSize: Float,
         countFontSize: Float
     ) {
@@ -373,19 +411,29 @@ class CalendarWidget : WidgetComponent() {
         val dayOfWeek = getDayOfWeek(day.date)
         val isSunday = dayOfWeek == Calendar.SUNDAY
         val isSaturday = dayOfWeek == Calendar.SATURDAY
+        val isHoliday = holiday != null
         
         val dateColor = if (day.isCurrentMonth) {
-            if (day.isToday) {
-                // 오늘인 경우: 배경이 primary이므로 onPrimary 색상
-                theme.onPrimary.getColor(context).toArgb()
-            } else if (isSunday) {
-                // 일요일: 빨간색
-                Color(0xFFFF0000).toArgb()
-            } else if (isSaturday) {
-                // 토요일: 파란색
-                Color(0xFF0000FF).toArgb()
-            } else {
-                theme.onSurface.getColor(context).toArgb()
+            when {
+                day.isToday -> {
+                    // 오늘인 경우: 배경이 primary이므로 onPrimary 색상
+                    theme.onPrimary.getColor(context).toArgb()
+                }
+                isSaturday -> {
+                    // 토요일: 항상 파란색 (공휴일과 겹쳐도 파란색 유지)
+                    Color(0xFF0000FF).toArgb()
+                }
+                isHoliday -> {
+                    // 공휴일: 빨간색
+                    Color(0xFFFF0000).toArgb()
+                }
+                isSunday -> {
+                    // 일요일: 빨간색
+                    Color(0xFFFF0000).toArgb()
+                }
+                else -> {
+                    theme.onSurface.getColor(context).toArgb()
+                }
             }
         } else {
             if (day.isToday) {

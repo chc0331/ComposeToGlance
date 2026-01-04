@@ -11,6 +11,8 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Calendar permission for reading public holidays from system calendar -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
     <queries>
         <!-- 1. [기본] 바탕화면에 아이콘이 있는 앱 (대부분의 앱) -->
         <intent>

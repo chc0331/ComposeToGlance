@@ -1,0 +1,91 @@
+[
+  {
+    "date": "2026-01-01",
+    "localName": "신정",
+    "name": "New Year's Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": true
+  },
+  {
+    "date": "2026-02-16",
+    "localName": "설날 연휴",
+    "name": "Seollal Holiday",
+    "countryCode": "KR",
+    "fixed": false,
+    "global": false
+  },
+  {
+    "date": "2026-02-17",
+    "localName": "설날",
+    "name": "Seollal",
+    "countryCode": "KR",
+    "fixed": false,
+    "global": false
+  },
+  {
+    "date": "2026-02-18",
+    "localName": "설날 연휴",
+    "name": "Seollal Holiday",
+    "countryCode": "KR",
+    "fixed": false,
+    "global": false
+  },
+  {
+    "date": "2026-03-01",
+    "localName": "삼일절",
+    "name": "Independence Movement Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-05-05",
+    "localName": "어린이날",
+    "name": "Children's Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-06-06",
+    "localName": "현충일",
+    "name": "Memorial Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-08-15",
+    "localName": "광복절",
+    "name": "Liberation Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-10-03",
+    "localName": "개천절",
+    "name": "National Foundation Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-10-09",
+    "localName": "한글날",
+    "name": "Hangul Day",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": false
+  },
+  {
+    "date": "2026-12-25",
+    "localName": "크리스마스",
+    "name": "Christmas",
+    "countryCode": "KR",
+    "fixed": true,
+    "global": true
+  }
+]
+
