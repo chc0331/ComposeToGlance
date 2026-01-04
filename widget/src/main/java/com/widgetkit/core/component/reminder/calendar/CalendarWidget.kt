@@ -69,7 +69,7 @@ class CalendarWidget : WidgetComponent() {
 
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.REMINDER
 
-    override fun getSizeType(): SizeType = SizeType.MEDIUM_PLUS
+    override fun getSizeType(): SizeType = SizeType.LARGE
 
     override fun getWidgetTag(): String = "Calendar"
 
