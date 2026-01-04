@@ -3,7 +3,7 @@ package com.widgetkit.core
 import com.widgetkit.core.component.WidgetComponent
 
 enum class SizeType {
-    TINY, SMALL, MEDIUM, MEDIUM_PLUS, LARGE;
+    TINY, SMALL, MEDIUM, MEDIUM_PLUS, LARGE, EXTRA_LARGE;
 
     override fun toString(): String {
         return when (this) {
@@ -11,7 +11,8 @@ enum class SizeType {
             SMALL -> "Small"
             MEDIUM -> "Medium"
             MEDIUM_PLUS -> "Medium Plus"
-            else -> "Large"
+            LARGE -> "Large"
+            else -> "Extra Large"
         }
     }
 
@@ -21,7 +22,8 @@ enum class SizeType {
             SMALL -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_SMALL
             MEDIUM -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_MEDIUM
             MEDIUM_PLUS -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_MEDIUM_PLUS
-            else -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_LARGE
+            LARGE -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_LARGE
+            else -> com.widgetkit.core.proto.SizeType.SIZE_TYPE_EXTRA_LARGE
         }
     }
 
@@ -32,8 +34,8 @@ enum class SizeType {
                 "Small" -> SMALL
                 "Medium" -> MEDIUM
                 "Medium Plus" -> MEDIUM_PLUS
-                "ExtraLarge" -> LARGE
-                else -> LARGE
+                "Large" -> LARGE
+                else -> EXTRA_LARGE
             }
         }
     }
@@ -50,7 +52,8 @@ fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
         SizeType.SMALL -> 2 to 1
         SizeType.MEDIUM -> 2 to 2
         SizeType.MEDIUM_PLUS -> 3 to 2
-        else -> 4 to 2
+        SizeType.LARGE -> 4 to 2
+        else -> 4 to 4
     }
 }
 
@@ -62,7 +65,7 @@ fun WidgetComponent.getSizeInCells(): Pair<Int, Int> {
 fun WidgetComponent.getSizeInCells(gridMultiplier: Int): Pair<Int, Int> {
     val baseSizeInCells = getSizeInCells()
     val validMultiplier = if (gridMultiplier in listOf(1, 2, 4, 6)) gridMultiplier else 1
-    
+
     return Pair(
         baseSizeInCells.first * validMultiplier,
         baseSizeInCells.second * validMultiplier
@@ -75,6 +78,9 @@ fun WidgetComponent.getSizeInCells(gridMultiplier: Int): Pair<Int, Int> {
  * @param gridMultiplier 그리드 배수
  * @return Pair<width in cells, height in cells>
  */
-fun WidgetComponent.getSizeInCellsForLayout(layoutType: String, gridMultiplier: Int = 1): Pair<Int, Int> {
+fun WidgetComponent.getSizeInCellsForLayout(
+    layoutType: String,
+    gridMultiplier: Int = 1
+): Pair<Int, Int> {
     return getSizeInCells(gridMultiplier)
 }

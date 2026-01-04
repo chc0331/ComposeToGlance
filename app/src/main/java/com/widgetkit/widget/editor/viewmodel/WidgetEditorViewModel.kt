@@ -329,7 +329,6 @@ class WidgetEditorViewModel(
      */
     fun save(context: Context) {
         //TODO : Check logic.
-        Log.i("heec.choi","Selected layout : ${selectedLayout?.gridSpec()}")
         viewModelScope.launch {
             val gridColumns = selectedLayout?.gridSpec()?.columns ?: 2
             repository.updateData(
