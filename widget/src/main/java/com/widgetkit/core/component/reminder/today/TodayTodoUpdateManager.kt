@@ -22,27 +22,45 @@ object TodayTodoUpdateManager : ComponentUpdateManager<TodayTodoData> {
         get() = TodayTodoWidget()
 
     override suspend fun syncState(context: Context, data: TodayTodoData) {
-        // DataStore에서 현재 선택된 날짜 로드
-        val selectedDate = data.selectedDate
-        val updatedData = loadTodayTodos(context, selectedDate)
-        Log.d(
-            TAG,
-            "Sync widget state for date $selectedDate: ${updatedData.totalCount} tasks, ${updatedData.completedCount} completed"
-        )
-        // 모든 위젯에 대해 업데이트
-        updateByState(context, updatedData)
-    }
-
-    override suspend fun updateByPartially(context: Context, data: TodayTodoData) {
-    }
-
-    override suspend fun updateByState(context: Context, data: TodayTodoData) {
+        // 각 위젯의 개별 데이터를 로드하여 각 위젯을 업데이트
         val placedComponents =
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
         placedComponents.forEach { (widgetId, _) ->
-            // 각 위젯별로 데이터 저장 및 업데이트
+            try {
+                // 각 위젯의 개별 선택된 날짜 로드
+                val widgetData = TodayTodoDataStore.loadData(context, widgetId)
+                val selectedDate = widgetData.selectedDate
+                val updatedData = loadTodayTodos(context, selectedDate)
+                Log.d(
+                    TAG,
+                    "Sync widget state for widget $widgetId, date $selectedDate: ${updatedData.totalCount} tasks, ${updatedData.completedCount} completed"
+                )
+                // 각 위젯별로 데이터 저장 및 업데이트
+                TodayTodoDataStore.saveData(context, widgetId, updatedData)
+                updateWidget(context, widgetId)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error syncing widget $widgetId", e)
+            }
+        }
+    }
+
+    override suspend fun updateByPartially(context: Context, widgetId: Int?, data: TodayTodoData) {
+    }
+
+    override suspend fun updateByState(context: Context, widgetId: Int?, data: TodayTodoData) {
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
             TodayTodoDataStore.saveData(context, widgetId, data)
             updateWidget(context, widgetId)
+        } else {
+            // 모든 위젯 업데이트
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            placedComponents.forEach { (id, _) ->
+                // 각 위젯별로 데이터 저장 및 업데이트
+                TodayTodoDataStore.saveData(context, id, data)
+                updateWidget(context, id)
+            }
         }
     }
 

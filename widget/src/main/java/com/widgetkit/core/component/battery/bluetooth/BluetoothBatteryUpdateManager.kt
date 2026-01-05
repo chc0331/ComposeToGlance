@@ -22,14 +22,14 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             "BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers"
         )
 
-    override suspend fun updateByPartially(context: Context, data: BatteryData) {
+    override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         when (data.deviceType) {
             DeviceType.BLUETOOTH_EARBUDS -> {
-                EarbudsBatteryUpdateManager.updateByPartially(context, data)
+                EarbudsBatteryUpdateManager.updateByPartially(context, widgetId, data)
             }
 
             DeviceType.BLUETOOTH_WATCH -> {
-                WatchBatteryUpdateManager.updateByPartially(context, data)
+                WatchBatteryUpdateManager.updateByPartially(context, widgetId, data)
             }
 
             else -> {
@@ -41,11 +41,11 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     override suspend fun syncState(context: Context, data: BatteryData) {
         when (data.deviceType) {
             DeviceType.BLUETOOTH_EARBUDS -> {
-                EarbudsBatteryUpdateManager.updateByPartially(context, data)
+                EarbudsBatteryUpdateManager.updateByPartially(context, null, data)
             }
 
             DeviceType.BLUETOOTH_WATCH -> {
-                WatchBatteryUpdateManager.updateByPartially(context, data)
+                WatchBatteryUpdateManager.updateByPartially(context, null, data)
             }
 
             else -> {
@@ -54,14 +54,14 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         }
     }
 
-    override suspend fun updateByState(context: Context, data: BatteryData) {
+    override suspend fun updateByState(context: Context, widgetId: Int?, data: BatteryData) {
         when (data.deviceType) {
             DeviceType.BLUETOOTH_EARBUDS -> {
-                EarbudsBatteryUpdateManager.updateByState(context, data)
+                EarbudsBatteryUpdateManager.updateByState(context, widgetId, data)
             }
 
             DeviceType.BLUETOOTH_WATCH -> {
-                WatchBatteryUpdateManager.updateByState(context, data)
+                WatchBatteryUpdateManager.updateByState(context, widgetId, data)
             }
 
             else -> {

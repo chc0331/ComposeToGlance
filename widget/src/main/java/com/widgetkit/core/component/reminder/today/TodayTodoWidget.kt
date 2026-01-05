@@ -112,7 +112,8 @@ class TodayTodoWidget : WidgetComponent() {
                 Header(
                     modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.2f),
                     isPreview,
-                    selectedDate
+                    selectedDate,
+                    widgetId
                 )
                 TodoList(modifier = WidgetModifier.fillMaxWidth().expandHeight(), todos = todos)
                 Divider(modifier = WidgetModifier.fillMaxWidth().height(1f))
@@ -124,7 +125,8 @@ class TodayTodoWidget : WidgetComponent() {
     private fun WidgetScope.Header(
         modifier: WidgetModifier = WidgetModifier,
         isPreview: Boolean,
-        selectedDate: String
+        selectedDate: String,
+        widgetId: Int
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
@@ -168,7 +170,7 @@ class TodayTodoWidget : WidgetComponent() {
                         .height(iconSize)
                         .padding(all = 2f).clickAction(
                             ComponentName(context, TodoActivity::class.java),
-                            mapOf("SHOW_DATE_PICKER" to "true")
+                            mapOf("SHOW_DATE_PICKER" to "true", "WIDGET_ID" to widgetId.toString())
                         ), contentProperty = {
                         contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                     }
@@ -213,7 +215,8 @@ class TodayTodoWidget : WidgetComponent() {
                     .height(iconSize)
                     .backgroundColor(iconColor)
                     .cornerRadius(iconSize / 2).clickAction(
-                        ComponentName(context, TodoActivity::class.java)
+                        ComponentName(context, TodoActivity::class.java),
+                        mapOf("WIDGET_ID" to widgetId.toString())
                     ),
                 contentProperty = {
                     contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER

@@ -27,20 +27,32 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             }
     }
 
-    override suspend fun updateByState(context: Context, data: BatteryData) {
+    override suspend fun updateByState(context: Context, widgetId: Int?, data: BatteryData) {
         WatchBatteryDataStore.saveData(context, data)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, component) ->
-                updateWidgetState(context, widgetId, data)
-                updateWidget(context, widgetId)
-            }
+        
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
+            updateWidgetState(context, widgetId, data)
+            updateWidget(context, widgetId)
+        } else {
+            // 모든 위젯 업데이트
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+                .forEach { (id, component) ->
+                    updateWidgetState(context, id, data)
+                    updateWidget(context, id)
+                }
+        }
     }
 
-    override suspend fun updateByPartially(context: Context, data: BatteryData) {
+    override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         WatchBatteryDataStore.saveData(context, data)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, component) ->
-                updateWidgetState(context, widgetId, data)
+        
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
+            updateWidgetState(context, widgetId, data)
+            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            val component = placedComponents.find { it.first == widgetId }?.second
+            if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
 
@@ -59,8 +71,32 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                     )
                 }
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
-
             }
+        } else {
+            // 모든 위젯 업데이트
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+                .forEach { (id, component) ->
+                    updateWidgetState(context, id, data)
+                    val gridIndex = component.gridIndex
+                    val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+
+                    // 배터리 레벨이 유효한지 확인 (0-100 사이)
+                    val isValidBatteryLevel = data.level in 0f..100f
+
+                    remoteViews.setImageViewColorFilter(
+                        widget.getWatchIconId(gridIndex),
+                        if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
+                    )
+                    // 유효한 배터리 레벨일 때만 텍스트 업데이트
+                    if (isValidBatteryLevel) {
+                        remoteViews.setTextViewText(
+                            widget.getWatchTextId(gridIndex),
+                            if (data.isConnect) data.level.toInt().toString() else "--"
+                        )
+                    }
+                    ComponentUpdateHelper.partiallyUpdateWidget(context, id, remoteViews)
+                }
+        }
     }
 
     private suspend fun updateWidgetState(context: Context, widgetId: Int, data: BatteryData) {

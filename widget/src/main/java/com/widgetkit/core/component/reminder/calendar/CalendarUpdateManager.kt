@@ -26,19 +26,26 @@ object CalendarUpdateManager : ComponentUpdateManager<CalendarData> {
         )
         // DataStore에 저장
         CalendarDataStore.saveData(context, data)
-        updateByState(context, data)
+        updateByState(context, null, data)
     }
 
-    override suspend fun updateByPartially(context: Context, data: CalendarData) {
+    override suspend fun updateByPartially(context: Context, widgetId: Int?, data: CalendarData) {
         // 캘린더 위젯은 부분 업데이트를 지원하지 않음
     }
 
-    override suspend fun updateByState(context: Context, data: CalendarData) {
+    override suspend fun updateByState(context: Context, widgetId: Int?, data: CalendarData) {
         CalendarDataStore.saveData(context, data)
-        val placedComponents =
-            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-        placedComponents.forEach { (widgetId, _) ->
+        
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
             updateWidget(context, widgetId)
+        } else {
+            // 모든 위젯 업데이트
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            placedComponents.forEach { (id, _) ->
+                updateWidget(context, id)
+            }
         }
     }
 

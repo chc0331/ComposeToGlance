@@ -52,7 +52,8 @@ data class TodayTodoUiState(
  */
 class TodayTodoViewModel(
     private val repository: TodoRepository,
-    private val applicationContext: Context
+    private val applicationContext: Context,
+    private val widgetId: Int = -1
 ) : ViewModel() {
 
     private val _selectedDateMillis = MutableStateFlow(System.currentTimeMillis())
@@ -70,7 +71,8 @@ class TodayTodoViewModel(
         viewModelScope.launch {
             try {
                 val dataStore = com.widgetkit.core.component.reminder.today.TodayTodoDataStore
-                val data = dataStore.loadData(applicationContext)
+                val loadWidgetId = if (widgetId != -1) widgetId else 0
+                val data = dataStore.loadData(applicationContext, loadWidgetId)
                 val selectedDate = data.selectedDate
                 
                 // 날짜 문자열을 milliseconds로 변환
@@ -360,11 +362,22 @@ class TodayTodoViewModel(
                 // 현재 선택된 날짜를 DataStore에 저장하고 위젯 업데이트
                 val currentDate = uiState.value.selectedDateString
                 val data = TodayTodoUpdateManager.loadTodosForDate(applicationContext, currentDate)
-                com.widgetkit.core.component.reminder.today.TodayTodoDataStore.saveData(
-                    applicationContext, 
-                    data
-                )
-                TodayTodoUpdateManager.updateByState(applicationContext, data)
+                val updateWidgetId = if (widgetId != -1) widgetId else null
+                if (updateWidgetId != null) {
+                    // 특정 위젯에만 데이터 저장
+                    com.widgetkit.core.component.reminder.today.TodayTodoDataStore.saveData(
+                        applicationContext,
+                        updateWidgetId,
+                        data
+                    )
+                } else {
+                    // 모든 위젯에 데이터 저장 (하위 호환성)
+                    com.widgetkit.core.component.reminder.today.TodayTodoDataStore.saveData(
+                        applicationContext,
+                        data
+                    )
+                }
+                TodayTodoUpdateManager.updateByState(applicationContext, updateWidgetId, data)
                 delay(1000)
             }
         }

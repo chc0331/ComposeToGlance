@@ -19,21 +19,33 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
     override val widget: RamWidget
         get() = RamWidget()
 
-    override suspend fun updateByState(context: Context, data: RamData) {
+    override suspend fun updateByState(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, data)
-                updateWidget(context, widgetId)
-            }
+        
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
+            updateWidgetState(context, widgetId, data)
+            updateWidget(context, widgetId)
+        } else {
+            // 모든 위젯 업데이트
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+                .forEach { (id, _) ->
+                    updateWidgetState(context, id, data)
+                    updateWidget(context, id)
+                }
+        }
         DeviceCareWorker.registerWorker(context)
     }
 
-    override suspend fun updateByPartially(context: Context, data: RamData) {
+    override suspend fun updateByPartially(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, component) ->
-                updateWidgetState(context, widgetId, data)
+        
+        if (widgetId != null) {
+            // 특정 위젯만 업데이트
+            updateWidgetState(context, widgetId, data)
+            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            val component = placedComponents.find { it.first == widgetId }?.second
+            if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
                 Log.i(TAG, "updateRam / ${data.usagePercent}")
@@ -49,6 +61,27 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
                 )
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
             }
+        } else {
+            // 모든 위젯 업데이트
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+                .forEach { (id, component) ->
+                    updateWidgetState(context, id, data)
+                    val gridIndex = component.gridIndex
+                    val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+                    Log.i(TAG, "updateRam / ${data.usagePercent}")
+                    remoteViews.setTextViewText(
+                        widget.getRamTextId(gridIndex),
+                        "${data.usagePercent}%"
+                    )
+                    remoteViews.setProgressBar(
+                        widget.getRamProgressId(gridIndex),
+                        100,
+                        data.usagePercent.toInt(),
+                        false
+                    )
+                    ComponentUpdateHelper.partiallyUpdateWidget(context, id, remoteViews)
+                }
+        }
     }
 
     override suspend fun syncState(context: Context, data: RamData) {

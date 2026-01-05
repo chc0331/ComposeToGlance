@@ -108,7 +108,22 @@ class TodoActivity : ComponentActivity() {
         // 바깥쪽 터치 시 액티비티 종료
         setFinishOnTouchOutside(true)
         
-        val viewModelFactory = TodayTodoViewModelFactory(this)
+        // Intent에서 widgetId 읽기 (없으면 -1)
+        // RemoteViewsBuilder에서 Long으로 저장될 수 있으므로 Long/Int/String 모두 시도
+        val widgetId = when {
+            intent.hasExtra("WIDGET_ID") -> {
+                when (val value = intent.extras?.get("WIDGET_ID")) {
+                    is Int -> value
+                    is Long -> value.toInt()
+                    is String -> value.toIntOrNull() ?: -1
+                    else -> -1
+                }
+            }
+            else -> -1
+        }
+        android.util.Log.d("TodoActivity", "Read widgetId from Intent: $widgetId (type: ${intent.extras?.get("WIDGET_ID")?.javaClass?.name})")
+        
+        val viewModelFactory = TodayTodoViewModelFactory(this, widgetId)
         viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
         
         // Intent에서 SHOW_DATE_PICKER extra 확인
@@ -121,10 +136,11 @@ class TodoActivity : ComponentActivity() {
             
             lifecycleScope.launch {
                 initialDateMillis = try {
-                    val data = TodayTodoDataStore.loadData(this@TodoActivity)
+                    val loadWidgetId = if (widgetId != -1) widgetId else 0
+                    val data = TodayTodoDataStore.loadData(this@TodoActivity, loadWidgetId)
                     // UTC 기준 밀리초로 변환 (DatePicker는 UTC 기준)
                     val parsedMillis = TodoDateUtils.parseDateToUtcMillis(data.selectedDate)
-                    android.util.Log.d("TodoActivity", "Loaded date from DataStore: ${data.selectedDate}, UTC millis: $parsedMillis")
+                    android.util.Log.d("TodoActivity", "Loaded date from DataStore for widget $loadWidgetId: ${data.selectedDate}, UTC millis: $parsedMillis")
                     parsedMillis ?: System.currentTimeMillis()
                 } catch (e: Exception) {
                     android.util.Log.e("TodoActivity", "Error loading date from DataStore", e)
@@ -158,11 +174,21 @@ class TodoActivity : ComponentActivity() {
                                                     )
                                                     android.util.Log.d("TodoActivity", "Loaded data: ${data.totalCount} todos")
                                                     
-                                                    TodayTodoDataStore.saveData(this@TodoActivity, data)
-                                                    android.util.Log.d("TodoActivity", "Saved to DataStore")
+                                                    android.util.Log.d("TodoActivity", "Date selected, widgetId: $widgetId")
+                                                    val updateWidgetId = if (widgetId != -1) widgetId else null
+                                                    android.util.Log.d("TodoActivity", "updateWidgetId: $updateWidgetId")
+                                                    if (updateWidgetId != null) {
+                                                        // 특정 위젯에만 데이터 저장
+                                                        TodayTodoDataStore.saveData(this@TodoActivity, updateWidgetId, data)
+                                                    } else {
+                                                        // 모든 위젯에 데이터 저장 (하위 호환성)
+                                                        TodayTodoDataStore.saveData(this@TodoActivity, data)
+                                                    }
+                                                    android.util.Log.d("TodoActivity", "Saved to DataStore $updateWidgetId")
                                                     
                                                     TodayTodoUpdateManager.updateByState(
                                                         this@TodoActivity,
+                                                        updateWidgetId,
                                                         data
                                                     )
                                                     android.util.Log.d("TodoActivity", "Updated component")

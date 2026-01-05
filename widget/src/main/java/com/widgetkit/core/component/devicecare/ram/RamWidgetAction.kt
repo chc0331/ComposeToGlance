@@ -36,7 +36,7 @@ class RamWidgetAction : WidgetActionCallback {
                 .toFloat()
         val ramData = RamData(ramUsagePercent)
         Log.i(TAG, "RamData : $ramData")
-        ramWidgetUpdateManager.updateByPartially(context, ramData)
+        ramWidgetUpdateManager.updateByPartially(context, null, ramData)
     }
 
     private fun clearMemory(context: Context) {

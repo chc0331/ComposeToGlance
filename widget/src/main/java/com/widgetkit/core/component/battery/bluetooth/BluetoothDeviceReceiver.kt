@@ -123,7 +123,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                             // 위젯 업데이트
                             CoroutineScope(Dispatchers.Default).launch {
                                 deviceInfoList.forEach {
-                                    BluetoothBatteryUpdateManager.updateByPartially(context, it)
+                                    BluetoothBatteryUpdateManager.updateByPartially(context, null, it)
                                 }
                             }
                         }
@@ -142,6 +142,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                         CoroutineScope(Dispatchers.Default).launch {
                             BluetoothBatteryUpdateManager.updateByPartially(
                                 context,
+                                null,
                                 batteryData
                             )
                         }
@@ -168,6 +169,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
 
                             BluetoothBatteryUpdateManager.updateByPartially(
                                 context,
+                                null,
                                 data
                             )
                         }

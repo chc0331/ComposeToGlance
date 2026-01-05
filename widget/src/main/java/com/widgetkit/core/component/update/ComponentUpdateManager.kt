@@ -13,7 +13,7 @@ interface ComponentUpdateManager<T> {
 
     suspend fun syncState(context: Context, data: T)
 
-    suspend fun updateByState(context: Context, data: T)
+    suspend fun updateByState(context: Context, widgetId: Int?, data: T)
 
-    suspend fun updateByPartially(context: Context, data: T)
+    suspend fun updateByPartially(context: Context, widgetId: Int?, data: T)
 }

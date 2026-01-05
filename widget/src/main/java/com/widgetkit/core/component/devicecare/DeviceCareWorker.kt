@@ -26,7 +26,7 @@ class DeviceCareWorker(
                     .toFloat()
             val ramData = RamData(ramUsagePercent)
             RamWidgetDataStore.saveData(context, ramData)
-            RamUpdateManager.updateByPartially(context, ramData)
+            RamUpdateManager.updateByPartially(context, null, ramData)
 
             // DeviceCare위젯 컴포넌트가 추가되어 있으면 registe
             registerWorker(context)
