@@ -89,5 +89,25 @@ class TodoRepository(context: Context) {
     fun getTodosByDateRange(startDate: String, endDate: String): Flow<List<TodoEntity>> {
         return todoDao.getTodosByDateRange(startDate, endDate)
     }
+    
+    /**
+     * dateTime이 있는 미래 Todo 조회 (현재 시간 이후, 미완료 상태만)
+     */
+    suspend fun getUpcomingTodos(currentTime: Long = System.currentTimeMillis()): List<TodoEntity> {
+        return todoDao.getUpcomingTodos(currentTime)
+    }
+    
+    /**
+     * 날짜 범위 기반 Upcoming Todos 조회 (dateTime null 포함)
+     * - dateTime이 있는 경우: dateTime >= currentTime
+     * - dateTime이 null인 경우: date가 startDate와 endDate 사이
+     */
+    suspend fun getUpcomingTodosByDateRange(
+        currentTime: Long = System.currentTimeMillis(),
+        startDate: String,
+        endDate: String
+    ): List<TodoEntity> {
+        return todoDao.getUpcomingTodosByDateRange(currentTime, startDate, endDate)
+    }
 }
 

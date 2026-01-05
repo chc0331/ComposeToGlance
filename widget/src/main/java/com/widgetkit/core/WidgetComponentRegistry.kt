@@ -10,6 +10,7 @@ import com.widgetkit.core.component.battery.bluetooth.watch.WatchBatteryWidget
 import com.widgetkit.core.component.devicecare.ram.RamWidget
 import com.widgetkit.core.component.reminder.calendar.CalendarWidget
 import com.widgetkit.core.component.reminder.today.TodayTodoWidget
+import com.widgetkit.core.component.reminder.upcoming.UpcomingTasksWidget
 import com.widgetkit.core.component.viewid.ViewIdAllocator
 
 fun initializeWidgetComponents() {
@@ -22,6 +23,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(RamWidget())
     WidgetComponentRegistry.registerComponent(TodayTodoWidget())
     WidgetComponentRegistry.registerComponent(CalendarWidget())
+    WidgetComponentRegistry.registerComponent(UpcomingTasksWidget())
 }
 
 /**

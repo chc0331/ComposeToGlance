@@ -138,10 +138,102 @@ object TodoDateUtils {
     }
     
     /**
+     * 날짜 문자열을 yy/MM/dd 형식으로 변환 (예: "26/01/06")
+     */
+    fun formatShortDate(dateString: String): String {
+        return try {
+            val date = parseDate(dateString) ?: return dateString
+            val calendar = Calendar.getInstance().apply {
+                time = date
+            }
+            val year = calendar.get(Calendar.YEAR) % 100 // 마지막 2자리
+            val month = calendar.get(Calendar.MONTH) + 1
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            String.format("%02d/%02d/%02d", year, month, day)
+        } catch (e: Exception) {
+            dateString
+        }
+    }
+    
+    /**
      * 특정 날짜가 오늘인지 확인
      */
     fun isToday(dateString: String): Boolean {
         return dateString == getTodayDateString()
+    }
+    
+    /**
+     * 남은 시간 포맷팅 (예: "2시간 후", "내일 오후 3시", "3일 후")
+     * @param targetTime 목표 시간 (밀리초)
+     * @return 포맷된 문자열
+     */
+    fun formatTimeRemaining(targetTime: Long): String {
+        val now = System.currentTimeMillis()
+        val diff = targetTime - now
+        
+        if (diff < 0) {
+            return "지난 시간"
+        }
+        
+        val calendar = Calendar.getInstance()
+        val targetCalendar = Calendar.getInstance().apply {
+            timeInMillis = targetTime
+        }
+        
+        val today = calendar.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        val targetDay = targetCalendar.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        
+        val daysDiff = ((targetDay.timeInMillis - today.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+        
+        return when {
+            daysDiff == 0 -> {
+                // 오늘
+                val hours = diff / (1000 * 60 * 60)
+                val minutes = (diff % (1000 * 60 * 60)) / (1000 * 60)
+                when {
+                    hours > 0 -> "${hours}시간 후"
+                    minutes > 0 -> "${minutes}분 후"
+                    else -> "곧"
+                }
+            }
+            daysDiff == 1 -> {
+                // 내일
+                val timeStr = formatTime(targetTime)
+                "내일 $timeStr"
+            }
+            daysDiff <= 7 -> {
+                // 이번 주
+                val timeStr = formatTime(targetTime)
+                val dayName = when (targetCalendar.get(Calendar.DAY_OF_WEEK)) {
+                    Calendar.SUNDAY -> "일요일"
+                    Calendar.MONDAY -> "월요일"
+                    Calendar.TUESDAY -> "화요일"
+                    Calendar.WEDNESDAY -> "수요일"
+                    Calendar.THURSDAY -> "목요일"
+                    Calendar.FRIDAY -> "금요일"
+                    Calendar.SATURDAY -> "토요일"
+                    else -> ""
+                }
+                "$dayName $timeStr"
+            }
+            else -> {
+                // 그 이후
+                val dateStr = formatWidgetDate(Date(targetTime))
+                val timeStr = formatTime(targetTime)
+                "$dateStr $timeStr"
+            }
+        }
     }
 }
 

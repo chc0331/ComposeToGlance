@@ -7,6 +7,9 @@ import com.widgetkit.core.component.reminder.today.TodayTodoUpdateManager
 import com.widgetkit.core.component.reminder.today.TodoDateUtils
 import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.reminder.today.TodoStatus
+import com.widgetkit.core.component.reminder.upcoming.UpcomingTasksUpdateManager
+import com.widgetkit.core.component.reminder.upcoming.UpcomingTasksData
+import com.widgetkit.core.component.reminder.upcoming.UpcomingFilterType
 import com.widgetkit.core.component.reminder.today.ui.SpeechRecognitionManager
 import com.widgetkit.core.database.TodoEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -387,6 +390,15 @@ class TodayTodoViewModel(
                     )
                 }
                 TodayTodoUpdateManager.updateByState(applicationContext, updateWidgetId, data)
+                
+                // UpcomingTasks 위젯도 함께 업데이트 (모든 위젯 업데이트)
+                // widgetId가 null이면 내부에서 각 위젯의 필터 타입에 맞게 데이터를 로드함
+                UpcomingTasksUpdateManager.updateByState(
+                    applicationContext, 
+                    null, 
+                    UpcomingTasksData.empty(UpcomingFilterType.TODAY)
+                )
+                
                 delay(1000)
             }
         }

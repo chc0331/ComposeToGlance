@@ -84,5 +84,34 @@ interface TodoDao {
      */
     @Query("SELECT * FROM todos WHERE date >= :startDate AND date <= :endDate ORDER BY date ASC, createdAt ASC")
     fun getTodosByDateRange(startDate: String, endDate: String): Flow<List<TodoEntity>>
+    
+    /**
+     * dateTime이 있는 미래 Todo 조회 (현재 시간 이후, 미완료 상태만)
+     * dateTime 기준 오름차순 정렬
+     */
+    @Query("SELECT * FROM todos WHERE dateTime IS NOT NULL AND dateTime >= :currentTime AND status != 'COMPLETED' ORDER BY dateTime ASC")
+    suspend fun getUpcomingTodos(currentTime: Long): List<TodoEntity>
+    
+    /**
+     * 날짜 범위 기반 Upcoming Todos 조회 (dateTime null 포함)
+     * - dateTime이 있는 경우: dateTime >= currentTime AND status != 'COMPLETED'
+     * - dateTime이 null인 경우: date >= startDate AND date <= endDate AND status != 'COMPLETED'
+     * 정렬은 애플리케이션 레벨에서 수행 (dateTime 우선, 그 다음 날짜 순)
+     */
+    @Query("""
+        SELECT * FROM todos 
+        WHERE status != 'COMPLETED' 
+        AND (
+            (dateTime IS NOT NULL AND dateTime >= :currentTime) 
+            OR 
+            (dateTime IS NULL AND date >= :startDate AND date <= :endDate)
+        )
+        ORDER BY date ASC, createdAt ASC
+    """)
+    suspend fun getUpcomingTodosByDateRange(
+        currentTime: Long,
+        startDate: String,
+        endDate: String
+    ): List<TodoEntity>
 }
 

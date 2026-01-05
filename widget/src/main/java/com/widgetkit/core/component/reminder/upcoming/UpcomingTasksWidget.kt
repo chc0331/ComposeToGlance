@@ -1,6 +1,5 @@
-package com.widgetkit.core.component.reminder.today
+package com.widgetkit.core.component.reminder.upcoming
 
-import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -9,20 +8,19 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.color.DynamicThemeColorProviders
-import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.component.datastore.ComponentDataStore
+import com.widgetkit.core.component.reminder.today.TodoDateUtils
+import com.widgetkit.core.component.reminder.today.TodoRepository
+import com.widgetkit.core.component.reminder.today.TodoStatus
 import com.widgetkit.core.component.reminder.today.ui.TodoActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
-import com.widgetkit.core.component.viewid.ViewIdType
-import com.widgetkit.core.database.TodoDatabase
 import com.widgetkit.core.database.TodoEntity
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.CheckBox
-import com.widgetkit.dsl.frontend.Image
 import com.widgetkit.dsl.frontend.Spacer
 import com.widgetkit.dsl.frontend.Text
 import com.widgetkit.dsl.frontend.layout.Box
@@ -47,6 +45,7 @@ import com.widgetkit.dsl.proto.modifier.padding
 import com.widgetkit.dsl.proto.modifier.width
 import com.widgetkit.dsl.proto.modifier.wrapContentHeight
 import com.widgetkit.dsl.proto.modifier.wrapContentWidth
+import com.widgetkit.dsl.widget.action.RunWidgetCallbackAction
 import com.widgetkit.dsl.widget.action.WidgetActionParameters
 import com.widgetkit.dsl.widget.action.widgetActionParametersOf
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
@@ -54,24 +53,24 @@ import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGlanceId
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.core.action.CustomWidgetActionCallbackBroadcastReceiver
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import java.util.Date
 
 /**
- * 오늘의 Todo를 표시하는 위젯
+ * 다가오는 할 일을 표시하는 위젯
  */
-class TodayTodoWidget : WidgetComponent() {
+class UpcomingTasksWidget : WidgetComponent() {
 
-    override fun getName(): String = "Today Todo"
+    override fun getName(): String = "Upcoming Tasks"
 
-    override fun getDescription(): String = "오늘의 할 일 목록"
+    override fun getDescription(): String = "다가오는 할 일 목록"
 
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DAILY_SCHEDULE
 
     override fun getSizeType(): SizeType = SizeType.MEDIUM
 
-    override fun getWidgetTag(): String = "TodayTodo"
+    override fun getWidgetTag(): String = "UpcomingTasks"
 
     override fun WidgetScope.Content() {
         val context = getLocal(WidgetLocalContext) as Context
@@ -79,18 +78,23 @@ class TodayTodoWidget : WidgetComponent() {
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetHeight = getLocal(WidgetLocalSize)?.height ?: 0.dp
         val widgetId = (getLocal(WidgetLocalGlanceId) as AppWidgetId?)?.appWidgetId ?: 0
-        val selectedDate = if (isPreview) {
-            TodoDateUtils.getTodayDateString()
+        
+        val filterType = if (isPreview) {
+            UpcomingFilterType.TODAY
         } else {
             runBlocking {
-                TodayTodoDataStore.loadData(context, widgetId).selectedDate
+                UpcomingTasksDataStore.loadFilterType(context, widgetId)
             }
         }
+        
         val todos = if (isPreview) {
             getPreviewTodos()
         } else {
-            loadTodosFromDb(context, selectedDate)
+            runBlocking {
+                UpcomingTasksUpdateManager.loadUpcomingTodos(context, filterType).todos
+            }
         }
+
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
@@ -110,39 +114,45 @@ class TodayTodoWidget : WidgetComponent() {
                 }
             ) {
                 Header(
-                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.16f),
-                    isPreview,
-                    selectedDate,
-                    widgetId
+                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.24f),
+                    filterType = filterType,
+                    widgetId = widgetId,
+                    isPreview = isPreview
                 )
-                TodoList(modifier = WidgetModifier.fillMaxWidth().expandHeight(), todos = todos)
+                TodoList(
+                    modifier = WidgetModifier.fillMaxWidth().expandHeight(),
+                    todos = todos
+                )
                 Divider(modifier = WidgetModifier.fillMaxWidth().height(1f))
-                Footer(modifier = WidgetModifier.fillMaxWidth().height(28f), todos = todos)
+                Footer(
+                    modifier = WidgetModifier.fillMaxWidth().height(28f),
+                    todos = todos
+                )
             }
         }
     }
 
+    /**
+     * 헤더: 필터 선택 및 제목
+     */
     private fun WidgetScope.Header(
         modifier: WidgetModifier = WidgetModifier,
-        isPreview: Boolean,
-        selectedDate: String,
-        widgetId: Int
+        filterType: UpcomingFilterType,
+        widgetId: Int,
+        isPreview: Boolean
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetSize = getLocal(WidgetLocalSize) ?: DpSize.Zero
-        val isToday = TodoDateUtils.isToday(selectedDate)
-        val displayText = if (isToday) "Today" else TodoDateUtils.formatShortDate(selectedDate)
-        val dateMillis = TodoDateUtils.parseDate(selectedDate)?.time ?: System.currentTimeMillis()
-        val formattedDate = TodoDateUtils.formatWidgetDate(Date(dateMillis))
 
         val titleBarBackgroundColor = theme.surfaceVariant.getColor(context).toArgb()
-        val iconColor = theme.primary.getColor(context).toArgb()
-        val iconContentColor = theme.onSecondary.getColor(context)
-        val mainTextColor = theme.onSurface.getColor(context).toArgb()
+        val textColor = theme.onSurface.getColor(context).toArgb()
+        val subTextColor = theme.onSurfaceVariant.getColor(context).toArgb()
+        val primaryColor = theme.primary.getColor(context).toArgb()
 
-        val iconSize = widgetSize.height.value * 0.1f
-        val mainTextSize = widgetSize.height.value * 0.06f
+        val fontSize = widgetSize.height.value * 0.06f
+        val filterFontSize = widgetSize.height.value * 0.06f
+
         Row(
             modifier = modifier
                 .backgroundColor(titleBarBackgroundColor)
@@ -152,73 +162,77 @@ class TodayTodoWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
-            Row(
+            Column(
                 modifier = WidgetModifier
                     .expandWidth()
                     .wrapContentHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
-                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                Box(
-                    modifier = WidgetModifier
-                        .width(iconSize)
-                        .height(iconSize)
-                        .padding(all = 2f).clickAction(
-                            ComponentName(context, TodoActivity::class.java),
-                            mapOf("SHOW_DATE_PICKER" to "true", "WIDGET_ID" to widgetId.toString())
-                        ), contentProperty = {
-                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                    }
-                ) {
-                    Image(
-                        modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
-                        contentProperty = {
-                            Provider {
-                                drawableResId = R.drawable.ic_calendar
-                            }
-                            TintColor {
-                                argb = iconColor
-                            }
-                        }
-                    )
-                }
-
+                Text(
+                    text = "Upcoming Tasks",
+                    fontSize = fontSize,
+                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                    fontColor = Color(textColor)
+                )
+                // 필터 선택 버튼들
                 Row(
-                    modifier = WidgetModifier.expandWidth().wrapContentHeight()
-                        .padding(start = 6f),
+                    modifier = WidgetModifier
+                        .wrapContentWidth()
+                        .wrapContentHeight()
+                        .padding(top = 2f),
                     contentProperty = {
+                        horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                     }
                 ) {
-                    Text(
-                        modifier = WidgetModifier.padding(end = 6f),
-                        text = displayText,
-                        fontSize = mainTextSize,
-                        fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                        fontColor = Color(mainTextColor)
-                    )
-                }
-            }
-            Box(
-                modifier = WidgetModifier
-                    .width(iconSize * 0.8f)
-                    .height(iconSize * 0.8f)
-                    .backgroundColor(iconColor)
-                    .cornerRadius(iconSize / 2).clickAction(
-                        ComponentName(context, TodoActivity::class.java),
-                        mapOf("WIDGET_ID" to widgetId.toString())
-                    ),
-                contentProperty = {
-                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                }
-            ) {
-                Image(modifier = WidgetModifier.fillMaxWidth().fillMaxHeight()) {
-                    Provider {
-                        drawableResId = R.drawable.ic_add
-                    }
-                    TintColor {
-                        argb = iconContentColor.toArgb()
+                    listOf(
+                        UpcomingFilterType.TODAY to "Today",
+                        UpcomingFilterType.TOMORROW to "Tomorrow",
+                        UpcomingFilterType.THIS_WEEK to "This Week",
+                        UpcomingFilterType.ALL to "All"
+                    ).forEach { (type, label) ->
+                        val isSelected = filterType == type
+                        val buttonColor = if (isSelected) primaryColor else subTextColor
+                        
+                        if (!isPreview) {
+                            Box(
+                                modifier = WidgetModifier
+                                    .wrapContentWidth()
+                                    .wrapContentHeight()
+                                    .padding(end = 4f)
+                                    .clickAction(
+                                        context,
+                                        RunWidgetCallbackAction(
+                                            CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                                            UpcomingTasksFilterAction::class.java,
+                                            widgetActionParametersOf(
+                                                WidgetActionParameters.Key<String>("actionClass") to (UpcomingTasksFilterAction::class.java.canonicalName ?: ""),
+                                                WidgetActionParameters.Key<Int>("widgetId") to widgetId,
+                                                WidgetActionParameters.Key<String>("filterType") to type.name
+                                            )
+                                        )
+                                    ),
+                                contentProperty = {
+                                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+                                }
+                            ) {
+                                Text(
+                                    text = label,
+                                    fontSize = filterFontSize,
+                                    fontWeight = if (isSelected) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
+                                    fontColor = Color(buttonColor)
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = label,
+                                fontSize = filterFontSize,
+                                fontWeight = if (isSelected) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
+                                fontColor = Color(buttonColor),
+                                modifier = WidgetModifier.padding(end = 4f)
+                            )
+                        }
                     }
                 }
             }
@@ -246,7 +260,8 @@ class TodayTodoWidget : WidgetComponent() {
                     item {
                         TodoItem(
                             modifier = WidgetModifier.fillMaxWidth()
-                                .height(widgetSize.height.value * 0.24f), todo
+                                .height(widgetSize.height.value * 0.2f),
+                            todo = todo
                         )
                     }
                 }
@@ -270,7 +285,7 @@ class TodayTodoWidget : WidgetComponent() {
             }
         ) {
             Text(
-                text = "할 일이 없습니다",
+                text = "다가오는 할 일이 없습니다",
                 fontSize = 13f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                 fontColor = Color(secondaryColor)
@@ -278,13 +293,32 @@ class TodayTodoWidget : WidgetComponent() {
         }
     }
 
-    private fun WidgetScope.TodoItem(modifier: WidgetModifier, todo: TodoEntity) {
+    /**
+     * Todo 항목
+     */
+    private fun WidgetScope.TodoItem(
+        modifier: WidgetModifier,
+        todo: TodoEntity
+    ) {
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val context = getLocal(WidgetLocalContext) as Context
         val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
         val completedColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
         val activeColor = (theme?.onSurface as? Int) ?: Color.Black.toArgb()
+        val timeColor = (theme?.onSurfaceVariant as? Int) ?: Color.Gray.toArgb()
         val isCompleted = todo.status == TodoStatus.COMPLETED
+
+        val dateTime = todo.dateTime ?: 0L
+        val timeRemaining = if (dateTime > 0) {
+            TodoDateUtils.formatTimeRemaining(dateTime)
+        } else {
+            ""
+        }
+        val timeText = if (dateTime > 0) {
+            TodoDateUtils.formatTime(dateTime)
+        } else {
+            ""
+        }
 
         Row(
             modifier = modifier.padding(vertical = 2f, horizontal = 4f),
@@ -300,14 +334,13 @@ class TodayTodoWidget : WidgetComponent() {
                     .padding(vertical = 4f, horizontal = 4f)
                     .clickAction(
                         context,
-                        com.widgetkit.dsl.widget.action.RunWidgetCallbackAction(
-                            com.widgetkit.core.action.CustomWidgetActionCallbackBroadcastReceiver::class.java,
-                            TodayTodoAction::class.java,
+                        RunWidgetCallbackAction(
+                            CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                            UpcomingTasksAction::class.java,
                             widgetActionParametersOf(
-                                WidgetActionParameters.Key<String>("actionClass") to TodayTodoAction::class.java.canonicalName,
-                                WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId
-                                    ?: 0),
-                                WidgetActionParameters.Key<Long>(TodayTodoAction.PARAM_TODO_ID) to todo.id
+                                WidgetActionParameters.Key<String>("actionClass") to (UpcomingTasksAction::class.java.canonicalName ?: ""),
+                                WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId ?: 0),
+                                WidgetActionParameters.Key<Long>(UpcomingTasksAction.PARAM_TODO_ID) to todo.id
                             )
                         )
                     )
@@ -317,7 +350,6 @@ class TodayTodoWidget : WidgetComponent() {
                     Color {
                         argb = theme.primary.getColor(context).toArgb()
                     }
-
                 }
                 UncheckedColor {
                     Color {
@@ -329,7 +361,8 @@ class TodayTodoWidget : WidgetComponent() {
                 modifier = WidgetModifier.expandWidth().fillMaxHeight(),
                 contentProperty = {
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
-                }) {
+                }
+            ) {
                 Text(
                     modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
                     text = todo.title,
@@ -343,43 +376,59 @@ class TodayTodoWidget : WidgetComponent() {
                         modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
                         text = it,
                         fontSize = 8f,
-                        fontWeight = if (isCompleted) FontWeight.FONT_WEIGHT_NORMAL else FontWeight.FONT_WEIGHT_NORMAL,
+                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                         fontColor = if (isCompleted) Color(completedColor) else Color(activeColor),
                         textDecoration = if (isCompleted) TextDecoration.TEXT_DECORATION_LINE_THROUGH else TextDecoration.TEXT_DECORATION_NONE
                     )
-
                 }
-            }
-
-
-            // 시간 표시
-            if (todo.dateTime != null) {
-                Text(
-                    modifier = WidgetModifier
-                        .wrapContentWidth()
-                        .padding(start = 4f),
-                    text = TodoDateUtils.formatTime(todo.dateTime),
-                    fontSize = 10f,
-                    fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                    fontColor = Color(completedColor)
-                )
+                if (timeRemaining.isNotEmpty()) {
+                    Row(
+                        modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+                        contentProperty = {
+                            horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                        }
+                    ) {
+                        Text(
+                            text = timeText,
+                            fontSize = 10f,
+                            fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                            fontColor = Color(timeColor),
+                            modifier = WidgetModifier.padding(end = 4f)
+                        )
+                        Text(
+                            text = "• $timeRemaining",
+                            fontSize = 10f,
+                            fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                            fontColor = Color(timeColor)
+                        )
+                    }
+                }
             }
         }
     }
 
+    /**
+     * 구분선
+     */
     private fun WidgetScope.Divider(modifier: WidgetModifier = WidgetModifier) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val dividerColor = theme.outline.getColor(context = context).toArgb()
-        Box(modifier = modifier.padding(horizontal = 12f), contentProperty = {
-            contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-        }) {
+        Box(
+            modifier = modifier.padding(horizontal = 12f),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
+        ) {
             Spacer(
                 modifier = WidgetModifier.fillMaxWidth().height(1f).backgroundColor(dividerColor)
             )
         }
     }
 
+    /**
+     * 푸터: 통계 정보
+     */
     private fun WidgetScope.Footer(
         modifier: WidgetModifier = WidgetModifier,
         todos: List<TodoEntity>
@@ -389,7 +438,6 @@ class TodayTodoWidget : WidgetComponent() {
         val subTextColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         val totalCount = todos.size
-        val completedCount = todos.count { it.status == TodoStatus.COMPLETED }
 
         Row(
             modifier = modifier.padding(horizontal = 12f),
@@ -399,7 +447,7 @@ class TodayTodoWidget : WidgetComponent() {
             }
         ) {
             Text(
-                text = "$totalCount tasks • $completedCount completed",
+                text = "$totalCount upcoming tasks",
                 fontSize = 12f,
                 fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
                 fontColor = Color(subTextColor)
@@ -408,52 +456,38 @@ class TodayTodoWidget : WidgetComponent() {
     }
 
     /**
-     * DB에서 Todo 로드
-     */
-    private fun loadTodosFromDb(context: Context, date: String): List<TodoEntity> {
-        return try {
-            runBlocking {
-                val todoDao = TodoDatabase.getDatabase(context).todoDao()
-                todoDao.getTodosByDate(date).first()
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-
-    /**
      * Preview용 샘플 데이터
      */
     private fun getPreviewTodos(): List<TodoEntity> {
-        val todayDate = TodoDateUtils.getTodayDateString()
+        val currentTime = System.currentTimeMillis()
         return listOf(
             TodoEntity(
                 id = 1,
-                title = "팀 미팅 준비",
-                date = todayDate,
-                dateTime = System.currentTimeMillis() + 3600000,
+                title = "팀 미팅",
+                description = "프로젝트 리뷰",
+                date = TodoDateUtils.getTodayDateString(),
+                dateTime = currentTime + 3600000, // 1시간 후
                 status = TodoStatus.INCOMPLETE
             ),
             TodoEntity(
                 id = 2,
-                title = "프로젝트 리뷰",
-                date = todayDate,
-                status = TodoStatus.COMPLETED
+                title = "점심 약속",
+                date = TodoDateUtils.getTodayDateString(),
+                dateTime = currentTime + 7200000, // 2시간 후
+                status = TodoStatus.INCOMPLETE
             ),
             TodoEntity(
                 id = 3,
-                title = "점심 약속",
-                date = todayDate,
-                dateTime = System.currentTimeMillis() + 7200000,
+                title = "프로젝트 제출",
+                date = TodoDateUtils.getTodayDateString(),
+                dateTime = currentTime + 86400000, // 내일
                 status = TodoStatus.INCOMPLETE
             )
         )
     }
 
-    override fun getUpdateManager(): ComponentUpdateManager<*> = TodayTodoUpdateManager
+    override fun getUpdateManager(): ComponentUpdateManager<*> = UpcomingTasksUpdateManager
 
-    override fun getDataStore(): ComponentDataStore<*> = TodayTodoDataStore
-
-    override fun getViewIdTypes(): List<ViewIdType> = TodayTodoViewIdType.all()
+    override fun getDataStore(): ComponentDataStore<*> = UpcomingTasksDataStore
 }
 
