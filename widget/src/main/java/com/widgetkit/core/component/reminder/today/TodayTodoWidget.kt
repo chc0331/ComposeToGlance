@@ -237,7 +237,7 @@ class TodayTodoWidget : WidgetComponent() {
             EmptyState()
         } else {
             List(
-                modifier = modifier.padding(horizontal = 12f, vertical = 4f),
+                modifier = modifier.padding(horizontal = 0f, vertical = 4f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                 }

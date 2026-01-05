@@ -1,5 +1,6 @@
 package com.widgetkit.core.component.reminder.upcoming
 
+import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -8,6 +9,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.color.DynamicThemeColorProviders
+import com.widgetkit.core.R
 import com.widgetkit.core.SizeType
 import com.widgetkit.core.WidgetCategory
 import com.widgetkit.core.component.WidgetComponent
@@ -15,12 +17,13 @@ import com.widgetkit.core.component.datastore.ComponentDataStore
 import com.widgetkit.core.component.reminder.today.TodoDateUtils
 import com.widgetkit.core.component.reminder.today.TodoRepository
 import com.widgetkit.core.component.reminder.today.TodoStatus
-import com.widgetkit.core.component.reminder.today.ui.TodoActivity
+import com.widgetkit.core.component.reminder.upcoming.ui.UpcomingFilterActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoEntity
 import com.widgetkit.core.util.getSystemBackgroundRadius
 import com.widgetkit.dsl.WidgetScope
 import com.widgetkit.dsl.frontend.CheckBox
+import com.widgetkit.dsl.frontend.Image
 import com.widgetkit.dsl.frontend.Spacer
 import com.widgetkit.dsl.frontend.Text
 import com.widgetkit.dsl.frontend.layout.Box
@@ -78,7 +81,7 @@ class UpcomingTasksWidget : WidgetComponent() {
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val widgetHeight = getLocal(WidgetLocalSize)?.height ?: 0.dp
         val widgetId = (getLocal(WidgetLocalGlanceId) as AppWidgetId?)?.appWidgetId ?: 0
-        
+
         val filterType = if (isPreview) {
             UpcomingFilterType.TODAY
         } else {
@@ -86,7 +89,7 @@ class UpcomingTasksWidget : WidgetComponent() {
                 UpcomingTasksDataStore.loadFilterType(context, widgetId)
             }
         }
-        
+
         val todos = if (isPreview) {
             getPreviewTodos()
         } else {
@@ -114,7 +117,7 @@ class UpcomingTasksWidget : WidgetComponent() {
                 }
             ) {
                 Header(
-                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.24f),
+                    modifier = WidgetModifier.fillMaxWidth().height(widgetHeight.value * 0.16f),
                     filterType = filterType,
                     widgetId = widgetId,
                     isPreview = isPreview
@@ -147,11 +150,19 @@ class UpcomingTasksWidget : WidgetComponent() {
 
         val titleBarBackgroundColor = theme.surfaceVariant.getColor(context).toArgb()
         val textColor = theme.onSurface.getColor(context).toArgb()
-        val subTextColor = theme.onSurfaceVariant.getColor(context).toArgb()
-        val primaryColor = theme.primary.getColor(context).toArgb()
+        val subTextColor = Color.Gray.toArgb()
+        val iconContentColor = theme.onSecondary.getColor(context)
 
         val fontSize = widgetSize.height.value * 0.06f
-        val filterFontSize = widgetSize.height.value * 0.06f
+        val filterFontSize = widgetSize.height.value * 0.045f
+        val iconSize = widgetSize.height.value * 0.1f
+
+        val filterLabel = when (filterType) {
+            UpcomingFilterType.TODAY -> "Today"
+            UpcomingFilterType.TOMORROW -> "Tomorrow"
+            UpcomingFilterType.THIS_WEEK -> "This Week"
+            UpcomingFilterType.ALL -> "All"
+        }
 
         Row(
             modifier = modifier
@@ -162,78 +173,64 @@ class UpcomingTasksWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }
         ) {
-            Column(
+            Row(
                 modifier = WidgetModifier
                     .expandWidth()
                     .wrapContentHeight(),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
+                // 현재 필터 타입 표시
                 Text(
-                    text = "Upcoming Tasks",
+                    text = "Upcoming",
                     fontSize = fontSize,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
                     fontColor = Color(textColor)
                 )
-                // 필터 선택 버튼들
-                Row(
-                    modifier = WidgetModifier
-                        .wrapContentWidth()
-                        .wrapContentHeight()
-                        .padding(top = 2f),
+                Spacer(modifier = WidgetModifier.width(4f).fillMaxHeight())
+                Box(
+                    modifier = WidgetModifier.wrapContentWidth().height(fontSize),
                     contentProperty = {
-                        horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_BOTTOM_START
+                    }) {
+                    Text(
+                        text = filterLabel,
+                        fontSize = filterFontSize,
+                        fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+                        fontColor = Color(subTextColor)
+                    )
+                }
+            }
+            // 필터 선택 아이콘 버튼
+            if (!isPreview) {
+                Box(
+                    modifier = WidgetModifier
+                        .width(iconSize * 0.8f)
+                        .height(iconSize * 0.8f)
+                        .backgroundColor(theme.primary.getColor(context).toArgb())
+                        .cornerRadius(iconSize / 2)
+                        .padding(2f)
+                        .clickAction(
+                            ComponentName(context, UpcomingFilterActivity::class.java),
+                            mapOf("WIDGET_ID" to widgetId.toString())
+                        ),
+                    contentProperty = {
+                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                     }
                 ) {
-                    listOf(
-                        UpcomingFilterType.TODAY to "Today",
-                        UpcomingFilterType.TOMORROW to "Tomorrow",
-                        UpcomingFilterType.THIS_WEEK to "This Week",
-                        UpcomingFilterType.ALL to "All"
-                    ).forEach { (type, label) ->
-                        val isSelected = filterType == type
-                        val buttonColor = if (isSelected) primaryColor else subTextColor
-                        
-                        if (!isPreview) {
-                            Box(
-                                modifier = WidgetModifier
-                                    .wrapContentWidth()
-                                    .wrapContentHeight()
-                                    .padding(end = 4f)
-                                    .clickAction(
-                                        context,
-                                        RunWidgetCallbackAction(
-                                            CustomWidgetActionCallbackBroadcastReceiver::class.java,
-                                            UpcomingTasksFilterAction::class.java,
-                                            widgetActionParametersOf(
-                                                WidgetActionParameters.Key<String>("actionClass") to (UpcomingTasksFilterAction::class.java.canonicalName ?: ""),
-                                                WidgetActionParameters.Key<Int>("widgetId") to widgetId,
-                                                WidgetActionParameters.Key<String>("filterType") to type.name
-                                            )
-                                        )
-                                    ),
-                                contentProperty = {
-                                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-                                }
-                            ) {
-                                Text(
-                                    text = label,
-                                    fontSize = filterFontSize,
-                                    fontWeight = if (isSelected) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
-                                    fontColor = Color(buttonColor)
-                                )
+                    Image(
+                        modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
+                        contentProperty = {
+                            Provider {
+                                drawableResId = R.drawable.ic_filter
                             }
-                        } else {
-                            Text(
-                                text = label,
-                                fontSize = filterFontSize,
-                                fontWeight = if (isSelected) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_NORMAL,
-                                fontColor = Color(buttonColor),
-                                modifier = WidgetModifier.padding(end = 4f)
-                            )
+                            TintColor {
+                                argb = iconContentColor.toArgb()
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
@@ -251,7 +248,7 @@ class UpcomingTasksWidget : WidgetComponent() {
             EmptyState()
         } else {
             List(
-                modifier = modifier.padding(horizontal = 12f, vertical = 4f),
+                modifier = modifier.padding(horizontal = 0f, vertical = 4f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                 }
@@ -338,8 +335,10 @@ class UpcomingTasksWidget : WidgetComponent() {
                             CustomWidgetActionCallbackBroadcastReceiver::class.java,
                             UpcomingTasksAction::class.java,
                             widgetActionParametersOf(
-                                WidgetActionParameters.Key<String>("actionClass") to (UpcomingTasksAction::class.java.canonicalName ?: ""),
-                                WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId ?: 0),
+                                WidgetActionParameters.Key<String>("actionClass") to (UpcomingTasksAction::class.java.canonicalName
+                                    ?: ""),
+                                WidgetActionParameters.Key<Int>("widgetId") to (widgetId?.appWidgetId
+                                    ?: 0),
                                 WidgetActionParameters.Key<Long>(UpcomingTasksAction.PARAM_TODO_ID) to todo.id
                             )
                         )
