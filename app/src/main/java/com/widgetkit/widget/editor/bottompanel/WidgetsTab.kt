@@ -122,7 +122,7 @@ fun WidgetsList(
                             )
                         }
                         Text(
-                            text = selectedCategory?.name ?: "",
+                            text = selectedCategory?.description ?: "",
                             modifier = Modifier.align(Alignment.Center),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,

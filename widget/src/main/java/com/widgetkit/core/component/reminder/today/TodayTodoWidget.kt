@@ -67,7 +67,7 @@ class TodayTodoWidget : WidgetComponent() {
 
     override fun getDescription(): String = "오늘의 할 일 목록"
 
-    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.REMINDER
+    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DAILY_SCHEDULE
 
     override fun getSizeType(): SizeType = SizeType.LARGE
 

@@ -69,7 +69,7 @@ fun CategoryItem(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = category.name,
+            text = category.description,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onPrimaryContainer,

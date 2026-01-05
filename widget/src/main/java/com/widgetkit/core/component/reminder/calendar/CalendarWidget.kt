@@ -69,7 +69,7 @@ class CalendarWidget : WidgetComponent() {
 
     override fun getDescription(): String = "월별 캘린더 및 Todo 개수 표시"
 
-    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.REMINDER
+    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DAILY_SCHEDULE
 
     override fun getSizeType(): SizeType = SizeType.LARGE
 
