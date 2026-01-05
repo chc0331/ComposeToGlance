@@ -56,7 +56,7 @@ class RamWidget : WidgetComponent() {
 
     override fun getDescription(): String = "RAM"
 
-    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_INFO
+    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_STATUS
 
     override fun getSizeType(): SizeType = SizeType.TINY
 

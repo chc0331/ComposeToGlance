@@ -47,7 +47,7 @@ class BatteryWidget : WidgetComponent() {
 
     override fun getDescription() = "Battery"
 
-    override fun getWidgetCategory() = WidgetCategory.DEVICE_INFO
+    override fun getWidgetCategory() = WidgetCategory.DEVICE_STATUS
 
     override fun getWidgetTag() = "Battery"
 

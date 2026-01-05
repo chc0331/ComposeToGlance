@@ -45,7 +45,7 @@ class EarbudsBatteryWidget : WidgetComponent() {
 
     override fun getDescription(): String = "EarbudsBattery"
 
-    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_INFO
+    override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_STATUS
 
     override fun getSizeType(): SizeType = SizeType.TINY
 
