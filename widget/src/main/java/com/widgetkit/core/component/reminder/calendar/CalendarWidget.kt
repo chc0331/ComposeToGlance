@@ -106,18 +106,24 @@ class CalendarWidget : WidgetComponent() {
                     val currentYear = yearMonth.year
                     val holidays = mutableListOf<HolidayResponse>()
                     holidays.addAll(HolidayManager.loadHolidays(context, currentYear, countryCode))
-                    
+
                     // 다음 연도도 로드 시도 (12월인 경우, 실패해도 무방)
                     val nextYear = if (yearMonth.month == 12) currentYear + 1 else null
                     if (nextYear != null) {
                         try {
-                            holidays.addAll(HolidayManager.loadHolidays(context, nextYear, countryCode))
+                            holidays.addAll(
+                                HolidayManager.loadHolidays(
+                                    context,
+                                    nextYear,
+                                    countryCode
+                                )
+                            )
                         } catch (e: Exception) {
                             // 다음 연도 데이터가 없어도 정상 (아직 API에 없을 수 있음)
                             Log.d("CalendarWidget", "Next year holidays not available: $nextYear")
                         }
                     }
-                    
+
                     HolidayManager.holidaysToMap(holidays)
                 } catch (e: Exception) {
                     Log.e("CalendarWidget", "Error loading holidays", e)
@@ -332,7 +338,7 @@ class CalendarWidget : WidgetComponent() {
                     6 -> Color(0xFF0000FF).toArgb()  // 토요일: 파란색
                     else -> textColor  // 나머지: 기본 색상
                 }
-                
+
                 Box(
                     modifier = WidgetModifier
                         .expandWidth()
@@ -411,31 +417,35 @@ class CalendarWidget : WidgetComponent() {
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-        
+
         // 날짜 문자열에서 요일 계산
         val dayOfWeek = getDayOfWeek(day.date)
         val isSunday = dayOfWeek == Calendar.SUNDAY
         val isSaturday = dayOfWeek == Calendar.SATURDAY
         val isHoliday = holiday != null
-        
+
         val dateColor = if (day.isCurrentMonth) {
             when {
                 day.isToday -> {
                     // 오늘인 경우: 배경이 primary이므로 onPrimary 색상
                     theme.onPrimary.getColor(context).toArgb()
                 }
+
                 isSaturday -> {
                     // 토요일: 항상 파란색 (공휴일과 겹쳐도 파란색 유지)
                     Color(0xFF0000FF).toArgb()
                 }
+
                 isHoliday -> {
                     // 공휴일: 빨간색
                     Color(0xFFFF0000).toArgb()
                 }
+
                 isSunday -> {
                     // 일요일: 빨간색
                     Color(0xFFFF0000).toArgb()
                 }
+
                 else -> {
                     theme.onSurface.getColor(context).toArgb()
                 }
@@ -453,29 +463,60 @@ class CalendarWidget : WidgetComponent() {
         } else {
             theme.primary.getColor(context).toArgb()
         }
-        
-        val todayBackgroundColor = if (day.isToday) {
+
+        val cellBackgroundColor = if (day.isToday) {
             theme.primary.getColor(context).toArgb()
         } else {
             null
         }
 
+        // 날짜 텍스트 색상 조정: 배경색이 있는 경우 onColor 사용
+        val finalDateColor = if (cellBackgroundColor != null) {
+            if (day.isToday) {
+                theme.onPrimary.getColor(context).toArgb()
+            } else {
+                theme.onPrimaryContainer.getColor(context).toArgb()
+            }
+        } else {
+            dateColor
+        }
+
         Box(
             modifier = modifier
-                .padding(all = 2f)
-                .let { mod ->
-                    if (todayBackgroundColor != null) {
-                        mod
-                            .backgroundColor(todayBackgroundColor)
-                            .cornerRadius(8f)
-                    } else {
-                        mod
-                    }
-                },
+                .padding(vertical = 2f, horizontal = 8f),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
         ) {
+            // Todo 개수 - 현재 달에 해당하는 날짜만 표시
+            cellBackgroundColor?.let {
+                Box(
+                    modifier = WidgetModifier.fillMaxWidth().fillMaxHeight()
+                        .cornerRadius(8f)
+                        .backgroundColor(cellBackgroundColor)
+                ) {}
+            }
+            if (todoCount > 0) {
+                Box(
+                    modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
+                    contentProperty = {
+                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_END
+                    }) {
+                    Image(
+                        modifier = WidgetModifier
+                            .width(countFontSize * 2f)
+                            .height(countFontSize * 2f),
+                        contentProperty = {
+                            Provider {
+                                drawableResId = R.drawable.ic_dot
+                            }
+                            TintColor {
+                                argb = countColor
+                            }
+                        }
+                    )
+                }
+            }
             Column(
                 modifier = WidgetModifier
                     .fillMaxWidth()
@@ -492,18 +533,8 @@ class CalendarWidget : WidgetComponent() {
                         text = day.dayOfMonth.toString(),
                         fontSize = dateFontSize,
                         fontWeight = if (day.isToday) FontWeight.FONT_WEIGHT_BOLD else FontWeight.FONT_WEIGHT_MEDIUM,
-                        fontColor = Color(dateColor)
+                        fontColor = Color(finalDateColor)
                     )
-
-                    // Todo 개수 - 현재 달에 해당하는 날짜만 표시
-                    if (todoCount > 0) {
-                        Text(
-                            text = todoCount.toString(),
-                            fontSize = countFontSize,
-                            fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
-                            fontColor = Color(countColor)
-                        )
-                    }
                 }
             }
         }
