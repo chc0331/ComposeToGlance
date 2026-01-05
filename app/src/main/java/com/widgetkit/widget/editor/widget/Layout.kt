@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePickerDefaults.layoutType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,15 +37,15 @@ enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumn
     SMALL("Small", 1, 2),
     MEDIUM("Medium", 2, 2),
     LARGE("Large", 2, 4),
-    EXTRA_LARGE("ExtraLarge", 4, 4);
-    
+    EXTRA_LARGE("Extra Large", 4, 4);
+
     companion object {
         fun fromString(sizeType: String): LayoutType {
             return when (sizeType) {
                 "Small" -> SMALL
                 "Medium" -> MEDIUM
                 "Large" -> LARGE
-                "ExtraLarge" -> EXTRA_LARGE
+                "Extra Large" -> EXTRA_LARGE
                 else -> MEDIUM
             }
         }
@@ -53,12 +54,12 @@ enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumn
 
 data class Layout(val sizeType: String, val gridMultiplier: Int = 1) {
     val layoutType: LayoutType get() = LayoutType.fromString(sizeType)
-    
+
     fun getDpSize(): DpSize {
         val size = LayoutDpSize[sizeType] ?: Pair(155.dp, 185.dp)
         return DpSize(size.first, size.second)
     }
-    
+
     /**
      * 동적 그리드 스펙 계산 (기본 그리드 × 배수)
      */
@@ -72,17 +73,6 @@ data class Layout(val sizeType: String, val gridMultiplier: Int = 1) {
 }
 
 data class LayoutGridSpec(val rows: Int, val columns: Int)
-
-/**
- * 기존 호환성을 위한 정적 그리드 스펙
- */
-private val layoutGridSpecs = mapOf(
-    "Full" to mapOf(
-        "Small" to LayoutGridSpec(rows = 1, columns = 2),
-        "Medium" to LayoutGridSpec(rows = 2, columns = 2),
-        "Large" to LayoutGridSpec(rows = 2, columns = 4)
-    )
-)
 
 /**
  * 레이아웃의 그리드 스펙을 반환 (항상 동적 계산 사용)
@@ -101,7 +91,8 @@ fun ClickableLayoutComponent(
     onAddClick: (Layout) -> Unit,
 ) {
     val context = LocalContext.current
-    val cornerRadius = context.getSystemBackgroundRadius() * 0.7f
+    val scaleFactor = if (data.sizeType == "Large" || data.sizeType == "Extra Large") 0.45f else 0.45f
+    val cornerRadius = context.getSystemBackgroundRadius() * scaleFactor
     Box(
         modifier = modifier
             .wrapContentSize()
@@ -109,7 +100,7 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data.sizeType, isPreview = true)
+        LayoutComponent(data.sizeType, isPreview = true, scaleFactor = scaleFactor)
         if (isClicked) {
             Box(
                 modifier = Modifier
@@ -134,15 +125,16 @@ fun ClickableLayoutComponent(
 fun LayoutComponent(
     layoutType: String,
     showText: Boolean = false,
-    isPreview: Boolean = false
+    isPreview: Boolean = false,
+    scaleFactor: Float = 1f
 ) {
     val context = LocalContext.current
     var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
     var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
-        width = width * 0.7f
-        height = height * 0.7f
-        cornerRadius = cornerRadius * 0.7f
+        width = width * scaleFactor
+        height = height * scaleFactor
+        cornerRadius = cornerRadius * scaleFactor
     }
     Box(
         modifier = Modifier
@@ -190,7 +182,7 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
         "Medium" -> createGridLayout(rows = 2, columns = 2, showText = showText)
         "Medium Plus" -> createGridLayout(rows = 4, columns = 6, showText = showText)
         "Large" -> createGridLayout(rows = 2, columns = 4, showText = showText)
-        "ExtraLarge" -> createGridLayout(rows = 4, columns = 4, showText = showText)
+        "Extra Large" -> createGridLayout(rows = 4, columns = 4, showText = showText)
         else -> createGridLayout(rows = 2, columns = 2, showText = showText)
     }
 }

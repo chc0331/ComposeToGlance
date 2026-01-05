@@ -34,7 +34,7 @@ val DefaultLayouts = listOf(
     Layout("Small"),
     Layout("Medium"),
     Layout("Large"),
-    Layout("ExtraLarge")
+    Layout("Extra Large")
 )
 
 object BottomPanelConstants {

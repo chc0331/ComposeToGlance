@@ -342,7 +342,7 @@ class WidgetEditorViewModel(
             
             // Select provider based on layout size type
             val providerClass = when (selectedLayout?.sizeType) {
-                "ExtraLarge" -> ExtraLargeWidgetProvider::class.java.name
+                "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
                 else -> LargeWidgetProvider::class.java.name
             }
             

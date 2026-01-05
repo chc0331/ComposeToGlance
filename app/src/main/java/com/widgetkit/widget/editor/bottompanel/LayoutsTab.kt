@@ -49,7 +49,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
         itemsIndexed(
             DefaultLayouts,
             span = { index, layout ->
-                if (layout.sizeType == "Large" || layout.sizeType == "ExtraLarge") GridItemSpan(2)
+                if (layout.sizeType == "Large" || layout.sizeType == "Extra Large") GridItemSpan(1)
                 else GridItemSpan(1)
             }) { index, layout ->
             Column(
