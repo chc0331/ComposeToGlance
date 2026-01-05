@@ -53,7 +53,8 @@ data class TodayTodoUiState(
 class TodayTodoViewModel(
     private val repository: TodoRepository,
     private val applicationContext: Context,
-    private val widgetId: Int = -1
+    private val widgetId: Int = -1,
+    private val initialDateString: String? = null
 ) : ViewModel() {
 
     private val _selectedDateMillis = MutableStateFlow(System.currentTimeMillis())
@@ -67,22 +68,30 @@ class TodayTodoViewModel(
     private var speechRecognitionManager: SpeechRecognitionManager? = null
 
     init {
-        // DataStore에서 선택된 날짜 로드
-        viewModelScope.launch {
-            try {
-                val dataStore = com.widgetkit.core.component.reminder.today.TodayTodoDataStore
-                val loadWidgetId = if (widgetId != -1) widgetId else 0
-                val data = dataStore.loadData(applicationContext, loadWidgetId)
-                val selectedDate = data.selectedDate
-                
-                // 날짜 문자열을 milliseconds로 변환
-                val dateMillis = TodoDateUtils.parseDate(selectedDate)?.time 
-                    ?: System.currentTimeMillis()
-                
+        // Intent로 전달된 초기 날짜가 있으면 우선 사용
+        if (initialDateString != null) {
+            val dateMillis = TodoDateUtils.parseDate(initialDateString)?.time
+            if (dateMillis != null) {
                 _selectedDateMillis.value = dateMillis
-            } catch (e: Exception) {
-                // 에러 발생 시 오늘 날짜 사용
-                _selectedDateMillis.value = System.currentTimeMillis()
+            }
+        } else {
+            // DataStore에서 선택된 날짜 로드
+            viewModelScope.launch {
+                try {
+                    val dataStore = com.widgetkit.core.component.reminder.today.TodayTodoDataStore
+                    val loadWidgetId = if (widgetId != -1) widgetId else 0
+                    val data = dataStore.loadData(applicationContext, loadWidgetId)
+                    val selectedDate = data.selectedDate
+                    
+                    // 날짜 문자열을 milliseconds로 변환
+                    val dateMillis = TodoDateUtils.parseDate(selectedDate)?.time 
+                        ?: System.currentTimeMillis()
+                    
+                    _selectedDateMillis.value = dateMillis
+                } catch (e: Exception) {
+                    // 에러 발생 시 오늘 날짜 사용
+                    _selectedDateMillis.value = System.currentTimeMillis()
+                }
             }
         }
 

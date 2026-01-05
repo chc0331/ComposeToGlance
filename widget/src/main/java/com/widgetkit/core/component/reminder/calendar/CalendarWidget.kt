@@ -1,5 +1,6 @@
 package com.widgetkit.core.component.reminder.calendar
 
+import android.content.ComponentName
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import com.widgetkit.core.component.reminder.calendar.CalendarDateUtils.Calendar
 import com.widgetkit.core.component.reminder.calendar.CalendarDateUtils.YearMonth
 import com.widgetkit.core.component.reminder.calendar.api.HolidayResponse
 import com.widgetkit.core.component.reminder.today.TodoRepository
+import com.widgetkit.core.component.reminder.today.ui.TodoActivity
 import com.widgetkit.core.component.update.ComponentUpdateManager
 import com.widgetkit.core.database.TodoEntity
 import com.widgetkit.core.util.getSystemBackgroundRadius
@@ -396,7 +398,8 @@ class CalendarWidget : WidgetComponent() {
                             todoCount = todosByDate[day.date] ?: 0,
                             holiday = holidaysByDate[day.date],
                             dateFontSize = dateFontSize,
-                            countFontSize = countFontSize
+                            countFontSize = countFontSize,
+                            widgetId = (getLocal(WidgetLocalGlanceId) as AppWidgetId?)?.appWidgetId ?: 0
                         )
                     }
                 }
@@ -413,7 +416,8 @@ class CalendarWidget : WidgetComponent() {
         todoCount: Int,
         holiday: HolidayResponse?,
         dateFontSize: Float,
-        countFontSize: Float
+        countFontSize: Float,
+        widgetId: Int
     ) {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
@@ -483,7 +487,14 @@ class CalendarWidget : WidgetComponent() {
 
         Box(
             modifier = modifier
-                .padding(vertical = 2f, horizontal = 8f),
+                .padding(vertical = 2f, horizontal = 8f)
+                .clickAction(
+                    ComponentName(context, TodoActivity::class.java),
+                    mapOf(
+                        "WIDGET_ID" to widgetId.toString(),
+                        "SELECTED_DATE" to day.date
+                    )
+                ),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }

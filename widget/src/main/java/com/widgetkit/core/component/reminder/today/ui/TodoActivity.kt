@@ -123,7 +123,14 @@ class TodoActivity : ComponentActivity() {
         }
         android.util.Log.d("TodoActivity", "Read widgetId from Intent: $widgetId (type: ${intent.extras?.get("WIDGET_ID")?.javaClass?.name})")
         
-        val viewModelFactory = TodayTodoViewModelFactory(this, widgetId)
+        // Intent에서 SELECTED_DATE extra 확인
+        val selectedDateString = intent.getStringExtra("SELECTED_DATE")
+        if (selectedDateString != null) {
+            android.util.Log.d("TodoActivity", "Selected date from Intent: $selectedDateString")
+        }
+        
+        // ViewModelFactory에 초기 날짜 전달 (Intent로 전달된 날짜가 있으면 우선 사용)
+        val viewModelFactory = TodayTodoViewModelFactory(this, widgetId, selectedDateString)
         viewModel = ViewModelProvider(this, viewModelFactory)[TodayTodoViewModel::class.java]
         
         // Intent에서 SHOW_DATE_PICKER extra 확인
