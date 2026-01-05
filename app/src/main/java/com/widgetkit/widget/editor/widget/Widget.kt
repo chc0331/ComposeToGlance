@@ -262,11 +262,11 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
         // 1x 그리드 기준 기본 사이즈 (1셀 = 약 70dp 기준)
         // Tiny(1x1), Small(2x1), Medium(2x2)
         return when (getSizeType()) {
-            SizeType.TINY -> DpSize(70.dp, 70.dp)      // 1x1
-            SizeType.SMALL -> DpSize(144.dp, 70.dp)    // 2x1
-            SizeType.MEDIUM -> DpSize(144.dp, 144.dp)  // 2x2
-            SizeType.MEDIUM_PLUS -> DpSize(218.dp, 144.dp)  // 3x2
-            else -> DpSize(292.dp, 144.dp)             // 4x2 (LARGE)
+            SizeType.TINY -> DpSize(90.dp, 90.dp)      // 1x1
+            SizeType.SMALL -> DpSize(180.dp, 90.dp)    // 2x1
+            SizeType.MEDIUM -> DpSize(180.dp, 180.dp)  // 2x2
+            SizeType.MEDIUM_PLUS -> DpSize(270.dp, 180.dp)  // 3x2
+            else -> DpSize(400.dp, 180.dp)             // 4x2 (LARGE)
         }
     }
 

@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,6 +89,7 @@ fun WidgetsList(
                 val selectedCategory = categories.find { it.name == categoryName }
                 val filteredWidgets =
                     widgetList.filter { it.getWidgetCategory().name == categoryName }
+                        .sortedBy { it.getSizeType().ordinal }
                 val visibleItems = remember { mutableStateListOf<Int>() }
 
                 // 카테고리 진입 시 위젯들을 순차적으로 표시
@@ -164,6 +166,7 @@ fun WidgetsList(
                                     DragTargetWidgetItem(
                                         data = widget,
                                         isClicked = activeWidget == widget,
+                                        modifier = Modifier.scale(0.9f),
                                         onComponentClick = {
                                             activeWidget =
                                                 if (activeWidget == widget) null else widget
@@ -180,7 +183,6 @@ fun WidgetsList(
                                         text = widget.getName(),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurface,
-                                        modifier = Modifier.padding(top = 4.dp)
                                     )
                                 }
 
