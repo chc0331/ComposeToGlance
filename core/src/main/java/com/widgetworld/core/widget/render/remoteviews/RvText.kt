@@ -1,0 +1,101 @@
+package com.widgetworld.core.widget.render.remoteviews
+
+import android.graphics.Paint
+import android.util.TypedValue
+import android.view.Gravity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
+import androidx.glance.GlanceModifier
+import androidx.glance.appwidget.AndroidRemoteViews
+import androidx.glance.layout.wrapContentSize
+import com.widgetworld.core.R
+import com.widgetworld.core.proto.TextAlign
+import com.widgetworld.core.proto.TextDecoration
+import com.widgetworld.core.proto.WidgetNode
+import com.widgetworld.core.widget.node.RenderContext
+import com.widgetworld.core.widget.WidgetRenderer
+import com.widgetworld.core.widget.node.RenderNode
+import com.widgetworld.core.widget.render.glance.converter.ColorConverter
+
+internal object RvText : RenderNode {
+    @Composable
+    override fun render(
+        node: WidgetNode,
+        context: RenderContext,
+        renderer: WidgetRenderer
+    ) {
+        if (!node.hasText()) {
+            return
+        }
+
+        with(node.text) {
+            // 텍스트 내용
+            val textContent = when {
+                text.text.isNotEmpty() -> text.text
+                text.resId != 0 -> {
+                    context.context.resources.getString(text.resId)
+                }
+
+                else -> ""
+            }
+
+            // RemoteViews 생성 (TextView)
+            val viewId = viewProperty.viewId
+            val remoteViews =
+                android.widget.RemoteViews(
+                    context.context.packageName,
+                    R.layout.text_component,
+                    viewId
+                )
+            remoteViews.setTextViewText(viewId, textContent)
+            remoteViews.setTextColor(
+                viewId,
+                ColorConverter.toGlanceColor(fontColor, context.context).toArgb()
+            )
+            remoteViews.setTextViewTextSize(viewId, TypedValue.COMPLEX_UNIT_SP, fontSize)
+
+            // 텍스트 정렬
+            val gravity = when (textAlign) {
+                TextAlign.TEXT_ALIGN_START -> Gravity.START
+                TextAlign.TEXT_ALIGN_CENTER -> Gravity.CENTER
+                TextAlign.TEXT_ALIGN_END -> Gravity.END
+                else -> Gravity.END
+            }
+            remoteViews.setInt(viewId, "setGravity", gravity)
+
+            if (maxLine > 0) {
+                remoteViews.setInt(viewId, "setMaxLines", maxLine)
+            }
+
+            // 텍스트 장식 처리
+            when (textDecoration) {
+                TextDecoration.TEXT_DECORATION_UNDERLINE -> {
+                    // TextView의 paint 객체를 통해 flags 설정
+                    remoteViews.setInt(viewId, "setPaintFlags", Paint.UNDERLINE_TEXT_FLAG)
+                }
+                TextDecoration.TEXT_DECORATION_LINE_THROUGH -> {
+                    remoteViews.setInt(viewId, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG)
+                }
+                TextDecoration.TEXT_DECORATION_NONE, TextDecoration.TEXT_DECORATION_UNSPECIFIED -> {
+                    // 기본값 - 장식 없음
+                }
+                else -> {
+                    // 기본값
+                }
+            }
+
+            RemoteViewsBuilder.applyViewProperties(
+                remoteViews,
+                viewId,
+                viewProperty,
+                context.context,
+                context.document.widgetMode
+            )
+
+            AndroidRemoteViews(
+                remoteViews = remoteViews,
+                modifier = GlanceModifier.wrapContentSize()
+            )
+        }
+    }
+}

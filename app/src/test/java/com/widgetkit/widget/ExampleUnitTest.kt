@@ -1,4 +1,4 @@
-package com.widgetkit.widget
+package com.widgetworld.widget
 
 import org.junit.Test
 

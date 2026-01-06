@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "WidgetKit"
+rootProject.name = "WidgetWorld"
 include(":app")
 include(":core")
 include(":widget")

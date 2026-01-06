@@ -57,7 +57,7 @@ message NewComponentProperty {
 복잡한 속성이 있는 경우 `builder/NewComponentPropertyDsl.kt` 파일을 생성합니다.
 
 ```kotlin
-package com.widgetkit.core.proto
+package com.widgetworld.core.proto
 
 import com.example.dsl.proto.NewComponentProperty
 
@@ -135,7 +135,7 @@ fun WidgetScope.NewComponent(block: NewComponentDsl.() -> Unit) {
 `glance/renderer/NewComponentRenderer.kt` 파일을 생성합니다.
 
 ```kotlin
-package com.widgetkit.core.widget.renderer
+package com.widgetworld.core.widget.renderer
 
 import androidx.compose.runtime.Composable
 import com.example.dsl.proto.WidgetNode

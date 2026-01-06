@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">WidgetKit</string>
+    <string name="app_name">Widget World</string>
     <string name="dsl_widget_description">Shows a sample widget built with DSL.</string>
 </resources>

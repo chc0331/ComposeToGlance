@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.widgetkit.widget"
+    namespace = "com.widgetworld.widget"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.widgetkit.widget"
+        applicationId = "com.widgetworld.widget"
         minSdk = 34
         targetSdk = 35
         versionCode = 1

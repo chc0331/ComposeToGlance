@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package widgetkit.core.proto;
+package widgetworld.core.proto;
 
-option java_package = "com.widgetkit.core.proto";
+option java_package = "com.widgetworld.core.proto";
 option java_multiple_files = true;
 
 // Widget rendering type

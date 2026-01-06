@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package widgetkit.widgetcomponent.proto;
+package widgetworld.widgetcomponent.proto;
 
-option java_package = "com.widgetkit.widgetcomponent.proto";
+option java_package = "com.widgetworld.widgetcomponent.proto";
 option java_multiple_files = true;
 
 // 레이아웃의 크기 타입
