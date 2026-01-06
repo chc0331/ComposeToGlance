@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "WidgetWorld"
 include(":app")
 include(":core")
-include(":widget")
+include(":widgetcomponent")
