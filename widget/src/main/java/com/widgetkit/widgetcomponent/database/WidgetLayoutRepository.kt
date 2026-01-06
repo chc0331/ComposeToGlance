@@ -1,7 +1,7 @@
 package com.widgetkit.widgetcomponent.database
 
 import android.content.Context
-import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.core.proto.WidgetLayoutDocument
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.glance.GlanceId
 import androidx.glance.state.GlanceState
-import com.widgetkit.dsl.widget.action.WidgetActionCallback
-import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.core.widget.action.WidgetActionCallback
+import com.widgetkit.core.widget.action.WidgetActionParameters
 
 /**
  * 캘린더 월 변경 액션 처리

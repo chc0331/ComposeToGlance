@@ -32,13 +32,13 @@ import com.widgetkit.widgetcomponent.getSizeInCellsForLayout
 import com.widgetkit.widgetcomponent.proto.PlacedWidgetComponent
 import com.widgetkit.widgetcomponent.util.getSystemBackgroundRadius
 import com.widgetkit.widgetcomponent.view.AppWidgetView
-import com.widgetkit.dsl.WidgetLayout
-import com.widgetkit.dsl.proto.WidgetMode
-import com.widgetkit.dsl.widget.WidgetRenderer
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalProvider
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.core.WidgetLayout
+import com.widgetkit.core.proto.WidgetMode
+import com.widgetkit.core.widget.WidgetRenderer
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalProvider
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetkit.widget.editor.draganddrop.DragTarget
 
 @Composable

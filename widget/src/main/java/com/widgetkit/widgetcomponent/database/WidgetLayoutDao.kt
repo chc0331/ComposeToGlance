@@ -48,7 +48,7 @@ interface WidgetLayoutDao {
      * WidgetLayoutDocument를 직접 삽입
      */
     suspend fun insertDocument(
-        document: com.widgetkit.dsl.proto.WidgetLayoutDocument,
+        document: com.widgetkit.core.proto.WidgetLayoutDocument,
         name: String? = null
     ): Long {
         val entity = WidgetLayoutEntity(
@@ -69,7 +69,7 @@ interface WidgetLayoutDao {
     /**
      * WidgetLayoutDocument를 직접 업데이트
      */
-    suspend fun updateDocument(id: Long, document: com.widgetkit.dsl.proto.WidgetLayoutDocument) {
+    suspend fun updateDocument(id: Long, document: com.widgetkit.core.proto.WidgetLayoutDocument) {
         val existing = getLayoutById(id) ?: return
         val updated = existing.copy(
             documentBytes = document.toByteArray(),

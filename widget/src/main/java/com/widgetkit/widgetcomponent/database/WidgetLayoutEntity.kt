@@ -2,7 +2,7 @@ package com.widgetkit.widgetcomponent.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.core.proto.WidgetLayoutDocument
 
 /**
  * WidgetLayoutDocument를 저장하는 Room Entity

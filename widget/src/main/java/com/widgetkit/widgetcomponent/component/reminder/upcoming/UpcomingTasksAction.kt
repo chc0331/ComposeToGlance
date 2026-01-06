@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.glance.GlanceId
 import com.widgetkit.widgetcomponent.component.reminder.today.TodoRepository
 import com.widgetkit.widgetcomponent.component.reminder.today.TodoStatus
-import com.widgetkit.dsl.widget.action.WidgetActionCallback
-import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.core.widget.action.WidgetActionCallback
+import com.widgetkit.core.widget.action.WidgetActionParameters
 
 /**
  * Upcoming Tasks 체크박스 클릭 액션 처리

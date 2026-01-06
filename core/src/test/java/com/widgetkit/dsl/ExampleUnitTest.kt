@@ -1,4 +1,4 @@
-package com.widgetkit.dsl
+package com.widgetkit.core
 
 import org.junit.Test
 

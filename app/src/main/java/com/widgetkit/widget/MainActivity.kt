@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModelFactory
 import com.widgetkit.widget.service.WidgetForegroundService
-import com.widgetkit.dsl.widget.node.RendererInitializer
+import com.widgetkit.core.widget.node.RendererInitializer
 import com.widgetkit.widgetcomponent.repository.WidgetLayoutRepository
 import com.widgetkit.widgetcomponent.WidgetComponentRegistry
 import com.widgetkit.widgetcomponent.initializeWidgetComponents

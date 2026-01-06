@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.glance.GlanceId
 import com.widgetkit.widgetcomponent.database.TodoDatabase
-import com.widgetkit.dsl.widget.action.WidgetActionCallback
-import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.core.widget.action.WidgetActionCallback
+import com.widgetkit.core.widget.action.WidgetActionParameters
 
 /**
  * Todo 체크박스 클릭 액션 처리

@@ -7,8 +7,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.glance.GlanceId
 import com.widgetkit.widgetcomponent.component.devicecare.DeviceStateCollector
-import com.widgetkit.dsl.widget.action.WidgetActionCallback
-import com.widgetkit.dsl.widget.action.WidgetActionParameters
+import com.widgetkit.core.widget.action.WidgetActionCallback
+import com.widgetkit.core.widget.action.WidgetActionParameters
 import kotlinx.coroutines.delay
 
 class RamWidgetAction : WidgetActionCallback {

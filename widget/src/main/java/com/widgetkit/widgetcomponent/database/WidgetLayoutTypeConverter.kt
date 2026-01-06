@@ -2,7 +2,7 @@ package com.widgetkit.widgetcomponent.database
 
 import androidx.room.TypeConverter
 import com.google.protobuf.InvalidProtocolBufferException
-import com.widgetkit.dsl.proto.WidgetLayoutDocument
+import com.widgetkit.core.proto.WidgetLayoutDocument
 
 /**
  * WidgetLayoutDocument와 ByteArray 간의 변환을 처리하는 TypeConverter

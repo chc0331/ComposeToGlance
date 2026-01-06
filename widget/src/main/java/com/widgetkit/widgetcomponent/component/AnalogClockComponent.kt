@@ -6,19 +6,19 @@ import androidx.compose.ui.unit.DpSize
 import com.widgetkit.widgetcomponent.SizeType
 import com.widgetkit.widgetcomponent.WidgetCategory
 import com.widgetkit.widgetcomponent.component.update.ComponentUpdateManager
-import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.frontend.Progress
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.proto.AlignmentType
-import com.widgetkit.dsl.proto.ProgressType
-import com.widgetkit.dsl.proto.modifier.WidgetModifier
-import com.widgetkit.dsl.proto.modifier.backgroundColor
-import com.widgetkit.dsl.proto.modifier.fillMaxHeight
-import com.widgetkit.dsl.proto.modifier.fillMaxWidth
-import com.widgetkit.dsl.proto.modifier.height
-import com.widgetkit.dsl.proto.modifier.width
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.core.WidgetScope
+import com.widgetkit.core.frontend.Progress
+import com.widgetkit.core.frontend.layout.Box
+import com.widgetkit.core.proto.AlignmentType
+import com.widgetkit.core.proto.ProgressType
+import com.widgetkit.core.proto.modifier.WidgetModifier
+import com.widgetkit.core.proto.modifier.backgroundColor
+import com.widgetkit.core.proto.modifier.fillMaxHeight
+import com.widgetkit.core.proto.modifier.fillMaxWidth
+import com.widgetkit.core.proto.modifier.height
+import com.widgetkit.core.proto.modifier.width
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalTheme
 
 class AnalogClockComponent : WidgetComponent() {
 

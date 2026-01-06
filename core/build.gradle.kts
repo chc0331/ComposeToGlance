@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.widgetkit.dsl"
+    namespace = "com.widgetkit.core"
     compileSdk = 36
 
     defaultConfig {

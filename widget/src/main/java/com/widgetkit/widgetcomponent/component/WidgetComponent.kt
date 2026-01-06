@@ -7,7 +7,7 @@ import com.widgetkit.widgetcomponent.component.datastore.ComponentDataStore
 import com.widgetkit.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetkit.widgetcomponent.component.viewid.ViewIdProvider
 import com.widgetkit.widgetcomponent.component.viewid.ViewIdType
-import com.widgetkit.dsl.WidgetScope
+import com.widgetkit.core.WidgetScope
 
 abstract class WidgetComponent : ViewIdProvider {
 

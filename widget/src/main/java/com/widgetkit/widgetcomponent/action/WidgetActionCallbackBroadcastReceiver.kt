@@ -3,7 +3,7 @@ package com.widgetkit.widgetcomponent.action
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.widgetkit.dsl.widget.action.WidgetActionCallbackBroadcastReceiver
+import com.widgetkit.core.widget.action.WidgetActionCallbackBroadcastReceiver
 
 internal class CustomWidgetActionCallbackBroadcastReceiver :
     WidgetActionCallbackBroadcastReceiver() {

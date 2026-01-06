@@ -20,40 +20,40 @@ import com.widgetkit.widgetcomponent.component.viewid.ViewIdType
 import com.widgetkit.widgetcomponent.database.TodoDatabase
 import com.widgetkit.widgetcomponent.database.TodoEntity
 import com.widgetkit.widgetcomponent.util.getSystemBackgroundRadius
-import com.widgetkit.dsl.WidgetScope
-import com.widgetkit.dsl.frontend.CheckBox
-import com.widgetkit.dsl.frontend.Image
-import com.widgetkit.dsl.frontend.Spacer
-import com.widgetkit.dsl.frontend.Text
-import com.widgetkit.dsl.frontend.layout.Box
-import com.widgetkit.dsl.frontend.layout.Column
-import com.widgetkit.dsl.frontend.layout.List
-import com.widgetkit.dsl.frontend.layout.Row
-import com.widgetkit.dsl.proto.AlignmentType
-import com.widgetkit.dsl.proto.FontWeight
-import com.widgetkit.dsl.proto.HorizontalAlignment
-import com.widgetkit.dsl.proto.TextDecoration
-import com.widgetkit.dsl.proto.VerticalAlignment
-import com.widgetkit.dsl.proto.modifier.WidgetModifier
-import com.widgetkit.dsl.proto.modifier.backgroundColor
-import com.widgetkit.dsl.proto.modifier.clickAction
-import com.widgetkit.dsl.proto.modifier.cornerRadius
-import com.widgetkit.dsl.proto.modifier.expandHeight
-import com.widgetkit.dsl.proto.modifier.expandWidth
-import com.widgetkit.dsl.proto.modifier.fillMaxHeight
-import com.widgetkit.dsl.proto.modifier.fillMaxWidth
-import com.widgetkit.dsl.proto.modifier.height
-import com.widgetkit.dsl.proto.modifier.padding
-import com.widgetkit.dsl.proto.modifier.width
-import com.widgetkit.dsl.proto.modifier.wrapContentHeight
-import com.widgetkit.dsl.proto.modifier.wrapContentWidth
-import com.widgetkit.dsl.widget.action.WidgetActionParameters
-import com.widgetkit.dsl.widget.action.widgetActionParametersOf
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalContext
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalGlanceId
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalPreview
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalSize
-import com.widgetkit.dsl.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetkit.core.WidgetScope
+import com.widgetkit.core.frontend.CheckBox
+import com.widgetkit.core.frontend.Image
+import com.widgetkit.core.frontend.Spacer
+import com.widgetkit.core.frontend.Text
+import com.widgetkit.core.frontend.layout.Box
+import com.widgetkit.core.frontend.layout.Column
+import com.widgetkit.core.frontend.layout.List
+import com.widgetkit.core.frontend.layout.Row
+import com.widgetkit.core.proto.AlignmentType
+import com.widgetkit.core.proto.FontWeight
+import com.widgetkit.core.proto.HorizontalAlignment
+import com.widgetkit.core.proto.TextDecoration
+import com.widgetkit.core.proto.VerticalAlignment
+import com.widgetkit.core.proto.modifier.WidgetModifier
+import com.widgetkit.core.proto.modifier.backgroundColor
+import com.widgetkit.core.proto.modifier.clickAction
+import com.widgetkit.core.proto.modifier.cornerRadius
+import com.widgetkit.core.proto.modifier.expandHeight
+import com.widgetkit.core.proto.modifier.expandWidth
+import com.widgetkit.core.proto.modifier.fillMaxHeight
+import com.widgetkit.core.proto.modifier.fillMaxWidth
+import com.widgetkit.core.proto.modifier.height
+import com.widgetkit.core.proto.modifier.padding
+import com.widgetkit.core.proto.modifier.width
+import com.widgetkit.core.proto.modifier.wrapContentHeight
+import com.widgetkit.core.proto.modifier.wrapContentWidth
+import com.widgetkit.core.widget.action.WidgetActionParameters
+import com.widgetkit.core.widget.action.widgetActionParametersOf
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalContext
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalGlanceId
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalPreview
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalSize
+import com.widgetkit.core.widget.widgetlocalprovider.WidgetLocalTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.util.Date
@@ -300,7 +300,7 @@ class TodayTodoWidget : WidgetComponent() {
                     .padding(vertical = 4f, horizontal = 4f)
                     .clickAction(
                         context,
-                        com.widgetkit.dsl.widget.action.RunWidgetCallbackAction(
+                        com.widgetkit.core.widget.action.RunWidgetCallbackAction(
                             com.widgetkit.widgetcomponent.action.CustomWidgetActionCallbackBroadcastReceiver::class.java,
                             TodayTodoAction::class.java,
                             widgetActionParametersOf(
