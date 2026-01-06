@@ -13,6 +13,7 @@ import com.widgetkit.core.WidgetComponentRegistry
 import com.widgetkit.core.component.WidgetComponent
 import com.widgetkit.core.proto.PlacedWidgetComponent
 import com.widgetkit.core.proto.WidgetLayout
+import com.widgetkit.core.provider.ExtraLargeWidgetProvider
 import com.widgetkit.core.provider.LargeWidgetProvider
 import com.widgetkit.core.provider.common.CommonAppWidget.Companion.layoutKey
 
@@ -36,9 +37,12 @@ object ComponentUpdateHelper {
     ): List<Pair<Int, PlacedWidgetComponent>> {
         val glanceManager = GlanceAppWidgetManager(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val widgetIds = appWidgetManager.getAppWidgetIds(
-            ComponentName(context, LargeWidgetProvider::class.java)
-        )
+        val widgetIds = listOf(
+            LargeWidgetProvider::class.java,
+            ExtraLargeWidgetProvider::class.java
+        ).flatMap { providerClass ->
+            appWidgetManager.getAppWidgetIds(ComponentName(context, providerClass)).asIterable()
+        }.toIntArray()
 
         val results = mutableListOf<Pair<Int, PlacedWidgetComponent>>()
 

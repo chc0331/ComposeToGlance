@@ -1,6 +1,5 @@
 package com.widgetkit.core.component.battery
 
-import android.R.attr.animation
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
