@@ -2,7 +2,7 @@ package com.widgetkit.widget.editor.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.widgetkit.core.repository.WidgetLayoutRepository
+import com.widgetkit.widgetcomponent.repository.WidgetLayoutRepository
 
 class WidgetEditorViewModelFactory(
     private val repository: WidgetLayoutRepository

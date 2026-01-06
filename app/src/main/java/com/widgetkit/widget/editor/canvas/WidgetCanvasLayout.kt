@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.widgetkit.widget.editor.widget.Layout
 import com.widgetkit.widget.editor.widget.LayoutComponent
 import com.widgetkit.widget.editor.util.LayoutBounds
-import com.widgetkit.core.util.getSystemBackgroundRadius
+import com.widgetkit.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
 fun BoxScope.LayoutDisplay(

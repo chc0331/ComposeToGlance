@@ -14,15 +14,15 @@ import androidx.lifecycle.viewModelScope
 import com.widgetkit.widget.editor.widget.Layout
 import com.widgetkit.widget.editor.widget.LayoutGridSpec
 import com.widgetkit.widget.editor.widget.PositionedWidget
-import com.widgetkit.core.WidgetCategory
-import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.core.getSizeInCells
-import com.widgetkit.core.getSizeInCellsForLayout
-import com.widgetkit.core.proto.SizeType
-import com.widgetkit.core.WidgetComponentRegistry
-import com.widgetkit.core.provider.LargeWidgetProvider
-import com.widgetkit.core.provider.ExtraLargeWidgetProvider
-import com.widgetkit.core.repository.WidgetLayoutRepository
+import com.widgetkit.widgetcomponent.WidgetCategory
+import com.widgetkit.widgetcomponent.component.WidgetComponent
+import com.widgetkit.widgetcomponent.getSizeInCells
+import com.widgetkit.widgetcomponent.getSizeInCellsForLayout
+import com.widgetkit.widgetcomponent.proto.SizeType
+import com.widgetkit.widgetcomponent.WidgetComponentRegistry
+import com.widgetkit.widgetcomponent.provider.LargeWidgetProvider
+import com.widgetkit.widgetcomponent.provider.ExtraLargeWidgetProvider
+import com.widgetkit.widgetcomponent.repository.WidgetLayoutRepository
 import com.widgetkit.widget.editor.settings.GridSettings
 import com.widgetkit.widget.editor.settings.GridSettingsDataStore
 import com.widgetkit.widget.editor.util.GridCalculator
@@ -332,7 +332,7 @@ class WidgetEditorViewModel(
         viewModelScope.launch {
             val gridColumns = selectedLayout?.gridSpec()?.columns ?: 2
             repository.updateData(
-                sizeType = com.widgetkit.core.SizeType.getSizeType(
+                sizeType = com.widgetkit.widgetcomponent.SizeType.getSizeType(
                     selectedLayout?.sizeType ?: "Large"
                 )?.toProto() ?: SizeType.SIZE_TYPE_LARGE,
                 positionedWidgets = positionedWidgets.map {

@@ -27,8 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.widgetkit.widget.editor.widget.Layout
-import com.widgetkit.core.WidgetCategory
-import com.widgetkit.core.component.WidgetComponent
+import com.widgetkit.widgetcomponent.WidgetCategory
+import com.widgetkit.widgetcomponent.component.WidgetComponent
 
 val DefaultLayouts = listOf(
     Layout("Small"),

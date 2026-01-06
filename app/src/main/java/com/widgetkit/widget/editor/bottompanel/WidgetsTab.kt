@@ -43,9 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.widgetkit.widget.editor.widget.DragTargetWidgetItem
-import com.widgetkit.core.WidgetCategory
-import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.core.getSizeInCells
+import com.widgetkit.widgetcomponent.WidgetCategory
+import com.widgetkit.widgetcomponent.component.WidgetComponent
+import com.widgetkit.widgetcomponent.getSizeInCells
 import kotlin.collections.filter
 import kotlin.collections.find
 

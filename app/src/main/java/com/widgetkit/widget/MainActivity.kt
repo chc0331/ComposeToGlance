@@ -16,10 +16,10 @@ import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModelFactory
 import com.widgetkit.widget.service.WidgetForegroundService
 import com.widgetkit.dsl.widget.node.RendererInitializer
-import com.widgetkit.core.repository.WidgetLayoutRepository
-import com.widgetkit.core.WidgetComponentRegistry
-import com.widgetkit.core.initializeWidgetComponents
-import com.widgetkit.core.theme.AppTheme
+import com.widgetkit.widgetcomponent.repository.WidgetLayoutRepository
+import com.widgetkit.widgetcomponent.WidgetComponentRegistry
+import com.widgetkit.widgetcomponent.initializeWidgetComponents
+import com.widgetkit.widgetcomponent.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
 

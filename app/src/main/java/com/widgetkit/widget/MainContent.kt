@@ -37,7 +37,7 @@ import com.widgetkit.widget.editor.canvas.canvasBorder
 import com.widgetkit.widget.editor.settings.GridSettingsButton
 import com.widgetkit.widget.editor.settings.GridSettingsPanel
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
-import com.widgetkit.core.component.WidgetComponent
+import com.widgetkit.widgetcomponent.component.WidgetComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

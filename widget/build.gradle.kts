@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.widgetkit.core"
+    namespace = "com.widgetkit.widgetcomponent"
     compileSdk = 36
 
     defaultConfig {

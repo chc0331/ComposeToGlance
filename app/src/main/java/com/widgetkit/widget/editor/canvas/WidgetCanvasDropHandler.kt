@@ -14,9 +14,9 @@ import com.widgetkit.widget.editor.util.LayoutBounds
 import com.widgetkit.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetkit.widget.editor.widget.PositionedWidget
 import com.widgetkit.widget.editor.widget.toPixels
-import com.widgetkit.core.component.WidgetComponent
-import com.widgetkit.core.getSizeInCells
-import com.widgetkit.core.getSizeInCellsForLayout
+import com.widgetkit.widgetcomponent.component.WidgetComponent
+import com.widgetkit.widgetcomponent.getSizeInCells
+import com.widgetkit.widgetcomponent.getSizeInCellsForLayout
 
 @Composable
 fun WidgetDropHandler(

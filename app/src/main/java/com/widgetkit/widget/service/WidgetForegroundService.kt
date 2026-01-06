@@ -15,10 +15,10 @@ import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.widgetkit.widget.R
-import com.widgetkit.core.component.battery.BatteryStatusReceiver
-import com.widgetkit.core.component.battery.bluetooth.BluetoothDeviceReceiver
-import com.widgetkit.core.component.battery.bluetooth.register
-import com.widgetkit.core.component.battery.bluetooth.unregister
+import com.widgetkit.widgetcomponent.component.battery.BatteryStatusReceiver
+import com.widgetkit.widgetcomponent.component.battery.bluetooth.BluetoothDeviceReceiver
+import com.widgetkit.widgetcomponent.component.battery.bluetooth.register
+import com.widgetkit.widgetcomponent.component.battery.bluetooth.unregister
 
 class WidgetForegroundService : Service() {
     companion object {

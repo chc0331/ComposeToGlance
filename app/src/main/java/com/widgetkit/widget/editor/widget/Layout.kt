@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.widgetkit.core.LayoutDpSize
-import com.widgetkit.core.util.getSystemBackgroundRadius
+import com.widgetkit.widgetcomponent.LayoutDpSize
+import com.widgetkit.widgetcomponent.util.getSystemBackgroundRadius
 
 /**
  * 레이아웃 타입 열거형

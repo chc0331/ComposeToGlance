@@ -41,7 +41,7 @@
 
     <application>
         <receiver
-            android:name="com.widgetkit.core.provider.LargeWidgetProvider"
+            android:name="com.widgetkit.widgetcomponent.provider.LargeWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.widget.test" />
@@ -53,7 +53,7 @@
         </receiver>
 
         <receiver
-            android:name="com.widgetkit.core.provider.ExtraLargeWidgetProvider"
+            android:name="com.widgetkit.widgetcomponent.provider.ExtraLargeWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.widget.test" />
