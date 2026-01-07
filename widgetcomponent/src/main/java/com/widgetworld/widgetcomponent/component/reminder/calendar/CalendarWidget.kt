@@ -575,6 +575,8 @@ class CalendarWidget : WidgetComponent() {
 
     /**
      * 한 달의 Todo를 날짜별로 그룹화하여 로드
+     * - dateTime이 null이 아닌 Todo만 포함 (해당 날짜로 명시적으로 설정된 Todo만 표시)
+     * - dateTime이 null인 Todo는 모든 날짜에서 표시되므로 캘린더에서는 제외
      */
     private fun loadTodosForMonth(context: Context, yearMonth: YearMonth): Map<String, Int> {
         return try {
@@ -584,8 +586,11 @@ class CalendarWidget : WidgetComponent() {
                 val endDate = yearMonth.getLastDayString()
                 val todos = repository.getTodosByDateRange(startDate, endDate).first()
 
+                // dateTime이 null이 아닌 Todo만 필터링 (해당 날짜로 명시적으로 설정된 Todo만)
+                val todosWithDateTime = todos.filter { it.dateTime != null }
+
                 // 날짜별로 그룹화하여 개수 계산
-                todos.groupBy { it.date }
+                todosWithDateTime.groupBy { it.date }
                     .mapValues { it.value.size }
             }
         } catch (e: Exception) {

@@ -22,6 +22,18 @@ interface TodoDao {
     fun getTodosByDate(date: String): Flow<List<TodoEntity>>
     
     /**
+     * 위젯 표시용 Todo 조회
+     * - dateTime이 null인 Todo는 날짜에 관계없이 항상 포함 (별도 날짜/시간 선택 없이 추가한 항목)
+     * - dateTime이 있는 Todo는 선택된 날짜와 일치하는 것만 포함
+     */
+    @Query("""
+        SELECT * FROM todos 
+        WHERE (dateTime IS NULL OR (dateTime IS NOT NULL AND date = :date))
+        ORDER BY createdAt ASC
+    """)
+    fun getTodosForWidget(date: String): Flow<List<TodoEntity>>
+    
+    /**
      * ID로 Todo 조회
      */
     @Query("SELECT * FROM todos WHERE id = :id")
@@ -113,5 +125,17 @@ interface TodoDao {
         startDate: String,
         endDate: String
     ): List<TodoEntity>
+    
+    /**
+     * dateTime이 null인 모든 미완료 Todo 조회 (항상 표시되는 Todo)
+     */
+    @Query("SELECT * FROM todos WHERE dateTime IS NULL AND status != 'COMPLETED' ORDER BY createdAt ASC")
+    suspend fun getTodosWithoutDateTime(): List<TodoEntity>
+    
+    /**
+     * 특정 날짜의 미완료 Todo 조회 (suspend 함수)
+     */
+    @Query("SELECT * FROM todos WHERE date = :date AND status != 'COMPLETED' ORDER BY createdAt ASC")
+    suspend fun getTodosByDateSync(date: String): List<TodoEntity>
 }
 

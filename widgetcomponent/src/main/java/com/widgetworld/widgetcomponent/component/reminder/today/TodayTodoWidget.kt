@@ -409,12 +409,14 @@ class TodayTodoWidget : WidgetComponent() {
 
     /**
      * DB에서 Todo 로드
+     * - dateTime이 null인 Todo는 날짜에 관계없이 항상 포함 (별도 날짜/시간 선택 없이 추가한 항목)
+     * - dateTime이 있는 Todo는 선택된 날짜와 일치하는 것만 포함
      */
     private fun loadTodosFromDb(context: Context, date: String): List<TodoEntity> {
         return try {
             runBlocking {
                 val todoDao = TodoDatabase.getDatabase(context).todoDao()
-                todoDao.getTodosByDate(date).first()
+                todoDao.getTodosForWidget(date).first()
             }
         } catch (e: Exception) {
             emptyList()

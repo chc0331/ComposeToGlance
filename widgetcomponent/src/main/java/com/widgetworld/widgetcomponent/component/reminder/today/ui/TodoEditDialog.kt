@@ -51,6 +51,9 @@ fun TodoEditDialog(
     var title by remember { mutableStateOf(initialTitle) }
     var description by remember { mutableStateOf(initialDescription) }
     
+    // 날짜/시간 선택 상태 추적
+    var isDateTimeSelected by remember { mutableStateOf(initialDateTime != null) }
+    
     // 날짜/시간 선택
     val calendar = Calendar.getInstance()
     if (initialDateTime != null) {
@@ -72,11 +75,12 @@ fun TodoEditDialog(
     
     // 날짜/시간 표시 텍스트
     val dateTimeText = remember(
+        isDateTimeSelected,
         datePickerState.selectedDateMillis,
         timePickerState.hour,
         timePickerState.minute
     ) {
-        if (datePickerState.selectedDateMillis != null) {
+        if (isDateTimeSelected && datePickerState.selectedDateMillis != null) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
             val cal = Calendar.getInstance().apply {
                 timeInMillis = datePickerState.selectedDateMillis!!
@@ -85,7 +89,7 @@ fun TodoEditDialog(
             }
             dateFormat.format(Date(cal.timeInMillis))
         } else {
-            "날짜/시간 미설정"
+            ""
         }
     }
     
@@ -147,18 +151,26 @@ fun TodoEditDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 // 선택된 날짜/시간 표시
-                Text(
-                    text = "선택된 날짜/시간: $dateTimeText",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                if (dateTimeText.isNotEmpty()) {
+                    Text(
+                        text = "선택된 날짜/시간: $dateTimeText",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    Text(
+                        text = "선택된 날짜/시간: ",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
                     if (title.isNotBlank()) {
-                        val dateTime = if (datePickerState.selectedDateMillis != null) {
+                        val dateTime = if (isDateTimeSelected && datePickerState.selectedDateMillis != null) {
                             val cal = Calendar.getInstance().apply {
                                 timeInMillis = datePickerState.selectedDateMillis!!
                                 set(Calendar.HOUR_OF_DAY, timePickerState.hour)
@@ -194,7 +206,10 @@ fun TodoEditDialog(
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                TextButton(onClick = { showDatePicker = false }) {
+                TextButton(onClick = { 
+                    isDateTimeSelected = true
+                    showDatePicker = false 
+                }) {
                     Text("확인")
                 }
             },
@@ -217,7 +232,10 @@ fun TodoEditDialog(
                 TimePicker(state = timePickerState)
             },
             confirmButton = {
-                TextButton(onClick = { showTimePicker = false }) {
+                TextButton(onClick = { 
+                    isDateTimeSelected = true
+                    showTimePicker = false 
+                }) {
                     Text("확인")
                 }
             },

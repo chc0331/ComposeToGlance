@@ -21,6 +21,15 @@ class TodoRepository(context: Context) {
     }
     
     /**
+     * 위젯 표시용 Todo 조회
+     * - dateTime이 null인 Todo는 날짜에 관계없이 항상 포함 (별도 날짜/시간 선택 없이 추가한 항목)
+     * - dateTime이 있는 Todo는 선택된 날짜와 일치하는 것만 포함
+     */
+    fun getTodosForWidget(date: String): Flow<List<TodoEntity>> {
+        return todoDao.getTodosForWidget(date)
+    }
+    
+    /**
      * 모든 Todo 조회
      */
     fun getAllTodos(): Flow<List<TodoEntity>> {
@@ -108,6 +117,20 @@ class TodoRepository(context: Context) {
         endDate: String
     ): List<TodoEntity> {
         return todoDao.getUpcomingTodosByDateRange(currentTime, startDate, endDate)
+    }
+    
+    /**
+     * dateTime이 null인 모든 미완료 Todo 조회 (항상 표시되는 Todo)
+     */
+    suspend fun getTodosWithoutDateTime(): List<TodoEntity> {
+        return todoDao.getTodosWithoutDateTime()
+    }
+    
+    /**
+     * 특정 날짜의 미완료 Todo 조회 (suspend 함수)
+     */
+    suspend fun getTodosByDateSync(date: String): List<TodoEntity> {
+        return todoDao.getTodosByDateSync(date)
     }
 }
 

@@ -6,10 +6,12 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetworld.widgetcomponent.component.reminder.today.TodoDateUtils
 import com.widgetworld.widgetcomponent.component.reminder.today.TodoRepository
+import com.widgetworld.widgetcomponent.component.reminder.today.TodoStatus
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.provider.LargeAppWidget
 import com.widgetworld.widgetcomponent.provider.common.DslAppWidget
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
 /**
@@ -104,7 +106,8 @@ object UpcomingTasksUpdateManager : ComponentUpdateManager<UpcomingTasksData> {
 
     /**
      * 필터 타입에 따라 Upcoming Todos 로드
-     * dateTime이 null인 Todo도 포함하여 조회
+     * - dateTime이 null인 모든 Todo (항상 표시)
+     * - 필터 타입에 맞는 날짜 범위의 Todo 표시
      */
     suspend fun loadUpcomingTodos(
         context: Context,
@@ -114,47 +117,44 @@ object UpcomingTasksUpdateManager : ComponentUpdateManager<UpcomingTasksData> {
             val repository = TodoRepository(context)
             val currentTime = System.currentTimeMillis()
             
-            // 필터 타입에 따라 날짜 범위 계산
-            val (startDate, endDate) = when (filterType) {
+            // 1. dateTime이 null인 모든 Todo 조회 (항상 표시되는 Todo)
+            val todosWithoutDateTime = repository.getTodosWithoutDateTime()
+            
+            // 2. 필터 타입에 따라 날짜 범위 계산 및 해당 날짜의 Todo 조회
+            val filteredTodos = when (filterType) {
                 UpcomingFilterType.TODAY -> {
                     val today = TodoDateUtils.getTodayDateString()
-                    Pair(today, today)
+                    repository.getTodosByDateSync(today)
                 }
                 UpcomingFilterType.TOMORROW -> {
                     val calendar = Calendar.getInstance().apply {
                         add(Calendar.DAY_OF_MONTH, 1)
                     }
                     val tomorrow = TodoDateUtils.formatDateString(calendar.time)
-                    Pair(tomorrow, tomorrow)
+                    repository.getTodosByDateSync(tomorrow)
                 }
                 UpcomingFilterType.THIS_WEEK -> {
                     val calendar = Calendar.getInstance()
-                    val today = calendar.time
-                    calendar.add(Calendar.DAY_OF_MONTH, 7)
-                    val nextWeek = calendar.time
-                    val todayStr = TodoDateUtils.formatDateString(today)
-                    val nextWeekStr = TodoDateUtils.formatDateString(nextWeek)
-                    Pair(todayStr, nextWeekStr)
+                    val today = TodoDateUtils.formatDateString(calendar.time)
+                    calendar.add(Calendar.DAY_OF_MONTH, 6) // 오늘부터 6일 후까지 (총 7일)
+                    val endDate = TodoDateUtils.formatDateString(calendar.time)
+                    // 날짜 범위의 모든 Todo 조회
+                    repository.getTodosByDateRange(today, endDate).first()
+                        .filter { it.status != TodoStatus.COMPLETED }
                 }
                 UpcomingFilterType.ALL -> {
-                    // ALL의 경우 충분히 큰 날짜 범위 사용 (예: 오늘부터 1년 후)
-                    val calendar = Calendar.getInstance()
-                    val today = TodoDateUtils.formatDateString(calendar.time)
-                    calendar.add(Calendar.YEAR, 1)
-                    val nextYear = TodoDateUtils.formatDateString(calendar.time)
-                    Pair(today, nextYear)
+                    // 모든 미래 Todo 조회 (dateTime >= currentTime)
+                    repository.getUpcomingTodos(currentTime)
                 }
             }
             
-            // dateTime이 null인 Todo도 포함하여 조회
-            val allUpcomingTodos = repository.getUpcomingTodosByDateRange(
-                currentTime = currentTime,
-                startDate = startDate,
-                endDate = endDate
-            )
+            // 3. 두 결과를 합치고 중복 제거 (id 기준)
+            val allTodos = (todosWithoutDateTime + filteredTodos)
+                .distinctBy { it.id }
+                .filter { it.status != TodoStatus.COMPLETED }
             
             // 정렬: dateTime이 있는 항목 우선, 그 다음 날짜 순
-            val sortedTodos = allUpcomingTodos.sortedWith(compareBy(
+            val sortedTodos = allTodos.sortedWith(compareBy(
                 { it.dateTime == null }, // dateTime이 null인 항목을 뒤로
                 { it.dateTime ?: Long.MAX_VALUE }, // dateTime 기준 오름차순
                 { it.date }, // 날짜 기준 오름차순
