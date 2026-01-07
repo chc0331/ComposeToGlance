@@ -3,13 +3,18 @@ package com.widgetworld.widgetcomponent.component.devicecare.ram
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.glance.GlanceId
-import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
 import com.widgetworld.core.widget.action.WidgetActionCallback
 import com.widgetworld.core.widget.action.WidgetActionParameters
+import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class RamWidgetAction : WidgetActionCallback {
 
@@ -22,12 +27,23 @@ class RamWidgetAction : WidgetActionCallback {
         glanceId: GlanceId,
         parameters: WidgetActionParameters
     ) {
+        coroutineScope {
+            launch {
+                updateRamMemory(context)
+            }
+            launch {
+                launchSettingScreen(context)
+            }
+        }
+    }
+
+    private suspend fun updateRamMemory(context: Context) {
         val widget = RamWidget()
         val ramWidgetUpdateManager = widget.getUpdateManager() as RamUpdateManager
-        ramWidgetUpdateManager.showAnimation(context, true)
         clearMemory(context)
-        delay(2800)
-        ramWidgetUpdateManager.showAnimation(context, false)
+//        ramWidgetUpdateManager.showAnimation(context, true)
+//        delay(2800)
+//        ramWidgetUpdateManager.showAnimation(context, false)
 
         val deviceState = DeviceStateCollector.collect(context = context)
         Log.i(TAG, "Device state : $deviceState")
@@ -37,6 +53,26 @@ class RamWidgetAction : WidgetActionCallback {
         val ramData = RamData(ramUsagePercent)
         Log.i(TAG, "RamData : $ramData")
         ramWidgetUpdateManager.updateByPartially(context, null, ramData)
+    }
+
+    private suspend fun launchSettingScreen(context: Context) {
+        var launched = false
+        // 삼성 디바이스인 경우 디바이스 케어 앱 실행 시도
+        if (isSamsungDevice()) {
+            launched = tryLaunchSamsungDeviceCare(context)
+            if (launched) return
+        }
+
+        // 삼성 앱 실행 실패 또는 삼성이 아닌 경우 일반 설정 화면 시도
+        if (!launched) {
+            launched = tryLaunchDeviceMaintenanceSettings(context)
+            if (launched) return
+        }
+
+        // 모두 실패한 경우 일반 설정 화면으로 폴백
+        if (!launched) {
+            tryLaunchGeneralSettings(context)
+        }
     }
 
     private fun clearMemory(context: Context) {
@@ -97,5 +133,71 @@ class RamWidgetAction : WidgetActionCallback {
         targetPackages.remove(context.packageName)
 
         return targetPackages
+    }
+
+    private fun isSamsungDevice(): Boolean {
+        return Build.MANUFACTURER.equals("samsung", ignoreCase = true)
+    }
+
+    private fun tryLaunchSamsungDeviceCare(context: Context): Boolean {
+        return try {
+            val intent = Intent().apply {
+                setClassName(
+                    "com.samsung.android.lool",
+                    "com.samsung.android.sm.score.ui.ScoreBoardActivity"
+                )
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+
+            // Intent가 실행 가능한지 먼저 확인
+            if (isIntentResolvable(context, intent)) {
+                context.startActivity(intent)
+                Log.i(TAG, "Samsung Device Care launched")
+                true
+            } else {
+                Log.w(TAG, "Samsung Device Care app not found")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to launch Samsung Device Care", e)
+            false
+        }
+    }
+
+    private fun tryLaunchDeviceMaintenanceSettings(context: Context): Boolean {
+        return try {
+            val intent = Intent("android.settings.DEVICE_MAINTENANCE_SETTINGS").apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+
+            if (isIntentResolvable(context, intent)) {
+                context.startActivity(intent)
+                Log.i(TAG, "Device maintenance settings launched")
+                true
+            } else {
+                Log.w(TAG, "Device maintenance settings not available")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to launch device maintenance settings", e)
+            false
+        }
+    }
+
+    private fun tryLaunchGeneralSettings(context: Context) {
+        try {
+            val intent = Intent(Settings.ACTION_SETTINGS).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
+            Log.i(TAG, "General settings launched as fallback")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to launch general settings", e)
+        }
+    }
+
+    private fun isIntentResolvable(context: Context, intent: Intent): Boolean {
+        val packageManager = context.packageManager
+        return packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null
     }
 }
