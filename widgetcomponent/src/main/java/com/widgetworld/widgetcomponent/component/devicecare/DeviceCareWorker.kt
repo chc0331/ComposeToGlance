@@ -7,6 +7,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.widgetworld.widgetcomponent.component.devicecare.datausage.DataUsageCollector
+import com.widgetworld.widgetcomponent.component.devicecare.datausage.DataUsageUpdateManager
 import com.widgetworld.widgetcomponent.component.devicecare.ram.RamData
 import com.widgetworld.widgetcomponent.component.devicecare.ram.RamUpdateManager
 import com.widgetworld.widgetcomponent.component.devicecare.ram.RamWidgetDataStore
@@ -27,6 +29,10 @@ class DeviceCareWorker(
             val ramData = RamData(ramUsagePercent)
             RamWidgetDataStore.saveData(context, ramData)
             RamUpdateManager.updateByPartially(context, null, ramData)
+
+            // 데이터 사용량 수집 및 업데이트
+            val dataUsageData = DataUsageCollector.collect(context)
+            DataUsageUpdateManager.updateByPartially(context, null, dataUsageData)
 
             // DeviceCare위젯 컴포넌트가 추가되어 있으면 registe
             registerWorker(context)

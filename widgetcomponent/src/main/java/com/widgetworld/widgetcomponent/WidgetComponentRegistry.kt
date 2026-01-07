@@ -7,6 +7,7 @@ import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.component.battery.BatteryWidget
 import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryWidget
 import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryWidget
+import com.widgetworld.widgetcomponent.component.devicecare.datausage.DataUsageTrackerWidget
 import com.widgetworld.widgetcomponent.component.devicecare.ram.RamWidget
 import com.widgetworld.widgetcomponent.component.reminder.calendar.CalendarWidget
 import com.widgetworld.widgetcomponent.component.reminder.today.TodayTodoWidget
@@ -21,6 +22,7 @@ fun initializeWidgetComponents() {
     WidgetComponentRegistry.registerComponent(EarbudsBatteryWidget())
     WidgetComponentRegistry.registerComponent(WatchBatteryWidget())
     WidgetComponentRegistry.registerComponent(RamWidget())
+    WidgetComponentRegistry.registerComponent(DataUsageTrackerWidget())
     WidgetComponentRegistry.registerComponent(TodayTodoWidget())
     WidgetComponentRegistry.registerComponent(CalendarWidget())
     WidgetComponentRegistry.registerComponent(UpcomingTasksWidget())
