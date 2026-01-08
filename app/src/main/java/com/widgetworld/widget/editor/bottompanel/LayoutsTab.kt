@@ -1,13 +1,11 @@
 package com.widgetworld.widget.editor.bottompanel
 
-import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -22,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.widgetworld.widget.editor.widget.ClickableLayoutComponent
+import com.widgetworld.widget.editor.widget.LayoutComponent
 import com.widgetworld.widgetcomponent.LayoutType
 import kotlinx.coroutines.launch
 
@@ -58,7 +56,7 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge
                 )
-                ClickableLayoutComponent(
+                LayoutComponent(
                     layout = layout,
                     isClicked = activeLayout == layout,
                     onComponentClick = {

@@ -30,7 +30,7 @@ import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
-fun ClickableLayoutComponent(
+fun LayoutComponent(
     modifier: Modifier = Modifier,
     layout: LayoutType,
     isClicked: Boolean,
