@@ -39,18 +39,18 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .padding(
-                top = BottomPanelConstants.TAB_PADDING_TOP,
-                start = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
-                end = BottomPanelConstants.TAB_PADDING_HORIZONTAL,
-                bottom = BottomPanelConstants.TAB_PADDING_BOTTOM
+                top = 8.dp,
+                start = 16.dp,
+                end = 16.dp,
+                bottom = 8.dp
             ),
-        horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING),
-        verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         itemsIndexed(LayoutType.All) { index, layout ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_ITEM_SPACING),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
                 Text(

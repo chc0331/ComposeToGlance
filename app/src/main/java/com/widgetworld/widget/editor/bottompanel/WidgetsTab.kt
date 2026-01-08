@@ -139,9 +139,9 @@ fun WidgetsTabContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.surface),
-                        contentPadding = PaddingValues(BottomPanelConstants.WIDGET_LIST_PADDING),
-                        horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING),
-                        verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.WIDGET_LIST_SPACING)
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(
                             items = filteredWidgets.withIndex().toList(),

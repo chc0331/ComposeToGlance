@@ -35,13 +35,13 @@ fun CategoryList(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
         contentPadding = PaddingValues(
-            BottomPanelConstants.WIDGET_LIST_PADDING
+            16.dp
         ),
         horizontalArrangement = Arrangement.spacedBy(
-            BottomPanelConstants.WIDGET_LIST_SPACING
+            8.dp
         ),
         verticalArrangement = Arrangement.spacedBy(
-            BottomPanelConstants.WIDGET_LIST_SPACING
+            8.dp
         )
     ) {
         items(categories) { category ->

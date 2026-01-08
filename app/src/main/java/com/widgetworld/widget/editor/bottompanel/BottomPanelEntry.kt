@@ -25,24 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.component.WidgetComponent
-
-object BottomPanelConstants {
-    // 기타 코드에서 사용 가능하게 public
-    val TAB_PADDING_TOP = 8.dp
-    val TAB_PADDING_HORIZONTAL = 16.dp
-    val TAB_PADDING_BOTTOM = 8.dp
-    val LAYOUT_SPACING = 4.dp
-    val LAYOUT_TEXT_SIZE = 16.sp
-    val LAYOUT_ITEM_SPACING = 4.dp
-    val WIDGET_LIST_PADDING = 16.dp
-    val WIDGET_LIST_SPACING = 8.dp
-    val TAB_INDICATOR_WIDTH = 80.dp // Tab Indicator의 너비 (짧게 설정)
-    val TAB_INDICATOR_HEIGHT = 3.dp // Tab Indicator의 높이
-}
 
 @Composable
 fun BottomPanelWithTabs(
@@ -73,13 +58,13 @@ fun BottomPanelWithTabs(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[tabIndex])
                         .fillMaxHeight()
-                        .width(BottomPanelConstants.TAB_INDICATOR_WIDTH),
+                        .width(80.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(BottomPanelConstants.TAB_INDICATOR_WIDTH)
-                            .height(BottomPanelConstants.TAB_INDICATOR_HEIGHT)
+                            .width(80.dp)
+                            .height(3.dp)
                             .background(MaterialTheme.colorScheme.secondaryContainer)
                     )
                 }
