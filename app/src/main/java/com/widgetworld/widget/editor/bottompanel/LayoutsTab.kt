@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.widgetworld.widget.editor.widget.ClickableLayoutComponent
-import com.widgetworld.widget.editor.widget.Layout
+import com.widgetworld.widgetcomponent.Layout
 import kotlinx.coroutines.launch
 
 @Composable
@@ -30,6 +30,12 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
     var activeLayout by remember { mutableStateOf<Layout?>(null) }
     val scrollState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
+    val layoutList = listOf(
+        Layout.Small,
+        Layout.Medium,
+        Layout.Large,
+        Layout.ExtraLarge
+    )
 
     LazyVerticalGrid(
         state = scrollState,
@@ -47,9 +53,9 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING)
     ) {
         itemsIndexed(
-            DefaultLayouts,
+            layoutList,
             span = { index, layout ->
-                if (layout.sizeType == "Large" || layout.sizeType == "Extra Large") GridItemSpan(1)
+                if (layout.name == "Large" || layout.name == "Extra Large") GridItemSpan(1)
                 else GridItemSpan(1)
             }) { index, layout ->
             Column(
@@ -58,7 +64,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
                 Text(
-                    text = layout.sizeType,
+                    text = layout.name,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge
                 )

@@ -40,6 +40,7 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.widget.editor.draganddrop.DragTarget
+import com.widgetworld.widgetcomponent.Layout
 
 @Composable
 fun DragTargetWidgetItem(
@@ -259,8 +260,6 @@ fun WidgetComponent.toPixels(density: Density, layout: Layout): Pair<Float, Floa
 
 private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
     if (layout == null) {
-        // 1x 그리드 기준 기본 사이즈 (1셀 = 약 70dp 기준)
-        // Tiny(1x1), Small(2x1), Medium(2x2)
         return when (getSizeType()) {
             SizeType.TINY -> DpSize(90.dp, 90.dp)      // 1x1
             SizeType.SMALL -> DpSize(180.dp, 90.dp)    // 2x1
@@ -270,15 +269,15 @@ private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
         }
     }
 
-    val gridSpec = layout.gridSpec()
-    val rowCell = gridSpec?.rows ?: 1
-    val colCell = gridSpec?.columns ?: 1
+    val gridSpec = layout.getGridCell()
+    val rowCell = gridSpec?.row ?: 1
+    val colCell = gridSpec?.column ?: 1
     val containerSize = layout.getDpSize()
     val cellWidth = (containerSize.width) / colCell
     val cellHeight = (containerSize.height) / rowCell
 
     // 레이아웃 타입과 그리드 배수를 고려한 동적 사이즈 계산
-    val sizeInCells = this.getSizeInCellsForLayout(layout.sizeType, layout.gridMultiplier)
+    val sizeInCells = this.getSizeInCellsForLayout(layout.name, layout.getDivide())
     val widthCells: Int = sizeInCells.first
     val heightCells: Int = sizeInCells.second
 

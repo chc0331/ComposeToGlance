@@ -3,7 +3,6 @@ package com.widgetworld.widget.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,22 +10,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.widgetworld.widget.editor.widget.Layout
-import com.widgetworld.widget.editor.widget.LayoutGridSpec
-import com.widgetworld.widget.editor.widget.PositionedWidget
-import com.widgetworld.widgetcomponent.WidgetCategory
-import com.widgetworld.widgetcomponent.component.WidgetComponent
-import com.widgetworld.widgetcomponent.getSizeInCells
-import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
-import com.widgetworld.widgetcomponent.proto.SizeType
-import com.widgetworld.widgetcomponent.WidgetComponentRegistry
-import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
-import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
-import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import com.widgetworld.widget.editor.settings.GridSettings
 import com.widgetworld.widget.editor.settings.GridSettingsDataStore
 import com.widgetworld.widget.editor.util.GridCalculator
-import com.widgetworld.widget.editor.widget.gridSpec
+import com.widgetworld.widget.editor.widget.PositionedWidget
+import com.widgetworld.widgetcomponent.GridSpec
+import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.WidgetCategory
+import com.widgetworld.widgetcomponent.WidgetComponentRegistry
+import com.widgetworld.widgetcomponent.component.WidgetComponent
+import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
+import com.widgetworld.widgetcomponent.proto.SizeType
+import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
+import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
+import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,33 +33,27 @@ class WidgetEditorViewModel(
     private val repository: WidgetLayoutRepository
 ) : ViewModel() {
 
-    init {
-        // 위젯 컴포넌트 초기화는 MainActivity에서 수행됨
-        // (Lifecycle 관리를 위해 Application Context가 필요)
-    }
-    
-    /**
-     * 그리드 설정 초기화 및 변경 감지
-     */
     fun initializeGridSettings(context: Context) {
         viewModelScope.launch {
             // 초기 설정 로드
             val initialSettings = GridSettingsDataStore.loadSettings(context)
             _gridSettings.value = initialSettings
-            
+
             // 현재 레이아웃에 그리드 배수 적용
             selectedLayout?.let { layout ->
-                selectedLayout = layout.copy(gridMultiplier = initialSettings.globalMultiplier)
+                selectedLayout = layout.apply {
+                    setDivide(initialSettings.globalMultiplier)
+                }
             }
-            
+
             // 설정 변경 감지
             GridSettingsDataStore.getSettingsFlow(context).collect { newSettings ->
                 _gridSettings.value = newSettings
-                
+
                 // 레이아웃의 그리드 배수 업데이트
                 selectedLayout?.let { layout ->
-                    val updatedLayout = layout.copy(gridMultiplier = newSettings.globalMultiplier)
-                    selectedLayout = updatedLayout
+                    layout.setDivide(newSettings.globalMultiplier)
+                    selectedLayout = layout
                 }
             }
         }
@@ -76,28 +67,28 @@ class WidgetEditorViewModel(
     val gridSettings: StateFlow<GridSettings> = _gridSettings.asStateFlow()
 
     // 선택된 레이아웃 (기본값: Medium)
-    var selectedLayout by mutableStateOf<Layout?>(Layout("Large"))
+    var selectedLayout by mutableStateOf<Layout?>(Layout.Large)
         private set
 
     // 캔버스에 배치된 위젯들 (셀 기반 위치 정보 포함)
     val positionedWidgets = mutableStateListOf<PositionedWidget>()
-    
+
     // 그리드 설정 패널 표시 상태
     var showGridSettings by mutableStateOf(false)
         private set
 
-    
+
     /**
      * 그리드 설정 패널 표시/숨김
      */
     fun showGridSettingsPanel() {
         showGridSettings = true
     }
-    
+
     fun hideGridSettingsPanel() {
         showGridSettings = false
     }
-    
+
     /**
      * 그리드 설정 업데이트 및 위젯 클리어
      * 그리드 배수가 변경될 때 호출됨
@@ -105,23 +96,24 @@ class WidgetEditorViewModel(
     fun updateGridSettingsAndClearWidgets(settings: GridSettings) {
         // 그리드 설정 업데이트
         _gridSettings.value = settings
-        
+
         // 레이아웃의 그리드 배수 업데이트
         selectedLayout?.let { layout ->
-            selectedLayout = layout.copy(gridMultiplier = settings.globalMultiplier)
+            layout.setDivide(settings.globalMultiplier)
+            selectedLayout = layout
         }
-        
+
         // 배치된 위젯들 클리어
         clearPositionedWidgets()
     }
-    
+
     /**
      * 레이아웃 선택 (그리드 설정 고려)
      */
     fun selectLayout(layout: Layout?, migrateWidgets: Boolean = false) {
         val previousLayout = selectedLayout
         selectedLayout = layout
-        
+
         if (layout != null) {
             if (migrateWidgets && previousLayout != null) {
                 // 기존 위젯들을 새로운 그리드에 맞게 마이그레이션
@@ -208,7 +200,7 @@ class WidgetEditorViewModel(
      */
     fun getOccupiedCells(excluding: PositionedWidget? = null): Set<Int> {
         return positionedWidgets
-            .filter { 
+            .filter {
                 // ID 기반 비교로 더 안전하게 제외 (참조 비교와 ID 비교 모두 지원)
                 excluding == null || it.id != excluding.id
             }
@@ -229,24 +221,24 @@ class WidgetEditorViewModel(
      */
     fun findFirstAvailablePosition(
         widget: WidgetComponent,
-        spec: LayoutGridSpec
+        spec: GridSpec
     ): Pair<Int, Int>? {
         val currentLayout = selectedLayout ?: return null
-        
+
         // 레이아웃 타입과 그리드 배수를 고려한 위젯 사이즈 계산
         val widgetSizeInCells = widget.getSizeInCellsForLayout(
-            currentLayout.sizeType, 
-            currentLayout.gridMultiplier
+            currentLayout.name,
+            currentLayout.getDivide()
         )
         val widgetWidthCells = widgetSizeInCells.first
         val widgetHeightCells = widgetSizeInCells.second
         val occupiedCells = getOccupiedCells()
 
         // 모든 가능한 위치를 순회하면서 첫 번째 사용 가능한 위치 찾기
-        for (row in 0 until spec.rows) {
-            for (col in 0 until spec.columns) {
+        for (row in 0 until spec.row) {
+            for (col in 0 until spec.column) {
                 // 위젯이 그리드 범위를 벗어나는지 확인
-                if (row + widgetHeightCells > spec.rows || col + widgetWidthCells > spec.columns) {
+                if (row + widgetHeightCells > spec.row || col + widgetWidthCells > spec.column) {
                     continue
                 }
 
@@ -254,7 +246,7 @@ class WidgetEditorViewModel(
                 val cellIndices = mutableListOf<Int>()
                 for (r in row until row + widgetHeightCells) {
                     for (c in col until col + widgetWidthCells) {
-                        val index = r * spec.columns + c
+                        val index = r * spec.column + c
                         cellIndices.add(index)
                     }
                 }
@@ -297,20 +289,20 @@ class WidgetEditorViewModel(
      * 기존 위젯들을 새로운 그리드에 맞게 마이그레이션
      */
     private fun migratePositionedWidgets(oldLayout: Layout, newLayout: Layout) {
-        val oldSpec = oldLayout.gridSpec() ?: return
-        val newSpec = newLayout.gridSpec() ?: return
-        
+        val oldSpec = oldLayout.getGridCell()
+        val newSpec = newLayout.getGridCell()
+
         val migratedWidgets = positionedWidgets.mapNotNull { positionedWidget ->
             val oldIndices = positionedWidget.cellIndices
             if (oldIndices.isEmpty()) return@mapNotNull null
-            
+
             // 셀 인덱스 마이그레이션
             val newIndices = GridCalculator.migrateCellIndices(oldIndices, oldSpec, newSpec)
             if (newIndices.isEmpty()) return@mapNotNull null
-            
+
             // 새로운 위치 계산 (첫 번째 셀 인덱스 기준)
             val firstIndex = newIndices.first()
-            
+
             // 새로운 오프셋 계산은 UI에서 수행되므로 임시값 사용
             positionedWidget.copy(
                 cellIndices = newIndices,
@@ -318,34 +310,34 @@ class WidgetEditorViewModel(
                 offset = Offset.Zero // UI에서 재계산됨
             )
         }
-        
+
         positionedWidgets.clear()
         positionedWidgets.addAll(migratedWidgets)
     }
-    
-    
+
+
     /**
      * 저장 기능 (나중에 구현)
      */
     fun save(context: Context) {
         //TODO : Check logic.
         viewModelScope.launch {
-            val gridColumns = selectedLayout?.gridSpec()?.columns ?: 2
+            val gridColumns = selectedLayout?.getGridCell()?.column ?: 2
             repository.updateData(
                 sizeType = com.widgetworld.widgetcomponent.SizeType.getSizeType(
-                    selectedLayout?.sizeType ?: "Large"
+                    selectedLayout?.name ?: "Large"
                 )?.toProto() ?: SizeType.SIZE_TYPE_LARGE,
                 positionedWidgets = positionedWidgets.map {
                     it.toProto(gridColumns)
                 }
             )
-            
+
             // Select provider based on layout size type
-            val providerClass = when (selectedLayout?.sizeType) {
+            val providerClass = when (selectedLayout?.name) {
                 "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
                 else -> LargeWidgetProvider::class.java.name
             }
-            
+
             AppWidgetManager.getInstance(context).requestPinAppWidget(
                 ComponentName(
                     context.packageName,

@@ -25,62 +25,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.widgetworld.widgetcomponent.LayoutDpSize
+import com.widgetworld.widgetcomponent.Layout
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
-
-/**
- * 레이아웃 타입 열거형
- */
-enum class LayoutType(val displayName: String, val baseRows: Int, val baseColumns: Int) {
-    SMALL("Small", 1, 2),
-    MEDIUM("Medium", 2, 2),
-    LARGE("Large", 2, 4),
-    EXTRA_LARGE("Extra Large", 4, 4);
-
-    companion object {
-        fun fromString(sizeType: String): LayoutType {
-            return when (sizeType) {
-                "Small" -> SMALL
-                "Medium" -> MEDIUM
-                "Large" -> LARGE
-                "Extra Large" -> EXTRA_LARGE
-                else -> MEDIUM
-            }
-        }
-    }
-}
-
-data class Layout(val sizeType: String, val gridMultiplier: Int = 1) {
-    val layoutType: LayoutType get() = LayoutType.fromString(sizeType)
-
-    fun getDpSize(): DpSize {
-        val size = LayoutDpSize[sizeType] ?: Pair(155.dp, 185.dp)
-        return DpSize(size.first, size.second)
-    }
-
-    /**
-     * 동적 그리드 스펙 계산 (기본 그리드 × 배수)
-     */
-    fun getDynamicGridSpec(): LayoutGridSpec {
-        val baseSpec = layoutType
-        return LayoutGridSpec(
-            rows = baseSpec.baseRows * gridMultiplier,
-            columns = baseSpec.baseColumns * gridMultiplier
-        )
-    }
-}
-
-data class LayoutGridSpec(val rows: Int, val columns: Int)
-
-/**
- * 레이아웃의 그리드 스펙을 반환 (항상 동적 계산 사용)
- */
-fun Layout.gridSpec(): LayoutGridSpec? {
-    return getDynamicGridSpec()
-}
-
 
 @Composable
 fun ClickableLayoutComponent(
@@ -91,7 +38,8 @@ fun ClickableLayoutComponent(
     onAddClick: (Layout) -> Unit,
 ) {
     val context = LocalContext.current
-    val scaleFactor = if (data.sizeType == "Large" || data.sizeType == "Extra Large") 0.45f else 0.45f
+    val scaleFactor =
+        if (data.name == "Large" || data.name == "Extra Large") 0.45f else 0.45f
     val cornerRadius = context.getSystemBackgroundRadius() * scaleFactor
     Box(
         modifier = modifier
@@ -100,7 +48,7 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data.sizeType, isPreview = true, scaleFactor = scaleFactor)
+        LayoutComponent(data, isPreview = true, scaleFactor = scaleFactor)
         if (isClicked) {
             Box(
                 modifier = Modifier
@@ -123,13 +71,13 @@ fun ClickableLayoutComponent(
 
 @Composable
 fun LayoutComponent(
-    layoutType: String,
+    layout: Layout,
     showText: Boolean = false,
     isPreview: Boolean = false,
     scaleFactor: Float = 1f
 ) {
     val context = LocalContext.current
-    var (width, height) = LayoutDpSize[layoutType] ?: Pair(180.dp, 80.dp)
+    var (width, height) = layout.getDpSize()
     var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
         width = width * scaleFactor
@@ -143,7 +91,7 @@ fun LayoutComponent(
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        FullLayoutComponent(layoutType, showText)
+        FullLayoutComponent(layout.name, showText)
     }
 }
 
@@ -154,7 +102,7 @@ fun LayoutComponent(
     isPreview: Boolean = false
 ) {
     val context = LocalContext.current
-    var (width, height) = LayoutDpSize[layout.sizeType] ?: Pair(180.dp, 80.dp)
+    var (width, height) = layout.getDpSize()
     var cornerRadius = context.getSystemBackgroundRadius()
     if (isPreview) {
         width = width * 0.4f
@@ -192,40 +140,12 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
  */
 @Composable
 private fun DynamicLayoutComponent(layout: Layout, showText: Boolean) {
-    val gridSpec = layout.gridSpec()
+    val gridSpec = layout.getGridCell()
     if (gridSpec != null) {
-        createGridLayout(rows = gridSpec.rows, columns = gridSpec.columns, showText = showText)
+        createGridLayout(rows = gridSpec.row, columns = gridSpec.column, showText = showText)
     } else {
         // fallback to static layout
-        FullLayoutComponent(layout.sizeType, showText)
-    }
-}
-
-/**
- * 가로 그리드 행을 생성하는 헬퍼 함수
- */
-@Composable
-private fun createGridRow(columns: Int, showText: Boolean) {
-    Row(Modifier.fillMaxSize()) {
-        repeat(columns) { index ->
-            if (index > 0) {
-                DashedVerticalDivider(
-                    Modifier
-                        .fillMaxHeight()
-                        .width(1.dp),
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
-            Box(
-                Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                if (showText) {
-                    Text("1", Modifier.align(Alignment.Center))
-                }
-            }
-        }
+        FullLayoutComponent(layout.name, showText)
     }
 }
 

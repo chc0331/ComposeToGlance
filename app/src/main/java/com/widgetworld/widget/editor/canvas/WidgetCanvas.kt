@@ -31,7 +31,6 @@ import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.widget.editor.widget.WidgetItem
 import com.widgetworld.widget.editor.widget.toPixels
-import com.widgetworld.widget.editor.widget.gridSpec
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import kotlin.math.roundToInt
@@ -56,7 +55,7 @@ fun WidgetCanvas(
         val widget = widgetToAdd ?: return@LaunchedEffect
 
         val bounds = layoutBounds
-        val spec = selectedLayout?.gridSpec()
+        val spec = selectedLayout?.getGridCell()
         if (bounds == null || spec == null) {
             onWidgetAddProcessed()
             return@LaunchedEffect
@@ -73,8 +72,8 @@ fun WidgetCanvas(
         val (startRow, startCol) = position
         val currentLayout = selectedLayout ?: return@LaunchedEffect
         val widgetSizeInCells = widget.getSizeInCellsForLayout(
-            currentLayout.sizeType,
-            currentLayout.gridMultiplier
+            currentLayout.name,
+            currentLayout.getDivide()
         )
         val widgetWidthCells = widgetSizeInCells.first
         val widgetHeightCells = widgetSizeInCells.second

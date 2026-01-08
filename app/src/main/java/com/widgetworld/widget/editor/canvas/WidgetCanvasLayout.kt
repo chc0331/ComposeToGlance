@@ -10,9 +10,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
-import com.widgetworld.widget.editor.widget.Layout
 import com.widgetworld.widget.editor.widget.LayoutComponent
 import com.widgetworld.widget.editor.util.LayoutBounds
+import com.widgetworld.widgetcomponent.Layout
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable

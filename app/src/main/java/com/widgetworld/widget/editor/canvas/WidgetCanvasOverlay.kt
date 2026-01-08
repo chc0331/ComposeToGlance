@@ -24,8 +24,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import com.widgetworld.widget.editor.draganddrop.DragTargetInfo
-import com.widgetworld.widget.editor.widget.Layout
-import com.widgetworld.widget.editor.widget.gridSpec
 import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.util.GridCell
 import com.widgetworld.widget.editor.util.LayoutBounds
@@ -33,6 +31,7 @@ import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widget.editor.widget.WidgetItem
 import com.widgetworld.widget.editor.widget.toPixels
+import com.widgetworld.widgetcomponent.Layout
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
@@ -73,13 +72,13 @@ fun DragStateOverlay(
     // 드롭 가능한 영역이 나타나거나 변경될 때 햅틱 피드백 제공
     val view = LocalView.current
     var previousHoveredIndices by remember { mutableStateOf<List<Int>>(emptyList()) }
-    
+
     LaunchedEffect(hoveredCellIndices) {
         // 드롭 가능한 영역이 나타났거나 다른 위치로 변경되었을 때 햅틱 피드백
         val hasDropZone = hoveredCellIndices.isNotEmpty()
         val hadDropZone = previousHoveredIndices.isNotEmpty()
         val dropZoneChanged = hoveredCellIndices != previousHoveredIndices
-        
+
         if (hasDropZone && (dropZoneChanged || (!hadDropZone && hasDropZone))) {
             view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
@@ -97,15 +96,16 @@ fun DragStateOverlay(
 //        )
 //    }
 
-    val currentOccupiedCells = remember(draggedPositionedWidget?.id, occupiedCells, viewModel.positionedWidgets) {
-        derivedStateOf {
-            if (draggedPositionedWidget != null) {
-                viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
-            } else {
-                occupiedCells
+    val currentOccupiedCells =
+        remember(draggedPositionedWidget?.id, occupiedCells, viewModel.positionedWidgets) {
+            derivedStateOf {
+                if (draggedPositionedWidget != null) {
+                    viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
+                } else {
+                    occupiedCells
+                }
             }
-        }
-    }.value
+        }.value
 
     GridCellHighlight(
         gridCells = gridCells,
@@ -140,11 +140,11 @@ private fun rememberHoveredCellIndices(
             return@remember emptyList()
         }
 
-        val spec = selectedLayout.gridSpec() ?: return@remember emptyList()
+        val spec = selectedLayout.getGridCell() ?: return@remember emptyList()
         val currentLayout = selectedLayout ?: return@remember emptyList()
         val widgetSizeInCells = draggedWidget.getSizeInCellsForLayout(
-            currentLayout.sizeType,
-            currentLayout.gridMultiplier
+            currentLayout.name,
+            currentLayout.getDivide()
         )
         val widgetWidthCells = widgetSizeInCells.first
         val widgetHeightCells = widgetSizeInCells.second
@@ -201,10 +201,10 @@ private fun WidgetPreview(
     density: Density
 ) {
     val bounds = layoutBounds ?: return
-    val spec = selectedLayout?.gridSpec() ?: return
+    val spec = selectedLayout?.getGridCell() ?: return
     val startCellIndex = hoveredCellIndices.first()
-    val startRow = startCellIndex / spec.columns
-    val startCol = startCellIndex % spec.columns
+    val startRow = startCellIndex / spec.column
+    val startCol = startCellIndex % spec.column
     val (widgetWidthCells, widgetHeightCells) = draggedWidget.getSizeInCells()
     val (widgetWidthPx, widgetHeightPx) = draggedWidget.toPixels(density, selectedLayout)
 
@@ -245,7 +245,7 @@ private fun GridCellHighlight(
     val hoveredCellSet = remember(hoveredCellIndices) {
         hoveredCellIndices.toSet()
     }
-    
+
     // 호버된 셀들이 있으면 전체 영역을 하나로 그리기
     if (hoveredCellIndices.isNotEmpty()) {
         val hoveredCells = gridCells.filter { it.index in hoveredCellSet }
@@ -267,23 +267,23 @@ private fun HighlightedArea(
     isOccupied: Boolean
 ) {
     if (cells.isEmpty()) return
-    
+
     val context = LocalContext.current
     val cornerRadius = context.getSystemBackgroundRadius()
-    
+
     // 전체 영역의 bounds 계산
     val minLeft = cells.minOf { it.rect.left }
     val minTop = cells.minOf { it.rect.top }
     val maxRight = cells.maxOf { it.rect.right }
     val maxBottom = cells.maxOf { it.rect.bottom }
-    
+
     val offset = IntOffset(
         (minLeft - canvasPosition.x).roundToInt(),
         (minTop - canvasPosition.y).roundToInt()
     )
     val widthDp = with(density) { (maxRight - minLeft).toDp() }
     val heightDp = with(density) { (maxBottom - minTop).toDp() }
-    
+
     val backgroundColor = if (isOccupied) {
         MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
     } else {

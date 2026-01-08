@@ -7,15 +7,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import com.widgetworld.widget.editor.draganddrop.DragTargetInfo
 import com.widgetworld.widget.editor.draganddrop.DropTarget
-import com.widgetworld.widget.editor.widget.Layout
-import com.widgetworld.widget.editor.widget.gridSpec
 import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widget.editor.widget.toPixels
+import com.widgetworld.widgetcomponent.Layout
 import com.widgetworld.widgetcomponent.component.WidgetComponent
-import com.widgetworld.widgetcomponent.getSizeInCells
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 
 @Composable
@@ -77,14 +75,14 @@ fun WidgetDropHandler(
             else -> return@DropTarget
         }
         val bounds = layoutBounds
-        val spec = selectedLayout?.gridSpec()
+        val spec = selectedLayout?.getGridCell()
         if (bounds == null || spec == null) {
             return@DropTarget
         }
         val currentLayout = selectedLayout ?: return@DropTarget
         val widgetSizeInCells = widget.getSizeInCellsForLayout(
-            currentLayout.sizeType,
-            currentLayout.gridMultiplier
+            currentLayout.name,
+            currentLayout.getDivide()
         )
         val widgetWidthCells = widgetSizeInCells.first
         val widgetHeightCells = widgetSizeInCells.second

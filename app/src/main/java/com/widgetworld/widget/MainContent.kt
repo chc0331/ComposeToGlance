@@ -55,7 +55,8 @@ fun MainContent(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "위젯 편집", style = MaterialTheme.typography.titleLarge)
+                        "위젯 편집", style = MaterialTheme.typography.titleLarge
+                    )
                 },
                 modifier = Modifier.height(72.dp),
                 actions = {
@@ -80,12 +81,12 @@ fun MainContent(
         }
     ) { paddingValues ->
         val gridSettings by viewModel.gridSettings.collectAsState()
-        
+
         // 그리드 설정 초기화
         LaunchedEffect(Unit) {
             viewModel.initializeGridSettings(context)
         }
-        
+
         WidgetEditorContainer(
             modifier = Modifier
                 .fillMaxSize()
@@ -131,7 +132,7 @@ fun MainContent(
                 )
             }
         }
-        
+
         // 그리드 설정 패널
         GridSettingsPanel(
             isVisible = viewModel.showGridSettings,

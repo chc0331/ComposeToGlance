@@ -3,8 +3,8 @@ package com.widgetworld.widget.editor.util
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
-import com.widgetworld.widget.editor.widget.LayoutGridSpec
 import com.widgetworld.widget.editor.settings.GridSettings
+import com.widgetworld.widgetcomponent.GridSpec
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -26,13 +26,13 @@ object GridCalculator {
     /**
      * 레이아웃 스펙과 경계를 기반으로 그리드 셀들을 계산
      */
-    fun calculateGridCells(spec: LayoutGridSpec, bounds: LayoutBounds): List<GridCell> {
-        val cellWidth = bounds.size.width.toFloat() / spec.columns
-        val cellHeight = bounds.size.height.toFloat() / spec.rows
+    fun calculateGridCells(spec: GridSpec, bounds: LayoutBounds): List<GridCell> {
+        val cellWidth = bounds.size.width.toFloat() / spec.column
+        val cellHeight = bounds.size.height.toFloat() / spec.row
         val cells = mutableListOf<GridCell>()
         var index = 0
-        repeat(spec.rows) { row ->
-            repeat(spec.columns) { column ->
+        repeat(spec.row) { row ->
+            repeat(spec.column) { column ->
                 val left = bounds.position.x + column * cellWidth
                 val top = bounds.position.y + row * cellHeight
                 val rect = Rect(
@@ -47,7 +47,7 @@ object GridCalculator {
         }
         return cells
     }
-    
+
     /**
      * 동적 그리드 스펙 계산 (기본 그리드 × 2N 배수)
      */
@@ -55,11 +55,11 @@ object GridCalculator {
         baseRows: Int,
         baseColumns: Int,
         multiplier: Int
-    ): LayoutGridSpec {
+    ): GridSpec {
         val validMultiplier = if (GridSettings.isValidMultiplier(multiplier)) multiplier else 1
-        return LayoutGridSpec(
-            rows = baseRows * validMultiplier,
-            columns = baseColumns * validMultiplier
+        return GridSpec(
+            row = baseRows * validMultiplier,
+            column = baseColumns * validMultiplier
         )
     }
 
@@ -72,7 +72,7 @@ object GridCalculator {
         widgetWidthCells: Int,
         widgetHeightCells: Int,
         gridCells: List<GridCell>,
-        spec: LayoutGridSpec,
+        spec: GridSpec,
         bounds: LayoutBounds
     ): Pair<Int, Int>? {
         // 터치 위치가 포함된 셀 찾기
@@ -80,8 +80,8 @@ object GridCalculator {
             cell.rect.contains(dropPositionInWindow)
         } ?: return null
 
-        val touchedRow = touchedCell.index / spec.columns
-        val touchedCol = touchedCell.index % spec.columns
+        val touchedRow = touchedCell.index / spec.column
+        val touchedCol = touchedCell.index % spec.column
 
         // 위젯이 차지할 영역의 가능한 시작 위치들을 계산
         val possibleStarts = mutableListOf<Pair<Int, Int>>()
@@ -96,7 +96,7 @@ object GridCalculator {
                     val endRow = startRow + widgetHeightCells - 1
                     val endCol = startCol + widgetWidthCells - 1
 
-                    if (endRow < spec.rows && endCol < spec.columns) {
+                    if (endRow < spec.row && endCol < spec.column) {
                         possibleStarts.add(startRow to startCol)
                     }
                 }
@@ -105,8 +105,8 @@ object GridCalculator {
 
         // 가장 가까운 시작 위치 선택
         return possibleStarts.minByOrNull { (row, col) ->
-            val cellWidth = bounds.size.width.toFloat() / spec.columns
-            val cellHeight = bounds.size.height.toFloat() / spec.rows
+            val cellWidth = bounds.size.width.toFloat() / spec.column
+            val cellHeight = bounds.size.height.toFloat() / spec.row
             val widgetAreaCenterX = (col + widgetWidthCells / 2f) * cellWidth + bounds.position.x
             val widgetAreaCenterY = (row + widgetHeightCells / 2f) * cellHeight + bounds.position.y
             val distance = sqrt(
@@ -125,12 +125,12 @@ object GridCalculator {
         startCol: Int,
         widgetWidthCells: Int,
         widgetHeightCells: Int,
-        spec: LayoutGridSpec
+        spec: GridSpec
     ): List<Int> {
         val indices = mutableListOf<Int>()
         for (row in startRow until startRow + widgetHeightCells) {
             for (col in startCol until startCol + widgetWidthCells) {
-                val index = row * spec.columns + col
+                val index = row * spec.column + col
                 indices.add(index)
             }
         }
@@ -148,11 +148,11 @@ object GridCalculator {
         widgetWidthPx: Float,
         widgetHeightPx: Float,
         bounds: LayoutBounds,
-        spec: LayoutGridSpec,
+        spec: GridSpec,
         canvasPosition: Offset
     ): Offset {
-        val cellWidth = bounds.size.width.toFloat() / spec.columns
-        val cellHeight = bounds.size.height.toFloat() / spec.rows
+        val cellWidth = bounds.size.width.toFloat() / spec.column
+        val cellHeight = bounds.size.height.toFloat() / spec.row
 
         // 위젯이 차지하는 셀 영역의 중심 계산
         val cellAreaLeft = bounds.position.x + startCol * cellWidth
@@ -171,7 +171,7 @@ object GridCalculator {
             relativeCenter.y - widgetHeightPx / 2f
         )
     }
-    
+
     /**
      * 동적 그리드에서 위젯 사이즈를 2N 배수에 맞게 조정
      */
@@ -180,45 +180,46 @@ object GridCalculator {
         baseHeightCells: Int,
         gridMultiplier: Int
     ): Pair<Int, Int> {
-        val validMultiplier = if (GridSettings.isValidMultiplier(gridMultiplier)) gridMultiplier else 1
+        val validMultiplier =
+            if (GridSettings.isValidMultiplier(gridMultiplier)) gridMultiplier else 1
         return Pair(
             baseWidthCells * validMultiplier,
             baseHeightCells * validMultiplier
         )
     }
-    
+
     /**
      * 그리드 배수 변경 시 기존 셀 인덱스를 새로운 그리드에 맞게 변환
      */
     fun migrateCellIndices(
         oldIndices: List<Int>,
-        oldSpec: LayoutGridSpec,
-        newSpec: LayoutGridSpec
+        oldSpec: GridSpec,
+        newSpec: GridSpec
     ): List<Int> {
-        if (oldSpec.rows == newSpec.rows && oldSpec.columns == newSpec.columns) {
+        if (oldSpec.row == newSpec.row && oldSpec.column == newSpec.column) {
             return oldIndices // 변경사항 없음
         }
-        
+
         val newIndices = mutableListOf<Int>()
-        
+
         for (oldIndex in oldIndices) {
             // 기존 인덱스를 2D 좌표로 변환
-            val oldRow = oldIndex / oldSpec.columns
-            val oldCol = oldIndex % oldSpec.columns
-            
+            val oldRow = oldIndex / oldSpec.column
+            val oldCol = oldIndex % oldSpec.column
+
             // 비율을 유지하여 새로운 그리드에서의 좌표 계산
-            val newRow = (oldRow * newSpec.rows) / oldSpec.rows
-            val newCol = (oldCol * newSpec.columns) / oldSpec.columns
-            
+            val newRow = (oldRow * newSpec.row) / oldSpec.row
+            val newCol = (oldCol * newSpec.column) / oldSpec.column
+
             // 새로운 인덱스 계산
-            val newIndex = newRow * newSpec.columns + newCol
-            
+            val newIndex = newRow * newSpec.column + newCol
+
             // 유효한 범위 내에서만 추가
-            if (newIndex < newSpec.rows * newSpec.columns) {
+            if (newIndex < newSpec.row * newSpec.column) {
                 newIndices.add(newIndex)
             }
         }
-        
+
         return newIndices.distinct().sorted()
     }
 }

@@ -2,12 +2,11 @@ package com.widgetworld.widget.editor.canvas
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.widgetworld.widget.editor.widget.Layout
-import com.widgetworld.widget.editor.widget.gridSpec
 import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.util.GridCell
 import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.widget.PositionedWidget
+import com.widgetworld.widgetcomponent.Layout
 
 // PositionedWidget의 모든 셀 인덱스 반환
 fun PositionedWidget.getAllCellIndices(): Set<Int> =
@@ -26,7 +25,7 @@ fun rememberGridCells(
 ): List<GridCell> {
     return remember(selectedLayout, layoutBounds) {
         if (selectedLayout == null || layoutBounds == null) return@remember emptyList()
-        val spec = selectedLayout.gridSpec() ?: return@remember emptyList()
+        val spec = selectedLayout.getGridCell() ?: return@remember emptyList()
         GridCalculator.calculateGridCells(spec, layoutBounds)
     }
 }

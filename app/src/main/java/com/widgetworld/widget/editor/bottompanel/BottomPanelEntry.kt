@@ -26,16 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.widgetworld.widget.editor.widget.Layout
+import com.widgetworld.widgetcomponent.Layout
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.component.WidgetComponent
-
-val DefaultLayouts = listOf(
-    Layout("Small"),
-    Layout("Medium"),
-    Layout("Large"),
-    Layout("Extra Large")
-)
 
 object BottomPanelConstants {
     // 기타 코드에서 사용 가능하게 public
@@ -62,7 +55,6 @@ fun BottomPanelWithTabs(
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
-    val isWidgetTabEnabled = selectedLayout != null
 
     // 레이아웃이 선택 해제되면 레이아웃 탭으로 자동 전환
     LaunchedEffect(selectedLayout) {
@@ -94,34 +86,17 @@ fun BottomPanelWithTabs(
             }
         ) {
             tabs.forEachIndexed { index, title ->
-                val isTabEnabled = index != 1 || isWidgetTabEnabled
-                val isWidgetTabDisabled = index == 1 && !isWidgetTabEnabled
                 Tab(
                     selected = tabIndex == index,
-                    onClick = { 
-                        if (index == 1 && !isWidgetTabEnabled) {
-                            // 위젯 탭이 비활성화된 경우 클릭 무시
-                            return@Tab
-                        }
-                        tabIndex = index 
-                    },
-                    enabled = isTabEnabled,
-                    text = { 
+                    onClick = { tabIndex = index },
+                    text = {
                         Text(
                             text = title,
-                            color = if (isWidgetTabDisabled) {
-                                MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f) // disabled 색상
-                            } else {
-                                MaterialTheme.colorScheme.onSecondary
-                            }
-                        ) 
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
                     },
                     selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = if (isWidgetTabDisabled) {
-                        MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f) // disabled 색상
-                    } else {
-                        MaterialTheme.colorScheme.onSecondary
-                    }
+                    unselectedContentColor = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
@@ -132,7 +107,7 @@ fun BottomPanelWithTabs(
             }) { tabIndex ->
             when (tabIndex) {
                 0 -> LayoutsTabContent(onLayoutSelected)
-                1 -> WidgetsList(
+                1 -> WidgetsTabContent(
                     widgetList = widgets,
                     categories = categories,
                     onWidgetSelected = onWidgetSelected,
