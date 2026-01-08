@@ -52,13 +52,13 @@ fun WidgetComponentContainer(
         dataToDrop = data,
         onComponentClick = onComponentClick,
         onDragStart = onDragStart,
-        dragContent = { WidgetItem(data, showLabel = false) }
+        dragContent = { WidgetComponent(data) }
     ) {
         Box(
             modifier = Modifier.wrapContentSize(),
             contentAlignment = Alignment.Center
         ) {
-            WidgetItem(data)
+            WidgetComponent(data)
             if (isClicked) {
                 Box(
                     modifier = Modifier
@@ -79,35 +79,14 @@ fun WidgetComponentContainer(
 }
 
 @Composable
-fun WidgetItem(
+internal fun WidgetComponent(
     data: WidgetComponent,
     modifier: Modifier = Modifier,
-    showLabel: Boolean = true,
-    layout: LayoutType? = null,
+    layout: LayoutType? = null
 ) {
-    // 위젯 데이터를 기반으로 캐시 키 생성하여 재렌더링 방지
-    val cacheKey = remember(data.getWidgetTag(), data.getSizeType()) {
+    val key = remember(data.getWidgetTag(), data.getSizeType()) {
         "${data.getWidgetTag()}_${data.getSizeType()}"
     }
-
-    // 위젯 아이템 전체를 캐싱하여 깜박임 방지
-    WidgetItemContent(
-        data = data,
-        modifier = modifier,
-        key = cacheKey,
-        showLabel = showLabel,
-        layout = layout,
-    )
-}
-
-@Composable
-private fun WidgetItemContent(
-    data: WidgetComponent,
-    modifier: Modifier,
-    key: String,
-    showLabel: Boolean = true,
-    layout: LayoutType? = null,
-) {
     val size = remember(key) { data.getSizeInDp(layout) }
     val context = LocalContext.current
 
@@ -124,42 +103,36 @@ private fun WidgetItemContent(
                 .background(Color(0xFFF5F5F5)), // Default surface variant color
             contentAlignment = Alignment.Center
         ) {
-            // componentId가 있으면 DSL 컴포넌트를 렌더링, 없으면 기본 텍스트 표시
-            if (data.getWidgetTag() != null) {
-                val component = remember(key) {
-                    WidgetComponentRegistry.getComponent(data.getWidgetTag())
-                }
-                if (component != null) {
-                    // DSL 컴포넌트를 AppWidgetView로 렌더링
-                    // renderer를 remember로 캐싱하여 재렌더링 방지
-                    val renderer = remember(key) { WidgetRenderer(context) }
-                    // layout을 미리 생성하여 캐싱 (깜박임 방지)
-                    val layout = remember(key) {
-                        WidgetLayout(mode = WidgetMode.WIDGET_MODE_PREVIEW) {
-                            WidgetLocalProvider(
-                                WidgetLocalPreview provides true,
-                                WidgetLocalSize provides size,
-                                WidgetLocalContext provides context
-                            ) {
-                                // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
-                                // this는 WidgetLocalProvider가 생성한 childScope를 가리킴
-                                // Content()가 생성한 children은 WidgetLocalProvider가 자동으로 수집함
-                                component.renderContent(this)
-                            }
+            val component = remember(key) {
+                WidgetComponentRegistry.getComponent(data.getWidgetTag())
+            }
+            if (component != null) {
+                // DSL 컴포넌트를 AppWidgetView로 렌더링
+                // renderer를 remember로 캐싱하여 재렌더링 방지
+                val renderer = remember(key) { WidgetRenderer(context) }
+                // layout을 미리 생성하여 캐싱 (깜박임 방지)
+                val layout = remember(key) {
+                    WidgetLayout(mode = WidgetMode.WIDGET_MODE_PREVIEW) {
+                        WidgetLocalProvider(
+                            WidgetLocalPreview provides true,
+                            WidgetLocalSize provides size,
+                            WidgetLocalContext provides context
+                        ) {
+                            // 현재 scope에서 Content를 호출하여 locals에 접근 가능하도록 함
+                            // this는 WidgetLocalProvider가 생성한 childScope를 가리킴
+                            // Content()가 생성한 children은 WidgetLocalProvider가 자동으로 수집함
+                            component.renderContent(this)
                         }
                     }
-
-                    AppWidgetView(
-                        size = size,
-                        layout = layout,
-                        renderer = renderer
-                    )
-                } else {
-                    // 컴포넌트를 찾을 수 없을 때 기본 텍스트 표시
-                    DefaultWidgetContent(data)
                 }
+
+                AppWidgetView(
+                    size = size,
+                    layout = layout,
+                    renderer = renderer
+                )
             } else {
-                // componentId가 없을 때 기본 텍스트 표시
+                // 컴포넌트를 찾을 수 없을 때 기본 텍스트 표시
                 DefaultWidgetContent(data)
             }
         }

@@ -28,8 +28,8 @@ import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
+import com.widgetworld.widget.editor.widget.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
-import com.widgetworld.widget.editor.widget.WidgetItem
 import com.widgetworld.widget.editor.widget.toPixels
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
@@ -198,7 +198,10 @@ fun WidgetCanvas(
                             }
                             .alpha(if (isDragging) 0f else 1f)
                     ) {
-                        WidgetItem(data = item.widget, layout = selectedLayout, showLabel = false)
+                        WidgetComponent(
+                            data = item.widget,
+                            layout = selectedLayout
+                        )
                     }
                 }
             }

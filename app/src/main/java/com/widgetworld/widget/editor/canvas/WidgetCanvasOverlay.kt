@@ -30,7 +30,7 @@ import com.widgetworld.widget.editor.util.GridCell
 import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
-import com.widgetworld.widget.editor.widget.WidgetItem
+import com.widgetworld.widget.editor.widget.WidgetComponent
 import com.widgetworld.widget.editor.widget.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
@@ -226,10 +226,9 @@ private fun WidgetPreview(
             IntOffset(previewOffset.x.roundToInt(), previewOffset.y.roundToInt())
         }
     ) {
-        WidgetItem(
+        WidgetComponent(
             data = draggedWidget,
-            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA),
-            showLabel = false
+            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
         )
     }
 }
