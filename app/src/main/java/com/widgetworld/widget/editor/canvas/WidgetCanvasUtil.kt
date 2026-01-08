@@ -1,12 +1,13 @@
 package com.widgetworld.widget.editor.canvas
 
+import android.text.Layout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.util.GridCell
 import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.widget.PositionedWidget
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 
 // PositionedWidget의 모든 셀 인덱스 반환
 fun PositionedWidget.getAllCellIndices(): Set<Int> =
@@ -20,7 +21,7 @@ fun List<PositionedWidget>.getOccupiedCells(): Set<Int> =
 // 그리드 셀 계산을 기억하는 Composable
 @Composable
 fun rememberGridCells(
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     layoutBounds: LayoutBounds?
 ): List<GridCell> {
     return remember(selectedLayout, layoutBounds) {

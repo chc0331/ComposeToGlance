@@ -1,5 +1,6 @@
 package com.widgetworld.widget.editor.widget
 
+import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +41,7 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalProvider
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.widget.editor.draganddrop.DragTarget
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 
 @Composable
 fun DragTargetWidgetItem(
@@ -91,7 +92,7 @@ fun WidgetItem(
     data: WidgetComponent,
     modifier: Modifier = Modifier,
     showLabel: Boolean = true,
-    layout: Layout? = null,
+    layout: LayoutType? = null,
 ) {
     // 위젯 데이터를 기반으로 캐시 키 생성하여 재렌더링 방지
     val cacheKey = remember(data.getWidgetTag(), data.getSizeType()) {
@@ -114,7 +115,7 @@ private fun WidgetItemContent(
     modifier: Modifier,
     key: String,
     showLabel: Boolean = true,
-    layout: Layout? = null,
+    layout: LayoutType? = null,
 ) {
     val size = remember(key) { data.getSizeInDp(layout) }
     val context = LocalContext.current
@@ -247,18 +248,18 @@ data class PositionedWidget(
  * 위젯 사이즈 타입에 따른 실제 크기를 Dp 단위로 반환
  * @return Pair<width in dp, height in dp>
  */
-fun WidgetComponent.getSizeInDp(layout: Layout?): DpSize {
+fun WidgetComponent.getSizeInDp(layout: LayoutType?): DpSize {
     return getDpSizeByLayoutType(layout)
 }
 
-fun WidgetComponent.toPixels(density: Density, layout: Layout): Pair<Float, Float> {
+fun WidgetComponent.toPixels(density: Density, layout: LayoutType): Pair<Float, Float> {
     return with(density) {
         val (widthDp, heightDp) = getDpSizeByLayoutType(layout)
         widthDp.toPx() to heightDp.toPx()
     }
 }
 
-private fun WidgetComponent.getDpSizeByLayoutType(layout: Layout?): DpSize {
+private fun WidgetComponent.getDpSizeByLayoutType(layout: LayoutType?): DpSize {
     if (layout == null) {
         return when (getSizeType()) {
             SizeType.TINY -> DpSize(90.dp, 90.dp)      // 1x1

@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 
@@ -48,10 +48,10 @@ object BottomPanelConstants {
 fun BottomPanelWithTabs(
     widgets: List<WidgetComponent>,
     categories: List<WidgetCategory>,
-    onLayoutSelected: (Layout) -> Unit,
+    onLayoutSelected: (LayoutType) -> Unit,
     modifier: Modifier = Modifier,
     onWidgetSelected: (WidgetComponent) -> Unit = {},
-    selectedLayout: Layout? = null
+    selectedLayout: LayoutType? = null
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")

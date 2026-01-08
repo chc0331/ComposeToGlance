@@ -1,5 +1,6 @@
 package com.widgetworld.widget.editor.canvas
 
+import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -31,7 +32,7 @@ import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widget.editor.widget.WidgetItem
 import com.widgetworld.widget.editor.widget.toPixels
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
@@ -43,7 +44,7 @@ fun DragStateOverlay(
     viewModel: WidgetEditorViewModel,
     gridCells: List<GridCell>,
     occupiedCells: Set<Int>,
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     layoutBounds: LayoutBounds?,
     canvasPosition: Offset,
     density: Density,
@@ -123,7 +124,7 @@ private fun rememberHoveredCellIndices(
     draggedWidget: WidgetComponent,
     draggedPositionedWidget: PositionedWidget?,
     gridCells: List<GridCell>,
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     layoutBounds: LayoutBounds?
 ): List<Int> {
     return remember(
@@ -196,7 +197,7 @@ private fun WidgetPreview(
     draggedWidget: WidgetComponent,
     hoveredCellIndices: List<Int>,
     layoutBounds: LayoutBounds?,
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     canvasPosition: Offset,
     density: Density
 ) {

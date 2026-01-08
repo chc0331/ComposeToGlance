@@ -3,6 +3,7 @@ package com.widgetworld.widget.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.text.Layout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +16,7 @@ import com.widgetworld.widget.editor.settings.GridSettingsDataStore
 import com.widgetworld.widget.editor.util.GridCalculator
 import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widgetcomponent.GridSpec
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
@@ -67,7 +68,7 @@ class WidgetEditorViewModel(
     val gridSettings: StateFlow<GridSettings> = _gridSettings.asStateFlow()
 
     // 선택된 레이아웃 (기본값: Medium)
-    var selectedLayout by mutableStateOf<Layout?>(Layout.Large)
+    var selectedLayout by mutableStateOf<LayoutType?>(LayoutType.Large)
         private set
 
     // 캔버스에 배치된 위젯들 (셀 기반 위치 정보 포함)
@@ -110,7 +111,7 @@ class WidgetEditorViewModel(
     /**
      * 레이아웃 선택 (그리드 설정 고려)
      */
-    fun selectLayout(layout: Layout?, migrateWidgets: Boolean = false) {
+    fun selectLayout(layout: LayoutType?, migrateWidgets: Boolean = false) {
         val previousLayout = selectedLayout
         selectedLayout = layout
 
@@ -288,7 +289,7 @@ class WidgetEditorViewModel(
     /**
      * 기존 위젯들을 새로운 그리드에 맞게 마이그레이션
      */
-    private fun migratePositionedWidgets(oldLayout: Layout, newLayout: Layout) {
+    private fun migratePositionedWidgets(oldLayout: LayoutType, newLayout: LayoutType) {
         val oldSpec = oldLayout.getGridCell()
         val newSpec = newLayout.getGridCell()
 

@@ -1,5 +1,6 @@
 package com.widgetworld.widget.editor.widget
 
+import android.R.attr.data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePickerDefaults.layoutType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,20 +26,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
 fun ClickableLayoutComponent(
     modifier: Modifier = Modifier,
-    data: Layout,
+    layout: LayoutType,
     isClicked: Boolean,
     onComponentClick: () -> Unit,
-    onAddClick: (Layout) -> Unit,
+    onAddClick: (LayoutType) -> Unit,
 ) {
     val context = LocalContext.current
     val scaleFactor =
-        if (data.name == "Large" || data.name == "Extra Large") 0.45f else 0.45f
+        if (layout.name == "Large" || layout.name == "Extra Large") 0.45f else 0.45f
     val cornerRadius = context.getSystemBackgroundRadius() * scaleFactor
     Box(
         modifier = modifier
@@ -48,14 +48,14 @@ fun ClickableLayoutComponent(
             .clickable { onComponentClick() },
         contentAlignment = Alignment.Center
     ) {
-        LayoutComponent(data, isPreview = true, scaleFactor = scaleFactor)
+        LayoutComponent(layout, isPreview = true, scaleFactor = scaleFactor)
         if (isClicked) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
                     .clip(RoundedCornerShape(cornerRadius))
                     .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.15f))
-                    .clickable { onAddClick(data) },
+                    .clickable { onAddClick(layout) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -71,7 +71,7 @@ fun ClickableLayoutComponent(
 
 @Composable
 fun LayoutComponent(
-    layout: Layout,
+    layout: LayoutType,
     showText: Boolean = false,
     isPreview: Boolean = false,
     scaleFactor: Float = 1f
@@ -97,7 +97,7 @@ fun LayoutComponent(
 
 @Composable
 fun LayoutComponent(
-    layout: Layout,
+    layout: LayoutType,
     showText: Boolean = false,
     isPreview: Boolean = false
 ) {
@@ -139,7 +139,7 @@ private fun FullLayoutComponent(layoutType: String, showText: Boolean) {
  * 동적 그리드 배수를 고려한 레이아웃 컴포넌트
  */
 @Composable
-private fun DynamicLayoutComponent(layout: Layout, showText: Boolean) {
+private fun DynamicLayoutComponent(layout: LayoutType, showText: Boolean) {
     val gridSpec = layout.getGridCell()
     if (gridSpec != null) {
         createGridLayout(rows = gridSpec.row, columns = gridSpec.column, showText = showText)

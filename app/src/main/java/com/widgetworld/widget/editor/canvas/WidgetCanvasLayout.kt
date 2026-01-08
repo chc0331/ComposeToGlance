@@ -1,5 +1,6 @@
 package com.widgetworld.widget.editor.canvas
 
+import android.text.Layout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,12 +13,12 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import com.widgetworld.widget.editor.widget.LayoutComponent
 import com.widgetworld.widget.editor.util.LayoutBounds
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
 fun BoxScope.LayoutDisplay(
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     onLayoutBoundsChanged: (LayoutBounds) -> Unit
 ) {
     val context = LocalContext.current

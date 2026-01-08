@@ -12,7 +12,7 @@ import com.widgetworld.widget.editor.util.LayoutBounds
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.widget.PositionedWidget
 import com.widgetworld.widget.editor.widget.toPixels
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 
@@ -20,7 +20,7 @@ import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 fun WidgetDropHandler(
     viewModel: WidgetEditorViewModel,
     layoutBounds: LayoutBounds?,
-    selectedLayout: Layout?,
+    selectedLayout: LayoutType?,
     canvasPosition: Offset,
     density: Density,
     dragInfo: DragTargetInfo

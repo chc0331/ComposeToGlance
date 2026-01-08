@@ -6,23 +6,24 @@ import androidx.compose.ui.unit.dp
 
 data class GridSpec(val row: Int, val column: Int)
 
-sealed class Layout(
+sealed class LayoutType(
     val name: String, private var divide: Int = 1,
     private val baseRow: Int, private val baseColumn: Int,
     private val baseWidth: Dp, private val baseHeight: Dp
 ) {
 
     object Small :
-        Layout("Small", baseRow = 1, baseColumn = 2, baseWidth = 135.dp, baseHeight = 80.dp)
+        LayoutType("Small", baseRow = 1, baseColumn = 2, baseWidth = 135.dp, baseHeight = 80.dp)
 
     object Medium :
-        Layout("Medium", baseRow = 2, baseColumn = 2, baseWidth = 135.dp, baseHeight = 165.dp)
+        LayoutType("Medium", baseRow = 2, baseColumn = 2, baseWidth = 135.dp, baseHeight = 165.dp)
 
     object Large :
-        Layout("Large", baseRow = 2, baseColumn = 4, baseWidth = 280.dp, baseHeight = 165.dp)
+        LayoutType("Large", baseRow = 2, baseColumn = 4, baseWidth = 280.dp, baseHeight = 165.dp)
 
     object ExtraLarge :
-        Layout("Extra Large", baseRow = 4, baseColumn = 4, baseWidth = 280.dp, baseHeight = 330.dp)
+        LayoutType("Extra Large", baseRow = 4, baseColumn = 4, baseWidth = 280.dp, baseHeight = 330.dp)
+
 
     fun getDpSize(): DpSize {
         return DpSize(baseWidth, baseHeight)
@@ -37,4 +38,8 @@ sealed class Layout(
     }
 
     fun getDivide() = this.divide
+
+    companion object {
+        val All = listOf(Small, Medium, Large, ExtraLarge)
+    }
 }

@@ -1,5 +1,6 @@
 package com.widgetworld.widget.editor.bottompanel
 
+import android.text.Layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,20 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.widgetworld.widget.editor.widget.ClickableLayoutComponent
-import com.widgetworld.widgetcomponent.Layout
+import com.widgetworld.widgetcomponent.LayoutType
 import kotlinx.coroutines.launch
 
 @Composable
-fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
-    var activeLayout by remember { mutableStateOf<Layout?>(null) }
+fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
+    var activeLayout by remember { mutableStateOf<LayoutType?>(null) }
     val scrollState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
-    val layoutList = listOf(
-        Layout.Small,
-        Layout.Medium,
-        Layout.Large,
-        Layout.ExtraLarge
-    )
 
     LazyVerticalGrid(
         state = scrollState,
@@ -52,12 +47,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING),
         verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_SPACING)
     ) {
-        itemsIndexed(
-            layoutList,
-            span = { index, layout ->
-                if (layout.name == "Large" || layout.name == "Extra Large") GridItemSpan(1)
-                else GridItemSpan(1)
-            }) { index, layout ->
+        itemsIndexed(LayoutType.All) { index, layout ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(BottomPanelConstants.LAYOUT_ITEM_SPACING),
@@ -69,7 +59,7 @@ fun LayoutsTabContent(onLayoutSelected: (Layout) -> Unit) {
                     style = MaterialTheme.typography.labelLarge
                 )
                 ClickableLayoutComponent(
-                    data = layout,
+                    layout = layout,
                     isClicked = activeLayout == layout,
                     onComponentClick = {
                         activeLayout = if (activeLayout == layout) null else layout
