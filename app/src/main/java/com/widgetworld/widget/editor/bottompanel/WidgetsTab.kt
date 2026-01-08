@@ -42,7 +42,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.widgetworld.widget.editor.widget.DragTargetWidgetItem
+import com.widgetworld.widget.editor.widget.WidgetComponentContainer
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
@@ -163,7 +163,7 @@ fun WidgetsTabContent(
                                     modifier = Modifier.wrapContentSize(),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    DragTargetWidgetItem(
+                                    WidgetComponentContainer(
                                         data = widget,
                                         isClicked = activeWidget == widget,
                                         modifier = Modifier.scale(0.9f),
