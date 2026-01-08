@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.widgetworld.widget.editor.widget.LayoutComponent
+import com.widgetworld.widget.editor.widget.layout.LayoutComponentContainer
 import com.widgetworld.widgetcomponent.LayoutType
 import kotlinx.coroutines.launch
 
@@ -45,7 +45,14 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        itemsIndexed(LayoutType.All) { index, layout ->
+        itemsIndexed(
+            listOf(
+                LayoutType.Small,
+                LayoutType.Medium,
+                LayoutType.Large,
+                LayoutType.ExtraLarge
+            )
+        ) { index, layout ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -56,10 +63,10 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge
                 )
-                LayoutComponent(
+                LayoutComponentContainer(
                     layout = layout,
                     isClicked = activeLayout == layout,
-                    onComponentClick = {
+                    onLayoutClick = {
                         activeLayout = if (activeLayout == layout) null else layout
                         // 클릭한 레이아웃의 위치로 스크롤
                         coroutineScope.launch {
