@@ -1,16 +1,20 @@
 package com.widgetworld.widget
 
 import android.Manifest
+import android.app.AppOpsManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.AppOpsManagerCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.widget.editor.viewmodel.WidgetEditorViewModelFactory
@@ -23,61 +27,64 @@ import com.widgetworld.widgetcomponent.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val requestNotificationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            Log.d("MainActivity", "Notification permission granted")
-        } else {
-            Log.w("MainActivity", "Notification permission denied")
-        }
-        // Request Bluetooth permissions after notification permission
-        requestBluetoothPermissionsIfNeeded()
+    companion object {
+        private val REQUIRED_PERMISSIONS = arrayOf(
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE,
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.KILL_BACKGROUND_PROCESSES,
+            Manifest.permission.PACKAGE_USAGE_STATS,
+            Manifest.permission.INTERNET,
+            Manifest.permission.RECORD_AUDIO
+        )
     }
-    
-    private val requestBluetoothPermissionsLauncher = registerForActivityResult(
+
+    private fun isAllPermissionsGranted(): Boolean = REQUIRED_PERMISSIONS.all { permission ->
+        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isUsageAccessGranted(): Boolean {
+        val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+        val mode = AppOpsManagerCompat.checkOrNoteProxyOp(
+            this,
+            applicationInfo.uid,
+            AppOpsManager.OPSTR_GET_USAGE_STATS,
+            applicationInfo.packageName
+        )
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    private val multiplePermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val allGranted = permissions.values.all { it }
-        if (allGranted) {
-            Log.d("MainActivity", "Bluetooth permissions granted")
-        } else {
-            Log.w("MainActivity", "Some Bluetooth permissions denied")
+        permissions.entries.forEach { (permission, isGranted) ->
+            when {
+
+            }
         }
-        // Start service regardless of permission result
-        startWidgetForegroundServiceIfNeeded()
     }
-    
+
     private lateinit var viewModel: WidgetEditorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Renderer 초기화 (앱 시작 시 한 번만 실행)
-        RendererInitializer.initialize()
-        
-        // Widget 컴포넌트 초기화
-        initializeWidgetComponents()
-        
-        // Widget 컴포넌트 Lifecycle 초기화
-//        WidgetComponentRegistry.initializeLifecycles(applicationContext)
-        
-        enableEdgeToEdge()
 
-        // Android 13+ 알림 권한 확인 및 요청
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                requestBluetoothPermissionsIfNeeded()
-            } else {
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        } else {
-            requestBluetoothPermissionsIfNeeded()
+        RendererInitializer.initialize()
+        initializeWidgetComponents()
+        enableEdgeToEdge()
+        if (!isAllPermissionsGranted()) {
+            multiplePermissionsLauncher.launch(REQUIRED_PERMISSIONS)
         }
+        if (!isUsageAccessGranted()) {
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
+                setData(("package:" + packageName).toUri())
+            }
+            startActivity(intent)
+        }
+        startWidgetForegroundService()
         viewModel =
             ViewModelProvider(
                 this,
@@ -90,38 +97,9 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    
-    private fun requestBluetoothPermissionsIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val permissionsToRequest = mutableListOf<String>()
-            
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
-            }
-            
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_SCAN
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                permissionsToRequest.add(Manifest.permission.BLUETOOTH_SCAN)
-            }
-            
-            if (permissionsToRequest.isNotEmpty()) {
-                requestBluetoothPermissionsLauncher.launch(permissionsToRequest.toTypedArray())
-            } else {
-                startWidgetForegroundServiceIfNeeded()
-            }
-        } else {
-            startWidgetForegroundServiceIfNeeded()
-        }
-    }
 
-    private fun startWidgetForegroundServiceIfNeeded() {
+
+    private fun startWidgetForegroundService() {
         try {
             val serviceClass = WidgetForegroundService::class.java
             val intent = Intent(this, serviceClass)
