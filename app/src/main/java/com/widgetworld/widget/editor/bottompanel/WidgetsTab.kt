@@ -50,7 +50,7 @@ import kotlin.collections.filter
 import kotlin.collections.find
 
 @Composable
-fun WidgetsList(
+fun WidgetsTabContent(
     widgetList: List<WidgetComponent>,
     categories: List<WidgetCategory>,
     modifier: Modifier = Modifier,
