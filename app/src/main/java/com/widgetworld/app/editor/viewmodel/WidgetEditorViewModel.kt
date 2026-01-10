@@ -356,36 +356,38 @@ class WidgetEditorViewModel(
     fun addWidgetToCanvas(
         density: Density,
         canvasPosition: Offset, layoutBounds: LayoutBounds,
-        selectedLayout: LayoutType, addedWidget: WidgetComponent
+        selectedLayout: LayoutType
     ) {
-        val gridSpec = selectedLayout.getGridCell()
-        val (startRow, startCol) = findFirstAvailablePosition(addedWidget, gridSpec) ?: (0 to 0)
-        val widgetSizeInCells = addedWidget.getSizeInCellsForLayout(
-            selectedLayout.name,
-            selectedLayout.getDivide()
-        )
-        val widgetWidthCells = widgetSizeInCells.first
-        val widgetHeightCells = widgetSizeInCells.second
-        val cellIndices = GridCalculator.calculateCellIndices(
-            startRow, startCol,
-            widgetWidthCells, widgetHeightCells, gridSpec
-        )
+        addedWidget?.let { widget ->
+            val gridSpec = selectedLayout.getGridCell()
+            val (startRow, startCol) = findFirstAvailablePosition(widget, gridSpec) ?: (0 to 0)
+            val widgetSizeInCells = widget.getSizeInCellsForLayout(
+                selectedLayout.name,
+                selectedLayout.getDivide()
+            )
+            val widgetWidthCells = widgetSizeInCells.first
+            val widgetHeightCells = widgetSizeInCells.second
+            val cellIndices = GridCalculator.calculateCellIndices(
+                startRow, startCol,
+                widgetWidthCells, widgetHeightCells, gridSpec
+            )
 
-        val (widgetWidthPx, widgetHeightPx) = addedWidget.toPixels(density, selectedLayout)
-        val adjustedOffset = GridCalculator.calculateWidgetOffset(
-            startRow,
-            startCol,
-            widgetWidthCells,
-            widgetHeightCells,
-            widgetWidthPx,
-            widgetHeightPx,
-            layoutBounds, gridSpec, canvasPosition
-        )
+            val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
+            val adjustedOffset = GridCalculator.calculateWidgetOffset(
+                startRow,
+                startCol,
+                widgetWidthCells,
+                widgetHeightCells,
+                widgetWidthPx,
+                widgetHeightPx,
+                layoutBounds, gridSpec, canvasPosition
+            )
 
-        addWidgetToFirstAvailablePosition(
-            addedWidget, adjustedOffset, startRow, startCol, cellIndices
-        )
-
+            addWidgetToFirstAvailablePosition(
+                widget, adjustedOffset, startRow, startCol, cellIndices
+            )
+            addedWidget = null
+        }
     }
 }
 

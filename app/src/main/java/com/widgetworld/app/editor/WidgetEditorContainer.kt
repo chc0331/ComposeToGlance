@@ -62,8 +62,7 @@ fun WidgetEditorScreen(
                 .padding(horizontal = 16.dp)
         ) {
             val density = LocalDensity.current
-            var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
-
+            val widgetToAdd = viewModel.addedWidget
             WidgetCanvas(
                 modifier = Modifier
                     .weight(2.2f)
@@ -75,16 +74,12 @@ fun WidgetEditorScreen(
                 viewModel = viewModel,
                 widgetToAdd = widgetToAdd,
                 onWidgetAddProcessed = { canvasPosition, layoutBounds, selectedLayout ->
-                    val widget = widgetToAdd ?: return@WidgetCanvas
                     viewModel.addWidgetToCanvas(
                         density,
                         canvasPosition,
                         layoutBounds,
-                        selectedLayout,
-                        widget
+                        selectedLayout
                     )
-                    widgetToAdd = null
-
                 }
             )
 
@@ -95,7 +90,7 @@ fun WidgetEditorScreen(
                 categories = viewModel.categories,
                 onLayoutSelected = { viewModel.selectLayout(it) },
                 onWidgetSelected = { widget ->
-                    widgetToAdd = widget
+                    viewModel.addedWidget = widget
                 },
                 selectedLayout = viewModel.selectedLayout,
                 modifier = Modifier
