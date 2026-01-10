@@ -2,9 +2,18 @@ package com.widgetworld.app.editor
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -12,20 +21,80 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.widgetworld.app.editor.bottompanel.BottomPanelWithTabs
+import com.widgetworld.app.editor.canvas.WidgetCanvas
+import com.widgetworld.app.editor.canvas.canvasBorder
 import com.widgetworld.app.editor.draganddrop.DragAndDropConstants
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
+import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
+import com.widgetworld.widgetcomponent.component.WidgetComponent
+import kotlinx.coroutines.delay
 
-/**
- * 위젯 편집 컨테이너 Composable
- * 드래그 앤 드롭 기능을 제공하며, 드래그 중인 아이템을 확대하여 표시합니다.
- */
+
+@Composable
+fun WidgetEditorScreen(
+    modifier: Modifier = Modifier,
+    viewModel: WidgetEditorViewModel = viewModel()
+) {
+    val outline = MaterialTheme.colorScheme.outline
+    val canvasBackgroundColor = MaterialTheme.colorScheme.outlineVariant.copy(
+        alpha = 0.05f
+    )
+
+    WidgetEditorContainer(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 16.dp)
+        ) {
+            var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
+
+            WidgetCanvas(
+                modifier = Modifier
+                    .weight(2.2f)
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .canvasBorder(outline, canvasBackgroundColor),
+                viewModel = viewModel,
+                widgetToAdd = widgetToAdd,
+                onWidgetAddProcessed = { widgetToAdd = null }
+            )
+
+            Spacer(modifier = Modifier.size(6.dp))
+
+            BottomPanelWithTabs(
+                widgets = viewModel.widgets,
+                categories = viewModel.categories,
+                onLayoutSelected = { viewModel.selectLayout(it) },
+                onWidgetSelected = { widget ->
+                    widgetToAdd = widget
+                },
+                selectedLayout = viewModel.selectedLayout,
+                modifier = Modifier
+                    .weight(2f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        1.dp,
+                        outline,
+                        RoundedCornerShape(12.dp)
+                    )
+            )
+        }
+//    }
+    }
+}
+
+
 @Composable
 fun WidgetEditorContainer(
     modifier: Modifier = Modifier,
@@ -55,14 +124,14 @@ fun WidgetEditorContainer(
                     mutableStateOf(IntSize.Zero)
                 }
                 val hasValidSize = targetSize != IntSize.Zero
-                
+
                 // 드롭 시 페이드아웃을 위한 alpha 타겟 값
                 val targetAlpha = when {
                     !hasValidSize -> 0f
                     state.itemDropped -> 0f // 드롭되면 페이드아웃
                     else -> DragAndDropConstants.DRAG_ALPHA
                 }
-                
+
                 // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대, 드롭 시 즉시 축소
                 val targetScale = when {
                     !hasValidSize -> 1f
@@ -74,7 +143,7 @@ fun WidgetEditorContainer(
                     animationSpec = tween(durationMillis = if (state.itemDropped) 100 else 200),
                     label = "scale_animation"
                 )
-                
+
                 // alpha 애니메이션: 크기가 측정되면 부드럽게 나타남, 드롭 시 빠르게 페이드아웃
                 val fadeOutDuration = if (state.itemDropped) 100 else 200
                 val animatedAlpha by animateFloatAsState(
@@ -82,7 +151,7 @@ fun WidgetEditorContainer(
                     animationSpec = tween(durationMillis = fadeOutDuration),
                     label = "alpha_animation"
                 )
-                
+
                 // 페이드아웃 완료 후 상태 초기화
                 LaunchedEffect(state.itemDropped) {
                     if (state.itemDropped) {
@@ -95,7 +164,7 @@ fun WidgetEditorContainer(
                         state.draggableComposable = null
                     }
                 }
-                
+
                 // 드롭되지 않은 경우 상태 초기화 (DropTarget이 데이터를 처리할 시간을 주기 위해 약간의 지연)
                 LaunchedEffect(state.isDragging, state.itemDropped) {
                     if (!state.isDragging && !state.itemDropped && state.dataToDrop != null) {
@@ -108,12 +177,13 @@ fun WidgetEditorContainer(
                         }
                     }
                 }
-                
+
                 Box(
                     modifier = Modifier
                         .graphicsLayer {
                             // graphicsLayer는 매 프레임마다 호출되므로 최소한의 계산만 수행
-                            val currentTouchWindowPosition = state.dragPosition + state.dragOffset
+                            val currentTouchWindowPosition =
+                                state.dragPosition + state.dragOffset
                             val relativeOffset = currentTouchWindowPosition - canvasPosition
                             val scaledWidth = targetSize.width * animatedScale
                             val scaledHeight = targetSize.height * animatedScale

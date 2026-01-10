@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTheme {
-                MainContent(viewModel)
+                MainScreen(viewModel)
             }
         }
     }
