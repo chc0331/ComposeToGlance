@@ -1,4 +1,4 @@
-package com.widgetworld.widget
+package com.widgetworld.app
 
 import org.junit.Test
 

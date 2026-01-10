@@ -1,4 +1,4 @@
-package com.widgetworld.widget
+package com.widgetworld.app
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
