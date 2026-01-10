@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,8 +36,11 @@ import com.widgetworld.app.editor.canvas.canvasBorder
 import com.widgetworld.app.editor.draganddrop.DragAndDropConstants
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
+import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
+import com.widgetworld.app.editor.widget.toPixels
 import com.widgetworld.widgetcomponent.component.WidgetComponent
+import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import kotlinx.coroutines.delay
 
 
@@ -57,6 +61,7 @@ fun WidgetEditorScreen(
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 16.dp)
         ) {
+            val density = LocalDensity.current
             var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
 
             WidgetCanvas(
@@ -65,9 +70,60 @@ fun WidgetEditorScreen(
                     .fillMaxWidth()
                     .padding(top = 16.dp)
                     .canvasBorder(outline, canvasBackgroundColor),
+                selectedLayout = viewModel.selectedLayout,
+                positionedWidgets = viewModel.positionedWidgets,
                 viewModel = viewModel,
                 widgetToAdd = widgetToAdd,
-                onWidgetAddProcessed = { widgetToAdd = null }
+                onWidgetAddProcessed = { canvasPosition, layoutBounds, selectedLayout ->
+                    val widget = widgetToAdd ?: return@WidgetCanvas
+
+                    val bounds = layoutBounds
+                    val spec = selectedLayout.getGridCell()
+                    val position = viewModel.findFirstAvailablePosition(widget, spec) ?: (0 to 0)
+                    val (startRow, startCol) = position
+                    val currentLayout = selectedLayout
+                    val widgetSizeInCells = widget.getSizeInCellsForLayout(
+                        currentLayout.name,
+                        currentLayout.getDivide()
+                    )
+                    val widgetWidthCells = widgetSizeInCells.first
+                    val widgetHeightCells = widgetSizeInCells.second
+                    val cellIndices = GridCalculator.calculateCellIndices(
+                        startRow,
+                        startCol,
+                        widgetWidthCells,
+                        widgetHeightCells,
+                        spec
+                    )
+
+                    // 위젯 실제 크기 DP→픽셀 변환
+                    val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
+                    // canvasPosition은 LaunchedEffect 내부에서 직접 읽어서 사용
+                    val currentCanvasPosition = canvasPosition
+                    val adjustedOffset = GridCalculator.calculateWidgetOffset(
+                        startRow,
+                        startCol,
+                        widgetWidthCells,
+                        widgetHeightCells,
+                        widgetWidthPx,
+                        widgetHeightPx,
+                        bounds,
+                        spec,
+                        currentCanvasPosition
+                    )
+
+                    // ViewModel에 위젯 추가
+                    viewModel.addWidgetToFirstAvailablePosition(
+                        widget = widget,
+                        offset = adjustedOffset,
+                        startRow = startRow,
+                        startCol = startCol,
+                        cellIndices = cellIndices
+                    )
+
+                    widgetToAdd = null
+
+                }
             )
 
             Spacer(modifier = Modifier.size(6.dp))
@@ -90,7 +146,6 @@ fun WidgetEditorScreen(
                     )
             )
         }
-//    }
     }
 }
 

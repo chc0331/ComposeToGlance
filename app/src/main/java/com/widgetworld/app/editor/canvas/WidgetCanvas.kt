@@ -31,18 +31,19 @@ import com.widgetworld.app.editor.widget.PositionedWidget
 import com.widgetworld.app.editor.widget.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.app.editor.widget.toPixels
+import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import kotlin.math.roundToInt
 
 @Composable
 fun WidgetCanvas(
     viewModel: WidgetEditorViewModel,
+    selectedLayout: LayoutType? = null,
+    positionedWidgets: List<PositionedWidget> = emptyList(),
     modifier: Modifier = Modifier,
     widgetToAdd: WidgetComponent? = null,
-    onWidgetAddProcessed: () -> Unit = {}
+    onWidgetAddProcessed: (Offset, LayoutBounds, LayoutType) -> Unit
 ) {
-    val selectedLayout = viewModel.selectedLayout
-    val positionedWidgets = viewModel.positionedWidgets
     var canvasPosition by remember { mutableStateOf(Offset.Zero) }
     var canvasBounds by remember { mutableStateOf<Rect?>(null) }
     var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
@@ -51,66 +52,10 @@ fun WidgetCanvas(
 
     // 위젯 추가 요청 처리
     LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout) {
-        val widget = widgetToAdd ?: return@LaunchedEffect
-
-        val bounds = layoutBounds
-        val spec = selectedLayout?.getGridCell()
-        if (bounds == null || spec == null) {
-            onWidgetAddProcessed()
-            return@LaunchedEffect
-        }
-
-        // 첫 번째 사용 가능한 위치 찾기
-        val position = viewModel.findFirstAvailablePosition(widget, spec)
-        if (position == null) {
-            // 배치할 수 없음
-            onWidgetAddProcessed()
-            return@LaunchedEffect
-        }
-
-        val (startRow, startCol) = position
-        val currentLayout = selectedLayout ?: return@LaunchedEffect
-        val widgetSizeInCells = widget.getSizeInCellsForLayout(
-            currentLayout.name,
-            currentLayout.getDivide()
-        )
-        val widgetWidthCells = widgetSizeInCells.first
-        val widgetHeightCells = widgetSizeInCells.second
-        val cellIndices = GridCalculator.calculateCellIndices(
-            startRow,
-            startCol,
-            widgetWidthCells,
-            widgetHeightCells,
-            spec
-        )
-
-        // 위젯 실제 크기 DP→픽셀 변환
-        val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
-        // canvasPosition은 LaunchedEffect 내부에서 직접 읽어서 사용
-        val currentCanvasPosition = canvasPosition
-        val adjustedOffset = GridCalculator.calculateWidgetOffset(
-            startRow,
-            startCol,
-            widgetWidthCells,
-            widgetHeightCells,
-            widgetWidthPx,
-            widgetHeightPx,
-            bounds,
-            spec,
-            currentCanvasPosition
-        )
-
-        // ViewModel에 위젯 추가
-        viewModel.addWidgetToFirstAvailablePosition(
-            widget = widget,
-            offset = adjustedOffset,
-            startRow = startRow,
-            startCol = startCol,
-            cellIndices = cellIndices
-        )
-
         // 위젯 추가 처리 완료
-        onWidgetAddProcessed()
+        if (layoutBounds != null && selectedLayout != null) {
+            onWidgetAddProcessed(canvasPosition, layoutBounds!!, selectedLayout)
+        }
     }
 
     Box(

@@ -53,10 +53,9 @@ fun WidgetsTabContent(
     widgetList: List<WidgetComponent>,
     categories: List<WidgetCategory>,
     modifier: Modifier = Modifier,
-    onWidgetSelected: (WidgetComponent) -> Unit = {}
+    onWidgetSelected: (WidgetComponent) -> Unit
 ) {
     var selectedCategoryId by remember { mutableStateOf<String?>(null) }
-    var activeWidget by remember { mutableStateOf<WidgetComponent?>(null) }
 
     Box(
         modifier = modifier
@@ -85,109 +84,129 @@ fun WidgetsTabContent(
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
-                val selectedCategory = categories.find { it.name == categoryName }
                 val filteredWidgets =
                     widgetList.filter { it.getWidgetCategory().name == categoryName }
                         .sortedBy { it.getSizeType().ordinal }
-                val visibleItems = remember { mutableStateListOf<Int>() }
-
-                // 카테고리 진입 시 위젯들을 순차적으로 표시
-                LaunchedEffect(categoryName) {
-                    visibleItems.clear()
-                    filteredWidgets.forEachIndexed { index, _ ->
-                        delay(index * 50L)
-                        visibleItems.add(index)
-                    }
-                }
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    // 헤더 (뒤로가기 버튼과 카테고리 이름) - 즉시 표시
-                    Box(
+                    WidgetActionBar(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(44.dp)
-                            .background(MaterialTheme.colorScheme.surface)
-                    ) {
-                        IconButton(
-                            onClick = { selectedCategoryId = null },
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ChevronLeft,
-                                contentDescription = "뒤로가기",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                        Text(
-                            text = selectedCategory?.description ?: "",
-                            modifier = Modifier.align(Alignment.Center),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    // 위젯 리스트 - 순차적으로 나타나는 애니메이션
-                    // 8열 그리드로 설정하고 1x 기준 사이즈에 2배수 적용하여 적절한 크기로 표시
-                    // Tiny(1x1)→2span, Small(2x1)→4span, Medium(2x2)→4span, Medium_Plus(3x2)→6span, Large(4x2)→8span
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(8),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surface),
-                        contentPadding = PaddingValues(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(
-                            items = filteredWidgets.withIndex().toList(),
-                            span = { (_, widget) ->
-                                // 위젯의 col_span에 2배수를 적용하여 적절한 크기로 표시
-                                val (colSpan, _) = widget.getSizeInCells()
-                                GridItemSpan(colSpan * 2)
-                            },
-                            key = { (_, widget) -> widget.getWidgetTag() }
-                        ) { (index, widget) ->
-                            AnimatedVisibility(
-                                visible = visibleItems.contains(index),
-                                enter = fadeIn(
-                                    animationSpec = tween(durationMillis = 300)
-                                ),
-                                modifier = Modifier
-                            ) {
-                                Column(
-                                    modifier = Modifier.wrapContentSize(),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    WidgetComponentContainer(
-                                        data = widget,
-                                        isClicked = activeWidget == widget,
-                                        modifier = Modifier.scale(0.9f),
-                                        onComponentClick = {
-                                            activeWidget =
-                                                if (activeWidget == widget) null else widget
-                                        },
-                                        onAddClick = {
-                                            onWidgetSelected(it)
-                                            activeWidget = null
-                                        },
-                                        onDragStart = {
-                                            activeWidget = null
-                                        }
-                                    )
-                                    Text(
-                                        text = widget.getName(),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    )
-                                }
+                            .height(44.dp),
+                        categoryName = categoryName,
+                        onClick = {
+                            selectedCategoryId = null
+                        })
+                    WidgetList(
+                        modifier = Modifier.fillMaxSize(),
+                        widgetCategory = categoryName,
+                        widgetList = filteredWidgets,
+                        onWidgetSelected = onWidgetSelected
+                    )
+                }
+            }
+        }
+    }
+}
 
-                            }
+@Composable
+fun WidgetActionBar(categoryName: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ChevronLeft,
+                contentDescription = "뒤로가기",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        Text(
+            text = categoryName,
+            modifier = Modifier.align(Alignment.Center),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+
+}
+
+@Composable
+fun WidgetList(
+    widgetCategory: String,
+    widgetList: List<WidgetComponent>,
+    onWidgetSelected: (WidgetComponent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var activeWidget by remember { mutableStateOf<WidgetComponent?>(null) }
+    val visibleItems = remember { mutableStateListOf<Int>() }
+
+    LaunchedEffect(widgetCategory) {
+        visibleItems.clear()
+        widgetList.forEachIndexed { index, _ ->
+            delay(index * 50L)
+            visibleItems.add(index)
+        }
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(8),
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = widgetList.withIndex().toList(),
+            span = { (_, widget) ->
+                // 위젯의 col_span에 2배수를 적용하여 적절한 크기로 표시
+                val (colSpan, _) = widget.getSizeInCells()
+                GridItemSpan(colSpan * 2)
+            },
+            key = { (_, widget) -> widget.getWidgetTag() }
+        ) { (index, widget) ->
+            AnimatedVisibility(
+                visible = visibleItems.contains(index),
+                enter = fadeIn(
+                    animationSpec = tween(durationMillis = 300)
+                ),
+                modifier = Modifier
+            ) {
+                Column(
+                    modifier = Modifier.wrapContentSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    WidgetComponentContainer(
+                        data = widget,
+                        isClicked = activeWidget == widget,
+                        modifier = Modifier.scale(0.9f),
+                        onComponentClick = {
+                            activeWidget =
+                                if (activeWidget == widget) null else widget
+                        },
+                        onAddClick = {
+                            onWidgetSelected(it)
+                            activeWidget = null
+                        },
+                        onDragStart = {
+                            activeWidget = null
                         }
-                    }
+                    )
+                    Text(
+                        text = widget.getName(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
             }
         }

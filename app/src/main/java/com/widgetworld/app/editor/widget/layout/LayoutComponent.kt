@@ -27,18 +27,17 @@ import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
 fun LayoutComponentContainer(
-    modifier: Modifier = Modifier,
     layout: LayoutType,
     isClicked: Boolean,
     onLayoutClick: () -> Unit,
     onAddClick: (LayoutType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val scaleFactor = 0.45f
     val cornerRadius = context.getSystemBackgroundRadius() * scaleFactor
     Box(
         modifier = modifier
-            .wrapContentSize()
             .clip(RoundedCornerShape(cornerRadius))
             .clickable { onLayoutClick() },
         contentAlignment = Alignment.Center

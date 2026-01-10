@@ -35,7 +35,8 @@ fun MainScreen(
         WidgetEditorScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            viewModel = viewModel
         )
         // 그리드 설정 패널
         GridSettingsPanel(

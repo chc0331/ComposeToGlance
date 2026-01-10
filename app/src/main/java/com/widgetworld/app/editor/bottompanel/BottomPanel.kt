@@ -34,14 +34,13 @@ fun BottomPanelWithTabs(
     widgets: List<WidgetComponent>,
     categories: List<WidgetCategory>,
     onLayoutSelected: (LayoutType) -> Unit,
+    onWidgetSelected: (WidgetComponent) -> Unit,
     modifier: Modifier = Modifier,
-    onWidgetSelected: (WidgetComponent) -> Unit = {},
     selectedLayout: LayoutType? = null
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("레이아웃", "위젯")
 
-    // 레이아웃이 선택 해제되면 레이아웃 탭으로 자동 전환
     LaunchedEffect(selectedLayout) {
         if (selectedLayout == null && tabIndex == 1) {
             tabIndex = 0
@@ -53,10 +52,10 @@ fun BottomPanelWithTabs(
             selectedTabIndex = tabIndex,
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
-            indicator = { tabPositions ->
+            indicator = { tabPosition ->
                 Box(
                     modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[tabIndex])
+                        .tabIndicatorOffset(tabPosition[tabIndex])
                         .fillMaxHeight()
                         .width(80.dp),
                     contentAlignment = Alignment.BottomCenter

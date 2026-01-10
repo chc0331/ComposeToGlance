@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -64,11 +65,11 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
                     style = MaterialTheme.typography.labelLarge
                 )
                 LayoutComponentContainer(
+                    modifier = Modifier.wrapContentSize(),
                     layout = layout,
                     isClicked = activeLayout == layout,
                     onLayoutClick = {
                         activeLayout = if (activeLayout == layout) null else layout
-                        // 클릭한 레이아웃의 위치로 스크롤
                         coroutineScope.launch {
                             scrollState.animateScrollToItem(index)
                         }
