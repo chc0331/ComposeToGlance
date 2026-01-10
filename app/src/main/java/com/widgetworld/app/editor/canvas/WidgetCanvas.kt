@@ -38,18 +38,18 @@ import kotlin.math.roundToInt
 @Composable
 fun WidgetCanvas(
     viewModel: WidgetEditorViewModel,
+    onWidgetAddProcessed: (Offset, LayoutBounds, LayoutType) -> Unit,
+    modifier: Modifier = Modifier,
     selectedLayout: LayoutType? = null,
     positionedWidgets: List<PositionedWidget> = emptyList(),
-    modifier: Modifier = Modifier,
     widgetToAdd: WidgetComponent? = null,
-    onWidgetAddProcessed: (Offset, LayoutBounds, LayoutType) -> Unit
 ) {
-    var canvasPosition by remember { mutableStateOf(Offset.Zero) }
-    var canvasBounds by remember { mutableStateOf<Rect?>(null) }
-    var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
     val density = LocalDensity.current
     val dragInfo = LocalDragTargetInfo.current
 
+    var canvasPosition by remember { mutableStateOf(Offset.Zero) }
+    var canvasBounds by remember { mutableStateOf<Rect?>(null) }
+    var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
     // 위젯 추가 요청 처리
     LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout) {
         // 위젯 추가 처리 완료
@@ -63,7 +63,6 @@ fun WidgetCanvas(
             .onGloballyPositioned { layoutCoordinates ->
                 val newPosition = layoutCoordinates.positionInWindow()
                 val newBounds = layoutCoordinates.boundsInWindow()
-                // 값이 실제로 변경되었을 때만 상태 업데이트하여 불필요한 재구성 방지
                 if (newPosition != canvasPosition) {
                     canvasPosition = newPosition
                 }

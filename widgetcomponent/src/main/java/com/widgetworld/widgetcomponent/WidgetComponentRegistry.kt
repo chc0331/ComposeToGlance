@@ -15,8 +15,8 @@ import com.widgetworld.widgetcomponent.component.reminder.upcoming.UpcomingTasks
 import com.widgetworld.widgetcomponent.component.viewid.ViewIdAllocator
 
 fun initializeWidgetComponents() {
-    WidgetComponentRegistry.registerComponent(AnalogClockComponent())
-    WidgetComponentRegistry.registerComponent(DigitalClockComponent())
+//    WidgetComponentRegistry.registerComponent(AnalogClockComponent())
+//    WidgetComponentRegistry.registerComponent(DigitalClockComponent())
 
     WidgetComponentRegistry.registerComponent(BatteryWidget())
     WidgetComponentRegistry.registerComponent(EarbudsBatteryWidget())

@@ -6,7 +6,9 @@ enum class WidgetCategory(
     val description: String,
     val icon: Icon? = null
 ) {
-    DAILY_SCHEDULE("Reminder & Calendar"), CLOCK("Clock"), DEVICE_STATUS("Device Status");
+    CLOCK("Clock"),
+    DAILY_SCHEDULE("Reminder & Calendar"),
+    DEVICE_STATUS("Device Status");
 
     fun toProto(): com.widgetworld.widgetcomponent.proto.WidgetCategory {
         return when (this) {

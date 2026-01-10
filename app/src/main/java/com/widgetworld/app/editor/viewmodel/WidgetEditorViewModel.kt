@@ -3,17 +3,21 @@ package com.widgetworld.app.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.util.DisplayMetrics
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.widgetworld.app.editor.settings.GridSettings
 import com.widgetworld.app.editor.settings.GridSettingsDataStore
 import com.widgetworld.app.editor.util.GridCalculator
+import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.widget.PositionedWidget
+import com.widgetworld.app.editor.widget.toPixels
 import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetCategory
@@ -65,6 +69,8 @@ class WidgetEditorViewModel(
     // 그리드 설정 상태
     private val _gridSettings = MutableStateFlow(GridSettings.DEFAULT)
     val gridSettings: StateFlow<GridSettings> = _gridSettings.asStateFlow()
+
+    var addedWidget by mutableStateOf<WidgetComponent?>(null)
 
     // 선택된 레이아웃 (기본값: Medium)
     var selectedLayout by mutableStateOf<LayoutType?>(LayoutType.Large)
@@ -345,6 +351,41 @@ class WidgetEditorViewModel(
                 ), null, null
             )
         }
+    }
+
+    fun addWidgetToCanvas(
+        density: Density,
+        canvasPosition: Offset, layoutBounds: LayoutBounds,
+        selectedLayout: LayoutType, addedWidget: WidgetComponent
+    ) {
+        val gridSpec = selectedLayout.getGridCell()
+        val (startRow, startCol) = findFirstAvailablePosition(addedWidget, gridSpec) ?: (0 to 0)
+        val widgetSizeInCells = addedWidget.getSizeInCellsForLayout(
+            selectedLayout.name,
+            selectedLayout.getDivide()
+        )
+        val widgetWidthCells = widgetSizeInCells.first
+        val widgetHeightCells = widgetSizeInCells.second
+        val cellIndices = GridCalculator.calculateCellIndices(
+            startRow, startCol,
+            widgetWidthCells, widgetHeightCells, gridSpec
+        )
+
+        val (widgetWidthPx, widgetHeightPx) = addedWidget.toPixels(density, selectedLayout)
+        val adjustedOffset = GridCalculator.calculateWidgetOffset(
+            startRow,
+            startCol,
+            widgetWidthCells,
+            widgetHeightCells,
+            widgetWidthPx,
+            widgetHeightPx,
+            layoutBounds, gridSpec, canvasPosition
+        )
+
+        addWidgetToFirstAvailablePosition(
+            addedWidget, adjustedOffset, startRow, startCol, cellIndices
+        )
+
     }
 }
 

@@ -76,51 +76,13 @@ fun WidgetEditorScreen(
                 widgetToAdd = widgetToAdd,
                 onWidgetAddProcessed = { canvasPosition, layoutBounds, selectedLayout ->
                     val widget = widgetToAdd ?: return@WidgetCanvas
-
-                    val bounds = layoutBounds
-                    val spec = selectedLayout.getGridCell()
-                    val position = viewModel.findFirstAvailablePosition(widget, spec) ?: (0 to 0)
-                    val (startRow, startCol) = position
-                    val currentLayout = selectedLayout
-                    val widgetSizeInCells = widget.getSizeInCellsForLayout(
-                        currentLayout.name,
-                        currentLayout.getDivide()
+                    viewModel.addWidgetToCanvas(
+                        density,
+                        canvasPosition,
+                        layoutBounds,
+                        selectedLayout,
+                        widget
                     )
-                    val widgetWidthCells = widgetSizeInCells.first
-                    val widgetHeightCells = widgetSizeInCells.second
-                    val cellIndices = GridCalculator.calculateCellIndices(
-                        startRow,
-                        startCol,
-                        widgetWidthCells,
-                        widgetHeightCells,
-                        spec
-                    )
-
-                    // 위젯 실제 크기 DP→픽셀 변환
-                    val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
-                    // canvasPosition은 LaunchedEffect 내부에서 직접 읽어서 사용
-                    val currentCanvasPosition = canvasPosition
-                    val adjustedOffset = GridCalculator.calculateWidgetOffset(
-                        startRow,
-                        startCol,
-                        widgetWidthCells,
-                        widgetHeightCells,
-                        widgetWidthPx,
-                        widgetHeightPx,
-                        bounds,
-                        spec,
-                        currentCanvasPosition
-                    )
-
-                    // ViewModel에 위젯 추가
-                    viewModel.addWidgetToFirstAvailablePosition(
-                        widget = widget,
-                        offset = adjustedOffset,
-                        startRow = startRow,
-                        startCol = startCol,
-                        cellIndices = cellIndices
-                    )
-
                     widgetToAdd = null
 
                 }
