@@ -51,32 +51,14 @@ fun MainContent(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "위젯 편집", style = MaterialTheme.typography.titleLarge
-                    )
-                },
+            MainTitleBar(
                 modifier = Modifier.height(72.dp),
-                actions = {
-                    // 그리드 설정 버튼
-                    GridSettingsButton(
-                        onClick = { viewModel.showGridSettingsPanel() }
-                    )
-                    TextButton(onClick = { viewModel.save(context) }) {
-                        Text(
-                            "저장",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+                onSaveClicked = {
+                    viewModel.save(context)
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
-            )
+                onGridSettingClicked = {
+                    viewModel.showGridSettingsPanel()
+                })
         }
     ) { paddingValues ->
         val gridSettings by viewModel.gridSettings.collectAsState()
