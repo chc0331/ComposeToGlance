@@ -46,7 +46,7 @@ fun MainContent(
 ) {
     val outline = MaterialTheme.colorScheme.outline
     val canvasBackgroundColor = MaterialTheme.colorScheme.outlineVariant.copy(
-        alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA
+        alpha = 0.05f
     )
     val context = LocalContext.current
 
@@ -96,22 +96,22 @@ fun MainContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = CanvasConstants.HORIZONTAL_PADDING)
+                    .padding(horizontal = 16.dp)
             ) {
                 var widgetToAdd by remember { mutableStateOf<WidgetComponent?>(null) }
 
                 WidgetCanvas(
                     modifier = Modifier
-                        .weight(CanvasConstants.CANVAS_WEIGHT)
+                        .weight(2.2f)
                         .fillMaxWidth()
-                        .padding(top = CanvasConstants.TOP_PADDING)
+                        .padding(top = 16.dp)
                         .canvasBorder(outline, canvasBackgroundColor),
                     viewModel = viewModel,
                     widgetToAdd = widgetToAdd,
                     onWidgetAddProcessed = { widgetToAdd = null }
                 )
 
-                Spacer(modifier = Modifier.size(CanvasConstants.SPACER_SIZE))
+                Spacer(modifier = Modifier.size(6.dp))
 
                 BottomPanelWithTabs(
                     widgets = viewModel.widgets,
@@ -122,12 +122,12 @@ fun MainContent(
                     },
                     selectedLayout = viewModel.selectedLayout,
                     modifier = Modifier
-                        .weight(CanvasConstants.BOTTOM_PANEL_WEIGHT)
-                        .clip(RoundedCornerShape(CanvasConstants.BOTTOM_PANEL_CORNER_RADIUS))
+                        .weight(2f)
+                        .clip(RoundedCornerShape(12.dp))
                         .border(
-                            CanvasConstants.BORDER_WIDTH,
+                            1.dp,
                             outline,
-                            RoundedCornerShape(CanvasConstants.BOTTOM_PANEL_CORNER_RADIUS)
+                            RoundedCornerShape(12.dp)
                         )
                 )
             }

@@ -149,7 +149,7 @@ private fun LayoutDeleteZone(
             density = density,
             alpha = alpha,
             isActive = isActive,
-            cornerShape = RoundedCornerShape(CanvasConstants.CORNER_RADIUS)
+            cornerShape = RoundedCornerShape(16.dp)
         )
     }
 }

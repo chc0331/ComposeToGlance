@@ -12,36 +12,19 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 
 /**
- * 캔버스 관련 상수
- */
-object CanvasConstants {
-    val CANVAS_WEIGHT = 2.2f
-    val BOTTOM_PANEL_WEIGHT = 2f
-    val HORIZONTAL_PADDING = 16.dp
-    val TOP_PADDING = 16.dp
-    val SPACER_SIZE = 6.dp
-    val CORNER_RADIUS = 16.dp
-    val BOTTOM_PANEL_CORNER_RADIUS = 12.dp
-    val BORDER_WIDTH = 1.dp
-    val STROKE_WIDTH = 2.dp
-    val DASH_PATTERN = floatArrayOf(20f, 20f)
-    const val CANVAS_BACKGROUND_ALPHA = 0.05f
-}
-
-/**
  * 캔버스 테두리를 그리는 Modifier 확장 함수
  * @param outline 테두리 색상 (MaterialTheme.colorScheme.outline 권장)
  * @param backgroundColor 배경 색상 (MaterialTheme.colorScheme.surfaceVariant 권장)
  */
 fun Modifier.canvasBorder(
     outline: Color,
-    backgroundColor: Color = outline.copy(alpha = CanvasConstants.CANVAS_BACKGROUND_ALPHA)
+    backgroundColor: Color = outline.copy(alpha = 0.05f)
 ): Modifier {
     return this.drawBehind {
-        val cornerRadius = CanvasConstants.CORNER_RADIUS.toPx()
-        val strokeWidth = CanvasConstants.STROKE_WIDTH.toPx()
+        val cornerRadius = 16.dp.toPx()
+        val strokeWidth = 2.dp.toPx()
         val dashEffect = PathEffect.dashPathEffect(
-            CanvasConstants.DASH_PATTERN,
+            floatArrayOf(20f, 20f),
             0f
         )
         val inset = strokeWidth / 6
