@@ -261,9 +261,9 @@ private fun DeleteZoneArea(
     val offsetYDp = with(density) { offsetY.toDp() }
 
     val backgroundColor = if (isActive) {
-        MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.DELETE_ZONE_BACKGROUND_ALPHA * alpha)
+        MaterialTheme.colorScheme.error.copy(alpha = 0.15f * alpha)
     } else {
-        MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.DELETE_ZONE_BACKGROUND_ALPHA * alpha * 0.3f)
+        MaterialTheme.colorScheme.error.copy(alpha = 0.15f * alpha * 0.3f)
     }
 
     val iconTint = if (isActive) {

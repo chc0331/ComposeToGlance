@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
@@ -227,7 +228,7 @@ private fun WidgetPreview(
     ) {
         WidgetComponent(
             data = draggedWidget,
-            modifier = Modifier.alpha(WidgetCanvasConstants.PREVIEW_ALPHA)
+            modifier = Modifier.alpha(0.6f)
         )
     }
 }
@@ -284,9 +285,9 @@ private fun HighlightedArea(
     val heightDp = with(density) { (maxBottom - minTop).toDp() }
 
     val backgroundColor = if (isOccupied) {
-        MaterialTheme.colorScheme.error.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
+        MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
     } else {
-        MaterialTheme.colorScheme.primary.copy(alpha = WidgetCanvasConstants.HOVERED_CELL_BACKGROUND_ALPHA)
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
     }
     val borderColor = if (isOccupied) {
         MaterialTheme.colorScheme.error
@@ -301,7 +302,7 @@ private fun HighlightedArea(
             .clip(RoundedCornerShape(cornerRadius))
             .background(backgroundColor)
             .border(
-                width = WidgetCanvasConstants.HOVERED_CELL_BORDER_WIDTH_DP,
+                width = 2.dp,
                 color = borderColor,
                 shape = RoundedCornerShape(cornerRadius)
             )
@@ -327,13 +328,13 @@ private fun EmptyCell(
             .size(widthDp, heightDp)
             .background(
                 MaterialTheme.colorScheme.primary.copy(
-                    alpha = WidgetCanvasConstants.EMPTY_CELL_BACKGROUND_ALPHA
+                    alpha = 0.05f
                 )
             )
             .border(
-                width = WidgetCanvasConstants.EMPTY_CELL_BORDER_WIDTH_DP,
+                width = 1.dp,
                 color = MaterialTheme.colorScheme.outline.copy(
-                    alpha = WidgetCanvasConstants.EMPTY_CELL_BORDER_ALPHA
+                    alpha = 0.3f
                 )
             )
     )
