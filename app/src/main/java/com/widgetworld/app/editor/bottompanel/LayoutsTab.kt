@@ -48,7 +48,6 @@ fun LayoutsTabContent(onLayoutSelected: (LayoutType) -> Unit) {
     ) {
         itemsIndexed(
             listOf(
-                LayoutType.Small,
                 LayoutType.Medium,
                 LayoutType.Large,
                 LayoutType.ExtraLarge

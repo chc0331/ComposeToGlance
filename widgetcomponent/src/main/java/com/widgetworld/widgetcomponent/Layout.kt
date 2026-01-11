@@ -11,9 +11,6 @@ sealed class LayoutType(
     private val baseRow: Int, private val baseColumn: Int,
     private val baseWidth: Dp, private val baseHeight: Dp
 ) {
-    object Small :
-        LayoutType("Small", baseRow = 1, baseColumn = 2, baseWidth = 135.dp, baseHeight = 80.dp)
-
     object Medium :
         LayoutType("Medium", baseRow = 2, baseColumn = 2, baseWidth = 135.dp, baseHeight = 165.dp)
 
@@ -39,6 +36,6 @@ sealed class LayoutType(
     fun getDivide() = this.divide
 
     companion object {
-        val All = listOf(Small, Medium, Large, ExtraLarge)
+        val All = listOf(Medium, Large, ExtraLarge)
     }
 }
