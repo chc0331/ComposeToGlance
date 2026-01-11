@@ -3,7 +3,6 @@ package com.widgetworld.app.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.util.DisplayMetrics
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,15 +19,16 @@ import com.widgetworld.app.editor.widget.PositionedWidget
 import com.widgetworld.app.editor.widget.toPixels
 import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.LayoutType
+import com.widgetworld.widgetcomponent.SizeType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
-import com.widgetworld.widgetcomponent.proto.SizeType
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
 import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -322,40 +322,6 @@ class WidgetEditorViewModel(
         positionedWidgets.addAll(migratedWidgets)
     }
 
-
-    /**
-     * 저장 기능 (나중에 구현)
-     */
-    fun save(context: Context) {
-        //TODO : Check logic.
-        viewModelScope.launch {
-            val gridColumns = selectedLayout?.getGridCell()?.column ?: 2
-            repository.updateData(
-                sizeType = com.widgetworld.widgetcomponent.SizeType.getSizeType(
-                    selectedLayout?.name ?: "Large"
-                )?.toProto() ?: SizeType.SIZE_TYPE_LARGE,
-                positionedWidgets = positionedWidgets.map {
-                    it.toProto(gridColumns)
-                }
-            )
-
-            // Select provider based on layout size type
-            val providerClass = when (selectedLayout?.name) {
-                "Medium" -> MediumWidgetProvider::class.java.name
-                "Large" -> LargeWidgetProvider::class.java.name
-                "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
-                else -> LargeWidgetProvider::class.java.name
-            }
-
-            AppWidgetManager.getInstance(context).requestPinAppWidget(
-                ComponentName(
-                    context.packageName,
-                    providerClass
-                ), null, null
-            )
-        }
-    }
-
     fun addWidgetToCanvas(
         density: Density,
         canvasPosition: Offset, layoutBounds: LayoutBounds,
@@ -390,6 +356,37 @@ class WidgetEditorViewModel(
                 widget, adjustedOffset, startRow, startCol, cellIndices
             )
             addedWidget = null
+        }
+    }
+
+    /**
+     * 저장 기능
+     */
+    fun save(context: Context) {
+        viewModelScope.launch {
+            selectedLayout?.let { layout ->
+                val layoutType = layout.name
+                val gridColumns = layout.getGridCell().column
+                val layoutSizeType = SizeType.getSizeType(layoutType).toProto()
+                val positionedWidgets = positionedWidgets.map { it.toProto(gridColumns) }
+                val provider = when (layoutType) {
+                    "Medium" -> MediumWidgetProvider::class.java.name
+                    "Large" -> LargeWidgetProvider::class.java.name
+                    "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
+                    else -> LargeWidgetProvider::class.java.name
+                }
+                repository.updateData(
+                    sizeType = layoutSizeType,
+                    positionedWidgets = positionedWidgets
+                )
+                delay(200)
+                AppWidgetManager.getInstance(context).requestPinAppWidget(
+                    ComponentName(
+                        context.packageName,
+                        provider
+                    ), null, null
+                )
+            }
         }
     }
 }
