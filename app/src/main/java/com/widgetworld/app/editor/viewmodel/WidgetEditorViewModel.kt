@@ -27,6 +27,7 @@ import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.widgetcomponent.proto.SizeType
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
+import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
 import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -340,6 +341,8 @@ class WidgetEditorViewModel(
 
             // Select provider based on layout size type
             val providerClass = when (selectedLayout?.name) {
+                "Medium" -> MediumWidgetProvider::class.java.name
+                "Large" -> LargeWidgetProvider::class.java.name
                 "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
                 else -> LargeWidgetProvider::class.java.name
             }

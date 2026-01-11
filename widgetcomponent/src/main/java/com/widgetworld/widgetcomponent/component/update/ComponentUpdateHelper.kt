@@ -15,6 +15,7 @@ import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
+import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
 import com.widgetworld.widgetcomponent.provider.common.CommonAppWidget.Companion.layoutKey
 
 /**
@@ -38,6 +39,7 @@ object ComponentUpdateHelper {
         val glanceManager = GlanceAppWidgetManager(context)
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val widgetIds = listOf(
+            MediumWidgetProvider::class.java,
             LargeWidgetProvider::class.java,
             ExtraLargeWidgetProvider::class.java
         ).flatMap { providerClass ->

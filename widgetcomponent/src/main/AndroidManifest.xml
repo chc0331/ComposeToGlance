@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
@@ -41,6 +41,18 @@
 
     <application>
         <receiver
+            android:name="com.widgetworld.widgetcomponent.provider.MediumWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.widget.test" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/medium_app_widget_info" />
+        </receiver>
+
+        <receiver
             android:name="com.widgetworld.widgetcomponent.provider.LargeWidgetProvider"
             android:exported="true">
             <intent-filter>
@@ -75,27 +87,27 @@
 
         <activity
             android:name=".action.WidgetActionVisibleActivity"
-            android:theme="@style/Theme.WidgetActionDialog"
+            android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:excludeFromRecents="true" />
+            android:theme="@style/Theme.WidgetActionDialog" />
 
         <activity
             android:name=".component.reminder.today.ui.TodoActivity"
-            android:theme="@style/Theme.WidgetActionDialog"
+            android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:excludeFromRecents="true" />
+            android:theme="@style/Theme.WidgetActionDialog" />
 
         <activity
             android:name=".component.reminder.upcoming.ui.UpcomingFilterActivity"
-            android:theme="@style/Theme.WidgetActionDialog"
+            android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:excludeFromRecents="true" />
+            android:theme="@style/Theme.WidgetActionDialog" />
     </application>
 
 </manifest>
