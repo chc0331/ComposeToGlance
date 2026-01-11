@@ -7,7 +7,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.provider.LargeAppWidget
-import com.widgetworld.widgetcomponent.provider.common.DslAppWidget
+import com.widgetworld.widgetcomponent.provider.common.ComponentContainerWidget
 
 /**
  * Calendar 위젯 업데이트 관리자
@@ -71,7 +71,7 @@ object CalendarUpdateManager : ComponentUpdateManager<CalendarData> {
 
             // WIDGET_SYNC_KEY를 업데이트하여 위젯 갱신 트리거
             updateAppWidgetState(context, glanceId) { state ->
-                state[DslAppWidget.WIDGET_SYNC_KEY] =
+                state[ComponentContainerWidget.WIDGET_SYNC_KEY] =
                     System.currentTimeMillis()
             }
 

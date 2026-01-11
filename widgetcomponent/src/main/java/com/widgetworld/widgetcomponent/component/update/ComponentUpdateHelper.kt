@@ -16,7 +16,7 @@ import com.widgetworld.widgetcomponent.proto.WidgetLayout
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
-import com.widgetworld.widgetcomponent.provider.common.CommonAppWidget.Companion.layoutKey
+import com.widgetworld.widgetcomponent.provider.common.ComponentContainerWidget.Companion.layoutKey
 
 /**
  * 위젯 컴포넌트 업데이트를 위한 공통 유틸리티 클래스
