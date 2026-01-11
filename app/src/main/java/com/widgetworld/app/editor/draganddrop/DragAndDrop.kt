@@ -1,6 +1,7 @@
 package com.widgetworld.app.editor.draganddrop
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -106,48 +107,49 @@ fun DragTarget(
  */
 @Composable
 fun DropTarget(
-    modifier: Modifier,
+    dragInfo: DragTargetInfo,
+    modifier: Modifier = Modifier,
     content: @Composable() (BoxScope.(isInBound: Boolean, data: Any?) -> Unit)
 ) {
-    val dragInfo = LocalDragTargetInfo.current
     // isDragging을 명시적으로 읽어서 재구성 트리거
     val isDragging = dragInfo.isDragging
     val dragPosition = dragInfo.dragPosition
     val dragOffset = dragInfo.dragOffset
     val dataToDrop = dragInfo.dataToDrop
     val itemDropped = dragInfo.itemDropped
-    var dropTargetBounds by remember {
-        mutableStateOf<Rect?>(null)
-    }
+    var dropTargetBounds by remember { mutableStateOf<Rect?>(null) }
     var wasInBounds by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
             .onGloballyPositioned {
                 dropTargetBounds = it.boundsInWindow()
+                Log.i(TAG, "DropTargetBounds : $dropTargetBounds")
             }
     ) {
         // 매 재구성마다 현재 위치를 확인하여 드롭 여부 판단
         val currentPos = dragPosition + dragOffset
         val isCurrentDropTarget = dropTargetBounds?.contains(currentPos) ?: false
-        
+
         // 드래그 중일 때 경계 내부에 있었는지 기록
         if (isDragging) {
             wasInBounds = isCurrentDropTarget
         }
-        
+
         // 드래그가 시작되지 않았거나 데이터가 없으면 wasInBounds 리셋
         if (dataToDrop == null || (!isDragging && itemDropped)) {
             wasInBounds = false
         }
-        
+
         val data =
             if ((isCurrentDropTarget || wasInBounds) && !isDragging && dataToDrop != null && !itemDropped) {
                 dataToDrop
             } else {
                 null
             }
-        
+
         content(isCurrentDropTarget, data)
     }
 }
+
+private const val TAG = "DropTarget"

@@ -33,7 +33,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.widgetworld.app.editor.bottompanel.BottomPanelWithTabs
 import com.widgetworld.app.editor.canvas.WidgetCanvas
 import com.widgetworld.app.editor.canvas.canvasBorder
-import com.widgetworld.app.editor.draganddrop.DragAndDropConstants
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
 import com.widgetworld.app.editor.util.GridCalculator
@@ -72,7 +71,6 @@ fun WidgetEditorScreen(
                 selectedLayout = viewModel.selectedLayout,
                 positionedWidgets = viewModel.positionedWidgets,
                 viewModel = viewModel,
-                widgetToAdd = widgetToAdd,
                 onWidgetAddProcessed = { canvasPosition, layoutBounds, selectedLayout ->
                     viewModel.addWidgetToCanvas(
                         density,
@@ -141,14 +139,14 @@ fun WidgetEditorContainer(
                 val targetAlpha = when {
                     !hasValidSize -> 0f
                     state.itemDropped -> 0f // 드롭되면 페이드아웃
-                    else -> DragAndDropConstants.DRAG_ALPHA
+                    else -> 0.9f
                 }
 
                 // 스케일 애니메이션: 드래그 시작 시 1.0에서 1.5로 부드럽게 확대, 드롭 시 즉시 축소
                 val targetScale = when {
                     !hasValidSize -> 1f
                     state.itemDropped -> 1f // 드롭되면 즉시 원래 크기로
-                    else -> DragAndDropConstants.SCALE_FACTOR
+                    else -> 1.1f
                 }
                 val animatedScale by animateFloatAsState(
                     targetValue = targetScale,

@@ -1,10 +1,9 @@
 package com.widgetworld.app.editor.canvas
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalDensity
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.DropTarget
 import com.widgetworld.app.editor.util.GridCalculator
@@ -22,16 +21,17 @@ fun WidgetDropHandler(
     layoutBounds: LayoutBounds?,
     selectedLayout: LayoutType?,
     canvasPosition: Offset,
-    density: Density,
-    dragInfo: DragTargetInfo
+    dragInfo: DragTargetInfo,
+    modifier: Modifier = Modifier
 ) {
-    DropTarget(modifier = Modifier.fillMaxSize()) { isInBound, droppedItem ->
+    val density = LocalDensity.current
+    DropTarget(dragInfo, modifier = modifier) { isInBound, droppedItem ->
         if ((droppedItem !is WidgetComponent && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
             return@DropTarget
         }
-        
+
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
-        
+
         // 레이아웃이 있고 PositionedWidget이 레이아웃 밖으로 드래그된 경우 삭제
         if (droppedItem is PositionedWidget && layoutBounds != null) {
             val bounds = layoutBounds
@@ -39,7 +39,7 @@ fun WidgetDropHandler(
                     dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
                     dropPositionInWindow.y >= bounds.position.y &&
                     dropPositionInWindow.y <= bounds.position.y + bounds.size.height
-            
+
             if (!isWithinLayoutBounds) {
                 // 즉시 드래그 상태 정리하여 잔상 방지
                 dragInfo.itemDropped = true
@@ -51,7 +51,7 @@ fun WidgetDropHandler(
                 return@DropTarget
             }
         }
-        
+
         // 캔버스 밖으로 드래그된 PositionedWidget은 삭제
         if (!isInBound && droppedItem is PositionedWidget) {
             // 즉시 드래그 상태 정리하여 잔상 방지
@@ -63,7 +63,7 @@ fun WidgetDropHandler(
             viewModel.removePositionedWidget(droppedItem)
             return@DropTarget
         }
-        
+
         // 캔버스 밖이거나 새 위젯인 경우 처리하지 않음
         if (!isInBound) {
             return@DropTarget
@@ -152,6 +152,7 @@ fun WidgetDropHandler(
                 startCol = startCol,
                 cellIndices = indices
             )
+
             is PositionedWidget -> {
                 viewModel.movePositionedWidget(
                     positionedWidget = droppedItem,

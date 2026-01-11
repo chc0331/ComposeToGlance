@@ -1,6 +1,9 @@
 package com.widgetworld.app.editor.canvas
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -35,6 +39,8 @@ import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import kotlin.math.roundToInt
 
+private const val TAG = "WidgetCanvas"
+
 @Composable
 fun WidgetCanvas(
     viewModel: WidgetEditorViewModel,
@@ -42,7 +48,6 @@ fun WidgetCanvas(
     modifier: Modifier = Modifier,
     selectedLayout: LayoutType? = null,
     positionedWidgets: List<PositionedWidget> = emptyList(),
-    widgetToAdd: WidgetComponent? = null,
 ) {
     val density = LocalDensity.current
     val dragInfo = LocalDragTargetInfo.current
@@ -50,8 +55,9 @@ fun WidgetCanvas(
     var canvasPosition by remember { mutableStateOf(Offset.Zero) }
     var canvasBounds by remember { mutableStateOf<Rect?>(null) }
     var layoutBounds by remember { mutableStateOf<LayoutBounds?>(null) }
+    val widget = viewModel.addedWidget
     // 위젯 추가 요청 처리
-    LaunchedEffect(widgetToAdd, layoutBounds, selectedLayout) {
+    LaunchedEffect(widget, layoutBounds, selectedLayout) {
         // 위젯 추가 처리 완료
         if (layoutBounds != null && selectedLayout != null) {
             onWidgetAddProcessed(canvasPosition, layoutBounds!!, selectedLayout)
@@ -69,6 +75,8 @@ fun WidgetCanvas(
                 if (newBounds != canvasBounds) {
                     canvasBounds = newBounds
                 }
+                Log.i(TAG, "WidgetCanvas : $canvasPosition $canvasBounds")
+
             }
     ) {
         WidgetDropHandler(
@@ -76,8 +84,8 @@ fun WidgetCanvas(
             layoutBounds = layoutBounds,
             selectedLayout = selectedLayout,
             canvasPosition = canvasPosition,
-            density = density,
-            dragInfo = dragInfo
+            dragInfo = dragInfo,
+            modifier = Modifier.fillMaxSize()
         )
 
         if (selectedLayout == null && positionedWidgets.isEmpty()) {
