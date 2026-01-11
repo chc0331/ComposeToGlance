@@ -1,6 +1,7 @@
 package com.widgetworld.widgetcomponent.component.battery.bluetooth
 
 import android.Manifest
+import android.R.attr.data
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -12,6 +13,13 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.widgetworld.widgetcomponent.component.battery.BatteryData
+import com.widgetworld.widgetcomponent.component.battery.DeviceType
+import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryUpdateManager
+import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryWidget
+import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryDataStore
+import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryUpdateManager
+import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryWidget
+import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.receiver.goAsync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -122,8 +130,35 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
 
                             // 위젯 업데이트
                             CoroutineScope(Dispatchers.Default).launch {
-                                deviceInfoList.forEach {
-                                    BluetoothBatteryUpdateManager.updateByPartially(context, null, it)
+                                deviceInfoList.forEach { batteryData ->
+                                    if (batteryData.deviceType == DeviceType.BLUETOOTH_WATCH) {
+                                        WatchBatteryUpdateManager.updateComponentData(
+                                            context,
+                                            batteryData
+                                        )
+                                        ComponentUpdateHelper.findPlacedComponents(
+                                            context,
+                                            WatchBatteryWidget().getWidgetTag()
+                                        ).forEach { (widgetId, component) ->
+                                            WatchBatteryUpdateManager.updateComponentState(
+                                                context,
+                                                widgetId
+                                            )
+                                        }
+                                    } else if (batteryData.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
+                                        EarbudsBatteryUpdateManager.updateComponentData(
+                                            context,
+                                            batteryData
+                                        )
+                                        ComponentUpdateHelper.findPlacedComponents(
+                                            context, EarbudsBatteryWidget().getWidgetTag()
+                                        ).forEach { (widgetId, component) ->
+                                            EarbudsBatteryUpdateManager.updateComponentState(
+                                                context,
+                                                widgetId
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -138,13 +173,33 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                         val deviceType = it.getDeviceType()
                         val batteryData =
                             BatteryData(0f, false, deviceType, deviceName, isConnect = false)
-                        // 위젯 업데이트
-                        CoroutineScope(Dispatchers.Default).launch {
-                            BluetoothBatteryUpdateManager.updateByPartially(
+                        if (batteryData.deviceType == DeviceType.BLUETOOTH_WATCH) {
+                            WatchBatteryUpdateManager.updateComponentData(
                                 context,
-                                null,
                                 batteryData
                             )
+                            ComponentUpdateHelper.findPlacedComponents(
+                                context,
+                                WatchBatteryWidget().getWidgetTag()
+                            ).forEach { (widgetId, component) ->
+                                WatchBatteryUpdateManager.updateComponentPartially(
+                                    context,
+                                    widgetId
+                                )
+                            }
+                        } else if (batteryData.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
+                            EarbudsBatteryUpdateManager.updateComponentData(
+                                context,
+                                batteryData
+                            )
+                            ComponentUpdateHelper.findPlacedComponents(
+                                context, EarbudsBatteryWidget().getWidgetTag()
+                            ).forEach { (widgetId, component) ->
+                                EarbudsBatteryUpdateManager.updateComponentPartially(
+                                    context,
+                                    widgetId
+                                )
+                            }
                         }
                     }
                 }
@@ -158,7 +213,7 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                         val deviceType = it.getDeviceType()
                         if (batteryLevel >= 0) {
                             // 배터리 정보를 위젯에 업데이트
-                            val data = BatteryData(
+                            val batteryData = BatteryData(
                                 level = batteryLevel.toFloat(),
                                 charging = false,
                                 deviceType = deviceType,
@@ -166,12 +221,34 @@ class BluetoothDeviceReceiver : BroadcastReceiver() {
                                 deviceAddress = it.address,
                                 isConnect = true
                             )
-
-                            BluetoothBatteryUpdateManager.updateByPartially(
-                                context,
-                                null,
-                                data
-                            )
+                            if (batteryData.deviceType == DeviceType.BLUETOOTH_WATCH) {
+                                WatchBatteryUpdateManager.updateComponentData(
+                                    context,
+                                    batteryData
+                                )
+                                ComponentUpdateHelper.findPlacedComponents(
+                                    context,
+                                    WatchBatteryWidget().getWidgetTag()
+                                ).forEach { (widgetId, component) ->
+                                    WatchBatteryUpdateManager.updateComponentPartially(
+                                        context,
+                                        widgetId
+                                    )
+                                }
+                            } else if (batteryData.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
+                                EarbudsBatteryUpdateManager.updateComponentData(
+                                    context,
+                                    batteryData
+                                )
+                                ComponentUpdateHelper.findPlacedComponents(
+                                    context, EarbudsBatteryWidget().getWidgetTag()
+                                ).forEach { (widgetId, component) ->
+                                    EarbudsBatteryUpdateManager.updateComponentPartially(
+                                        context,
+                                        widgetId
+                                    )
+                                }
+                            }
                         }
                     }
                 }

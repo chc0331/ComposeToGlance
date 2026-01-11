@@ -1,6 +1,7 @@
 package com.widgetworld.widgetcomponent.component.battery.bluetooth
 
 import android.content.Context
+import android.util.Log
 import com.widgetworld.widgetcomponent.component.battery.BatteryData
 import com.widgetworld.widgetcomponent.component.battery.DeviceType
 import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryUpdateManager
@@ -21,6 +22,23 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         get() = throw UnsupportedOperationException(
             "BluetoothBatteryUpdateManager is a router, use specific device UpdateManagers"
         )
+
+
+    override suspend fun updateComponentData(context: Context, data: BatteryData) {
+        if (data.deviceType == DeviceType.BLUETOOTH_EARBUDS) {
+            EarbudsBatteryUpdateManager.updateComponentData(context, data)
+        }else if(data.deviceType == DeviceType.BLUETOOTH_WATCH){
+            WatchBatteryUpdateManager.updateComponentData(context, data)
+        }
+    }
+
+    override suspend fun updateComponentState(context: Context, widgetId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateComponentPartially(context: Context, widgetId: Int) {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         when (data.deviceType) {
@@ -70,6 +88,3 @@ object BluetoothBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         }
     }
 }
-
-internal fun WidgetLayout.checkBluetoothBatteryComponentExist(): Boolean =
-    this.placedWidgetComponentList.find { it.widgetTag.contains("BluetoothBattery") } != null

@@ -1,5 +1,6 @@
 package com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds
 
+import android.R.attr.data
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -10,13 +11,56 @@ import com.widgetworld.widgetcomponent.component.battery.BatteryData
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
+import com.widgetworld.widgetcomponent.provider.ExtraLargeAppWidget
 import com.widgetworld.widgetcomponent.provider.LargeAppWidget
+import com.widgetworld.widgetcomponent.provider.MediumAppWidget
 
 object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     private const val TAG = "EarbudsBatteryUpdateMgr"
     override val widget: EarbudsBatteryWidget
         get() = EarbudsBatteryWidget()
+
+    override suspend fun updateComponentData(context: Context, data: BatteryData) {
+        EarbudsBatteryDataStore.saveData(context, data)
+    }
+
+    override suspend fun updateComponentState(context: Context, widgetId: Int) {
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
+        val batteryData = EarbudsBatteryDataStore.loadData(context)
+        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+        updateWidgetState(context, widgetId, batteryData)
+        MediumAppWidget().update(context, glanceId)
+        LargeAppWidget().update(context, glanceId)
+        ExtraLargeAppWidget().update(context, glanceId)
+    }
+
+    override suspend fun updateComponentPartially(context: Context, widgetId: Int) {
+        val batteryData = EarbudsBatteryDataStore.loadData(context)
+        val placedComponents =
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+        val component = placedComponents.find { it.first == widgetId }?.second
+        if (component != null) {
+            val gridIndex = component.gridIndex
+            val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+
+            // 배터리 레벨이 유효한지 확인 (0-100 사이)
+            val isValidBatteryLevel = batteryData.level in 0f..100f
+
+            remoteViews.setImageViewColorFilter(
+                widget.getEarbudsIconId(gridIndex),
+                if (batteryData.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
+            )
+            // 유효한 배터리 레벨일 때만 텍스트 업데이트
+            if (isValidBatteryLevel) {
+                remoteViews.setTextViewText(
+                    widget.getEarbudsTextId(gridIndex),
+                    if (batteryData.isConnect) batteryData.level.toInt().toString() else "--"
+                )
+            }
+            ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
+        }
+    }
 
     override suspend fun syncState(context: Context, data: BatteryData) {
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
@@ -30,7 +74,7 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         val glanceManager = GlanceAppWidgetManager(context)
 
         EarbudsBatteryDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             val glanceId = glanceManager.getGlanceIdBy(widgetId)
@@ -49,11 +93,12 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         EarbudsBatteryDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex

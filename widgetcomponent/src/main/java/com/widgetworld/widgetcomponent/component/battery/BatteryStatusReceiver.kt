@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.util.Log
+import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.receiver.goAsync
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 open class BatteryStatusReceiver : BroadcastReceiver() {
     companion object {
@@ -59,7 +62,7 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
         }
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-            status == BatteryManager.BATTERY_STATUS_FULL
+                status == BatteryManager.BATTERY_STATUS_FULL
         val batteryData = BatteryData(
             batteryPct,
             isCharging
@@ -81,7 +84,13 @@ open class BatteryStatusReceiver : BroadcastReceiver() {
      */
     protected open fun onBatteryStatusChanged(context: Context, batteryData: BatteryData) {
         goAsync {
-            BatteryUpdateManager.updateByState(context, null, batteryData)
+            coroutineScope {
+                BatteryUpdateManager.updateComponentData(context, batteryData)
+                ComponentUpdateHelper.findPlacedComponents(context, BatteryWidget().getWidgetTag())
+                    .forEach { (widgetId, component) ->
+                        BatteryUpdateManager.updateComponentState(context, widgetId)
+                    }
+            }
         }
     }
 

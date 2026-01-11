@@ -39,6 +39,7 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 
 class BatteryWidget : WidgetComponent() {
 
@@ -48,7 +49,7 @@ class BatteryWidget : WidgetComponent() {
 
     override fun getWidgetCategory() = WidgetCategory.DEVICE_STATUS
 
-    override fun getWidgetTag() = "Battery"
+    override fun getWidgetTag() = "DeviceBattery"
 
     override fun getSizeType() = SizeType.TINY
 
@@ -236,4 +237,5 @@ class BatteryWidget : WidgetComponent() {
     override fun getUpdateManager(): ComponentUpdateManager<*> = BatteryUpdateManager
 
     override fun getDataStore() = BatteryComponentDataStore
+
 }

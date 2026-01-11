@@ -7,6 +7,12 @@ interface ComponentUpdateManager<T> {
 
     val widget: WidgetComponent
 
+    suspend fun updateComponentData(context: Context, data: T)
+
+    suspend fun updateComponentState(context: Context, widgetId: Int)
+
+    suspend fun updateComponentPartially(context: Context, widgetId: Int)
+
     suspend fun syncState(context: Context, data: T)
 
     suspend fun updateByState(context: Context, widgetId: Int?, data: T)

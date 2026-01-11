@@ -1,5 +1,6 @@
 package com.widgetworld.widgetcomponent.component.devicecare.ram
 
+import android.R.attr.data
 import android.content.Context
 import android.util.Log
 import android.view.View
@@ -10,7 +11,9 @@ import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
+import com.widgetworld.widgetcomponent.provider.ExtraLargeAppWidget
 import com.widgetworld.widgetcomponent.provider.LargeAppWidget
+import com.widgetworld.widgetcomponent.provider.MediumAppWidget
 
 object RamUpdateManager : ComponentUpdateManager<RamData> {
 
@@ -19,9 +22,47 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
     override val widget: RamWidget
         get() = RamWidget()
 
+    override suspend fun updateComponentData(context: Context, data: RamData) {
+        RamWidgetDataStore.saveData(context, data)
+    }
+
+    override suspend fun updateComponentState(context: Context, widgetId: Int) {
+        val ramData = RamWidgetDataStore.loadData(context)
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
+        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+        updateWidgetState(context, widgetId, ramData)
+        MediumAppWidget().update(context, glanceId)
+        LargeAppWidget().update(context, glanceId)
+        ExtraLargeAppWidget().update(context, glanceId)
+    }
+
+    override suspend fun updateComponentPartially(context: Context, widgetId: Int) {
+        val ramData = RamWidgetDataStore.loadData(context)
+        val placedComponents =
+            ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+        val component = placedComponents.find { it.first == widgetId }?.second
+        if (component != null) {
+            val gridIndex = component.gridIndex
+            val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
+            Log.i(TAG, "updateRam / ${ramData.usagePercent}")
+            remoteViews.setTextViewText(
+                widget.getRamTextId(gridIndex),
+                "${ramData.usagePercent}%"
+            )
+            remoteViews.setProgressBar(
+                widget.getRamProgressId(gridIndex),
+                100,
+                ramData.usagePercent.toInt(),
+                false
+            )
+            ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
+        }
+
+    }
+
     override suspend fun updateByState(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             updateWidgetState(context, widgetId, data)
@@ -39,11 +80,12 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
@@ -127,6 +169,3 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
         }
     }
 }
-
-internal fun WidgetLayout.checkRamWidgetExist(): Boolean =
-    this.placedWidgetComponentList.find { it.widgetTag.contains("RAM") } != null

@@ -8,24 +8,17 @@ import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.state.updateAppWidgetState
-import com.widgetworld.widgetcomponent.component.battery.BatteryComponentDataStore
-import com.widgetworld.widgetcomponent.component.battery.BatteryUpdateManager
-import com.widgetworld.widgetcomponent.component.battery.bluetooth.checkBluetoothBatteryComponentExist
-import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryDataStore
-import com.widgetworld.widgetcomponent.component.battery.bluetooth.earbuds.EarbudsBatteryUpdateManager
-import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryDataStore
-import com.widgetworld.widgetcomponent.component.battery.bluetooth.watch.WatchBatteryUpdateManager
-import com.widgetworld.widgetcomponent.component.battery.checkBatteryComponentExist
-import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
-import com.widgetworld.widgetcomponent.component.devicecare.ram.RamData
-import com.widgetworld.widgetcomponent.component.devicecare.ram.RamUpdateManager
-import com.widgetworld.widgetcomponent.component.devicecare.ram.checkRamWidgetExist
+import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class ComponentContainerWidgetReceiver : GlanceAppWidgetReceiver() {
+
+    companion object {
+
+    }
 
     /**
      * 컴포넌트 이름을 반환하는 추상 메서드
@@ -56,22 +49,28 @@ abstract class ComponentContainerWidgetReceiver : GlanceAppWidgetReceiver() {
                 updateAppWidgetState(context, glanceId) {
                     it[ComponentContainerWidget.layoutKey] = widgetLayoutData.toByteArray()
                 }
-                if (widgetLayoutData.checkBluetoothBatteryComponentExist()) {
-                    val earbudsBatteryData = EarbudsBatteryDataStore.loadData(context)
-                    EarbudsBatteryUpdateManager.syncState(context, earbudsBatteryData)
-                    val watchBatteryData = WatchBatteryDataStore.loadData(context)
-                    WatchBatteryUpdateManager.syncState(context, watchBatteryData)
-                }
-                if (widgetLayoutData.checkBatteryComponentExist()) {
-                    val batteryData = BatteryComponentDataStore.loadData(context)
-                    BatteryUpdateManager.syncState(context, batteryData)
-                }
-                if (widgetLayoutData.checkRamWidgetExist()) {
-                    val syncData = DeviceStateCollector.collect(context)
-                    val ramUsage = (syncData.memoryUsage * 100f) / syncData.totalMemory
-                    val ramData = RamData(ramUsage)
-                    RamUpdateManager.syncState(context, data = ramData)
-                }
+                // todo :
+//                widgetLayoutData.placedWidgetComponentList.forEach { widget ->
+//                    val widgetComponent = WidgetComponentRegistry.getComponent(widget.widgetTag)
+//                    Log.i("heec.choi", "Widget component : $widgetComponent")
+//                    widgetComponent?.getUpdateManager()?.initState(context)
+//                }
+//                if (widgetLayoutData.checkBluetoothBatteryComponentExist()) {
+//                    val earbudsBatteryData = EarbudsBatteryDataStore.loadData(context)
+//                    EarbudsBatteryUpdateManager.syncState(context, earbudsBatteryData)
+//                    val watchBatteryData = WatchBatteryDataStore.loadData(context)
+//                    WatchBatteryUpdateManager.syncState(context, watchBatteryData)
+//                }
+//                if (widgetLayoutData.checkBatteryComponentExist()) {
+//                    val batteryData = BatteryComponentDataStore.loadData(context)
+//                    BatteryUpdateManager.syncState(context, batteryData)
+//                }
+//                if (widgetLayoutData.checkRamWidgetExist()) {
+//                    val syncData = DeviceStateCollector.collect(context)
+//                    val ramUsage = (syncData.memoryUsage * 100f) / syncData.totalMemory
+//                    val ramData = RamData(ramUsage)
+//                    RamUpdateManager.syncState(context, data = ramData)
+//                }
 //                if (widgetLayoutData.checkStorageWidgetExist()) {
 //                    StorageUpdateManager.syncComponentState(context)
 //                }
