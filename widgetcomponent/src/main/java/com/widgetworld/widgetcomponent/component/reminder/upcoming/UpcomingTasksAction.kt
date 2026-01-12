@@ -61,7 +61,7 @@ class UpcomingTasksAction : WidgetActionCallback {
                 val updateManager = UpcomingTasksUpdateManager
                 val filterType = UpcomingTasksDataStore.loadFilterType(context, widgetId)
                 val updatedData = updateManager.loadUpcomingTodos(context, filterType)
-                updateManager.updateWidgetById(context, widgetId, updatedData)
+                updateManager.updateByState(context, widgetId, updatedData)
                 Log.d(TAG, "Widget $widgetId updated successfully")
                 
             } else {

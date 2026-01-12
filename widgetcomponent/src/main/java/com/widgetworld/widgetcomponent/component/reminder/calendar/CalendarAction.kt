@@ -70,7 +70,7 @@ class CalendarAction : WidgetActionCallback {
             CalendarDataStore.saveData(context, widgetId, newData)
             
             // 해당 위젯만 업데이트
-            CalendarUpdateManager.updateWidgetById(context, widgetId, newData)
+            CalendarUpdateManager.updateByState(context, widgetId, newData)
             Log.d(TAG, "Calendar widget $widgetId updated successfully")
             
         } catch (e: Exception) {

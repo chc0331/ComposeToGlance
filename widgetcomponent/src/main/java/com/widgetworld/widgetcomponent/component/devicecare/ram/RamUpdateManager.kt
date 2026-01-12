@@ -1,16 +1,13 @@
 package com.widgetworld.widgetcomponent.component.devicecare.ram
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.widgetworld.widgetcomponent.component.devicecare.DeviceCareWorker
-import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
-import com.widgetworld.widgetcomponent.provider.LargeAppWidget
 
 object RamUpdateManager : ComponentUpdateManager<RamData> {
 
@@ -19,19 +16,26 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
     override val widget: RamWidget
         get() = RamWidget()
 
+    override suspend fun syncState(context: Context, data: RamData) {
+        updateByState(context, null, data)
+    }
+
     override suspend fun updateByState(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        
+
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         if (widgetId != null) {
-            // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            updateWidget(context, widgetId)
+            val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+            updateRamWidgetState(context, widgetId, data)
+            ComponentUpdateHelper.getGlanceAppWidgetForWidgetId(context, widgetId)
+                ?.update(context, glanceId)
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, _) ->
-                    updateWidgetState(context, id, data)
-                    updateWidget(context, id)
+                .forEach { (id, _, appWidget) ->
+                    val glanceId = glanceAppWidgetManager.getGlanceIdBy(id)
+                    updateRamWidgetState(context, id, data)
+                    appWidget.update(context, glanceId)
                 }
         }
         DeviceCareWorker.registerWorker(context)
@@ -39,16 +43,16 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: RamData) {
         RamWidgetDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            updateRamWidgetState(context, widgetId, data)
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-                Log.i(TAG, "updateRam / ${data.usagePercent}")
                 remoteViews.setTextViewText(
                     widget.getRamTextId(gridIndex),
                     "${data.usagePercent}%"
@@ -64,11 +68,10 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
-                    updateWidgetState(context, id, data)
+                .forEach { (id, component, _) ->
+                    updateRamWidgetState(context, id, data)
                     val gridIndex = component.gridIndex
                     val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-                    Log.i(TAG, "updateRam / ${data.usagePercent}")
                     remoteViews.setTextViewText(
                         widget.getRamTextId(gridIndex),
                         "${data.usagePercent}%"
@@ -84,17 +87,9 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
         }
     }
 
-    override suspend fun syncState(context: Context, data: RamData) {
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, data)
-                updateWidget(context, widgetId)
-            }
-    }
-
     suspend fun showAnimation(context: Context, show: Boolean) {
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, component) ->
+            .forEach { (widgetId, component, _) ->
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
                 remoteViews.setViewVisibility(
@@ -109,21 +104,11 @@ object RamUpdateManager : ComponentUpdateManager<RamData> {
             }
     }
 
-    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: RamData) {
+    private suspend fun updateRamWidgetState(context: Context, widgetId: Int, data: RamData) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
             pref[RamPreferenceKey.UsagePercent] = data.usagePercent
-        }
-    }
-
-    private suspend fun updateWidget(context: Context, widgetId: Int) {
-        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
-            if (id == glanceId) {
-                LargeAppWidget().update(context, id)
-            }
         }
     }
 }

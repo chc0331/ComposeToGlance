@@ -10,7 +10,6 @@ import com.widgetworld.widgetcomponent.component.battery.BatteryData
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
-import com.widgetworld.widgetcomponent.provider.LargeAppWidget
 
 object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
@@ -19,44 +18,41 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         get() = WatchBatteryWidget()
 
     override suspend fun syncState(context: Context, data: BatteryData) {
-        val batteryData = WatchBatteryDataStore.loadData(context)
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, batteryData)
-                updateWidget(context, widgetId)
-            }
+        updateByState(context, null, data)
     }
 
     override suspend fun updateByState(context: Context, widgetId: Int?, data: BatteryData) {
         WatchBatteryDataStore.saveData(context, data)
-        
+
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         if (widgetId != null) {
-            // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            updateWidget(context, widgetId)
+            val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+            updateWatchBatteryWidgetState(context, widgetId, data)
+            ComponentUpdateHelper.getGlanceAppWidgetForWidgetId(context, widgetId)
+                ?.update(context, glanceId)
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
-                    updateWidgetState(context, id, data)
-                    updateWidget(context, id)
+                .forEach { (id, component, appWidget) ->
+                    val glanceId = glanceAppWidgetManager.getGlanceIdBy(id)
+                    updateWatchBatteryWidgetState(context, id, data)
+                    appWidget.update(context, glanceId)
                 }
         }
     }
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         WatchBatteryDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            updateWatchBatteryWidgetState(context, widgetId, data)
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-
-                // 배터리 레벨이 유효한지 확인 (0-100 사이)
                 val isValidBatteryLevel = data.level in 0f..100f
 
                 remoteViews.setImageViewColorFilter(
@@ -75,12 +71,10 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
-                    updateWidgetState(context, id, data)
+                .forEach { (id, component, _) ->
+                    updateWatchBatteryWidgetState(context, id, data)
                     val gridIndex = component.gridIndex
                     val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-
-                    // 배터리 레벨이 유효한지 확인 (0-100 사이)
                     val isValidBatteryLevel = data.level in 0f..100f
 
                     remoteViews.setImageViewColorFilter(
@@ -99,26 +93,19 @@ object WatchBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         }
     }
 
-    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: BatteryData) {
+    private suspend fun updateWatchBatteryWidgetState(
+        context: Context,
+        widgetId: Int,
+        data: BatteryData
+    ) {
         // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
         val isValidBatteryLevel = data.level in 0f..100f
-
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
             pref[WatchBatteryPreferenceKey.BatteryConnected] = data.isConnect
             if (isValidBatteryLevel) {
                 pref[WatchBatteryPreferenceKey.BatteryLevel] = data.level
-            }
-        }
-    }
-
-    private suspend fun updateWidget(context: Context, widgetId: Int) {
-        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
-            if (id == glanceId) {
-                LargeAppWidget().update(context, id)
             }
         }
     }

@@ -10,7 +10,6 @@ import com.widgetworld.widgetcomponent.component.battery.BatteryData
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateHelper
 import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
-import com.widgetworld.widgetcomponent.provider.LargeAppWidget
 
 object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
@@ -19,49 +18,44 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         get() = EarbudsBatteryWidget()
 
     override suspend fun syncState(context: Context, data: BatteryData) {
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, data)
-                updateWidget(context, widgetId)
-            }
+       updateByState(context, null, data)
     }
 
     override suspend fun updateByState(context: Context, widgetId: Int?, data: BatteryData) {
         val glanceManager = GlanceAppWidgetManager(context)
 
         EarbudsBatteryDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             val glanceId = glanceManager.getGlanceIdBy(widgetId)
-            updateWidgetState(context, widgetId, data)
-            LargeAppWidget().update(context, glanceId)
+            updateBluetoothBatteryWidgetState(context, widgetId, data)
+            ComponentUpdateHelper.getGlanceAppWidgetForWidgetId(context, widgetId)
+                ?.update(context, glanceId)
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
+                .forEach { (id, component, glanceAppWidget) ->
                     val glanceId = glanceManager.getGlanceIdBy(id)
-                    updateWidgetState(context, id, data)
-                    LargeAppWidget().update(context, glanceId)
+                    updateBluetoothBatteryWidgetState(context, id, data)
+                    glanceAppWidget.update(context, glanceId)
                 }
         }
     }
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         EarbudsBatteryDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            updateBluetoothBatteryWidgetState(context, widgetId, data)
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-
-                // 배터리 레벨이 유효한지 확인 (0-100 사이)
                 val isValidBatteryLevel = data.level in 0f..100f
-
                 remoteViews.setImageViewColorFilter(
                     widget.getEarbudsIconId(gridIndex),
                     if (data.isConnect) Color.Black.toArgb() else Color.LightGray.toArgb()
@@ -76,14 +70,11 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
                 ComponentUpdateHelper.partiallyUpdateWidget(context, widgetId, remoteViews)
             }
         } else {
-            // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
-                    updateWidgetState(context, id, data)
+                .forEach { (id, component, _) ->
+                    updateBluetoothBatteryWidgetState(context, id, data)
                     val gridIndex = component.gridIndex
                     val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-
-                    // 배터리 레벨이 유효한지 확인 (0-100 사이)
                     val isValidBatteryLevel = data.level in 0f..100f
 
                     remoteViews.setImageViewColorFilter(
@@ -102,7 +93,11 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         }
     }
 
-    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: BatteryData) {
+    private suspend fun updateBluetoothBatteryWidgetState(
+        context: Context,
+        widgetId: Int,
+        data: BatteryData
+    ) {
         // 정상적인 배터리 값(0-100 사이)일 때만 업데이트
         val isValidBatteryLevel = data.level in 0f..100f
 
@@ -112,16 +107,6 @@ object EarbudsBatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             pref[EarbudsBatteryPreferenceKey.BatteryConnected] = data.isConnect
             if (isValidBatteryLevel) {
                 pref[EarbudsBatteryPreferenceKey.BatteryLevel] = data.level
-            }
-        }
-    }
-
-    private suspend fun updateWidget(context: Context, widgetId: Int) {
-        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
-        val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
-        glanceAppWidgetManager.getGlanceIds(LargeAppWidget::class.java).forEach { id ->
-            if (id == glanceId) {
-                LargeAppWidget().update(context, id)
             }
         }
     }

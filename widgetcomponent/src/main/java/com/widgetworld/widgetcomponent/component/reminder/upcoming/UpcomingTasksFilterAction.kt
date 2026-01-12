@@ -52,7 +52,7 @@ class UpcomingTasksFilterAction : WidgetActionCallback {
             // 필터된 Todo 로드 및 위젯 업데이트
             val updateManager = UpcomingTasksUpdateManager
             val updatedData = updateManager.loadUpcomingTodos(context, filterType)
-            updateManager.updateWidgetById(context, widgetId, updatedData)
+            updateManager.updateByState(context, widgetId, updatedData)
             
             Log.d(TAG, "Widget $widgetId filter updated successfully")
             

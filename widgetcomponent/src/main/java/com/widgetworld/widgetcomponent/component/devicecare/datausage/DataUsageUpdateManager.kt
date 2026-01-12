@@ -16,19 +16,27 @@ object DataUsageUpdateManager : ComponentUpdateManager<DataUsageData> {
     override val widget: DataUsageTrackerWidget
         get() = DataUsageTrackerWidget()
 
+    override suspend fun syncState(context: Context, data: DataUsageData) {
+        updateByState(context, null, data)
+    }
+
     override suspend fun updateByState(context: Context, widgetId: Int?, data: DataUsageData) {
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         DataUsageDataStore.saveData(context, data)
 
         if (widgetId != null) {
             // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            updateWidget(context, widgetId)
+            val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
+            updateDataUsageWidgetState(context, widgetId, data)
+            ComponentUpdateHelper.getGlanceAppWidgetForWidgetId(context, widgetId)
+                ?.update(context, glanceId)
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, _) ->
-                    updateWidgetState(context, id, data)
-                    updateWidget(context, id)
+                .forEach { (id, _, appWidget) ->
+                    val glanceId = glanceAppWidgetManager.getGlanceIdBy(id)
+                    updateDataUsageWidgetState(context, id, data)
+                    appWidget.update(context, glanceId)
                 }
         }
         DeviceCareWorker.registerWorker(context)
@@ -39,22 +47,19 @@ object DataUsageUpdateManager : ComponentUpdateManager<DataUsageData> {
 
         if (widgetId != null) {
             // 특정 위젯만 업데이트
-            updateWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            updateDataUsageWidgetState(context, widgetId, data)
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
                 val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-                Log.i(TAG, "updateDataUsage / ${data.usagePercent}%")
-                
-                // 텍스트 업데이트: "X.X GB / Y.Y GB" 형식
-                val usageText = String.format("%.1f GB / %.1f GB", data.currentUsageGb, data.dataLimitGb)
+                val usageText =
+                    String.format("%.1f GB / %.1f GB", data.currentUsageGb, data.dataLimitGb)
                 remoteViews.setTextViewText(
                     widget.getDataUsageTextId(gridIndex),
                     usageText
                 )
-                
-                // Progress 바 업데이트
                 remoteViews.setProgressBar(
                     widget.getDataUsageProgressId(gridIndex),
                     100,
@@ -66,20 +71,16 @@ object DataUsageUpdateManager : ComponentUpdateManager<DataUsageData> {
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-                .forEach { (id, component) ->
-                    updateWidgetState(context, id, data)
+                .forEach { (id, component, _) ->
+                    updateDataUsageWidgetState(context, id, data)
                     val gridIndex = component.gridIndex
                     val remoteViews = ComponentUpdateHelper.createRemoteViews(context)
-                    Log.i(TAG, "updateDataUsage / ${data.usagePercent}%")
-                    
-                    // 텍스트 업데이트: "X.X GB / Y.Y GB" 형식
-                    val usageText = String.format("%.1f GB / %.1f GB", data.currentUsageGb, data.dataLimitGb)
+                    val usageText =
+                        String.format("%.1f GB / %.1f GB", data.currentUsageGb, data.dataLimitGb)
                     remoteViews.setTextViewText(
                         widget.getDataUsageTextId(gridIndex),
                         usageText
                     )
-                    
-                    // Progress 바 업데이트
                     remoteViews.setProgressBar(
                         widget.getDataUsageProgressId(gridIndex),
                         100,
@@ -91,15 +92,11 @@ object DataUsageUpdateManager : ComponentUpdateManager<DataUsageData> {
         }
     }
 
-    override suspend fun syncState(context: Context, data: DataUsageData) {
-        ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
-            .forEach { (widgetId, _) ->
-                updateWidgetState(context, widgetId, data)
-                updateWidget(context, widgetId)
-            }
-    }
-
-    private suspend fun updateWidgetState(context: Context, widgetId: Int, data: DataUsageData) {
+    private suspend fun updateDataUsageWidgetState(
+        context: Context,
+        widgetId: Int,
+        data: DataUsageData
+    ) {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->

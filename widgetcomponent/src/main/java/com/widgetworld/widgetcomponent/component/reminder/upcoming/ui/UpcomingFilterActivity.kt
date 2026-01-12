@@ -68,7 +68,7 @@ class UpcomingFilterActivity : ComponentActivity() {
                                         this@UpcomingFilterActivity,
                                         selectedFilterType
                                     )
-                                    UpcomingTasksUpdateManager.updateWidgetById(
+                                    UpcomingTasksUpdateManager.updateByState(
                                         this@UpcomingFilterActivity,
                                         updateWidgetId,
                                         updatedData

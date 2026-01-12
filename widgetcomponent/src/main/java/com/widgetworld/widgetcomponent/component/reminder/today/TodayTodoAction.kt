@@ -61,7 +61,7 @@ class TodayTodoAction : WidgetActionCallback {
                 val currentData = TodayTodoDataStore.loadData(context, widgetId)
                 // 선택된 날짜의 Todo를 다시 로드하여 업데이트
                 val updatedData = TodayTodoUpdateManager.loadTodosForDate(context, currentData.selectedDate)
-                updateManager.updateWidgetById(context, widgetId, updatedData)
+                updateManager.updateByState(context, widgetId, updatedData)
                 Log.d(TAG, "Widget $widgetId updated successfully")
                 
             } else {
