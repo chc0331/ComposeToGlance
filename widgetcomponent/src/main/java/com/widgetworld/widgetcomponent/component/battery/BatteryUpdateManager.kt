@@ -20,19 +20,18 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
         get() = BatteryWidget()
 
     override suspend fun updateByState(context: Context, widgetId: Int?, data: BatteryData) {
-        val glanceManager = GlanceAppWidgetManager(context)
+        val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         BatteryComponentDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
-            // 특정 위젯만 업데이트
-            val glanceId = glanceManager.getGlanceIdBy(widgetId)
+            val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
             updateBatteryWidgetState(context, widgetId, data)
             LargeAppWidget().update(context, glanceId)
         } else {
             // 모든 위젯 업데이트
             ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
                 .forEach { (id, component) ->
-                    val glanceId = glanceManager.getGlanceIdBy(id)
+                    val glanceId = glanceAppWidgetManager.getGlanceIdBy(id)
                     updateBatteryWidgetState(context, id, data)
                     LargeAppWidget().update(context, glanceId)
                 }
@@ -41,11 +40,12 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
 
     override suspend fun updateByPartially(context: Context, widgetId: Int?, data: BatteryData) {
         BatteryComponentDataStore.saveData(context, data)
-        
+
         if (widgetId != null) {
             // 특정 위젯만 업데이트
             updateBatteryWidgetState(context, widgetId, data)
-            val placedComponents = ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
+            val placedComponents =
+                ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             val component = placedComponents.find { it.first == widgetId }?.second
             if (component != null) {
                 val gridIndex = component.gridIndex
@@ -84,7 +84,7 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
     }
 
     override suspend fun syncState(context: Context, data: BatteryData) {
-//        val batteryData = BatteryComponentDataStore.loadData(context)
+        BatteryComponentDataStore.saveData(context, data)
         ComponentUpdateHelper.findPlacedComponents(context, widget.getWidgetTag())
             .forEach { (widgetId, _) ->
                 Log.i(TAG, "Sync widget state $widgetId $data")
@@ -103,14 +103,6 @@ object BatteryUpdateManager : ComponentUpdateManager<BatteryData> {
             pref[BatteryPreferenceKey.Level] = data.level
             pref[BatteryPreferenceKey.Charging] = data.charging
         }
-    }
-
-    fun updateAppWidget(context: Context, widgetId: Int, data: BatteryData) {
-        val remoteViews = RemoteViews(context.packageName, R.layout.glance_root_layout)
-        remoteViews.setTextViewText(R.id.batteryValue, "${data.level.toInt()}%")
-        Log.i(TAG, "update : $widgetId ${data.charging} ${R.id.batteryValue}")
-        // todo : partiallyUpdate 확인
-        AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(widgetId, remoteViews)
     }
 }
 
