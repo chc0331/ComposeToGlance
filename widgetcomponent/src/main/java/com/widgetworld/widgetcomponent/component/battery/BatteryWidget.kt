@@ -13,6 +13,7 @@ import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.component.viewid.ViewIdType
 import com.widgetworld.core.WidgetScope
 import com.widgetworld.core.frontend.Image
+import com.widgetworld.core.frontend.Spacer
 import com.widgetworld.core.frontend.Text
 import com.widgetworld.core.frontend.layout.Box
 import com.widgetworld.core.frontend.layout.Column
@@ -39,6 +40,8 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetworld.widgetcomponent.theme.FontType
+import com.widgetworld.widgetcomponent.theme.value
 
 class BatteryWidget : WidgetComponent() {
 
@@ -71,20 +74,72 @@ class BatteryWidget : WidgetComponent() {
                 verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
             }) {
                 BatteryIcon()
-                BatteryDescription()
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
+                BatteryLabel()
                 BatteryText()
             }
         }
     }
 
-    private fun WidgetScope.BatteryDescription() {
+    private fun WidgetScope.BatteryIcon() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
+        val size = getLocal(WidgetLocalSize) as DpSize
+        val iconSize = size.height.value * 0.3f
+        Box(
+            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+            contentProperty = {
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
+            }
+        ) {
+            Image(
+                modifier = WidgetModifier.width(iconSize).height(iconSize),
+                contentProperty = {
+                    Provider {
+                        drawableResId = R.drawable.ic_mobile_device
+                    }
+                    TintColor {
+                        argb = iconColor
+                    }
+                }
+            )
+            ChargingIcon(iconSize = iconSize)
+        }
+    }
+
+    private fun WidgetScope.ChargingIcon(iconSize: Float) {
+        val context = getLocal(WidgetLocalContext) as Context
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val iconColor = theme.primary.getColor(context).toArgb()
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        Image(
+            modifier = WidgetModifier
+                .viewId(getChargingIconId(gridIndex))
+                .height(iconSize)
+                .width(iconSize)
+                .hide(!getChargingState()),
+            contentProperty = {
+                Provider {
+                    drawableResId = R.layout.battery_charging_avd
+                }
+                TintColor {
+                    argb = iconColor
+                }
+                animation = true
+                infiniteLoop = true
+            }
+        )
+    }
+
+    private fun WidgetScope.BatteryLabel() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "Battery",
-            fontSize = 12f,
+            fontSize = FontType.LabelSmall.value,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
             fontColor = Color(textColor)
         )
@@ -96,8 +151,7 @@ class BatteryWidget : WidgetComponent() {
         val textColor = theme.onSurface.getColor(context).toArgb()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val batteryValueText = "${getBatteryValue().toInt()}"
-        val size = getLocal(WidgetLocalSize) as DpSize
-        val textSize = size.height.value * 0.12f
+        val textSize = FontType.TitleMedium.value
         Row(
             modifier = WidgetModifier
                 .wrapContentWidth()
@@ -123,71 +177,12 @@ class BatteryWidget : WidgetComponent() {
                     .wrapContentWidth()
                     .wrapContentHeight()
                     .padding(bottom = 2f),
-                text = "%",
-                fontSize = textSize * 0.6f,
+                text = " %",
+                fontSize = textSize * 0.5f,
                 fontColor = Color(textColor),
                 fontWeight = FontWeight.FONT_WEIGHT_BOLD
             )
         }
-    }
-
-    private fun WidgetScope.BatteryIcon() {
-        val context = getLocal(WidgetLocalContext) as Context
-        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-        val iconColor = theme.primary.getColor(context).toArgb()
-        val size = getLocal(WidgetLocalSize) as DpSize
-        val height = size.height.value
-        Box(
-            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
-            contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }
-        ) {
-            Image(
-                modifier = WidgetModifier
-                    .width(height * 0.34f)
-                    .height(height * 0.34f),
-                contentProperty = {
-                    Provider {
-                        drawableResId = R.drawable.ic_mobile_device
-                    }
-                    TintColor {
-                        argb = iconColor
-                    }
-                }
-            )
-            ChargingIcon()
-        }
-    }
-
-    private fun WidgetScope.ChargingIcon() {
-        val context = getLocal(WidgetLocalContext) as Context
-        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-        val iconColor = theme.primary.getColor(context).toArgb()
-        fun WidgetScope.getChargingIconSize(): Float {
-            val size = getLocal(WidgetLocalSize) as DpSize
-            return size.height.value * 0.34f
-        }
-
-        val iconSize = getChargingIconSize()
-        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
-        Image(
-            modifier = WidgetModifier
-                .viewId(getChargingIconId(gridIndex))
-                .height(iconSize)
-                .width(iconSize)
-                .hide(!getChargingState()),
-            contentProperty = {
-                Provider {
-                    drawableResId = R.layout.battery_charging_avd
-                }
-                TintColor {
-                    argb = iconColor
-                }
-                animation = true
-                infiniteLoop = true
-            }
-        )
     }
 
     private fun WidgetScope.getBatteryValue(): Float {

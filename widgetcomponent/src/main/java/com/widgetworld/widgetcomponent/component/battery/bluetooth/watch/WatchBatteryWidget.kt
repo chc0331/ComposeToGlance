@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.glance.color.DynamicThemeColorProviders
+import androidx.glance.layout.Spacer
 import com.widgetworld.widgetcomponent.R
 import com.widgetworld.widgetcomponent.SizeType
 import com.widgetworld.widgetcomponent.WidgetCategory
@@ -15,9 +16,11 @@ import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.component.viewid.ViewIdType
 import com.widgetworld.core.WidgetScope
 import com.widgetworld.core.frontend.Image
+import com.widgetworld.core.frontend.Spacer
 import com.widgetworld.core.frontend.Text
 import com.widgetworld.core.frontend.layout.Box
 import com.widgetworld.core.frontend.layout.Column
+import com.widgetworld.core.frontend.layout.Row
 import com.widgetworld.core.proto.AlignmentType
 import com.widgetworld.core.proto.FontWeight
 import com.widgetworld.core.proto.HorizontalAlignment
@@ -27,6 +30,7 @@ import com.widgetworld.core.proto.modifier.backgroundColor
 import com.widgetworld.core.proto.modifier.fillMaxHeight
 import com.widgetworld.core.proto.modifier.fillMaxWidth
 import com.widgetworld.core.proto.modifier.height
+import com.widgetworld.core.proto.modifier.padding
 import com.widgetworld.core.proto.modifier.partiallyUpdate
 import com.widgetworld.core.proto.modifier.viewId
 import com.widgetworld.core.proto.modifier.width
@@ -38,6 +42,8 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetworld.widgetcomponent.theme.FontType
+import com.widgetworld.widgetcomponent.theme.value
 
 class WatchBatteryWidget : WidgetComponent() {
 
@@ -72,7 +78,8 @@ class WatchBatteryWidget : WidgetComponent() {
                 }
             ) {
                 WatchIcon()
-                WatchTitle()
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
+                WatchLabel()
                 WatchBatteryText()
             }
         }
@@ -95,7 +102,7 @@ class WatchBatteryWidget : WidgetComponent() {
         } else {
             currentState[WatchBatteryPreferenceKey.BatteryConnected] ?: false
         }
-        val height = size.height.value
+        val iconSize = size.height.value * 0.3f
 
         Box(
             modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
@@ -107,8 +114,8 @@ class WatchBatteryWidget : WidgetComponent() {
                 modifier = WidgetModifier
                     .viewId(getWatchIconId(gridIndex))
                     .partiallyUpdate(true)
-                    .width(height * 0.34f)
-                    .height(height * 0.34f),
+                    .width(iconSize)
+                    .height(iconSize),
                 contentProperty = {
                     Provider {
                         drawableResId = R.drawable.ic_bluetooth_watch
@@ -121,14 +128,14 @@ class WatchBatteryWidget : WidgetComponent() {
         }
     }
 
-    private fun WidgetScope.WatchTitle() {
+    private fun WidgetScope.WatchLabel() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "Watch",
-            fontSize = 12f,
+            fontSize = FontType.LabelSmall.value,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
             fontColor = Color(textColor)
         )
@@ -151,24 +158,42 @@ class WatchBatteryWidget : WidgetComponent() {
         } else {
             currentState[WatchBatteryPreferenceKey.BatteryConnected] ?: false
         }
-        val size = getLocal(WidgetLocalSize) as DpSize
-        val textSize = size.height.value * 0.12f
+        val textSize = FontType.TitleMedium.value
 
-        Text(
-            modifier = WidgetModifier
-                .viewId(getWatchTextId(gridIndex))
-                .partiallyUpdate(true)
-                .wrapContentWidth()
-                .wrapContentHeight(),
-            text = if (isConnected) {
-                "${batteryLevel.toInt()}%"
-            } else {
-                "--"
-            },
-            fontSize = textSize,
-            fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-            fontColor = Color(textColor)
-        )
+        Row(
+            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                verticalAlignment = VerticalAlignment.V_ALIGN_BOTTOM
+            }) {
+            Text(
+                modifier = WidgetModifier
+                    .viewId(getWatchTextId(gridIndex))
+                    .partiallyUpdate(true)
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                text = if (isConnected) {
+                    "${batteryLevel.toInt()}%"
+                } else {
+                    "__"
+                },
+                fontSize = textSize,
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD,
+                fontColor = Color(textColor)
+            )
+            Text(
+                modifier = WidgetModifier
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+                    .padding(bottom = 2f),
+                text = " %",
+                fontSize = textSize * 0.5f,
+                fontColor = Color(textColor),
+                fontWeight = FontWeight.FONT_WEIGHT_BOLD
+            )
+        }
+
+
     }
 
     override fun getViewIdTypes(): List<ViewIdType> {

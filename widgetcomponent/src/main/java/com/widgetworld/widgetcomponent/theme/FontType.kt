@@ -26,12 +26,12 @@ enum class FontType(val sp: Float) {
     TitleSmall(12f),
     
     // Body - 본문 텍스트
-    BodyLarge(14f),
+    BodyLarge(15f),
     BodyMedium(13f),
     BodySmall(12f),
     
     // Label - 라벨 텍스트
-    LabelLarge(12f),
+    LabelLarge(13f),
     LabelMedium(11f),
     LabelSmall(10f),
     
@@ -106,7 +106,7 @@ enum class FontType(val sp: Float) {
  * fontScaleFactor가 적용된 값을 반환합니다.
  * 위젯 컴포넌트에서 `FontType.LabelLarge.size` 형태로 사용 가능
  */
-val FontType.size: Float
+val FontType.value: Float
     get() = this.sp * FontType.fontScaleFactor
 
 /**
