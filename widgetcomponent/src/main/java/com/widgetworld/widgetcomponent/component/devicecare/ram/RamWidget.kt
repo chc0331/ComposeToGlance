@@ -20,6 +20,7 @@ import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 import com.widgetworld.core.WidgetScope
 import com.widgetworld.core.frontend.Image
 import com.widgetworld.core.frontend.Progress
+import com.widgetworld.core.frontend.Spacer
 import com.widgetworld.core.frontend.Text
 import com.widgetworld.core.frontend.layout.Box
 import com.widgetworld.core.frontend.layout.Column
@@ -49,6 +50,8 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetworld.widgetcomponent.theme.FontType
+import com.widgetworld.widgetcomponent.theme.value
 
 class RamWidget : WidgetComponent() {
 
@@ -94,10 +97,12 @@ class RamWidget : WidgetComponent() {
                 }
             ) {
                 RamIcon()
-                RamTitle()
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
+                RamLabel()
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
                 RamUsageProgress(
                     modifier = WidgetModifier.fillMaxWidth().height(
-                        localSize.height.value * 0.2f
+                        localSize.height.value * 0.24f
                     )
                 )
             }
@@ -114,7 +119,7 @@ class RamWidget : WidgetComponent() {
         val iconColor = theme.primary.getColor(context).toArgb()
         val size = getLocal(WidgetLocalSize) as DpSize
         val height = size.height.value
-        val iconSize = height * 0.34f
+        val iconSize = height * 0.3f
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         Box(
             modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
@@ -153,14 +158,14 @@ class RamWidget : WidgetComponent() {
         }
     }
 
-    private fun WidgetScope.RamTitle() {
+    private fun WidgetScope.RamLabel() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
 
         Text(
             text = "RAM",
-            fontSize = 12f,
+            fontSize = FontType.LabelSmall.value,
             fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
             fontColor = Color(textColor)
         )
@@ -220,7 +225,7 @@ class RamWidget : WidgetComponent() {
                         generateViewId(RamViewIdType.Text, gridIndex)
                     ).partiallyUpdate(true),
                     text = "${String.format("%.1f", currentRamUsage)}%",
-                    fontSize = 8f,
+                    fontSize = FontType.Caption.value,
                     fontWeight = FontWeight.FONT_WEIGHT_BOLD,
                     fontColor = Color(textColor)
                 )
