@@ -31,12 +31,12 @@ enum class FontType(val sp: Float) {
     BodySmall(12f),
     
     // Label - 라벨 텍스트
-    LabelLarge(13f),
-    LabelMedium(11f),
-    LabelSmall(10f),
+    LabelLarge(11f),
+    LabelMedium(10f),
+    LabelSmall(8f),
     
     // Caption - 작은 설명 텍스트
-    Caption(10f);
+    Caption(8f);
     
     companion object {
         private const val TAG = "FontType"

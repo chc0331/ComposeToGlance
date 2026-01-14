@@ -94,6 +94,14 @@
             android:theme="@style/Theme.WidgetActionDialog" />
 
         <activity
+            android:name=".component.devicecare.datausage.DataUsageLimitDialogActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/Theme.WidgetActionDialog" />
+
+        <activity
             android:name=".component.reminder.today.ui.TodoActivity"
             android:excludeFromRecents="true"
             android:exported="false"

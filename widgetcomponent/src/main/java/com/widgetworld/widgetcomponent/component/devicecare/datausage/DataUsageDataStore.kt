@@ -10,9 +10,16 @@ import com.widgetworld.widgetcomponent.component.datastore.ComponentDataStore
 import kotlinx.coroutines.flow.first
 
 internal object DataUsagePreferenceKey {
+    // Legacy keys (for backward compatibility)
     val DataLimitBytes = longPreferencesKey("data_limit_bytes")
     val CurrentUsageBytes = longPreferencesKey("current_usage_bytes")
     val UsagePercent = longPreferencesKey("usage_percent")
+    // Wi-Fi keys
+    val WifiLimitBytes = longPreferencesKey("wifi_limit_bytes")
+    val WifiUsageBytes = longPreferencesKey("wifi_usage_bytes")
+    // Mobile Data keys
+    val MobileLimitBytes = longPreferencesKey("mobile_limit_bytes")
+    val MobileUsageBytes = longPreferencesKey("mobile_usage_bytes")
 }
 
 object DataUsageDataStore : ComponentDataStore<DataUsageData>() {
@@ -25,28 +32,49 @@ object DataUsageDataStore : ComponentDataStore<DataUsageData>() {
 
     override suspend fun saveData(context: Context, data: DataUsageData) {
         context.dataUsageDataStore.edit { preferences ->
+            // Legacy fields (for backward compatibility)
             preferences[DataUsagePreferenceKey.DataLimitBytes] = data.dataLimitBytes
             preferences[DataUsagePreferenceKey.CurrentUsageBytes] = data.currentUsageBytes
             preferences[DataUsagePreferenceKey.UsagePercent] = data.usagePercent.toLong()
+            // Wi-Fi fields
+            preferences[DataUsagePreferenceKey.WifiLimitBytes] = data.wifiLimitBytes
+            preferences[DataUsagePreferenceKey.WifiUsageBytes] = data.wifiUsageBytes
+            // Mobile Data fields
+            preferences[DataUsagePreferenceKey.MobileLimitBytes] = data.mobileLimitBytes
+            preferences[DataUsagePreferenceKey.MobileUsageBytes] = data.mobileUsageBytes
         }
     }
 
     override suspend fun loadData(context: Context): DataUsageData {
         val preferences = context.dataUsageDataStore.data.first()
-        val dataLimitBytes = preferences[DataUsagePreferenceKey.DataLimitBytes]
+        
+        // Load Wi-Fi data (with fallback to legacy or default)
+        val wifiLimitBytes = preferences[DataUsagePreferenceKey.WifiLimitBytes]
+            ?: preferences[DataUsagePreferenceKey.DataLimitBytes]
             ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
-        val currentUsageBytes = preferences[DataUsagePreferenceKey.CurrentUsageBytes] ?: 0L
+        val wifiUsageBytes = preferences[DataUsagePreferenceKey.WifiUsageBytes] ?: 0L
+        
+        // Load Mobile Data (with fallback to legacy or default)
+        val mobileLimitBytes = preferences[DataUsagePreferenceKey.MobileLimitBytes]
+            ?: preferences[DataUsagePreferenceKey.DataLimitBytes]
+            ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
+        val mobileUsageBytes = preferences[DataUsagePreferenceKey.MobileUsageBytes] ?: 0L
         
         return DataUsageData.create(
-            currentUsageBytes = currentUsageBytes,
-            dataLimitBytes = dataLimitBytes
+            wifiUsageBytes = wifiUsageBytes,
+            wifiLimitBytes = wifiLimitBytes,
+            mobileUsageBytes = mobileUsageBytes,
+            mobileLimitBytes = mobileLimitBytes
         )
     }
 
     override fun getDefaultData(): DataUsageData {
+        val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
         return DataUsageData.create(
-            currentUsageBytes = 0L,
-            dataLimitBytes = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+            wifiUsageBytes = 0L,
+            wifiLimitBytes = defaultLimit,
+            mobileUsageBytes = 0L,
+            mobileLimitBytes = defaultLimit
         )
     }
 }

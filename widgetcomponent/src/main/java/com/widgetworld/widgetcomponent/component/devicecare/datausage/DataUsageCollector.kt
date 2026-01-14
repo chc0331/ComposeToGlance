@@ -13,7 +13,7 @@ object DataUsageCollector {
 
     /**
      * 이번 달 1일 0시부터 현재까지의 데이터 사용량을 수집합니다.
-     * 모바일 데이터와 WiFi 데이터를 합산합니다.
+     * 모바일 데이터와 WiFi 데이터를 별도로 수집합니다.
      * 
      * @param context Context
      * @return DataUsageData (권한이 없거나 오류 발생 시 기본값 반환)
@@ -21,9 +21,12 @@ object DataUsageCollector {
     fun collect(context: Context): DataUsageData {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             Log.w(TAG, "NetworkStatsManager requires API 23+")
+            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
             return DataUsageData.create(
-                currentUsageBytes = 0L,
-                dataLimitBytes = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                wifiUsageBytes = 0L,
+                wifiLimitBytes = defaultLimit,
+                mobileUsageBytes = 0L,
+                mobileLimitBytes = defaultLimit
             )
         }
 
@@ -32,9 +35,12 @@ object DataUsageCollector {
                 as? NetworkStatsManager
                 ?: run {
                     Log.e(TAG, "NetworkStatsManager service not available")
+                    val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
                     return DataUsageData.create(
-                        currentUsageBytes = 0L,
-                        dataLimitBytes = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                        wifiUsageBytes = 0L,
+                        wifiLimitBytes = defaultLimit,
+                        mobileUsageBytes = 0L,
+                        mobileLimitBytes = defaultLimit
                     )
                 }
 
@@ -64,37 +70,48 @@ object DataUsageCollector {
                 endTime
             )
 
-            val totalBytes = mobileBytes + wifiBytes
-
-            Log.d(TAG, "Data usage collected: Mobile=$mobileBytes, WiFi=$wifiBytes, Total=$totalBytes")
+            Log.d(TAG, "Data usage collected: Mobile=$mobileBytes, WiFi=$wifiBytes")
 
             // DataStore에서 제한량 로드
-            val dataLimitBytes = try {
+            var wifiLimitBytes: Long
+            var mobileLimitBytes: Long
+            try {
                 val dataStore = DataUsageDataStore
                 val currentData = kotlinx.coroutines.runBlocking {
                     dataStore.loadData(context)
                 }
-                currentData.dataLimitBytes
+                wifiLimitBytes = currentData.wifiLimitBytes
+                mobileLimitBytes = currentData.mobileLimitBytes
             } catch (e: Exception) {
-                Log.w(TAG, "Failed to load data limit, using default", e)
-                DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                Log.w(TAG, "Failed to load data limits, using default", e)
+                val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                wifiLimitBytes = defaultLimit
+                mobileLimitBytes = defaultLimit
             }
 
             DataUsageData.create(
-                currentUsageBytes = totalBytes,
-                dataLimitBytes = dataLimitBytes
+                wifiUsageBytes = wifiBytes,
+                wifiLimitBytes = wifiLimitBytes,
+                mobileUsageBytes = mobileBytes,
+                mobileLimitBytes = mobileLimitBytes
             )
         } catch (e: SecurityException) {
             Log.w(TAG, "PACKAGE_USAGE_STATS permission not granted", e)
+            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
             DataUsageData.create(
-                currentUsageBytes = 0L,
-                dataLimitBytes = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                wifiUsageBytes = 0L,
+                wifiLimitBytes = defaultLimit,
+                mobileUsageBytes = 0L,
+                mobileLimitBytes = defaultLimit
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to collect data usage", e)
+            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
             DataUsageData.create(
-                currentUsageBytes = 0L,
-                dataLimitBytes = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+                wifiUsageBytes = 0L,
+                wifiLimitBytes = defaultLimit,
+                mobileUsageBytes = 0L,
+                mobileLimitBytes = defaultLimit
             )
         }
     }

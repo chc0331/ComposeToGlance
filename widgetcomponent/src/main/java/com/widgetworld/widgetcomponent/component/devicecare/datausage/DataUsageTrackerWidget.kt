@@ -2,6 +2,7 @@ package com.widgetworld.widgetcomponent.component.devicecare.datausage
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
@@ -10,6 +11,9 @@ import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.color.DynamicThemeColorProviders
 import androidx.glance.state.PreferencesGlanceStateDefinition
+import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Locale
 import com.widgetworld.widgetcomponent.R
 import com.widgetworld.widgetcomponent.SizeType
 import com.widgetworld.widgetcomponent.WidgetCategory
@@ -19,8 +23,10 @@ import com.widgetworld.widgetcomponent.component.update.ComponentUpdateManager
 import com.widgetworld.widgetcomponent.component.viewid.ViewIdType
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 import com.widgetworld.core.WidgetScope
+import com.widgetworld.core.frontend.Button
 import com.widgetworld.core.frontend.Image
 import com.widgetworld.core.frontend.Progress
+import com.widgetworld.core.frontend.Spacer
 import com.widgetworld.core.frontend.Text
 import com.widgetworld.core.frontend.layout.Box
 import com.widgetworld.core.frontend.layout.Column
@@ -33,6 +39,7 @@ import com.widgetworld.core.proto.VerticalAlignment
 import com.widgetworld.core.proto.modifier.WidgetModifier
 import com.widgetworld.core.proto.modifier.backgroundColor
 import com.widgetworld.core.proto.modifier.cornerRadius
+import com.widgetworld.core.proto.modifier.expandWidth
 import com.widgetworld.core.proto.modifier.fillMaxHeight
 import com.widgetworld.core.proto.modifier.fillMaxWidth
 import com.widgetworld.core.proto.modifier.height
@@ -49,6 +56,15 @@ import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalPreview
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalSize
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalState
 import com.widgetworld.core.widget.widgetlocalprovider.WidgetLocalTheme
+import com.widgetworld.widgetcomponent.component.devicecare.datausage.DataUsageLimitAction
+import com.widgetworld.widgetcomponent.theme.FontType
+import com.widgetworld.widgetcomponent.theme.value
+import com.widgetworld.core.widget.action.WidgetActionParameters
+import com.widgetworld.core.widget.action.WidgetActionCallbackBroadcastReceiver
+import com.widgetworld.core.widget.action.RunWidgetCallbackAction
+import com.widgetworld.core.widget.action.widgetActionParametersOf
+import com.widgetworld.core.proto.modifier.clickAction
+import com.widgetworld.widgetcomponent.action.CustomWidgetActionCallbackBroadcastReceiver
 
 class DataUsageTrackerWidget : WidgetComponent() {
 
@@ -58,7 +74,7 @@ class DataUsageTrackerWidget : WidgetComponent() {
 
     override fun getWidgetCategory(): WidgetCategory = WidgetCategory.DEVICE_STATUS
 
-    override fun getSizeType(): SizeType = SizeType.TINY
+    override fun getSizeType(): SizeType = SizeType.SMALL
 
     override fun getWidgetTag(): String = "DataUsage"
 
@@ -67,15 +83,13 @@ class DataUsageTrackerWidget : WidgetComponent() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val backgroundColor = theme.surface.getColor(context).toArgb()
-        val widgetId = getLocal(WidgetLocalGlanceId) as AppWidgetId?
-        val localSize = getLocal(WidgetLocalSize) as DpSize
-        val isPreview = getLocal(WidgetLocalPreview) as Boolean
 
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .backgroundColor(backgroundColor),
+                .backgroundColor(backgroundColor)
+                .padding(horizontal = 6f, vertical = 2f),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
@@ -83,17 +97,337 @@ class DataUsageTrackerWidget : WidgetComponent() {
             Column(
                 modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
                 contentProperty = {
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_CENTER
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                DataUsageIcon()
-                DataUsageTitle()
-                DataUsageProgress(
-                    modifier = WidgetModifier.fillMaxWidth().height(
-                        localSize.height.value * 0.2f
-                    )
+                WifiSection()
+                MobileDataSection()
+            }
+            // Date range text in top right
+            DateRangeText()
+        }
+    }
+
+    private fun WidgetScope.WifiSection() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val localSize = getLocal(WidgetLocalSize) as DpSize
+        val dataUsageData = getDataUsageValue()
+
+        Row(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = 4f),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+            }
+        ) {
+            // Wi-Fi Icon
+            val iconColor = theme.primary.getColor(context).toArgb()
+            val iconSize = localSize.height.value * 0.24f
+
+            Image(
+                modifier = WidgetModifier
+                    .width(iconSize)
+                    .height(iconSize)
+                    .padding(2f),
+                contentProperty = {
+                    Provider {
+                        drawableResId = R.drawable.ic_wifi
+                    }
+                    TintColor {
+                        argb = iconColor
+                    }
+                }
+            )
+            Spacer(modifier = WidgetModifier.wrapContentHeight().width(4f))
+            // Wi-Fi Content Column
+            Column(
+                modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                }
+            ) {
+                // Wi-Fi Title
+                val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
+                Text(
+                    modifier = WidgetModifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
+                    text = "Wi-Fi",
+                    fontSize = FontType.TitleSmall.value,
+                    fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+                    fontColor = Color(textColor)
                 )
+
+                // Progress Bar with Percentage
+                Box(
+                    modifier = WidgetModifier
+                        .fillMaxWidth()
+                        .height(8f)
+                        .padding(top = 2f, bottom = 2f),
+                    contentProperty = {
+                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
+                    }
+                ) {
+                    val progressColor = theme.primary.getColor(context).toArgb()
+                    val progressBgColor = theme.surfaceVariant.getColor(context).toArgb()
+
+                    Progress(
+                        modifier = WidgetModifier
+                            .width(100f)
+                            .height(3f)
+                            .viewId(generateViewId(DataUsageViewIdType.WifiProgress, gridIndex))
+                            .partiallyUpdate(true)
+                            .cornerRadius(context.getSystemBackgroundRadius().value),
+                        contentProperty = {
+                            progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                            progressValue = dataUsageData.wifiUsagePercent
+                            maxValue = 100f
+                            ProgressColor {
+                                Color {
+                                    argb = progressColor
+                                }
+                            }
+                            BackgroundColor {
+                                Color {
+                                    argb = progressBgColor
+                                }
+                            }
+                        }
+                    )
+                }
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
+                // Usage Text with Limit Button
+                Row(
+                    modifier = WidgetModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    contentProperty = {
+                        horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                        verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                    }
+                ) {
+                    Text(
+                        modifier = WidgetModifier
+                            .wrapContentWidth()
+                            .wrapContentHeight()
+                            .viewId(generateViewId(DataUsageViewIdType.WifiUsageText, gridIndex))
+                            .partiallyUpdate(true),
+                        text = String.format(
+                            "%.1fGB / %.1fGB",
+                            dataUsageData.wifiUsageGb,
+                            dataUsageData.wifiLimitGb
+                        ),
+                        fontSize = FontType.Caption.value,
+                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                        fontColor = Color(theme.onSurface.getColor(context).toArgb())
+                    )
+                    val glanceId = getLocal(WidgetLocalGlanceId)
+                    val appWidgetId = glanceId?.let { 
+                        androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(it)
+                    } ?: -1
+                    if (appWidgetId != -1) {
+                        Button(
+                            modifier = WidgetModifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
+                                .viewId(generateViewId(DataUsageViewIdType.WifiLimitButton, gridIndex))
+                                .clickAction(
+                                    context,
+                                    RunWidgetCallbackAction(
+                                        CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                                        DataUsageLimitAction::class.java,
+                                        widgetActionParametersOf(
+                                            WidgetActionParameters.Key<String>("actionClass") to DataUsageLimitAction::class.java.canonicalName,
+                                            WidgetActionParameters.Key<Int>("widgetId") to appWidgetId,
+                                            WidgetActionParameters.Key<String>(DataUsageLimitAction.PARAM_LIMIT_TYPE) to "wifi",
+                                            WidgetActionParameters.Key<Int>(DataUsageLimitAction.PARAM_WIDGET_ID) to appWidgetId
+                                        )
+                                    )
+                                ),
+                            contentProperty = {
+                                Text {
+                                    text = "⚙"
+                                }
+                                fontSize = 8f
+                                FontColor {
+                                    Color {
+                                        argb = theme.primary.getColor(context).toArgb()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun WidgetScope.MobileDataSection() {
+        val context = getLocal(WidgetLocalContext) as Context
+        val dataUsageData = getDataUsageValue()
+        val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val localSize = getLocal(WidgetLocalSize) as DpSize
+
+        Row(
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            contentProperty = {
+                horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+            }
+        ) {
+            // Mobile Data Icon
+            val iconColor = theme.primary.getColor(context).toArgb()
+            val iconSize = localSize.height.value * 0.24f
+
+            Image(
+                modifier = WidgetModifier
+                    .width(iconSize)
+                    .height(iconSize)
+                    .padding(2f)
+                    .viewId(generateViewId(DataUsageViewIdType.MobileIcon, gridIndex)),
+                contentProperty = {
+                    Provider {
+                        drawableResId = R.drawable.ic_mobile_data
+                    }
+                    TintColor {
+                        argb = iconColor
+                    }
+                }
+            )
+            Spacer(modifier = WidgetModifier.wrapContentHeight().width(4f))
+            // Mobile Data Content Column
+            Column(
+                modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(),
+                contentProperty = {
+                    horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                    verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                }
+            ) {
+                // Mobile Data Title
+                val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
+                Text(
+                    modifier = WidgetModifier
+                        .wrapContentWidth()
+                        .wrapContentHeight()
+                        .viewId(generateViewId(DataUsageViewIdType.MobileTitle, gridIndex))
+                        .partiallyUpdate(true),
+                    text = "Mobile Data",
+                    fontSize = FontType.TitleSmall.value,
+                    fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
+                    fontColor = Color(textColor)
+                )
+
+                // Progress Bar with Percentage
+                Box(
+                    modifier = WidgetModifier
+                        .fillMaxWidth()
+                        .height(8f)
+                        .padding(top = 2f, bottom = 2f),
+                    contentProperty = {
+                        contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
+                    }
+                ) {
+                    val progressColor = theme.primary.getColor(context).toArgb()
+                    val progressBgColor = theme.surfaceVariant.getColor(context).toArgb()
+
+                    Progress(
+                        modifier = WidgetModifier
+                            .width(100f)
+                            .height(3f)
+                            .viewId(generateViewId(DataUsageViewIdType.MobileProgress, gridIndex))
+                            .partiallyUpdate(true)
+                            .cornerRadius(context.getSystemBackgroundRadius().value),
+                        contentProperty = {
+                            progressType = ProgressType.PROGRESS_TYPE_LINEAR
+                            progressValue = dataUsageData.mobileUsagePercent
+                            maxValue = 100f
+                            ProgressColor {
+                                Color {
+                                    argb = progressColor
+                                }
+                            }
+                            BackgroundColor {
+                                Color {
+                                    argb = progressBgColor
+                                }
+                            }
+                        }
+                    )
+                }
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
+                // Usage Text with Limit Button
+                Row(
+                    modifier = WidgetModifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    contentProperty = {
+                        horizontalAlignment = HorizontalAlignment.H_ALIGN_START
+                        verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
+                    }
+                ) {
+                    Text(
+                        modifier = WidgetModifier
+                            .wrapContentWidth()
+                            .wrapContentHeight()
+                            .viewId(generateViewId(DataUsageViewIdType.MobileUsageText, gridIndex))
+                            .partiallyUpdate(true),
+                        text = String.format(
+                            "%.1fGB / %.1fGB",
+                            dataUsageData.mobileUsageGb,
+                            dataUsageData.mobileLimitGb
+                        ),
+                        fontSize = FontType.Caption.value,
+                        fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                        fontColor = Color(theme.onSurface.getColor(context).toArgb())
+                    )
+                    val glanceId = getLocal(WidgetLocalGlanceId)
+                    val appWidgetId = glanceId?.let { 
+                        androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(it)
+                    } ?: -1
+                    if (appWidgetId != -1) {
+                        //
+                        Button(
+                            modifier = WidgetModifier
+                                .wrapContentWidth()
+                                .wrapContentHeight()
+                                .viewId(generateViewId(DataUsageViewIdType.MobileLimitButton, gridIndex))
+                                .clickAction(
+                                    context,
+                                    RunWidgetCallbackAction(
+                                        CustomWidgetActionCallbackBroadcastReceiver::class.java,
+                                        DataUsageLimitAction::class.java,
+                                        widgetActionParametersOf(
+                                            WidgetActionParameters.Key<String>("actionClass") to DataUsageLimitAction::class.java.canonicalName,
+                                            WidgetActionParameters.Key<Int>("widgetId") to appWidgetId,
+                                            WidgetActionParameters.Key<String>(DataUsageLimitAction.PARAM_LIMIT_TYPE) to "mobile",
+                                            WidgetActionParameters.Key<Int>(DataUsageLimitAction.PARAM_WIDGET_ID) to appWidgetId
+                                        )
+                                    )
+                                ),
+                            contentProperty = {
+                                Text {
+                                    text = "⚙"
+                                }
+                                fontSize = 8f
+                                FontColor {
+                                    Color {
+                                        argb = theme.primary.getColor(context).toArgb()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -102,137 +436,89 @@ class DataUsageTrackerWidget : WidgetComponent() {
 
     override fun getDataStore(): ComponentDataStore<*> = DataUsageDataStore
 
-    private fun WidgetScope.DataUsageIcon() {
+    private fun WidgetScope.DateRangeText() {
         val context = getLocal(WidgetLocalContext) as Context
-        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-        val iconColor = theme.primary.getColor(context).toArgb()
-        val size = getLocal(WidgetLocalSize) as DpSize
-        val height = size.height.value
-        val iconSize = height * 0.34f
-
-        Box(
-            modifier = WidgetModifier.wrapContentWidth().wrapContentHeight(),
-            contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
-            }
-        ) {
-            Image(
-                modifier = WidgetModifier
-                    .width(iconSize)
-                    .height(iconSize),
-                contentProperty = {
-                    Provider {
-                        drawableResId = R.drawable.ic_data_usage
-                    }
-                    TintColor {
-                        argb = iconColor
-                    }
-                }
-            )
-        }
-    }
-
-    private fun WidgetScope.DataUsageTitle() {
-        val context = getLocal(WidgetLocalContext) as Context
-        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-        val textColor = theme.onSurfaceVariant.getColor(context).toArgb()
-
-        Text(
-            text = "Data Usage",
-            fontSize = 12f,
-            fontWeight = FontWeight.FONT_WEIGHT_MEDIUM,
-            fontColor = Color(textColor)
-        )
-    }
-
-    private fun WidgetScope.DataUsageProgress(modifier: WidgetModifier = WidgetModifier) {
-        val context = getLocal(WidgetLocalContext) as Context
-        val dataUsageData = getDataUsageValue()
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
+        val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
+        val dateRange = getCurrentMonthDateRange()
 
         Box(
-            modifier = modifier.padding(horizontal = 8f, vertical = 2f),
+            modifier = WidgetModifier
+                .fillMaxWidth()
+                .fillMaxHeight().padding(end = 2f, top = 2f),
             contentProperty = {
-                contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER_START
+                contentAlignment = AlignmentType.ALIGNMENT_TYPE_TOP_END
             }
         ) {
-            val progressWidth = (getLocal(WidgetLocalSize) as DpSize).width - (8.dp * 2)
-            val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-            val progressColor = theme.primary.getColor(context).toArgb()
-            val progressBgColor = theme.surfaceVariant.getColor(context).toArgb()
-
-            Progress(
+            Text(
                 modifier = WidgetModifier
-                    .width(progressWidth.value)
-                    .fillMaxHeight()
-                    .viewId(generateViewId(DataUsageViewIdType.Progress, gridIndex))
-                    .partiallyUpdate(true)
-                    .cornerRadius(context.getSystemBackgroundRadius().value),
-                contentProperty = {
-                    progressType = ProgressType.PROGRESS_TYPE_LINEAR
-                    progressValue = dataUsageData.usagePercent
-                    maxValue = 100f
-                    ProgressColor {
-                        Color {
-                            argb = progressColor
-                        }
-                    }
-                    BackgroundColor {
-                        Color {
-                            argb = progressBgColor
-                        }
-                    }
-                }
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+                    .viewId(generateViewId(DataUsageViewIdType.DateRangeText, gridIndex))
+                    .partiallyUpdate(true),
+                text = dateRange,
+                fontSize = FontType.Caption.value,
+                fontWeight = FontWeight.FONT_WEIGHT_NORMAL,
+                fontColor = Color(theme.onSurfaceVariant.getColor(context).toArgb())
             )
-            Row(
-                modifier = WidgetModifier.fillMaxWidth().wrapContentHeight().padding(end = 4f),
-                contentProperty = {
-                    horizontalAlignment = HorizontalAlignment.H_ALIGN_END
-                }
-            ) {
-                val textColor = theme.onSurface.getColor(context).toArgb()
-
-                Text(
-                    modifier = WidgetModifier
-                        .wrapContentWidth()
-                        .wrapContentHeight()
-                        .viewId(generateViewId(DataUsageViewIdType.Text, gridIndex))
-                        .partiallyUpdate(true),
-                    text = String.format("%.1f GB / %.1f GB", dataUsageData.currentUsageGb, dataUsageData.dataLimitGb),
-                    fontSize = 8f,
-                    fontWeight = FontWeight.FONT_WEIGHT_BOLD,
-                    fontColor = Color(textColor)
-                )
-            }
         }
+    }
+
+    private fun getCurrentMonthDateRange(): String {
+        val dateFormat = SimpleDateFormat("M월 d일", Locale.KOREAN)
+        val startDate = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val endDate = Calendar.getInstance()
+
+        val startDateStr = dateFormat.format(startDate.time)
+        val endDateStr = dateFormat.format(endDate.time)
+
+        return "$startDateStr - $endDateStr"
     }
 
     private fun WidgetScope.getDataUsageValue(): DataUsageData {
         val currentState = getLocal(WidgetLocalState)
         val isPreview = getLocal(WidgetLocalPreview) ?: false
-        
+
         if (isPreview) {
             // Preview 모드: 샘플 데이터
+            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
             return DataUsageData.create(
-                currentUsageBytes = 2L * 1024 * 1024 * 1024, // 2GB
-                dataLimitBytes = 5L * 1024 * 1024 * 1024 // 5GB
+                wifiUsageBytes = 3L * 1024 * 1024 * 1024 + 512L * 1024 * 1024, // 3.5GB
+                wifiLimitBytes = defaultLimit, // 5GB
+                mobileUsageBytes = 2L * 1024 * 1024 * 1024, // 2GB
+                mobileLimitBytes = defaultLimit // 5GB
             )
         }
 
         return currentState?.let { state ->
-            val dataLimitBytes = state[DataUsagePreferenceKey.DataLimitBytes]
+            val wifiLimitBytes = state[DataUsagePreferenceKey.WifiLimitBytes]
+                ?: state[DataUsagePreferenceKey.DataLimitBytes]
                 ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
-            val currentUsageBytes = state[DataUsagePreferenceKey.CurrentUsageBytes] ?: 0L
-            
+            val wifiUsageBytes = state[DataUsagePreferenceKey.WifiUsageBytes] ?: 0L
+
+            val mobileLimitBytes = state[DataUsagePreferenceKey.MobileLimitBytes]
+                ?: state[DataUsagePreferenceKey.DataLimitBytes]
+                ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
+            val mobileUsageBytes = state[DataUsagePreferenceKey.MobileUsageBytes] ?: 0L
+
             DataUsageData.create(
-                currentUsageBytes = currentUsageBytes,
-                dataLimitBytes = dataLimitBytes
+                wifiUsageBytes = wifiUsageBytes,
+                wifiLimitBytes = wifiLimitBytes,
+                mobileUsageBytes = mobileUsageBytes,
+                mobileLimitBytes = mobileLimitBytes
             )
-        } ?: DataUsageData.getDefaultData()
+        } ?: DataUsageDataStore.getDefaultData()
     }
 
     override fun getViewIdTypes(): List<ViewIdType> = DataUsageViewIdType.all()
 
+    // Legacy methods (for backward compatibility)
     fun getDataUsageTextId(gridIndex: Int): Int {
         return generateViewId(DataUsageViewIdType.Text, gridIndex)
     }
@@ -240,13 +526,51 @@ class DataUsageTrackerWidget : WidgetComponent() {
     fun getDataUsageProgressId(gridIndex: Int): Int {
         return generateViewId(DataUsageViewIdType.Progress, gridIndex)
     }
-}
 
-// Extension function for default data
-private fun DataUsageData.Companion.getDefaultData(): DataUsageData {
-    return create(
-        currentUsageBytes = 0L,
-        dataLimitBytes = DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
-    )
+    // Wi-Fi section view ID getters
+    fun getWifiIconId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.WifiIcon, gridIndex)
+    }
+
+    fun getWifiTitleId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.WifiTitle, gridIndex)
+    }
+
+    fun getWifiProgressId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.WifiProgress, gridIndex)
+    }
+
+    fun getWifiPercentId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.WifiPercent, gridIndex)
+    }
+
+    fun getWifiUsageTextId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.WifiUsageText, gridIndex)
+    }
+
+    // Mobile Data section view ID getters
+    fun getMobileIconId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.MobileIcon, gridIndex)
+    }
+
+    fun getMobileTitleId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.MobileTitle, gridIndex)
+    }
+
+    fun getMobileProgressId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.MobileProgress, gridIndex)
+    }
+
+    fun getMobilePercentId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.MobilePercent, gridIndex)
+    }
+
+    fun getMobileUsageTextId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.MobileUsageText, gridIndex)
+    }
+
+    fun getDateRangeTextId(gridIndex: Int): Int {
+        return generateViewId(DataUsageViewIdType.DateRangeText, gridIndex)
+    }
 }
 
