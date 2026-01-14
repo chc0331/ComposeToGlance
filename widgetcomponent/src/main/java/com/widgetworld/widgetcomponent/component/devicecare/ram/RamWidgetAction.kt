@@ -13,7 +13,6 @@ import com.widgetworld.core.widget.action.WidgetActionCallback
 import com.widgetworld.core.widget.action.WidgetActionParameters
 import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RamWidgetAction : WidgetActionCallback {
@@ -32,6 +31,7 @@ class RamWidgetAction : WidgetActionCallback {
                 updateRamMemory(context)
             }
             launch {
+                //todo : 최적화를 하고나서 업데이트 타이밍은 언제하는게 좋을까
                 launchSettingScreen(context)
             }
         }

@@ -102,7 +102,7 @@ class RamWidget : WidgetComponent() {
                 Spacer(modifier = WidgetModifier.fillMaxWidth().height(1f))
                 RamUsageProgress(
                     modifier = WidgetModifier.fillMaxWidth().height(
-                        localSize.height.value * 0.24f
+                        localSize.height.value * 0.23f
                     )
                 )
             }
@@ -185,7 +185,7 @@ class RamWidget : WidgetComponent() {
             val progressWidth = (getLocal(WidgetLocalSize) as DpSize).width - (8.dp * 2)
             val context = getLocal(WidgetLocalContext) as Context
             val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
-            val progressColor = theme.primary.getColor(context).toArgb()
+            val progressColor = theme.primary.getColor(context).copy(0.85f).toArgb()
             val progressBgColor = theme.surfaceVariant.getColor(context).toArgb()
 
             Progress(
