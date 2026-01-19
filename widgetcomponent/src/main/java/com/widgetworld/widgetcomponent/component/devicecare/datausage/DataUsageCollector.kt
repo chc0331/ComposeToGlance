@@ -14,7 +14,7 @@ object DataUsageCollector {
     /**
      * 이번 달 1일 0시부터 현재까지의 데이터 사용량을 수집합니다.
      * 모바일 데이터와 WiFi 데이터를 별도로 수집합니다.
-     * 
+     *
      * @param context Context
      * @return DataUsageData (권한이 없거나 오류 발생 시 기본값 반환)
      */
@@ -32,7 +32,7 @@ object DataUsageCollector {
 
         return try {
             val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE)
-                as? NetworkStatsManager
+                    as? NetworkStatsManager
                 ?: run {
                     Log.e(TAG, "NetworkStatsManager service not available")
                     val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
@@ -45,12 +45,7 @@ object DataUsageCollector {
                 }
 
             // 이번 달 1일 0시 0분 0초 계산
-            val calendar = Calendar.getInstance()
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
+            val calendar = getStartDayAtCurrentMonth()
             val startTime = calendar.timeInMillis
             val endTime = System.currentTimeMillis()
 
@@ -142,6 +137,16 @@ object DataUsageCollector {
         } catch (e: Exception) {
             Log.e(TAG, "Error querying network stats for type $networkType", e)
             0L
+        }
+    }
+
+    private fun getStartDayAtCurrentMonth(): Calendar {
+        return Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
         }
     }
 }

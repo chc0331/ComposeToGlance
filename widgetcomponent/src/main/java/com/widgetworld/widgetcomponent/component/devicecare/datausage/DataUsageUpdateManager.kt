@@ -162,10 +162,6 @@ object DataUsageUpdateManager : ComponentUpdateManager<DataUsageData> {
         val glanceAppWidgetManager = GlanceAppWidgetManager(context)
         val glanceId = glanceAppWidgetManager.getGlanceIdBy(widgetId)
         updateAppWidgetState(context, glanceId) { pref ->
-            // Legacy fields (for backward compatibility)
-            pref[DataUsagePreferenceKey.DataLimitBytes] = data.dataLimitBytes
-            pref[DataUsagePreferenceKey.CurrentUsageBytes] = data.currentUsageBytes
-            pref[DataUsagePreferenceKey.UsagePercent] = data.usagePercent.toLong()
             // Wi-Fi fields
             pref[DataUsagePreferenceKey.WifiLimitBytes] = data.wifiLimitBytes
             pref[DataUsagePreferenceKey.WifiUsageBytes] = data.wifiUsageBytes
