@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.KILL_BACKGROUND_PROCESSES,
             Manifest.permission.PACKAGE_USAGE_STATS,
             Manifest.permission.INTERNET,

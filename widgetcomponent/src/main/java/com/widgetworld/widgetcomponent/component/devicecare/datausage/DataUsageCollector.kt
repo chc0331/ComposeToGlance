@@ -4,6 +4,7 @@ import android.app.usage.NetworkStats
 import android.app.usage.NetworkStatsManager
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import java.util.Calendar
@@ -19,17 +20,6 @@ object DataUsageCollector {
      * @return DataUsageData (권한이 없거나 오류 발생 시 기본값 반환)
      */
     fun collect(context: Context): DataUsageData {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            Log.w(TAG, "NetworkStatsManager requires API 23+")
-            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
-            return DataUsageData.create(
-                wifiUsageBytes = 0L,
-                wifiLimitBytes = defaultLimit,
-                mobileUsageBytes = 0L,
-                mobileLimitBytes = defaultLimit
-            )
-        }
-
         return try {
             val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE)
                     as? NetworkStatsManager
@@ -52,22 +42,17 @@ object DataUsageCollector {
             // 모바일 데이터 사용량
             val mobileBytes = getNetworkUsageBytes(
                 networkStatsManager,
-                ConnectivityManager.TYPE_MOBILE,
+                NetworkCapabilities.TRANSPORT_CELLULAR,
                 startTime,
                 endTime
             )
 
             // WiFi 데이터 사용량
             val wifiBytes = getNetworkUsageBytes(
-                networkStatsManager,
-                ConnectivityManager.TYPE_WIFI,
+                networkStatsManager, NetworkCapabilities.TRANSPORT_WIFI,
                 startTime,
                 endTime
             )
-
-            Log.d(TAG, "Data usage collected: Mobile=$mobileBytes, WiFi=$wifiBytes")
-
-            // DataStore에서 제한량 로드
             var wifiLimitBytes: Long
             var mobileLimitBytes: Long
             try {
@@ -113,7 +98,12 @@ object DataUsageCollector {
 
     /**
      * 특정 네트워크 타입의 데이터 사용량을 조회합니다.
+     *
+     * Note: ConnectivityManager.TYPE_MOBILE and TYPE_WIFI are deprecated,
+     * but NetworkStatsManager.querySummaryForDevice() still requires these constants
+     * as there is no alternative API available for app developers.
      */
+    @Suppress("DEPRECATION")
     private fun getNetworkUsageBytes(
         networkStatsManager: NetworkStatsManager,
         networkType: Int,
