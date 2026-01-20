@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.glance.GlanceId
 import androidx.glance.appwidget.AppWidgetId
 import androidx.glance.appwidget.state.getAppWidgetState
 import androidx.glance.color.DynamicThemeColorProviders
@@ -86,26 +87,38 @@ class DataUsageTrackerWidget : WidgetComponent() {
         val context = getLocal(WidgetLocalContext) as Context
         val theme = getLocal(WidgetLocalTheme) ?: DynamicThemeColorProviders
         val backgroundColor = theme.surface.getColor(context).toArgb()
+        val dataUsageData = getDataUsageValue()
+
+        val glanceId = getLocal(WidgetLocalGlanceId) as? AppWidgetId
 
         Box(
             modifier = WidgetModifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .backgroundColor(backgroundColor)
-                .padding(horizontal = 6f, vertical = 2f),
+                .padding(start = 6f, end = 6f, top = 2f, bottom = 2f),
             contentProperty = {
                 contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
             }
         ) {
             Column(
-                modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
+                modifier = WidgetModifier.fillMaxWidth().fillMaxHeight().padding(top = 2f),
                 contentProperty = {
                     horizontalAlignment = HorizontalAlignment.H_ALIGN_START
                     verticalAlignment = VerticalAlignment.V_ALIGN_CENTER
                 }
             ) {
-                WifiSection(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight())
-                MobileDataSection(modifier = WidgetModifier.fillMaxWidth().wrapContentHeight())
+                WifiSection(
+                    modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(),
+                    dataUsageData = dataUsageData,
+                    appWidgetId = glanceId?.appWidgetId ?: 0
+                )
+                Spacer(modifier = WidgetModifier.fillMaxWidth().height(4f))
+                MobileDataSection(
+                    modifier = WidgetModifier.fillMaxWidth().wrapContentHeight(),
+                    dataUsageData = dataUsageData,
+                    appWidgetId = glanceId?.appWidgetId ?: 0
+                )
             }
             // Date range text in top right
             DateRangeText(modifier = WidgetModifier.fillMaxWidth().fillMaxHeight())
@@ -226,39 +239,42 @@ class DataUsageTrackerWidget : WidgetComponent() {
                     )
                 }
             }
-            Image(
-                modifier = WidgetModifier.padding(end = 4f).width(18f).height(18f).clickAction(
-                    context, action
-                ),
+            Box(
+                modifier = WidgetModifier.width(30f).height(30f)
+                    .padding(6f)
+                    .clickAction(context, action),
                 contentProperty = {
-                    Provider {
-                        drawableResId = R.drawable.ic_setting
-                    }
-                    TintColor {
-                        argb = iconColor
-                    }
+                    contentAlignment = AlignmentType.ALIGNMENT_TYPE_CENTER
                 }
-            )
+            ) {
+                Image(
+                    modifier = WidgetModifier.fillMaxWidth().fillMaxHeight(),
+                    contentProperty = {
+                        Provider {
+                            drawableResId = R.drawable.ic_setting
+                        }
+                        TintColor {
+                            argb = iconColor
+                        }
+                    }
+                )
+            }
+
         }
     }
 
-    private fun WidgetScope.WifiSection(modifier: WidgetModifier = WidgetModifier) {
-        val context = getLocal(WidgetLocalContext) as Context
+    private fun WidgetScope.WifiSection(
+        dataUsageData: DataUsageData,
+        appWidgetId: Int,
+        modifier: WidgetModifier = WidgetModifier
+    ) {
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        val dataUsageData = getDataUsageValue()
         val iconSize = localSize.height.value * 0.24f
-        val dataUsage = String.format(
-            "%.1fGB / %.1fGB",
-            dataUsageData.wifiUsageGb,
-            dataUsageData.wifiLimitGb
-        )
+        val dataUsage = getUsageStringFormat(dataUsageData.wifiUsageGb, dataUsageData.wifiLimitGb)
         val dataViewId = generateViewId(DataUsageViewIdType.WifiUsageText, gridIndex)
         val progressViewId = generateViewId(DataUsageViewIdType.WifiProgress, gridIndex)
-        val glanceId = getLocal(WidgetLocalGlanceId)
-        val appWidgetId = glanceId?.let {
-            androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(it)
-        } ?: -1
+
         val action = RunWidgetCallbackAction(
             CustomWidgetActionCallbackBroadcastReceiver::class.java,
             DataUsageLimitAction::class.java,
@@ -283,24 +299,18 @@ class DataUsageTrackerWidget : WidgetComponent() {
         )
     }
 
-    private fun WidgetScope.MobileDataSection(modifier: WidgetModifier = WidgetModifier) {
-
-        val context = getLocal(WidgetLocalContext) as Context
+    private fun WidgetScope.MobileDataSection(
+        dataUsageData: DataUsageData,
+        appWidgetId: Int,
+        modifier: WidgetModifier = WidgetModifier
+    ) {
         val gridIndex = getLocal(WidgetLocalGridIndex) as Int
         val localSize = getLocal(WidgetLocalSize) as DpSize
-        val dataUsageData = getDataUsageValue()
         val iconSize = localSize.height.value * 0.24f
-        val dataUsage = String.format(
-            "%.1fGB / %.1fGB",
-            dataUsageData.wifiUsageGb,
-            dataUsageData.wifiLimitGb
-        )
+        val dataUsage =
+            getUsageStringFormat(dataUsageData.mobileUsageGb, dataUsageData.mobileLimitGb)
         val dataViewId = generateViewId(DataUsageViewIdType.MobileUsageText, gridIndex)
         val progressViewId = generateViewId(DataUsageViewIdType.MobileProgress, gridIndex)
-        val glanceId = getLocal(WidgetLocalGlanceId)
-        val appWidgetId = glanceId?.let {
-            androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(it)
-        } ?: -1
         val action = RunWidgetCallbackAction(
             CustomWidgetActionCallbackBroadcastReceiver::class.java,
             DataUsageLimitAction::class.java,
@@ -378,24 +388,23 @@ class DataUsageTrackerWidget : WidgetComponent() {
 
         if (isPreview) {
             // Preview 모드: 샘플 데이터
-            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
+            val defaultLimit =
+                DataUsageData.DEFAULT_DATA_LIMIT_GB * DataUsageData.BYTES_TO_GB.toInt()
             return DataUsageData.create(
-                wifiUsageBytes = 3L * 1024 * 1024 * 1024 + 512L * 1024 * 1024, // 3.5GB
+                wifiUsageBytes = 3L * DataUsageData.BYTES_TO_GB.toInt() + 512L * 1024 * 1024, // 3.5GB
                 wifiLimitBytes = defaultLimit, // 5GB
-                mobileUsageBytes = 2L * 1024 * 1024 * 1024, // 2GB
+                mobileUsageBytes = 2L * DataUsageData.BYTES_TO_GB.toInt(), // 2GB
                 mobileLimitBytes = defaultLimit // 5GB
             )
         }
 
         return currentState?.let { state ->
             val wifiLimitBytes = state[DataUsagePreferenceKey.WifiLimitBytes]
-                ?: state[DataUsagePreferenceKey.DataLimitBytes]
-                ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
+                ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * DataUsageData.BYTES_TO_GB.toInt())
             val wifiUsageBytes = state[DataUsagePreferenceKey.WifiUsageBytes] ?: 0L
 
             val mobileLimitBytes = state[DataUsagePreferenceKey.MobileLimitBytes]
-                ?: state[DataUsagePreferenceKey.DataLimitBytes]
-                ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
+                ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * DataUsageData.BYTES_TO_GB.toInt())
             val mobileUsageBytes = state[DataUsagePreferenceKey.MobileUsageBytes] ?: 0L
 
             DataUsageData.create(
@@ -406,6 +415,11 @@ class DataUsageTrackerWidget : WidgetComponent() {
             )
         } ?: DataUsageDataStore.getDefaultData()
     }
+
+    @SuppressLint("DefaultLocale")
+    private fun getUsageStringFormat(usageGb: Float, limitGb: Float) = String.format(
+        "%.1fGB / %.1fGB", usageGb, limitGb
+    )
 
     override fun getViewIdTypes(): List<ViewIdType> = DataUsageViewIdType.all()
 

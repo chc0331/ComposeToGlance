@@ -10,11 +10,6 @@ import com.widgetworld.widgetcomponent.component.datastore.ComponentDataStore
 import kotlinx.coroutines.flow.first
 
 internal object DataUsagePreferenceKey {
-    // Legacy keys (for backward compatibility)
-    val DataLimitBytes = longPreferencesKey("data_limit_bytes")
-    val CurrentUsageBytes = longPreferencesKey("current_usage_bytes")
-    val UsagePercent = longPreferencesKey("usage_percent")
-
     // Wi-Fi keys
     val WifiLimitBytes = longPreferencesKey("wifi_limit_bytes")
     val WifiUsageBytes = longPreferencesKey("wifi_usage_bytes")
@@ -46,15 +41,13 @@ object DataUsageDataStore : ComponentDataStore<DataUsageData>() {
     override suspend fun loadData(context: Context): DataUsageData {
         val preferences = context.dataUsageDataStore.data.first()
 
-        // Load Wi-Fi data (with fallback to legacy or default)
+        // Load Wi-Fi data
         val wifiLimitBytes = preferences[DataUsagePreferenceKey.WifiLimitBytes]
-            ?: preferences[DataUsagePreferenceKey.DataLimitBytes]
             ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
         val wifiUsageBytes = preferences[DataUsagePreferenceKey.WifiUsageBytes] ?: 0L
 
-        // Load Mobile Data (with fallback to legacy or default)
+        // Load Mobile Data
         val mobileLimitBytes = preferences[DataUsagePreferenceKey.MobileLimitBytes]
-            ?: preferences[DataUsagePreferenceKey.DataLimitBytes]
             ?: (DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024)
         val mobileUsageBytes = preferences[DataUsagePreferenceKey.MobileUsageBytes] ?: 0L
 

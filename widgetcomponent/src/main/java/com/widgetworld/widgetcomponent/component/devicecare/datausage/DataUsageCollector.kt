@@ -19,21 +19,10 @@ object DataUsageCollector {
      * @param context Context
      * @return DataUsageData (권한이 없거나 오류 발생 시 기본값 반환)
      */
-    fun collect(context: Context): DataUsageData {
+    suspend fun collect(context: Context): DataUsageData {
         return try {
-            val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE)
-                    as? NetworkStatsManager
-                ?: run {
-                    Log.e(TAG, "NetworkStatsManager service not available")
-                    val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
-                    return DataUsageData.create(
-                        wifiUsageBytes = 0L,
-                        wifiLimitBytes = defaultLimit,
-                        mobileUsageBytes = 0L,
-                        mobileLimitBytes = defaultLimit
-                    )
-                }
-
+            val networkStatsManager =
+                context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             // 이번 달 1일 0시 0분 0초 계산
             val calendar = getStartDayAtCurrentMonth()
             val startTime = calendar.timeInMillis
@@ -41,8 +30,7 @@ object DataUsageCollector {
 
             // 모바일 데이터 사용량
             val mobileBytes = getNetworkUsageBytes(
-                networkStatsManager,
-                NetworkCapabilities.TRANSPORT_CELLULAR,
+                networkStatsManager, NetworkCapabilities.TRANSPORT_CELLULAR,
                 startTime,
                 endTime
             )
@@ -53,36 +41,13 @@ object DataUsageCollector {
                 startTime,
                 endTime
             )
-            var wifiLimitBytes: Long
-            var mobileLimitBytes: Long
-            try {
-                val dataStore = DataUsageDataStore
-                val currentData = kotlinx.coroutines.runBlocking {
-                    dataStore.loadData(context)
-                }
-                wifiLimitBytes = currentData.wifiLimitBytes
-                mobileLimitBytes = currentData.mobileLimitBytes
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to load data limits, using default", e)
-                val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
-                wifiLimitBytes = defaultLimit
-                mobileLimitBytes = defaultLimit
-            }
+            val currentLimitData = DataUsageDataStore.loadData(context)
 
             DataUsageData.create(
                 wifiUsageBytes = wifiBytes,
-                wifiLimitBytes = wifiLimitBytes,
+                wifiLimitBytes = currentLimitData.wifiLimitBytes,
                 mobileUsageBytes = mobileBytes,
-                mobileLimitBytes = mobileLimitBytes
-            )
-        } catch (e: SecurityException) {
-            Log.w(TAG, "PACKAGE_USAGE_STATS permission not granted", e)
-            val defaultLimit = DataUsageData.DEFAULT_DATA_LIMIT_GB * 1024 * 1024 * 1024
-            DataUsageData.create(
-                wifiUsageBytes = 0L,
-                wifiLimitBytes = defaultLimit,
-                mobileUsageBytes = 0L,
-                mobileLimitBytes = defaultLimit
+                mobileLimitBytes = currentLimitData.mobileLimitBytes
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to collect data usage", e)
@@ -96,14 +61,6 @@ object DataUsageCollector {
         }
     }
 
-    /**
-     * 특정 네트워크 타입의 데이터 사용량을 조회합니다.
-     *
-     * Note: ConnectivityManager.TYPE_MOBILE and TYPE_WIFI are deprecated,
-     * but NetworkStatsManager.querySummaryForDevice() still requires these constants
-     * as there is no alternative API available for app developers.
-     */
-    @Suppress("DEPRECATION")
     private fun getNetworkUsageBytes(
         networkStatsManager: NetworkStatsManager,
         networkType: Int,
@@ -111,19 +68,17 @@ object DataUsageCollector {
         endTime: Long
     ): Long {
         return try {
-            val bucket: NetworkStats.Bucket? = networkStatsManager.querySummaryForDevice(
+            //기기 전체 네트워크 사용량을 조회
+            val bucket: NetworkStats.Bucket = networkStatsManager.querySummaryForDevice(
                 networkType,
-                null, // subscriberId (null for device-wide stats)
+                null, // all
                 startTime,
                 endTime
             )
 
-            val rxBytes = bucket?.rxBytes ?: 0L
-            val txBytes = bucket?.txBytes ?: 0L
+            val rxBytes = bucket.rxBytes // 받은 데이터(ex:웹페이지 로딩,이미지/영상 스트리밍 등)
+            val txBytes = bucket.txBytes // 보낸 데이터(ex:파일 업로드,사진/영상 전송 등)
             rxBytes + txBytes
-        } catch (e: SecurityException) {
-            Log.w(TAG, "SecurityException for network type $networkType", e)
-            0L
         } catch (e: Exception) {
             Log.e(TAG, "Error querying network stats for type $networkType", e)
             0L

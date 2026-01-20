@@ -23,7 +23,7 @@ enum class FontType(val sp: Float) {
     // Title - 섹션 제목
     TitleLarge(16f),
     TitleMedium(14f),
-    TitleSmall(12f),
+    TitleSmall(11f),
     
     // Body - 본문 텍스트
     BodyLarge(15f),
