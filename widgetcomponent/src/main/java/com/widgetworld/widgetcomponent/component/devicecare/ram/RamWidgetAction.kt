@@ -13,6 +13,7 @@ import com.widgetworld.core.widget.action.WidgetActionCallback
 import com.widgetworld.core.widget.action.WidgetActionParameters
 import com.widgetworld.widgetcomponent.component.devicecare.DeviceStateCollector
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RamWidgetAction : WidgetActionCallback {
@@ -32,7 +33,7 @@ class RamWidgetAction : WidgetActionCallback {
             }
             launch {
                 //todo : 최적화를 하고나서 업데이트 타이밍은 언제하는게 좋을까
-                launchSettingScreen(context)
+//                launchSettingScreen(context)
             }
         }
     }
@@ -41,9 +42,9 @@ class RamWidgetAction : WidgetActionCallback {
         val widget = RamWidget()
         val ramWidgetUpdateManager = widget.getUpdateManager() as RamUpdateManager
         clearMemory(context)
-//        ramWidgetUpdateManager.showAnimation(context, true)
-//        delay(2800)
-//        ramWidgetUpdateManager.showAnimation(context, false)
+        ramWidgetUpdateManager.showAnimation(context, true)
+        delay(2800)
+        ramWidgetUpdateManager.showAnimation(context, false)
 
         val deviceState = DeviceStateCollector.collect(context = context)
         Log.i(TAG, "Device state : $deviceState")
@@ -85,7 +86,8 @@ class RamWidgetAction : WidgetActionCallback {
             // 3. 맹목적으로 종료 시도 (Blind Kill)
             // 실행 중이 아니면 시스템이 알아서 무시하므로 괜찮습니다.
             try {
-                activityManager.killBackgroundProcesses(appInfo)
+                KillPackage.invokeKill(context, appInfo)
+//                activityManager.killBackgroundProcesses(appInfo)
             } catch (e: Exception) {
                 // 권한 부족 등으로 실패할 수 있음
             }
