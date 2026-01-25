@@ -5,7 +5,6 @@ import android.app.AppOpsManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.content.ContextCompat
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -14,16 +13,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.AppOpsManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
-import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
-import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModelFactory
 import com.widgetworld.app.service.WidgetForegroundService
 import com.widgetworld.core.widget.node.RendererInitializer
-import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import com.widgetworld.widgetcomponent.initializeWidgetComponents
 import com.widgetworld.widgetcomponent.theme.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     companion object {
@@ -67,8 +65,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private lateinit var viewModel: WidgetEditorViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -85,15 +81,10 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
         }
         startWidgetForegroundService()
-        viewModel =
-            ViewModelProvider(
-                this,
-                WidgetEditorViewModelFactory(WidgetLayoutRepository(this))
-            )[WidgetEditorViewModel::class.java]
 
         setContent {
             AppTheme {
-                MainScreen(viewModel)
+                MainScreen()
             }
         }
     }

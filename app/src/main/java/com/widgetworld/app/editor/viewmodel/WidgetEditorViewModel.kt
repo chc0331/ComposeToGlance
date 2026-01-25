@@ -11,6 +11,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.widgetworld.app.editor.settings.GridSettings
 import com.widgetworld.app.editor.settings.GridSettingsDataStore
 import com.widgetworld.app.editor.util.GridCalculator
@@ -34,7 +36,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class WidgetEditorViewModel(
+@HiltViewModel
+class WidgetEditorViewModel @Inject constructor(
     private val repository: WidgetLayoutRepository
 ) : ViewModel() {
 
