@@ -31,15 +31,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.widgetworld.app.editor.bottompanel.BottomPanelWithTabs
-import com.widgetworld.app.editor.canvas.WidgetCanvas
-import com.widgetworld.app.editor.canvas.canvasBorder
+import com.widgetworld.app.editor.widgetcanvas.WidgetCanvas
+import com.widgetworld.app.editor.widgetcanvas.canvasBorder
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
-import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
-import com.widgetworld.app.editor.widget.toPixels
-import com.widgetworld.widgetcomponent.component.WidgetComponent
-import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import kotlinx.coroutines.delay
 
 

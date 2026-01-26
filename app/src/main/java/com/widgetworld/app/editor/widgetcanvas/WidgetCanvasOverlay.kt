@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,9 +29,9 @@ import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
-import com.widgetworld.app.editor.widget.PositionedWidget
-import com.widgetworld.app.editor.widget.WidgetComponent
-import com.widgetworld.app.editor.widget.toPixels
+import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.WidgetComponent
+import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells

@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,8 +9,8 @@ import com.widgetworld.app.editor.draganddrop.DropTarget
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
-import com.widgetworld.app.editor.widget.PositionedWidget
-import com.widgetworld.app.editor.widget.toPixels
+import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout

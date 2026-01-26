@@ -41,12 +41,11 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.widgetworld.app.editor.widget.WidgetComponentContainer
+import com.widgetworld.app.editor.widgettab.WidgetComponentContainer
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import kotlin.collections.filter
-import kotlin.collections.find
 
 @Composable
 fun WidgetsTabContent(

@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -10,7 +10,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
-import com.widgetworld.app.editor.widget.layout.LayoutComponent
+import com.widgetworld.app.editor.widgettab.layout.LayoutComponent
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius

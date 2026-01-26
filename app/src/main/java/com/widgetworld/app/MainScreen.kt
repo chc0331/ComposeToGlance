@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.widgetworld.app.editor.WidgetEditorScreen
-import com.widgetworld.app.editor.settings.GridSettingsPanel
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,12 +38,12 @@ fun MainScreen(
             viewModel = viewModel
         )
         // 그리드 설정 패널
-        GridSettingsPanel(
-            isVisible = viewModel.showGridSettings,
-            onDismiss = { viewModel.hideGridSettingsPanel() },
-            onSettingsChanged = { newSettings ->
-                viewModel.updateGridSettingsAndClearWidgets(newSettings)
-            }
-        )
+//        GridSettingsPanel(
+//            isVisible = viewModel.showGridSettings,
+//            onDismiss = { viewModel.hideGridSettingsPanel() },
+//            onSettingsChanged = { newSettings ->
+//                viewModel.updateGridSettingsAndClearWidgets(newSettings)
+//            }
+//        )
     }
 }

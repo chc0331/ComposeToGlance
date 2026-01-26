@@ -1,7 +1,6 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -28,15 +26,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import com.widgetworld.app.editor.draganddrop.Draggable
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
-import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
-import com.widgetworld.app.editor.widget.PositionedWidget
-import com.widgetworld.app.editor.widget.WidgetComponent
-import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
-import com.widgetworld.app.editor.widget.toPixels
+import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.WidgetComponent
 import com.widgetworld.widgetcomponent.LayoutType
-import com.widgetworld.widgetcomponent.component.WidgetComponent
 import kotlin.math.roundToInt
 
 private const val TAG = "WidgetCanvas"

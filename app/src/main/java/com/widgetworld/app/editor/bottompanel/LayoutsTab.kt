@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.widgetworld.app.editor.widget.layout.LayoutComponentContainer
+import com.widgetworld.app.editor.widgettab.layout.LayoutComponentContainer
 import com.widgetworld.widgetcomponent.LayoutType
 import kotlinx.coroutines.launch
 

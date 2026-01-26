@@ -17,8 +17,9 @@ import com.widgetworld.app.editor.settings.GridSettings
 import com.widgetworld.app.editor.settings.GridSettingsDataStore
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widget.PositionedWidget
-import com.widgetworld.app.editor.widget.toPixels
+import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.toPixels
+
 import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.SizeType

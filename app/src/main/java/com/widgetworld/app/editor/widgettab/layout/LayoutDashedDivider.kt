@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.widget.layout
+package com.widgetworld.app.editor.widgettab.layout
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme

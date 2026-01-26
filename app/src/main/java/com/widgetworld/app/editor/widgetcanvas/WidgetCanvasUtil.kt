@@ -1,11 +1,11 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widget.PositionedWidget
+import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.widgetcomponent.LayoutType
 
 // PositionedWidget의 모든 셀 인덱스 반환

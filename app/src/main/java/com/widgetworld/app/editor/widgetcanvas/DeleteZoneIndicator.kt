@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widget.PositionedWidget
+import com.widgetworld.app.editor.widgettab.PositionedWidget
 import kotlin.math.max
 
 /**

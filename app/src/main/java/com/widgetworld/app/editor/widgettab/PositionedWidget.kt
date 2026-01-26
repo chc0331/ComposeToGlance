@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.widget
+package com.widgetworld.app.editor.widgettab
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density

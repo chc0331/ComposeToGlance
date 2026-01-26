@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.canvas
+package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
