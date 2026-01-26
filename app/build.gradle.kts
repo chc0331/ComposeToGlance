@@ -59,6 +59,10 @@ dependencies {
     implementation(project(":widgetcomponent"))
     implementation("androidx.glance:glance-appwidget:1.2.0-beta01")
     implementation("androidx.core:core-remoteviews:1.1.0")
+    // Compose Remote - core 모듈을 통해 전달되지만 명시적으로 추가
+    implementation(libs.androidx.compose.remote.creation)
+    implementation(libs.androidx.compose.remote.creation.compose)
+    implementation(libs.androidx.compose.remote.player.view)
     
     // Hilt
     implementation(libs.hilt.android)

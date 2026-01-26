@@ -8,6 +8,7 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2024.09.00"
+composeRemote = "1.0.0-alpha02"
 protobufPlugin = "0.9.4"
 protobuf = "3.25.3"
 appcompat = "1.6.1"
@@ -32,6 +33,12 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-remote-creation = { group = "androidx.compose.remote", name = "remote-creation", version.ref = "composeRemote" }
+androidx-compose-remote-creation-core = { group = "androidx.compose.remote", name = "remote-creation-core", version.ref = "composeRemote" }
+androidx-compose-remote-creation-android = { group = "androidx.compose.remote", name = "remote-creation-android", version.ref = "composeRemote" }
+androidx-compose-remote-creation-compose = { group = "androidx.compose.remote", name = "remote-creation-compose", version.ref = "composeRemote" }
+androidx-compose-remote-player-core = { group = "androidx.compose.remote", name = "remote-player-core", version.ref = "composeRemote" }
+androidx-compose-remote-player-view = { group = "androidx.compose.remote", name = "remote-player-view", version.ref = "composeRemote" }
 protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
