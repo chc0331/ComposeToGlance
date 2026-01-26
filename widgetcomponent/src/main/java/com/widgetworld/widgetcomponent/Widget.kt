@@ -3,7 +3,7 @@ package com.widgetworld.widgetcomponent
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 
 enum class SizeType {
-    TINY, SMALL, MEDIUM, MEDIUM_PLUS, LARGE, EXTRA_LARGE;
+    TINY, SMALL, MEDIUM, MEDIUM_PLUS, LARGE, EXTRA_LARGE, UNKNOWN;
 
     override fun toString(): String {
         return when (this) {
@@ -23,7 +23,7 @@ enum class SizeType {
             MEDIUM -> com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_MEDIUM
             MEDIUM_PLUS -> com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_MEDIUM_PLUS
             LARGE -> com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_LARGE
-            else -> com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_EXTRA_LARGE
+            else -> com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_UNSPECIFIED
         }
     }
 
