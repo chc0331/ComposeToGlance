@@ -1,4 +1,4 @@
-package com.widgetworld.app.editor.viewmodel
+package com.widgetworld.app.editor
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -12,8 +12,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import com.widgetworld.app.editor.settings.GridSettings
 import com.widgetworld.app.editor.settings.GridSettingsDataStore
 import com.widgetworld.app.editor.util.GridCalculator
@@ -21,28 +19,28 @@ import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.app.repository.WidgetCanvasStateRepository
-
 import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.LayoutType
-import com.widgetworld.widgetcomponent.SizeType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
+import com.widgetworld.widgetcomponent.proto.SizeType
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
 import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class WidgetEditorViewModel @Inject constructor(
@@ -53,13 +51,13 @@ class WidgetEditorViewModel @Inject constructor(
     val selectedLayoutState = widgetCanvasStateRepository.dataStoreFlow.map { widgetCanvas ->
         val layoutSize = widgetCanvas.sizeType
         when (layoutSize) {
-            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_MEDIUM -> LayoutType.Medium
-            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_LARGE -> LayoutType.Large
-            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_EXTRA_LARGE -> LayoutType.ExtraLarge
+            SizeType.SIZE_TYPE_MEDIUM -> LayoutType.Medium
+            SizeType.SIZE_TYPE_LARGE -> LayoutType.Large
+            SizeType.SIZE_TYPE_EXTRA_LARGE -> LayoutType.ExtraLarge
             else -> LayoutType.Large
         }
     }.stateIn(
-        viewModelScope, started = SharingStarted.WhileSubscribed(5_000),
+        viewModelScope, started = SharingStarted.Companion.WhileSubscribed(5_000),
         initialValue = LayoutType.Large
     )
 
@@ -82,7 +80,7 @@ class WidgetEditorViewModel @Inject constructor(
             )
         }
     }.stateIn(
-        viewModelScope, started = SharingStarted.WhileSubscribed(5_000),
+        viewModelScope, started = SharingStarted.Companion.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
 
@@ -95,7 +93,7 @@ class WidgetEditorViewModel @Inject constructor(
             // 현재 레이아웃에 그리드 배수 적용
             selectedLayout?.let { layout ->
                 selectedLayout = layout.apply {
-                    setDivide(initialSettings.globalMultiplier)
+//                    LayoutType.setDivide(initialSettings.globalMultiplier)
                 }
             }
 
@@ -116,7 +114,7 @@ class WidgetEditorViewModel @Inject constructor(
     val widgets = WidgetComponentRegistry.getAllComponents()
 
     // 그리드 설정 상태
-    private val _gridSettings = MutableStateFlow(GridSettings.DEFAULT)
+    private val _gridSettings = MutableStateFlow(GridSettings.Companion.DEFAULT)
     val gridSettings: StateFlow<GridSettings> = _gridSettings.asStateFlow()
 
     var addedWidget by mutableStateOf<WidgetComponent?>(null)
@@ -379,7 +377,7 @@ class WidgetEditorViewModel @Inject constructor(
             positionedWidget.copy(
                 cellIndices = newIndices,
                 cellIndex = firstIndex,
-                offset = Offset.Zero // UI에서 재계산됨
+                offset = Offset.Companion.Zero // UI에서 재계산됨
             )
         }
 
@@ -432,7 +430,7 @@ class WidgetEditorViewModel @Inject constructor(
             selectedLayout?.let { layout ->
                 val layoutType = layout.name
                 val gridColumns = layout.getGridCell().column
-                val layoutSizeType = SizeType.getSizeType(layoutType).toProto()
+                val layoutSizeType = com.widgetworld.widgetcomponent.SizeType.Companion.getSizeType(layoutType).toProto()
                 val positionedWidgets = positionedWidgets.map { it.toProto(gridColumns) }
                 val provider = when (layoutType) {
                     "Medium" -> MediumWidgetProvider::class.java.name
@@ -455,4 +453,3 @@ class WidgetEditorViewModel @Inject constructor(
         }
     }
 }
-

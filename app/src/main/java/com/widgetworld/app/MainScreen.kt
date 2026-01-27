@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.widgetworld.app.editor.WidgetEditorScreen
-import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
+import com.widgetworld.app.editor.WidgetEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

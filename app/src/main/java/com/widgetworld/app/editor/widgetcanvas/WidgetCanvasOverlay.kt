@@ -28,7 +28,7 @@ import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
+import com.widgetworld.app.editor.WidgetEditorViewModel
 import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.WidgetComponent
 import com.widgetworld.app.editor.widgettab.toPixels
