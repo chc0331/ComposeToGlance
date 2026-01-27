@@ -47,6 +47,20 @@ class WidgetCanvasStateRepository @Inject constructor(private val dataStore: Dat
             current.toBuilder().addPlacedWidgetComponent(widget).build()
         }
     }
+
+    suspend fun updatePlacedWidget(widget: PlacedWidgetComponent) {
+        dataStore.updateData { current ->
+            val index = current.placedWidgetComponentList.indexOf(widget)
+            current.toBuilder().setPlacedWidgetComponent(index, widget).build()
+        }
+    }
+
+    suspend fun removePlacedWidget(widget: PlacedWidgetComponent) {
+        dataStore.updateData { current ->
+            val index = current.placedWidgetComponentList.indexOf(widget)
+            current.toBuilder().removePlacedWidgetComponent(index).build()
+        }
+    }
 }
 
 object WidgetCanvasStateProtoSerializer : Serializer<WidgetLayout> {

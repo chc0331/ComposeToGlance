@@ -96,6 +96,7 @@ data class DropTargetState(
 @Composable
 fun DropTarget(
     dragInfo: DragTargetInfo,
+    onDrop: (DropTargetState) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable() BoxScope.(DropTargetState) -> Unit
 ) {
@@ -130,6 +131,9 @@ fun DropTarget(
         droppedData = droppedData
     )
 
+    LaunchedEffect(key1 = state) {
+        onDrop(state)
+    }
 
     Box(
         modifier = modifier
