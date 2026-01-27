@@ -3,6 +3,7 @@ package com.widgetworld.app.editor.viewmodel
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.toPixels
+import com.widgetworld.app.repository.WidgetCanvasStateRepository
 
 import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.LayoutType
@@ -27,20 +29,62 @@ import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import com.widgetworld.widgetcomponent.provider.ExtraLargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.LargeWidgetProvider
 import com.widgetworld.widgetcomponent.provider.MediumWidgetProvider
 import com.widgetworld.widgetcomponent.repository.WidgetLayoutRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class WidgetEditorViewModel @Inject constructor(
-    private val repository: WidgetLayoutRepository
+    private val widgetLayoutRepository: WidgetLayoutRepository,
+    private val widgetCanvasStateRepository: WidgetCanvasStateRepository
 ) : ViewModel() {
+
+    val selectedLayoutState = widgetCanvasStateRepository.dataStoreFlow.map { widgetCanvas ->
+        val layoutSize = widgetCanvas.sizeType
+        when (layoutSize) {
+            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_MEDIUM -> LayoutType.Medium
+            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_LARGE -> LayoutType.Large
+            com.widgetworld.widgetcomponent.proto.SizeType.SIZE_TYPE_EXTRA_LARGE -> LayoutType.ExtraLarge
+            else -> LayoutType.Large
+        }
+    }.stateIn(
+        viewModelScope, started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = LayoutType.Large
+    )
+
+    val positionedWidgetsState = widgetCanvasStateRepository.dataStoreFlow.map { widgetCanvas ->
+        widgetCanvas.placedWidgetComponentList.map {
+            val index = it.gridIndex
+            val colSpan = it.colSpan
+            val rowSpan = it.rowSpan
+            val widgetCategory = it.widgetCategory
+            val widgetTag = it.widgetTag
+            val offsetX = it.offsetX
+            val offsetY = it.offsetY
+            PositionedWidget(
+                gridIndex = index,
+                offset = Offset(offsetX, offsetY),
+                colSpan = colSpan,
+                rowSpan = rowSpan,
+                widgetCategory = widgetCategory,
+                widgetTag = widgetTag
+            )
+        }
+    }.stateIn(
+        viewModelScope, started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList()
+    )
 
     fun initializeGridSettings(context: Context) {
         viewModelScope.launch {
@@ -152,7 +196,9 @@ class WidgetEditorViewModel @Inject constructor(
         offset: Offset,
         startRow: Int,
         startCol: Int,
-        cellIndices: List<Int>
+        cellIndices: List<Int>,
+        spanX: Int = 0,
+        spanY: Int = 0
     ) {
         val startCellIndex = cellIndices.firstOrNull()
         positionedWidgets.add(
@@ -163,6 +209,21 @@ class WidgetEditorViewModel @Inject constructor(
                 cellIndices = cellIndices
             )
         )
+        viewModelScope.launch {
+            Log.i("heec.choi","addPositionedWidget-$widget $offset $startRow $startCol")
+            val gridIndex = startCellIndex ?: 0
+            val offsetX = offset.x
+            val offsetY = offset.y
+            val rowSpan = spanY
+            val colSpan = spanX
+            val widgetCategory = widget.getWidgetCategory().toProto()
+            val widgetTag = widget.getWidgetTag()
+            val placedWidgetComponent = PlacedWidgetComponent.newBuilder().setGridIndex(gridIndex)
+                .setOffsetX(offsetX).setOffsetY(offsetY)
+                .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory).setWidgetTag(widgetTag).build()
+
+            widgetCanvasStateRepository.addPlacedWidgets(placedWidgetComponent)
+        }
     }
 
     fun movePositionedWidget(
@@ -379,7 +440,7 @@ class WidgetEditorViewModel @Inject constructor(
                     "Extra Large" -> ExtraLargeWidgetProvider::class.java.name
                     else -> LargeWidgetProvider::class.java.name
                 }
-                repository.updateData(
+                widgetLayoutRepository.updateData(
                     sizeType = layoutSizeType,
                     positionedWidgets = positionedWidgets
                 )

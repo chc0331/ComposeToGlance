@@ -23,19 +23,16 @@ fun MainScreen(
     mainViewModel: MainViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val canvasUiState by mainViewModel.widgetCanvasState.collectAsStateWithLifecycle()
-    Log.i("heec.choi","Canvas state :$canvasUiState")
-
-
     Scaffold(
         topBar = {
             MainTitleBar(
                 modifier = Modifier.height(72.dp),
                 onSaveClicked = {
-                    viewModel.save(context)
+                    mainViewModel.save(context)
+//                    viewModel.save(context)
                 },
                 onGridSettingClicked = {
-                    viewModel.showGridSettingsPanel()
+//                    viewModel.showGridSettingsPanel()
                 })
         }
     ) { paddingValues ->

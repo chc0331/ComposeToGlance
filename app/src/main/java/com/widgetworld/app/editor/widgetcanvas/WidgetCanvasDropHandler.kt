@@ -1,5 +1,6 @@
 package com.widgetworld.app.editor.widgetcanvas
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -80,7 +81,7 @@ fun WidgetDropHandler(
             return@DropTarget
         }
         val currentLayout = selectedLayout ?: return@DropTarget
-        val widgetSizeInCells = widget.getSizeInCellsForLayout(
+        val widgetSizeInCells = widget!!.getSizeInCellsForLayout(
             currentLayout.name,
             currentLayout.getDivide()
         )
@@ -150,7 +151,9 @@ fun WidgetDropHandler(
                 offset = adjustedOffset,
                 startRow = startRow,
                 startCol = startCol,
-                cellIndices = indices
+                cellIndices = indices,
+                widgetWidthCells, widgetHeightCells
+
             )
 
             is PositionedWidget -> {

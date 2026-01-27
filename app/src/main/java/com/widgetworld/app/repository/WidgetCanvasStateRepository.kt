@@ -4,7 +4,11 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.core.Serializer
+import androidx.glance.currentState
 import com.google.protobuf.InvalidProtocolBufferException
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
+import com.widgetworld.widgetcomponent.proto.SizeType
+import com.widgetworld.widgetcomponent.proto.WidgetCategory
 import com.widgetworld.widgetcomponent.proto.WidgetLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -24,6 +28,25 @@ class WidgetCanvasStateRepository @Inject constructor(private val dataStore: Dat
                 throw exception
             }
         }
+
+    suspend fun updateSizeType(sizeType: SizeType) {
+        dataStore.updateData { current ->
+            current.toBuilder().setSizeType(sizeType).build()
+        }
+    }
+
+    suspend fun updatePlacedWidgets(widgets: List<PlacedWidgetComponent>) {
+        dataStore.updateData { current ->
+            current.toBuilder().clearPlacedWidgetComponent().addAllPlacedWidgetComponent(widgets)
+                .build()
+        }
+    }
+
+    suspend fun addPlacedWidgets(widget: PlacedWidgetComponent) {
+        dataStore.updateData { current ->
+            current.toBuilder().addPlacedWidgetComponent(widget).build()
+        }
+    }
 }
 
 object WidgetCanvasStateProtoSerializer : Serializer<WidgetLayout> {

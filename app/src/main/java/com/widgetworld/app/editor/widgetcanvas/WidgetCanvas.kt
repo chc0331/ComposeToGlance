@@ -31,6 +31,7 @@ import com.widgetworld.app.editor.viewmodel.WidgetEditorViewModel
 import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.WidgetComponent
 import com.widgetworld.widgetcomponent.LayoutType
+import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import kotlin.math.roundToInt
 
 private const val TAG = "WidgetCanvas"
@@ -143,10 +144,14 @@ fun WidgetCanvas(
                             }
                             .alpha(if (isDragging) 0f else 1f)
                     ) {
-                        WidgetComponent(
-                            data = item.widget,
-                            layout = selectedLayout
-                        )
+                        val component = WidgetComponentRegistry.getComponent(item.widgetTag!!)
+                        Log.i("heec.choi","Component : $component ${item.widgetTag} ${item.offset}")
+                        component?.let {
+                            WidgetComponent(
+                                data = it,
+                                layout = selectedLayout
+                            )
+                        }
                     }
                 }
             }

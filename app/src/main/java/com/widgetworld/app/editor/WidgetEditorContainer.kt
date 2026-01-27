@@ -1,5 +1,6 @@
 package com.widgetworld.app.editor
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.widgetworld.app.editor.bottompanel.BottomPanelWithTabs
 import com.widgetworld.app.editor.widgetcanvas.WidgetCanvas
@@ -48,6 +50,8 @@ fun WidgetEditorScreen(
     val canvasBackgroundColor = MaterialTheme.colorScheme.outlineVariant.copy(
         alpha = 0.05f
     )
+    val currentLayout by viewModel.selectedLayoutState.collectAsStateWithLifecycle()
+    val positionedWidgets by viewModel.positionedWidgetsState.collectAsStateWithLifecycle()
 
     WidgetEditorContainer(modifier = modifier) {
         Column(
@@ -64,8 +68,8 @@ fun WidgetEditorScreen(
                     .fillMaxWidth()
                     .padding(top = 16.dp)
                     .canvasBorder(outline, canvasBackgroundColor),
-                selectedLayout = viewModel.selectedLayout,
-                positionedWidgets = viewModel.positionedWidgets,
+                selectedLayout = currentLayout,
+                positionedWidgets = positionedWidgets,
                 viewModel = viewModel,
                 onWidgetAddProcessed = { canvasPosition, layoutBounds, selectedLayout ->
                     viewModel.addWidgetToCanvas(

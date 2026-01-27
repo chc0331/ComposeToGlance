@@ -69,7 +69,6 @@ object KillPackage {
             method.isAccessible = true
             method.invoke(receiver, *args) as T
         } catch (e: Exception) {
-            Log.i("heec.choi", "Exception : $e")
             defaultValue
         }
     }

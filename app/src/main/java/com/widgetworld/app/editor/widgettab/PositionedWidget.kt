@@ -10,13 +10,20 @@ import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
+import com.widgetworld.widgetcomponent.proto.WidgetCategory
 
+@Deprecated("It'll be deprecated")
 data class PositionedWidget(
-    val widget: WidgetComponent,
-    val offset: Offset,
+    val widget: WidgetComponent? = null,
+    val offset: Offset = Offset.Zero,
     val cellIndex: Int? = null,
     val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
-    val id: String = java.util.UUID.randomUUID().toString() // 고유 ID for stable key
+    val id: String = java.util.UUID.randomUUID().toString(), // 고유 ID for stable key
+    val gridIndex: Int = 0,
+    val rowSpan: Int = 0,
+    val colSpan: Int = 0,
+    val widgetCategory: WidgetCategory = WidgetCategory.WIDGET_CATEGORY_UNSPECIFIED,
+    val widgetTag: String? = null
 ) {
     /**
      * Proto로 변환 시 실제 배치된 셀 정보를 기반으로 row_span과 col_span 계산
@@ -28,15 +35,15 @@ data class PositionedWidget(
             calculateSpansFromIndices(cellIndices, gridColumns)
         } else {
             // fallback: 기본 1x 사이즈 사용
-            widget.getSizeInCells()
+            widget?.getSizeInCells()?:0 to 0
         }
 
         return PlacedWidgetComponent.newBuilder()
             .setGridIndex((cellIndex?.plus(1)) ?: 1)
             .setRowSpan(rowSpan)
             .setColSpan(colSpan)
-            .setWidgetTag(widget.getWidgetTag())
-            .setWidgetCategory(widget.getWidgetCategory().toProto())
+            .setWidgetTag(widget?.getWidgetTag())
+            .setWidgetCategory(widget?.getWidgetCategory()?.toProto())
             .build()
     }
 

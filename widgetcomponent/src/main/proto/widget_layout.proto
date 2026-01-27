@@ -28,18 +28,22 @@ enum WidgetCategory {
 message PlacedWidgetComponent {
   // 그리드에서의 인덱스값
   int32 grid_index = 1;
-  
+
+  float offset_x = 2;
+
+  float offset_y = 3;
+
   // 행에 걸쳐 차지하는 셀 수 (row span)
-  int32 row_span = 2;
+  int32 row_span = 4;
   
   // 열에 걸쳐 차지하는 셀 수 (col span)
-  int32 col_span = 3;
+  int32 col_span = 5;
   
   // 위젯 카테고리
-  WidgetCategory widget_category = 4;
+  WidgetCategory widget_category = 6;
   
   // 위젯 태그 (고유 식별자)
-  string widget_tag = 5;
+  string widget_tag = 7;
 }
 
 // 레이아웃 정보를 저장하는 메시지

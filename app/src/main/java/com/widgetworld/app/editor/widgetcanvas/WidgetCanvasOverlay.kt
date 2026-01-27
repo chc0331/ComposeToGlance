@@ -63,7 +63,7 @@ fun DragStateOverlay(
     val hoveredCellIndices = rememberHoveredCellIndices(
         viewModel = viewModel,
         dragInfo = dragInfo,
-        draggedWidget = draggedWidget,
+        draggedWidget = draggedWidget!!,
         draggedPositionedWidget = draggedPositionedWidget, // Pass this to the remember function
         gridCells = gridCells,
         selectedLayout = selectedLayout,
