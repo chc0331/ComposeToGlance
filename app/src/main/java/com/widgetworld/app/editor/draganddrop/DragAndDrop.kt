@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,18 +21,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 
-/**
- * 드래그 가능한 타겟을 생성하는 Composable
- * 롱 프레스 후 드래그 제스처와 탭 제스처를 감지합니다.
- *
- * @param context Android Context
- * @param modifier Modifier
- * @param dataToDrop 드롭될 데이터
- * @param onComponentClick 탭 이벤트 콜백
- * @param onDragStart 드래그 시작 콜백
- * @param dragContent 드래그 시 보여줄 콘텐츠. null이면 content를 사용.
- * @param content 드래그 중인 아이템을 렌더링하는 콘텐츠
- */
 @Composable
 fun DragTarget(
     context: Context,
@@ -98,27 +87,49 @@ fun DragTarget(
     }
 }
 
-/**
- * 드롭 가능한 타겟 영역을 생성하는 Composable
- * 드래그 중인 아이템이 이 영역에 들어왔는지 감지합니다.
- *
- * @param modifier Modifier
- * @param content 드롭 영역의 콘텐츠. isInBound는 드래그 아이템이 영역 내부에 있는지 여부, data는 드롭된 데이터
- */
+
+data class DropTargetState(
+    val isInBound: Boolean,
+    val droppedData: Any?
+)
+
 @Composable
 fun DropTarget(
     dragInfo: DragTargetInfo,
     modifier: Modifier = Modifier,
-    content: @Composable() (BoxScope.(isInBound: Boolean, data: Any?) -> Unit)
+    content: @Composable() BoxScope.(DropTargetState) -> Unit
 ) {
     // isDragging을 명시적으로 읽어서 재구성 트리거
-    val isDragging = dragInfo.isDragging
     val dragPosition = dragInfo.dragPosition
     val dragOffset = dragInfo.dragOffset
-    val dataToDrop = dragInfo.dataToDrop
-    val itemDropped = dragInfo.itemDropped
     var dropTargetBounds by remember { mutableStateOf<Rect?>(null) }
     var wasInBounds by remember { mutableStateOf(false) }
+    val currentPos = dragPosition + dragOffset
+    val isInBound = dropTargetBounds?.contains(currentPos) ?: false
+
+    LaunchedEffect(dragInfo.isDragging) {
+        if (!dragInfo.isDragging) {
+            wasInBounds = false
+        }
+    }
+
+    LaunchedEffect(isInBound, dragInfo.isDragging) {
+        if (dragInfo.isDragging) {
+            wasInBounds = isInBound
+        }
+    }
+    val canAcceptDrop =
+        !dragInfo.isDragging &&
+                !dragInfo.itemDropped &&
+                dragInfo.dataToDrop != null &&
+                (isInBound || wasInBounds)
+
+    val droppedData = if (canAcceptDrop) dragInfo.dataToDrop else null
+    val state = DropTargetState(
+        isInBound = isInBound,
+        droppedData = droppedData
+    )
+
 
     Box(
         modifier = modifier
@@ -127,28 +138,7 @@ fun DropTarget(
                 Log.i(TAG, "DropTargetBounds : $dropTargetBounds")
             }
     ) {
-        // 매 재구성마다 현재 위치를 확인하여 드롭 여부 판단
-        val currentPos = dragPosition + dragOffset
-        val isCurrentDropTarget = dropTargetBounds?.contains(currentPos) ?: false
-
-        // 드래그 중일 때 경계 내부에 있었는지 기록
-        if (isDragging) {
-            wasInBounds = isCurrentDropTarget
-        }
-
-        // 드래그가 시작되지 않았거나 데이터가 없으면 wasInBounds 리셋
-        if (dataToDrop == null || (!isDragging && itemDropped)) {
-            wasInBounds = false
-        }
-
-        val data =
-            if ((isCurrentDropTarget || wasInBounds) && !isDragging && dataToDrop != null && !itemDropped) {
-                dataToDrop
-            } else {
-                null
-            }
-
-        content(isCurrentDropTarget, data)
+        content(state)
     }
 }
 

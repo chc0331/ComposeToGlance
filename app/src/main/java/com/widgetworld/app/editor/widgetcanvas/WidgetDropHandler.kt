@@ -1,6 +1,5 @@
 package com.widgetworld.app.editor.widgetcanvas
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,15 +25,17 @@ fun WidgetDropHandler(
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
-    DropTarget(dragInfo, modifier = modifier) { isInBound, droppedItem ->
-        if ((droppedItem !is WidgetComponent && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
+    DropTarget(dragInfo, modifier = modifier) { dropState ->
+        if ((dropState.droppedData !is WidgetComponent && dropState.droppedData !is PositionedWidget) || dragInfo.itemDropped) {
             return@DropTarget
         }
+        val isInBound = dropState.isInBound
+        val droppedItem = dropState.droppedData
 
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
 
         // 레이아웃이 있고 PositionedWidget이 레이아웃 밖으로 드래그된 경우 삭제
-        if (droppedItem is PositionedWidget && layoutBounds != null) {
+        if (dropState.droppedData is PositionedWidget && layoutBounds != null) {
             val bounds = layoutBounds
             val isWithinLayoutBounds = dropPositionInWindow.x >= bounds.position.x &&
                     dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
