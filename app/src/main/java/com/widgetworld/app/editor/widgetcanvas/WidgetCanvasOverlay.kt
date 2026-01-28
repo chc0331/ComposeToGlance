@@ -63,7 +63,7 @@ fun DragStateOverlay(
     val hoveredCellIndices = rememberHoveredCellIndices(
         viewModel = viewModel,
         dragInfo = dragInfo,
-        draggedWidget = draggedWidget!!,
+        draggedWidget = draggedWidget,
         draggedPositionedWidget = draggedPositionedWidget, // Pass this to the remember function
         gridCells = gridCells,
         selectedLayout = selectedLayout,
@@ -121,7 +121,7 @@ fun DragStateOverlay(
 private fun rememberHoveredCellIndices(
     viewModel: WidgetEditorViewModel,
     dragInfo: DragTargetInfo,
-    draggedWidget: WidgetComponent,
+    draggedWidget: WidgetComponent?,
     draggedPositionedWidget: PositionedWidget?,
     gridCells: List<GridCell>,
     selectedLayout: LayoutType?,
@@ -143,12 +143,12 @@ private fun rememberHoveredCellIndices(
 
         val spec = selectedLayout.getGridCell() ?: return@remember emptyList()
         val currentLayout = selectedLayout ?: return@remember emptyList()
-        val widgetSizeInCells = draggedWidget.getSizeInCellsForLayout(
+        val widgetSizeInCells = draggedWidget?.getSizeInCellsForLayout(
             currentLayout.name,
             currentLayout.getDivide()
         )
-        val widgetWidthCells = widgetSizeInCells.first
-        val widgetHeightCells = widgetSizeInCells.second
+        val widgetWidthCells = widgetSizeInCells?.first ?: 1
+        val widgetHeightCells = widgetSizeInCells?.second ?: 1
         val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
 
         val bestStart = GridCalculator.calculateBestCellPosition(

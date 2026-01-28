@@ -1,21 +1,21 @@
 package com.widgetworld.app.editor.widgetcanvas
 
-import android.widget.GridLayout.spec
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.widgetworld.app.editor.WidgetEditorViewModel
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.DropTarget
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.WidgetEditorViewModel
 import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
+import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 
@@ -64,18 +64,19 @@ fun WidgetDropHandler(
     val density = LocalDensity.current
     val dropUseCase: WidgetDropUseCase = remember { WidgetDropUseCase() }
 
+    Log.i("heec.choi", "WidgetDropHandler : $dragInfo")
+
     DropTarget(
-        dragInfo,
         onDrop = { dropState ->
+            Log.i("heec.choi", "onDrop $dropState")
+            // todo : 정리 필요
+            // 1. 드롭 상태 정보 추출.
             val isInBound = dropState.isInBound
             val droppedItem = dropState.droppedData
-            if ((droppedItem !is WidgetComponent && droppedItem !is PositionedWidget) || dragInfo.itemDropped) {
-                return@DropTarget
-            }
-            val dropPositionInWindow = dragInfo.dragPosition + dragInfo.dragOffset
+            val dropPositionInWindow = dropState.dropPositionInWindow
 
-            // 레이아웃이 있고 PositionedWidget이 레이아웃 밖으로 드래그된 경우 삭제
-            if (dropState.droppedData is PositionedWidget && layoutBounds != null) {
+            // 2. 위젯 삭제 처리(레이아웃 밖으로 드래그 된 경우)
+            if (droppedItem is PositionedWidget && layoutBounds != null) {
                 val bounds = layoutBounds
                 val isWithinLayoutBounds = dropPositionInWindow.x >= bounds.position.x &&
                         dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
@@ -94,7 +95,7 @@ fun WidgetDropHandler(
                 }
             }
 
-            // 캔버스 밖으로 드래그된 PositionedWidget은 삭제
+            // 3. 위젯 삭제 처리(캔버스 밖으로 드래그 된 경우)
             if (!isInBound && droppedItem is PositionedWidget) {
                 // 즉시 드래그 상태 정리하여 잔상 방지
                 dragInfo.itemDropped = true
@@ -106,23 +107,32 @@ fun WidgetDropHandler(
                 return@DropTarget
             }
 
-            // 캔버스 밖이거나 새 위젯인 경우 처리하지 않음
+            /**
+             * 4. 유효성 검사
+             * - 캔서브 밖으로 드래그 된 위젯은 처리하지 않음.
+             * - 드롭된 아이템 타입 체크
+             * */
             if (!isInBound) {
                 return@DropTarget
             }
 
             val widget = when (droppedItem) {
                 is WidgetComponent -> droppedItem
-                is PositionedWidget -> droppedItem.widget
+                is PositionedWidget -> {
+                    WidgetComponentRegistry.getComponent(droppedItem.widgetTag ?: "")
+                }
+
                 else -> return@DropTarget
             }
             val bounds = layoutBounds
             val spec = selectedLayout?.getGridCell()
-            if (bounds == null || spec == null) {
+            if (bounds == null || spec == null || widget == null) {
                 return@DropTarget
             }
             val currentLayout = selectedLayout ?: return@DropTarget
-            val widgetSizeInCells = widget!!.getSizeInCellsForLayout(
+
+            // 5. 그리드 계산 및 위치 결정
+            val widgetSizeInCells = widget.getSizeInCellsForLayout(
                 currentLayout.name,
                 currentLayout.getDivide()
             )
@@ -148,7 +158,7 @@ fun WidgetDropHandler(
                 spec
             )
 
-            // 충돌 검사: 드래그 중인 위젯의 원래 위치(모든 행 포함)는 제외하고 다른 위젯과의 충돌만 확인
+            //6. 충돌 검사: 드래그 중인 위젯의 원래 위치(모든 행 포함)는 제외하고 다른 위젯과의 충돌만 확인
             val occupiedIndices = if (droppedItem is PositionedWidget) {
                 // 드래그 중인 위젯을 제외한 점유된 셀들 (모든 행의 셀 포함)
                 val occupiedByOthers = viewModel.getOccupiedCells(excluding = droppedItem)
@@ -171,6 +181,7 @@ fun WidgetDropHandler(
                 return@DropTarget
             }
 
+            //7. 드롭 완료 처리
             dragInfo.itemDropped = true
 
             val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
@@ -207,9 +218,6 @@ fun WidgetDropHandler(
                     )
                 }
             }
-
-        }, modifier = modifier
-    ) { dropState ->
-        // Content
-    }
+        }
+    )
 }

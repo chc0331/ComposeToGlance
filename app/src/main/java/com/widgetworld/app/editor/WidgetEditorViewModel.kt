@@ -208,7 +208,6 @@ class WidgetEditorViewModel @Inject constructor(
             )
         )
         viewModelScope.launch {
-            Log.i("heec.choi","addPositionedWidget-$widget $offset $startRow $startCol")
             val gridIndex = startCellIndex ?: 0
             val offsetX = offset.x
             val offsetY = offset.y

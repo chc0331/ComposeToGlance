@@ -5,7 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -90,60 +91,56 @@ fun DragTarget(
 
 data class DropTargetState(
     val isInBound: Boolean,
-    val droppedData: Any?
+    val droppedData: Any?,
+    val dropPositionInWindow: Offset
 )
 
 @Composable
 fun DropTarget(
-    dragInfo: DragTargetInfo,
-    onDrop: (DropTargetState) -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable() BoxScope.(DropTargetState) -> Unit
+    onDrop: (DropTargetState) -> Unit
 ) {
     // isDragging을 명시적으로 읽어서 재구성 트리거
-    val dragPosition = dragInfo.dragPosition
-    val dragOffset = dragInfo.dragOffset
     var dropTargetBounds by remember { mutableStateOf<Rect?>(null) }
-    var wasInBounds by remember { mutableStateOf(false) }
-    val currentPos = dragPosition + dragOffset
-    val isInBound = dropTargetBounds?.contains(currentPos) ?: false
+    val dragState = LocalDragTargetInfo.current
 
-    LaunchedEffect(dragInfo.isDragging) {
-        if (!dragInfo.isDragging) {
-            wasInBounds = false
-        }
+    fun isDropItemInBound(): Boolean {
+        val currentPos = dragState.dragPosition + dragState.dragOffset
+        return dropTargetBounds?.contains(currentPos) ?: false
     }
 
-    LaunchedEffect(isInBound, dragInfo.isDragging) {
-        if (dragInfo.isDragging) {
-            wasInBounds = isInBound
-        }
-    }
-    val canAcceptDrop =
-        !dragInfo.isDragging &&
-                !dragInfo.itemDropped &&
-                dragInfo.dataToDrop != null &&
-                (isInBound || wasInBounds)
+    val isInBound = isDropItemInBound()
 
-    val droppedData = if (canAcceptDrop) dragInfo.dataToDrop else null
+    /**
+     * Drop condition
+     * 1) not dragging
+     * 2) not item dropped
+     * 3) drop data exist
+     * 4) in drop target bound
+     * */
+    val canAcceptDrop = !dragState.isDragging && !dragState.itemDropped &&
+            dragState.dataToDrop != null && isInBound
+
+    val droppedData = if (canAcceptDrop) dragState.dataToDrop else null
     val state = DropTargetState(
         isInBound = isInBound,
-        droppedData = droppedData
+        droppedData = droppedData,
+        dropPositionInWindow = dragState.dragPosition + dragState.dragOffset
     )
 
     LaunchedEffect(key1 = state) {
-        onDrop(state)
+        if (state.isInBound && state.droppedData != null) {
+            onDrop(state)
+        }
     }
 
-    Box(
-        modifier = modifier
+    Spacer(
+        modifier = Modifier
+            .fillMaxSize()
             .onGloballyPositioned {
                 dropTargetBounds = it.boundsInWindow()
                 Log.i(TAG, "DropTargetBounds : $dropTargetBounds")
             }
-    ) {
-        content(state)
-    }
+    )
 }
 
 private const val TAG = "DropTarget"

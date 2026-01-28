@@ -145,7 +145,6 @@ fun WidgetCanvas(
                             .alpha(if (isDragging) 0f else 1f)
                     ) {
                         val component = WidgetComponentRegistry.getComponent(item.widgetTag!!)
-                        Log.i("heec.choi","Component : $component ${item.widgetTag} ${item.offset}")
                         component?.let {
                             WidgetComponent(
                                 data = it,
