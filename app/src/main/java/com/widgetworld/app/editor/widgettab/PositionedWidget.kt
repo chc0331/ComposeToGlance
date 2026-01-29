@@ -12,57 +12,39 @@ import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import com.widgetworld.widgetcomponent.proto.WidgetCategory
 
-@Deprecated("It'll be deprecated")
-data class PositionedWidget(
-    val widget: WidgetComponent? = null,
-    val offset: Offset = Offset.Zero,
-    val cellIndex: Int? = null,
-    val cellIndices: List<Int> = emptyList(), // 여러 셀을 차지하는 경우
-    val id: String = java.util.UUID.randomUUID().toString(), // 고유 ID for stable key
-    val gridIndex: Int = 0,
-    val rowSpan: Int = 0,
-    val colSpan: Int = 0,
-    val widgetCategory: WidgetCategory = WidgetCategory.WIDGET_CATEGORY_UNSPECIFIED,
-    val widgetTag: String? = null
-) {
-    /**
-     * Proto로 변환 시 실제 배치된 셀 정보를 기반으로 row_span과 col_span 계산
-     * @param gridColumns 현재 그리드의 열 수 (cellIndices를 row/col로 변환하기 위해 필요)
-     */
-    fun toProto(gridColumns: Int): PlacedWidgetComponent {
-        // cellIndices가 있으면 실제 배치된 셀 정보를 기반으로 span 계산
-        val (colSpan, rowSpan) = if (cellIndices.isNotEmpty() && gridColumns > 0) {
-            calculateSpansFromIndices(cellIndices, gridColumns)
-        } else {
-            // fallback: 기본 1x 사이즈 사용
-            widget?.getSizeInCells()?:0 to 0
+
+/**
+ *
+ * 0 1 2 3
+ * 4 5 6 7
+ *
+ * gridIndex = 4
+ * */
+fun PlacedWidgetComponent.getCellIndices(): List<Int> {
+    var indices = mutableListOf<Int>()
+
+    (0 until rowSpan).forEach { row ->
+        (0 until colSpan).forEach { colSpan ->
+            val index = gridIndex + (row * colSpan)
+            indices.add(index)
         }
-
-        return PlacedWidgetComponent.newBuilder()
-            .setGridIndex((cellIndex?.plus(1)) ?: 1)
-            .setRowSpan(rowSpan)
-            .setColSpan(colSpan)
-            .setWidgetTag(widget?.getWidgetTag())
-            .setWidgetCategory(widget?.getWidgetCategory()?.toProto())
-            .build()
     }
 
-    /**
-     * cellIndices로부터 실제 row_span과 col_span 계산
-     */
-    private fun calculateSpansFromIndices(indices: List<Int>, gridColumns: Int): Pair<Int, Int> {
-        if (indices.isEmpty()) return 1 to 1
+    return indices
+}
 
-        // 각 셀의 row와 col 계산
-        val rows = indices.map { it / gridColumns }
-        val cols = indices.map { it % gridColumns }
+private fun calculateSpansFromIndices(indices: List<Int>, gridColumns: Int): Pair<Int, Int> {
+    if (indices.isEmpty()) return 1 to 1
 
-        // span = max - min + 1
-        val rowSpan = (rows.maxOrNull() ?: 0) - (rows.minOrNull() ?: 0) + 1
-        val colSpan = (cols.maxOrNull() ?: 0) - (cols.minOrNull() ?: 0) + 1
+    // 각 셀의 row와 col 계산
+    val rows = indices.map { it / gridColumns }
+    val cols = indices.map { it % gridColumns }
 
-        return colSpan to rowSpan
-    }
+    // span = max - min + 1
+    val rowSpan = (rows.maxOrNull() ?: 0) - (rows.minOrNull() ?: 0) + 1
+    val colSpan = (cols.maxOrNull() ?: 0) - (cols.minOrNull() ?: 0) + 1
+
+    return colSpan to rowSpan
 }
 
 /**

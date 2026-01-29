@@ -29,13 +29,14 @@ import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.WidgetEditorViewModel
-import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.WidgetComponent
+import com.widgetworld.app.editor.widgettab.getCellIndices
 import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCells
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 import kotlin.math.roundToInt
 
@@ -56,14 +57,14 @@ fun DragStateOverlay(
 
     val (draggedWidget, draggedPositionedWidget) = when (val item = dragInfo.dataToDrop) {
         is WidgetComponent -> item to null
-        is PositionedWidget -> item.widget to item
+        is PlacedWidgetComponent -> item.widgetTag to item
         else -> return
     }
 
     val hoveredCellIndices = rememberHoveredCellIndices(
         viewModel = viewModel,
         dragInfo = dragInfo,
-        draggedWidget = draggedWidget,
+        draggedWidget = draggedWidget as WidgetComponent,
         draggedPositionedWidget = draggedPositionedWidget, // Pass this to the remember function
         gridCells = gridCells,
         selectedLayout = selectedLayout,
@@ -98,7 +99,7 @@ fun DragStateOverlay(
 //    }
 
     val currentOccupiedCells =
-        remember(draggedPositionedWidget?.id, occupiedCells, viewModel.positionedWidgets) {
+        remember(draggedPositionedWidget?.widgetTag, occupiedCells, viewModel.positionedWidgets) {
             derivedStateOf {
                 if (draggedPositionedWidget != null) {
                     viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
@@ -122,7 +123,7 @@ private fun rememberHoveredCellIndices(
     viewModel: WidgetEditorViewModel,
     dragInfo: DragTargetInfo,
     draggedWidget: WidgetComponent?,
-    draggedPositionedWidget: PositionedWidget?,
+    draggedPositionedWidget: PlacedWidgetComponent?,
     gridCells: List<GridCell>,
     selectedLayout: LayoutType?,
     layoutBounds: LayoutBounds?
@@ -175,13 +176,7 @@ private fun rememberHoveredCellIndices(
             // 드래그 중인 위젯을 제외한 점유된 셀들 (모든 행의 셀 포함)
             val occupiedByOthers = viewModel.getOccupiedCells(excluding = draggedPositionedWidget)
             // 원래 위치의 모든 셀 인덱스 (모든 행 포함)를 명시적으로 제외 (부분 겹침 허용을 위해)
-            val originalIndices = if (draggedPositionedWidget.cellIndices.isNotEmpty()) {
-                // cellIndices는 이미 모든 행의 셀 인덱스를 포함함
-                draggedPositionedWidget.cellIndices.toSet()
-            } else {
-                // 단일 셀인 경우
-                draggedPositionedWidget.cellIndex?.let { setOf(it) } ?: emptySet()
-            }
+            val originalIndices = draggedPositionedWidget.getCellIndices()
             // 원래 위치의 모든 셀(모든 행 포함)을 제외하여 부분 겹침 이동 허용
             // 예: (1,1) (2,1)에서 (2,1) (3,1)로 이동 가능, 또는 2행 이상 위젯도 동일하게 적용
             occupiedByOthers - originalIndices

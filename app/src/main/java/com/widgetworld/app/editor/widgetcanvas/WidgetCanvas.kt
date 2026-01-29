@@ -28,10 +28,10 @@ import com.widgetworld.app.editor.draganddrop.Draggable
 import com.widgetworld.app.editor.draganddrop.LocalDragTargetInfo
 import com.widgetworld.app.editor.util.LayoutBounds
 import com.widgetworld.app.editor.WidgetEditorViewModel
-import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.editor.widgettab.WidgetComponent
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import kotlin.math.roundToInt
 
 private const val TAG = "WidgetCanvas"
@@ -42,7 +42,7 @@ fun WidgetCanvas(
     onWidgetAddProcessed: (Offset, LayoutBounds, LayoutType) -> Unit,
     modifier: Modifier = Modifier,
     selectedLayout: LayoutType? = null,
-    positionedWidgets: List<PositionedWidget> = emptyList(),
+    positionedWidgets: List<PlacedWidgetComponent> = emptyList(),
 ) {
     val density = LocalDensity.current
     val dragInfo = LocalDragTargetInfo.current
@@ -124,23 +124,23 @@ fun WidgetCanvas(
 
             // Display dropped widgets
             val draggedItemId = remember(dragInfo.isDragging, dragInfo.dataToDrop) {
-                if (dragInfo.isDragging && dragInfo.dataToDrop is PositionedWidget) {
-                    (dragInfo.dataToDrop as PositionedWidget).id
+                if (dragInfo.isDragging && dragInfo.dataToDrop is PlacedWidgetComponent) {
+                    (dragInfo.dataToDrop as PlacedWidgetComponent).widgetTag
                 } else {
                     null
                 }
             }
 
             positionedWidgets.forEach { item ->
-                val isDragging = item.id == draggedItemId
+                val isDragging = item.widgetTag == draggedItemId
                 // 고유 ID를 key로 사용하여 위젯 이동 시 재생성되지 않도록 함
                 // 이렇게 하면 위젯이 재배치될 때 기존 컴포저블이 유지되고 offset만 업데이트됨
-                key(item.id) {
+                key(item.widgetTag) {
                     Draggable(
                         dataToDrop = item,
                         modifier = Modifier
                             .offset {
-                                IntOffset(item.offset.x.roundToInt(), item.offset.y.roundToInt())
+                                IntOffset(item.offsetX.roundToInt(), item.offsetY.roundToInt())
                             }
                             .alpha(if (isDragging) 0f else 1f)
                     ) {

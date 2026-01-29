@@ -1,8 +1,6 @@
 package com.widgetworld.app.editor.widgetcanvas
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
@@ -12,43 +10,13 @@ import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.DropTarget
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.getCellIndices
 import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.widgetcomponent.LayoutType
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
-
-sealed interface DragPayload {
-    data class NewWidget(val widget: WidgetComponent) : DragPayload
-    data class ExistingWidget(val positioned: PositionedWidget) : DragPayload
-}
-
-sealed interface DropResult {
-    object Ignore : DropResult
-
-    data class Remove(
-        val widget: PositionedWidget
-    ) : DropResult
-
-    data class Add(
-        val widget: WidgetComponent,
-        val offset: Offset,
-        val startRow: Int,
-        val startCol: Int,
-        val cellIndices: List<Int>,
-        val widthCells: Int,
-        val heightCells: Int
-    ) : DropResult
-
-    data class Move(
-        val positionedWidget: PositionedWidget,
-        val offset: Offset,
-        val startRow: Int,
-        val startCol: Int,
-        val cellIndices: Set<Int>
-    ) : DropResult
-}
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 
 
 @Composable
@@ -62,13 +30,9 @@ fun WidgetDropHandler(
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
-    val dropUseCase: WidgetDropUseCase = remember { WidgetDropUseCase() }
-
-    Log.i("heec.choi", "WidgetDropHandler : $dragInfo")
 
     DropTarget(
         onDrop = { dropState ->
-            Log.i("heec.choi", "onDrop $dropState")
             // todo : 정리 필요
             // 1. 드롭 상태 정보 추출.
             val isInBound = dropState.isInBound
@@ -76,7 +40,7 @@ fun WidgetDropHandler(
             val dropPositionInWindow = dropState.dropPositionInWindow
 
             // 2. 위젯 삭제 처리(레이아웃 밖으로 드래그 된 경우)
-            if (droppedItem is PositionedWidget && layoutBounds != null) {
+            if (droppedItem is PlacedWidgetComponent && layoutBounds != null) {
                 val bounds = layoutBounds
                 val isWithinLayoutBounds = dropPositionInWindow.x >= bounds.position.x &&
                         dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
@@ -96,7 +60,7 @@ fun WidgetDropHandler(
             }
 
             // 3. 위젯 삭제 처리(캔버스 밖으로 드래그 된 경우)
-            if (!isInBound && droppedItem is PositionedWidget) {
+            if (!isInBound && droppedItem is PlacedWidgetComponent) {
                 // 즉시 드래그 상태 정리하여 잔상 방지
                 dragInfo.itemDropped = true
                 dragInfo.isDragging = false
@@ -118,7 +82,7 @@ fun WidgetDropHandler(
 
             val widget = when (droppedItem) {
                 is WidgetComponent -> droppedItem
-                is PositionedWidget -> {
+                is PlacedWidgetComponent -> {
                     WidgetComponentRegistry.getComponent(droppedItem.widgetTag ?: "")
                 }
 
@@ -159,17 +123,11 @@ fun WidgetDropHandler(
             )
 
             //6. 충돌 검사: 드래그 중인 위젯의 원래 위치(모든 행 포함)는 제외하고 다른 위젯과의 충돌만 확인
-            val occupiedIndices = if (droppedItem is PositionedWidget) {
+            val occupiedIndices = if (droppedItem is PlacedWidgetComponent) {
                 // 드래그 중인 위젯을 제외한 점유된 셀들 (모든 행의 셀 포함)
                 val occupiedByOthers = viewModel.getOccupiedCells(excluding = droppedItem)
                 // 원래 위치의 모든 셀 인덱스 (모든 행 포함)를 명시적으로 제외 (부분 겹침 허용을 위해)
-                val originalIndices = if (droppedItem.cellIndices.isNotEmpty()) {
-                    // cellIndices는 이미 모든 행의 셀 인덱스를 포함함
-                    droppedItem.cellIndices.toSet()
-                } else {
-                    // 단일 셀인 경우
-                    droppedItem.cellIndex?.let { setOf(it) } ?: emptySet()
-                }
+                val originalIndices = droppedItem.getCellIndices()
                 // 원래 위치의 모든 셀(모든 행 포함)을 제외하여 부분 겹침 이동 허용
                 // 예: (1,1) (2,1)에서 (2,1) (3,1)로 이동 가능
                 occupiedByOthers - originalIndices
@@ -208,7 +166,7 @@ fun WidgetDropHandler(
 
                 )
 
-                is PositionedWidget -> {
+                is PlacedWidgetComponent -> {
                     viewModel.movePositionedWidget(
                         positionedWidget = droppedItem,
                         offset = adjustedOffset,

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import kotlin.math.max
 
 /**
@@ -50,7 +50,7 @@ fun BoxScope.DeleteZoneIndicator(
     density: Density
 ) {
     // PositionedWidget만 삭제 대상이므로 확인
-    val isPositionedWidget = dragInfo.dataToDrop is PositionedWidget
+    val isPositionedWidget = dragInfo.dataToDrop is PlacedWidgetComponent
 
     // 드래그 중이고 PositionedWidget인 경우에만 표시
     if (!dragInfo.isDragging || !isPositionedWidget) {

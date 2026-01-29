@@ -1,15 +1,7 @@
 package com.widgetworld.app.editor.widgetcanvas
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.Density
-import com.widgetworld.app.editor.draganddrop.DropTargetState
-import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widgettab.PositionedWidget
-import com.widgetworld.app.editor.widgettab.toPixels
-import com.widgetworld.widgetcomponent.LayoutType
-import com.widgetworld.widgetcomponent.WidgetComponentRegistry
-import com.widgetworld.widgetcomponent.getSizeInCellsForLayout
 import javax.inject.Inject
 
 class WidgetDropUseCase @Inject constructor() {
