@@ -77,7 +77,7 @@ fun WidgetCanvas(
         WidgetDropHandler(
             viewModel = viewModel,
             layoutBounds = layoutBounds,
-            selectedLayout = selectedLayout,
+            layoutType = selectedLayout,
             canvasPosition = canvasPosition,
             dragInfo = dragInfo,
             modifier = Modifier.fillMaxSize()
@@ -97,12 +97,15 @@ fun WidgetCanvas(
                 dragInfo = dragInfo,
                 density = density
             )
-            LayoutDisplay(
-                selectedLayout = selectedLayout,
-                onLayoutBoundsChanged = { bounds ->
-                    layoutBounds = bounds
-                }
-            )
+            if (selectedLayout != null) {
+                LayoutDisplay(
+                    layout = selectedLayout,
+                    onLayoutBoundsChanged = { bounds ->
+                        layoutBounds = bounds
+                    }
+                )
+            }
+
 
             val gridCells = rememberGridCells(selectedLayout, layoutBounds)
             val occupiedCells = remember(viewModel.positionedWidgets) {
@@ -111,16 +114,16 @@ fun WidgetCanvas(
                 }
             }.value
 
-            DragStateOverlay(
-                viewModel = viewModel,
-                gridCells = gridCells,
-                occupiedCells = occupiedCells,
-                selectedLayout = selectedLayout,
-                layoutBounds = layoutBounds,
-                canvasPosition = canvasPosition,
-                density = density,
-                dragInfo = dragInfo
-            )
+//            DragStateOverlay(
+//                viewModel = viewModel,
+//                gridCells = gridCells,
+//                occupiedCells = occupiedCells,
+//                selectedLayout = selectedLayout,
+//                layoutBounds = layoutBounds,
+//                canvasPosition = canvasPosition,
+//                density = density,
+//                dragInfo = dragInfo
+//            )
 
             // Display dropped widgets
             val draggedItemId = remember(dragInfo.isDragging, dragInfo.dataToDrop) {

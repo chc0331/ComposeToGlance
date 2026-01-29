@@ -1,5 +1,7 @@
 package com.widgetworld.app.editor.widgetcanvas
 
+import android.util.Log
+import android.widget.GridLayout.spec
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +26,7 @@ fun WidgetDropHandler(
     viewModel: WidgetEditorViewModel,
     widgetDropViewModel: WidgetDropViewModel = viewModel(),
     layoutBounds: LayoutBounds?,
-    selectedLayout: LayoutType?,
+    layoutType: LayoutType?,
     canvasPosition: Offset,
     dragInfo: DragTargetInfo,
     modifier: Modifier = Modifier
@@ -39,21 +41,24 @@ fun WidgetDropHandler(
             val droppedItem = dropState.droppedData
             val dropPositionInWindow = dropState.dropPositionInWindow
 
+            fun clearDragInfo() {
+                dragInfo.itemDropped = true
+                dragInfo.isDragging = false
+                dragInfo.dragOffset = Offset.Zero
+                dragInfo.dataToDrop = null
+                dragInfo.draggableComposable = null
+            }
+
             // 2. 위젯 삭제 처리(레이아웃 밖으로 드래그 된 경우)
             if (droppedItem is PlacedWidgetComponent && layoutBounds != null) {
-                val bounds = layoutBounds
-                val isWithinLayoutBounds = dropPositionInWindow.x >= bounds.position.x &&
-                        dropPositionInWindow.x <= bounds.position.x + bounds.size.width &&
-                        dropPositionInWindow.y >= bounds.position.y &&
-                        dropPositionInWindow.y <= bounds.position.y + bounds.size.height
+                val isWithinLayoutBounds = dropPositionInWindow.x >= layoutBounds.position.x &&
+                        dropPositionInWindow.x <= layoutBounds.position.x + layoutBounds.size.width &&
+                        dropPositionInWindow.y >= layoutBounds.position.y &&
+                        dropPositionInWindow.y <= layoutBounds.position.y + layoutBounds.size.height
 
                 if (!isWithinLayoutBounds) {
                     // 즉시 드래그 상태 정리하여 잔상 방지
-                    dragInfo.itemDropped = true
-                    dragInfo.isDragging = false
-                    dragInfo.dragOffset = Offset.Zero
-                    dragInfo.dataToDrop = null
-                    dragInfo.draggableComposable = null
+                    clearDragInfo()
                     widgetDropViewModel.removePositionedWidget(droppedItem)
                     return@DropTarget
                 }
@@ -61,56 +66,46 @@ fun WidgetDropHandler(
 
             // 3. 위젯 삭제 처리(캔버스 밖으로 드래그 된 경우)
             if (!isInBound && droppedItem is PlacedWidgetComponent) {
-                // 즉시 드래그 상태 정리하여 잔상 방지
-                dragInfo.itemDropped = true
-                dragInfo.isDragging = false
-                dragInfo.dragOffset = Offset.Zero
-                dragInfo.dataToDrop = null
-                dragInfo.draggableComposable = null
+                clearDragInfo()
                 widgetDropViewModel.removePositionedWidget(droppedItem)
                 return@DropTarget
             }
 
-            /**
-             * 4. 유효성 검사
-             * - 캔서브 밖으로 드래그 된 위젯은 처리하지 않음.
-             * - 드롭된 아이템 타입 체크
-             * */
             if (!isInBound) {
                 return@DropTarget
             }
 
+            Log.i("heec.choi", "Dropped widget : $droppedItem ${droppedItem is WidgetComponent}")
+
             val widget = when (droppedItem) {
                 is WidgetComponent -> droppedItem
+
                 is PlacedWidgetComponent -> {
-                    WidgetComponentRegistry.getComponent(droppedItem.widgetTag ?: "")
+                    WidgetComponentRegistry.getComponent(droppedItem.widgetTag)
                 }
 
                 else -> return@DropTarget
             }
-            val bounds = layoutBounds
-            val spec = selectedLayout?.getGridCell()
-            if (bounds == null || spec == null || widget == null) {
+            val gridSpec = layoutType?.getGridCell()
+            if (layoutBounds == null || gridSpec == null || widget == null) {
                 return@DropTarget
             }
-            val currentLayout = selectedLayout ?: return@DropTarget
 
             // 5. 그리드 계산 및 위치 결정
-            val widgetSizeInCells = widget.getSizeInCellsForLayout(
-                currentLayout.name,
-                currentLayout.getDivide()
+            val widgetCellSize = widget.getSizeInCellsForLayout(
+                layoutType.name,
+                layoutType.getDivide()
             )
-            val widgetWidthCells = widgetSizeInCells.first
-            val widgetHeightCells = widgetSizeInCells.second
-            val gridCells = GridCalculator.calculateGridCells(spec, bounds)
-
+            val widgetWidthCells = widgetCellSize.first
+            val widgetHeightCells = widgetCellSize.second
+            val gridCells = GridCalculator.calculateGridCells(gridSpec, layoutBounds)
             val bestStart = GridCalculator.calculateBestCellPosition(
                 dropPositionInWindow,
                 widgetWidthCells,
                 widgetHeightCells,
                 gridCells,
-                spec,
-                bounds
+                gridSpec,
+                layoutBounds
             ) ?: return@DropTarget
 
             val (startRow, startCol) = bestStart
@@ -119,7 +114,7 @@ fun WidgetDropHandler(
                 startCol,
                 widgetWidthCells,
                 widgetHeightCells,
-                spec
+                gridSpec
             )
 
             //6. 충돌 검사: 드래그 중인 위젯의 원래 위치(모든 행 포함)는 제외하고 다른 위젯과의 충돌만 확인
@@ -142,7 +137,7 @@ fun WidgetDropHandler(
             //7. 드롭 완료 처리
             dragInfo.itemDropped = true
 
-            val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
+            val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, layoutType)
             val adjustedOffset = GridCalculator.calculateWidgetOffset(
                 startRow,
                 startCol,
@@ -150,8 +145,8 @@ fun WidgetDropHandler(
                 widgetHeightCells,
                 widgetWidthPx,
                 widgetHeightPx,
-                bounds,
-                spec,
+                layoutBounds,
+                gridSpec,
                 canvasPosition
             )
 

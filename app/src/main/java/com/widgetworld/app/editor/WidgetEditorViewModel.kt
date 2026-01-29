@@ -184,7 +184,7 @@ class WidgetEditorViewModel @Inject constructor(
     ) {
         val startCellIndex = cellIndices.firstOrNull()
         viewModelScope.launch {
-            Log.i("heec.choi", "addPositionedWidget-$widget $offset $startRow $startCol")
+            Log.i("heec.choi", "addPositionedWidget-$cellIndices")
             val gridIndex = startCellIndex ?: 0
             val offsetX = offset.x
             val offsetY = offset.y
@@ -195,6 +195,7 @@ class WidgetEditorViewModel @Inject constructor(
             val placedWidgetComponent = PlacedWidgetComponent.newBuilder().setGridIndex(gridIndex)
                 .setOffsetX(offsetX).setOffsetY(offsetY)
                 .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory)
+                .addAllOccupiedGridIndices(cellIndices)
                 .setWidgetTag(widgetTag).build()
 
             widgetCanvasStateRepository.addPlacedWidgets(placedWidgetComponent)

@@ -1,6 +1,5 @@
 package com.widgetworld.app.editor.widgetcanvas
 
-import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.first
 
 @HiltViewModel
 class WidgetDropViewModel @Inject constructor(

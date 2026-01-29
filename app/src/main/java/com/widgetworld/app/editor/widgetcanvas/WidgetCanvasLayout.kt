@@ -17,29 +17,27 @@ import com.widgetworld.widgetcomponent.util.getSystemBackgroundRadius
 
 @Composable
 fun BoxScope.LayoutDisplay(
-    selectedLayout: LayoutType?,
+    layout: LayoutType,
     onLayoutBoundsChanged: (LayoutBounds) -> Unit
 ) {
     val context = LocalContext.current
-    selectedLayout?.let { layout ->
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
-                .onGloballyPositioned { layoutCoordinates ->
-                    onLayoutBoundsChanged(
-                        LayoutBounds(
-                            position = layoutCoordinates.positionInWindow(),
-                            size = layoutCoordinates.size
-                        )
+    Box(
+        modifier = Modifier
+            .align(Alignment.Center)
+            .clip(RoundedCornerShape(context.getSystemBackgroundRadius()))
+            .onGloballyPositioned { layoutCoordinates ->
+                onLayoutBoundsChanged(
+                    LayoutBounds(
+                        position = layoutCoordinates.positionInWindow(),
+                        size = layoutCoordinates.size
                     )
-                }
-        ) {
-            LayoutComponent(
-                layout = layout,
-                showText = false
-            )
-        }
+                )
+            }
+    ) {
+        LayoutComponent(
+            layout = layout,
+            showText = false
+        )
     }
 }
 
