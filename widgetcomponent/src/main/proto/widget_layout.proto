@@ -30,20 +30,20 @@ message PlacedWidgetComponent {
   int32 grid_index = 1;
 
   float offset_x = 2;
-
   float offset_y = 3;
 
-  // 행에 걸쳐 차지하는 셀 수 (row span)
+  // 행/열 span
   int32 row_span = 4;
-  
-  // 열에 걸쳐 차지하는 셀 수 (col span)
   int32 col_span = 5;
+
+  // 위젯이 차지하는 모든 그리드 인덱스
+  repeated int32 occupied_grid_indices = 6;
   
   // 위젯 카테고리
-  WidgetCategory widget_category = 6;
+  WidgetCategory widget_category = 7;
   
   // 위젯 태그 (고유 식별자)
-  string widget_tag = 7;
+  string widget_tag = 8;
 }
 
 // 레이아웃 정보를 저장하는 메시지

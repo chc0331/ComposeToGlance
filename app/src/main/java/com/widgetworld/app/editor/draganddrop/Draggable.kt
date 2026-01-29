@@ -15,12 +15,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 
 @Composable
 fun <T> Draggable(
-    modifier: Modifier = Modifier,
     dataToDrop: T,
+    modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
-    val currentState = LocalDragTargetInfo.current
+    val dragState = LocalDragTargetInfo.current
 
     Box(
         modifier = modifier
@@ -30,12 +30,12 @@ fun <T> Draggable(
             .pointerInput(Unit) {
                 detectDragGesturesAfterLongPress(
                     onDragStart = { offset ->
-                        currentState.dragOffset = offset
-                        currentState.dataToDrop = dataToDrop
-                        currentState.isDragging = true
-                        currentState.itemDropped = false
-                        currentState.dragPosition = currentPosition
-                        currentState.draggableComposable = {
+                        dragState.dragOffset = offset
+                        dragState.dataToDrop = dataToDrop
+                        dragState.isDragging = true
+                        dragState.itemDropped = false
+                        dragState.dragPosition = currentPosition
+                        dragState.draggableComposable = {
                             Box {
                                 content()
                             }
@@ -43,23 +43,18 @@ fun <T> Draggable(
                     },
                     onDrag = { change, dragAmount ->
                         change.consume()
-                        currentState.itemDropped = false
-                        currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
+                        dragState.itemDropped = false
+                        dragState.dragOffset += Offset(dragAmount.x, dragAmount.y)
                     },
                     onDragEnd = {
-                        // isDragging을 false로 설정하여 DropTarget이 데이터를 전달할 수 있도록 함
-                        currentState.isDragging = false
-                        // dragOffset과 dataToDrop은 DropTarget이 처리할 수 있도록 유지
-                        // 드롭 위치 계산을 위해 dragOffset을 유지해야 함
-                        // itemDropped가 true이면 WidgetEditorContainer에서 페이드아웃 후 초기화
-                        // itemDropped가 false이면 WidgetEditorContainer에서 지연 후 초기화
+                        dragState.isDragging = false
                     },
                     onDragCancel = {
-                        currentState.isDragging = false
-                        currentState.dragOffset = Offset.Zero
-                        currentState.itemDropped = false
-                        currentState.dataToDrop = null
-                        currentState.draggableComposable = null
+                        dragState.isDragging = false
+                        dragState.dragOffset = Offset.Zero
+                        dragState.itemDropped = false
+                        dragState.dataToDrop = null
+                        dragState.draggableComposable = null
                     }
                 )
             }
