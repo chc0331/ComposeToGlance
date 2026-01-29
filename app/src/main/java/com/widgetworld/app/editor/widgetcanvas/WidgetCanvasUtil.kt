@@ -5,17 +5,8 @@ import androidx.compose.runtime.remember
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.GridCell
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.widgetcomponent.LayoutType
 
-// PositionedWidget의 모든 셀 인덱스 반환
-fun PositionedWidget.getAllCellIndices(): Set<Int> =
-    if (cellIndices.isNotEmpty()) cellIndices.toSet() else listOfNotNull(cellIndex).toSet()
-
-
-// 여러 PositionedWidget 리스트의 모든 셀 인덱스 반환
-fun List<PositionedWidget>.getOccupiedCells(): Set<Int> =
-    flatMap { it.getAllCellIndices() }.toSet()
 
 // 그리드 셀 계산을 기억하는 Composable
 @Composable

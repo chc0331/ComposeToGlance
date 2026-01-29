@@ -16,7 +16,7 @@ import com.widgetworld.app.editor.settings.GridSettings
 import com.widgetworld.app.editor.settings.GridSettingsDataStore
 import com.widgetworld.app.editor.util.GridCalculator
 import com.widgetworld.app.editor.util.LayoutBounds
-import com.widgetworld.app.editor.widgettab.PositionedWidget
+import com.widgetworld.app.editor.widgettab.getCellIndices
 import com.widgetworld.app.editor.widgettab.toPixels
 import com.widgetworld.app.repository.WidgetCanvasStateRepository
 import com.widgetworld.widgetcomponent.GridSpec
@@ -62,23 +62,7 @@ class WidgetEditorViewModel @Inject constructor(
     )
 
     val positionedWidgetsState = widgetCanvasStateRepository.dataStoreFlow.map { widgetCanvas ->
-        widgetCanvas.placedWidgetComponentList.map {
-            val index = it.gridIndex
-            val colSpan = it.colSpan
-            val rowSpan = it.rowSpan
-            val widgetCategory = it.widgetCategory
-            val widgetTag = it.widgetTag
-            val offsetX = it.offsetX
-            val offsetY = it.offsetY
-            PositionedWidget(
-                gridIndex = index,
-                offset = Offset(offsetX, offsetY),
-                colSpan = colSpan,
-                rowSpan = rowSpan,
-                widgetCategory = widgetCategory,
-                widgetTag = widgetTag
-            )
-        }
+        widgetCanvas.placedWidgetComponentList
     }.stateIn(
         viewModelScope, started = SharingStarted.Companion.WhileSubscribed(5_000),
         initialValue = emptyList()
@@ -124,7 +108,7 @@ class WidgetEditorViewModel @Inject constructor(
         private set
 
     // 캔버스에 배치된 위젯들 (셀 기반 위치 정보 포함)
-    val positionedWidgets = mutableStateListOf<PositionedWidget>()
+    val positionedWidgets = mutableStateListOf<PlacedWidgetComponent>()
 
     // 그리드 설정 패널 표시 상태
     var showGridSettings by mutableStateOf(false)
@@ -199,15 +183,8 @@ class WidgetEditorViewModel @Inject constructor(
         spanY: Int = 0
     ) {
         val startCellIndex = cellIndices.firstOrNull()
-        positionedWidgets.add(
-            PositionedWidget(
-                widget = widget,
-                offset = offset,
-                cellIndex = startCellIndex,
-                cellIndices = cellIndices
-            )
-        )
         viewModelScope.launch {
+            Log.i("heec.choi", "addPositionedWidget-$widget $offset $startRow $startCol")
             val gridIndex = startCellIndex ?: 0
             val offsetX = offset.x
             val offsetY = offset.y
@@ -217,29 +194,25 @@ class WidgetEditorViewModel @Inject constructor(
             val widgetTag = widget.getWidgetTag()
             val placedWidgetComponent = PlacedWidgetComponent.newBuilder().setGridIndex(gridIndex)
                 .setOffsetX(offsetX).setOffsetY(offsetY)
-                .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory).setWidgetTag(widgetTag).build()
+                .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory)
+                .setWidgetTag(widgetTag).build()
 
             widgetCanvasStateRepository.addPlacedWidgets(placedWidgetComponent)
         }
     }
 
     fun movePositionedWidget(
-        positionedWidget: PositionedWidget,
+        positionedWidget: PlacedWidgetComponent,
         offset: Offset,
         startRow: Int,
         startCol: Int,
         cellIndices: List<Int>
     ) {
         // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
-        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
+        val index = positionedWidgets.indexOfFirst { it.widgetTag == positionedWidget.widgetTag }
         if (index != -1) {
             // ID를 유지하면서 offset과 cellIndices만 업데이트
-            val updatedWidget = positionedWidget.copy(
-                offset = offset,
-                cellIndex = cellIndices.firstOrNull(),
-                cellIndices = cellIndices,
-                id = positionedWidget.id // 기존 ID 명시적으로 유지
-            )
+            val updatedWidget = positionedWidget
             positionedWidgets[index] = updatedWidget
         }
     }
@@ -247,8 +220,8 @@ class WidgetEditorViewModel @Inject constructor(
     /**
      * 배치된 위젯 제거 (ID 기반)
      */
-    fun removePositionedWidget(positionedWidget: PositionedWidget) {
-        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
+    fun removePositionedWidget(positionedWidget: PlacedWidgetComponent) {
+        val index = positionedWidgets.indexOfFirst { it.widgetTag == positionedWidget.widgetTag }
         if (index != -1) {
             positionedWidgets.removeAt(index)
         }
@@ -267,18 +240,14 @@ class WidgetEditorViewModel @Inject constructor(
     /**
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
-    fun getOccupiedCells(excluding: PositionedWidget? = null): Set<Int> {
+    fun getOccupiedCells(excluding: PlacedWidgetComponent? = null): Set<Int> {
         return positionedWidgets
             .filter {
                 // ID 기반 비교로 더 안전하게 제외 (참조 비교와 ID 비교 모두 지원)
-                excluding == null || it.id != excluding.id
+                excluding == null || it.widgetTag != excluding.widgetTag
             }
             .flatMap { positionedWidget ->
-                if (positionedWidget.cellIndices.isNotEmpty()) {
-                    positionedWidget.cellIndices
-                } else {
-                    listOfNotNull(positionedWidget.cellIndex)
-                }
+                positionedWidget.getCellIndices()
             }.toSet()
     }
 
@@ -362,7 +331,7 @@ class WidgetEditorViewModel @Inject constructor(
         val newSpec = newLayout.getGridCell()
 
         val migratedWidgets = positionedWidgets.mapNotNull { positionedWidget ->
-            val oldIndices = positionedWidget.cellIndices
+            val oldIndices = positionedWidget.getCellIndices()
             if (oldIndices.isEmpty()) return@mapNotNull null
 
             // 셀 인덱스 마이그레이션
@@ -373,11 +342,7 @@ class WidgetEditorViewModel @Inject constructor(
             val firstIndex = newIndices.first()
 
             // 새로운 오프셋 계산은 UI에서 수행되므로 임시값 사용
-            positionedWidget.copy(
-                cellIndices = newIndices,
-                cellIndex = firstIndex,
-                offset = Offset.Companion.Zero // UI에서 재계산됨
-            )
+            positionedWidget
         }
 
         positionedWidgets.clear()
@@ -429,8 +394,10 @@ class WidgetEditorViewModel @Inject constructor(
             selectedLayout?.let { layout ->
                 val layoutType = layout.name
                 val gridColumns = layout.getGridCell().column
-                val layoutSizeType = com.widgetworld.widgetcomponent.SizeType.Companion.getSizeType(layoutType).toProto()
-                val positionedWidgets = positionedWidgets.map { it.toProto(gridColumns) }
+                val layoutSizeType =
+                    com.widgetworld.widgetcomponent.SizeType.Companion.getSizeType(layoutType)
+                        .toProto()
+                val positionedWidgets = positionedWidgets
                 val provider = when (layoutType) {
                     "Medium" -> MediumWidgetProvider::class.java.name
                     "Large" -> LargeWidgetProvider::class.java.name

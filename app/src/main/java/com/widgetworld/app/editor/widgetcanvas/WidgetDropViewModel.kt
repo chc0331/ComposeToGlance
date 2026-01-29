@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.widgetworld.app.editor.widgettab.PositionedWidget
 import com.widgetworld.app.repository.WidgetCanvasStateRepository
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
@@ -74,7 +73,7 @@ class WidgetDropViewModel @Inject constructor(
     }
 
     fun movePositionedWidget(
-        positionedWidget: PositionedWidget,
+        positionedWidget: PlacedWidgetComponent,
         offset: Offset,
         startRow: Int,
         startCol: Int,
@@ -101,7 +100,7 @@ class WidgetDropViewModel @Inject constructor(
         }
     }
 
-    fun removePositionedWidget(positionedWidget: PositionedWidget) {
+    fun removePositionedWidget(positionedWidget: PlacedWidgetComponent) {
         viewModelScope.launch {
             val data = widgetCanvasStateRepository.dataStoreFlow.first()
             val positionedWidgets = data.placedWidgetComponentList
@@ -110,8 +109,8 @@ class WidgetDropViewModel @Inject constructor(
             if (index != -1) {
                 val placedWidgetComponent = PlacedWidgetComponent.newBuilder()
                     .setGridIndex(positionedWidget.gridIndex)
-                    .setOffsetX(positionedWidget.offset.x)
-                    .setOffsetY(positionedWidget.offset.y)
+                    .setOffsetX(positionedWidget.offsetX)
+                    .setOffsetY(positionedWidget.offsetY)
                     .setRowSpan(positionedWidget.rowSpan)
                     .setColSpan(positionedWidget.colSpan)
                     .setWidgetCategory(positionedWidget.widgetCategory)
