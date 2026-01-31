@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -218,23 +219,6 @@ class WidgetEditorViewModel @Inject constructor(
 
             widgetCanvasStateRepository.updatePlacedWidget(newPlacedWidget)
         }
-
-
-        // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
-        val index = positionedWidgets.indexOfFirst { it.id == placedWidget.id }
-        if (index != -1) {
-            // ID를 유지하면서 offset과 cellIndices만 업데이트
-            val startCellIndex = cellIndices.firstOrNull() ?: 0
-            val updatedWidget = placedWidget.toBuilder()
-                .setId(placedWidget.id) // ID 보존
-                .setGridIndex(startCellIndex)
-                .setOffsetX(offset.x)
-                .setOffsetY(offset.y)
-                .clearOccupiedGridIndices()
-                .addAllOccupiedGridIndices(cellIndices)
-                .build()
-            positionedWidgets[index] = updatedWidget
-        }
     }
 
     /**
@@ -261,14 +245,12 @@ class WidgetEditorViewModel @Inject constructor(
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
     fun getOccupiedCells(excluding: PlacedWidgetComponent? = null): Set<Int> {
-        return positionedWidgets
-            .filter {
-                // ID 기반 비교로 더 안전하게 제외 (참조 비교와 ID 비교 모두 지원)
-                excluding == null || it.widgetTag != excluding.widgetTag
-            }
-            .flatMap { positionedWidget ->
-                positionedWidget.getCellIndices()
-            }.toSet()
+        return positionedWidgetsState.value.filter {
+            excluding == null || it.id != excluding.id
+        }.flatMap { widget ->
+            Log.i("heec.choi","Widget : $widget, ${widget.rowSpan} ${widget.getCellIndices()}")
+            widget.getCellIndices()
+        }.toSet()
     }
 
     /**

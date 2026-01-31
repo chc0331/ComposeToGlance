@@ -1,5 +1,6 @@
 package com.widgetworld.app.editor.widgettab
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpSize
@@ -23,6 +24,7 @@ import com.widgetworld.widgetcomponent.proto.WidgetCategory
 fun PlacedWidgetComponent.getCellIndices(): List<Int> {
     var indices = mutableListOf<Int>()
 
+    Log.i("heec.choi","Index : $rowSpan $colSpan $gridIndex")
     (0 until rowSpan).forEach { row ->
         (0 until colSpan).forEach { colSpan ->
             val index = gridIndex + (row * colSpan)
