@@ -51,6 +51,7 @@ class WidgetCanvasStateRepository @Inject constructor(private val dataStore: Dat
     suspend fun updatePlacedWidget(widget: PlacedWidgetComponent) {
         dataStore.updateData { current ->
             val index = current.placedWidgetComponentList.indexOf(widget)
+
             current.toBuilder().setPlacedWidgetComponent(index, widget).build()
         }
     }

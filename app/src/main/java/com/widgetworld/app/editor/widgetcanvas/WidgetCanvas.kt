@@ -79,8 +79,7 @@ fun WidgetCanvas(
             layoutBounds = layoutBounds,
             layoutType = selectedLayout,
             canvasPosition = canvasPosition,
-            dragInfo = dragInfo,
-            modifier = Modifier.fillMaxSize()
+            dragInfo = dragInfo
         )
 
         if (selectedLayout == null && positionedWidgets.isEmpty()) {
