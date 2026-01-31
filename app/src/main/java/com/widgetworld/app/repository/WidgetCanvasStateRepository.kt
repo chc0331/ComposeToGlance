@@ -59,8 +59,12 @@ class WidgetCanvasStateRepository @Inject constructor(private val dataStore: Dat
 
     suspend fun removePlacedWidget(widget: PlacedWidgetComponent) {
         dataStore.updateData { current ->
-            val index = current.placedWidgetComponentList.indexOf(widget)
-            current.toBuilder().removePlacedWidgetComponent(index).build()
+            val index = current.placedWidgetComponentList.indexOfFirst {
+                it.id == widget.id
+            }
+            if (index != -1) {
+                current.toBuilder().removePlacedWidgetComponent(index).build()
+            } else current.toBuilder().build()
         }
     }
 }

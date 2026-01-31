@@ -75,7 +75,6 @@ fun WidgetCanvas(
             }
     ) {
         WidgetDropHandler(
-            viewModel = viewModel,
             layoutBounds = layoutBounds,
             layoutType = selectedLayout,
             canvasPosition = canvasPosition,

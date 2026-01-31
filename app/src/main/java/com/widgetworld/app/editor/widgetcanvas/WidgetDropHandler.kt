@@ -1,13 +1,9 @@
 package com.widgetworld.app.editor.widgetcanvas
 
-import android.util.Log
-import android.widget.GridLayout.spec
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.widgetworld.app.editor.WidgetEditorViewModel
 import com.widgetworld.app.editor.draganddrop.DragTargetInfo
 import com.widgetworld.app.editor.draganddrop.DropTarget
 import com.widgetworld.app.editor.util.GridCalculator
@@ -23,8 +19,7 @@ import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 
 @Composable
 fun WidgetDropHandler(
-    viewModel: WidgetEditorViewModel,
-    widgetDropViewModel: WidgetDropViewModel = viewModel(),
+    viewModel: WidgetDropViewModel = viewModel(),
     layoutBounds: LayoutBounds?,
     layoutType: LayoutType?,
     canvasPosition: Offset,
@@ -39,10 +34,6 @@ fun WidgetDropHandler(
             val isInBound = dropState.isInBound
             val droppedItem = dropState.droppedData
             val dropPositionInWindow = dropState.dropPositionInWindow
-
-            Log.i("heec.choi","onDrop isInBound:$isInBound /" +
-                    "$dropPositionInWindow")
-
 
             fun clearDragInfo() {
                 dragInfo.itemDropped = true
@@ -62,7 +53,7 @@ fun WidgetDropHandler(
                 if (!isWithinLayoutBounds) {
                     // 즉시 드래그 상태 정리하여 잔상 방지
                     clearDragInfo()
-                    widgetDropViewModel.removePositionedWidget(droppedItem)
+                    viewModel.removePositionedWidget(droppedItem)
                     return@DropTarget
                 }
             }
@@ -70,7 +61,7 @@ fun WidgetDropHandler(
             // 3. 위젯 삭제 처리(캔버스 밖으로 드래그 된 경우)
             if (!isInBound && droppedItem is PlacedWidgetComponent) {
                 clearDragInfo()
-                widgetDropViewModel.removePositionedWidget(droppedItem)
+                viewModel.removePositionedWidget(droppedItem)
                 return@DropTarget
             }
 
