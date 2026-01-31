@@ -28,8 +28,7 @@ fun WidgetDropHandler(
     layoutBounds: LayoutBounds?,
     layoutType: LayoutType?,
     canvasPosition: Offset,
-    dragInfo: DragTargetInfo,
-    modifier: Modifier = Modifier
+    dragInfo: DragTargetInfo
 ) {
     val density = LocalDensity.current
 
@@ -40,6 +39,10 @@ fun WidgetDropHandler(
             val isInBound = dropState.isInBound
             val droppedItem = dropState.droppedData
             val dropPositionInWindow = dropState.dropPositionInWindow
+
+            Log.i("heec.choi","onDrop isInBound:$isInBound /" +
+                    "$dropPositionInWindow")
+
 
             fun clearDragInfo() {
                 dragInfo.itemDropped = true
@@ -74,8 +77,6 @@ fun WidgetDropHandler(
             if (!isInBound) {
                 return@DropTarget
             }
-
-            Log.i("heec.choi", "Dropped widget : $droppedItem ${droppedItem is WidgetComponent}")
 
             val widget = when (droppedItem) {
                 is WidgetComponent -> droppedItem
@@ -163,7 +164,7 @@ fun WidgetDropHandler(
 
                 is PlacedWidgetComponent -> {
                     viewModel.movePositionedWidget(
-                        positionedWidget = droppedItem,
+                        placedWidget = droppedItem,
                         offset = adjustedOffset,
                         startRow = startRow,
                         startCol = startCol,

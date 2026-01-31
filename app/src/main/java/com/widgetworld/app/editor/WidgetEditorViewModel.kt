@@ -148,17 +148,9 @@ class WidgetEditorViewModel @Inject constructor(
      * 레이아웃 선택 (그리드 설정 고려)
      */
     fun selectLayout(layout: LayoutType?, migrateWidgets: Boolean = false) {
-        val previousLayout = selectedLayout
         selectedLayout = layout
-
         if (layout != null) {
-            if (migrateWidgets && previousLayout != null) {
-                // 기존 위젯들을 새로운 그리드에 맞게 마이그레이션
-                migratePositionedWidgets(previousLayout, layout)
-            } else {
-                // 레이아웃이 변경되면 배치된 위젯들을 초기화
-                clearPositionedWidgets()
-            }
+            clearPositionedWidgets()
         }
     }
 
@@ -203,17 +195,27 @@ class WidgetEditorViewModel @Inject constructor(
     }
 
     fun movePositionedWidget(
-        positionedWidget: PlacedWidgetComponent,
+        placedWidget: PlacedWidgetComponent,
         offset: Offset,
         startRow: Int,
         startCol: Int,
         cellIndices: List<Int>
     ) {
+        Log.i("heec.choi", "Move $offset ")
+        viewModelScope.launch {
+            val newPlacedWidget = placedWidget.toBuilder()
+                .setOffsetX(offset.x)
+                .setOffsetX(offset.y).build()
+
+            widgetCanvasStateRepository.updatePlacedWidget(newPlacedWidget)
+        }
+
+
         // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
-        val index = positionedWidgets.indexOfFirst { it.widgetTag == positionedWidget.widgetTag }
+        val index = positionedWidgets.indexOfFirst { it.widgetTag == placedWidget.widgetTag }
         if (index != -1) {
             // ID를 유지하면서 offset과 cellIndices만 업데이트
-            val updatedWidget = positionedWidget
+            val updatedWidget = placedWidget
             positionedWidgets[index] = updatedWidget
         }
     }

@@ -110,6 +110,8 @@ fun DropTarget(
 
     val isInBound = isDropItemInBound()
 
+    Log.i(TAG, "dragState : ${dragState.dragPosition + dragState.dragOffset}")
+
     /**
      * Drop condition
      * 1) not dragging
