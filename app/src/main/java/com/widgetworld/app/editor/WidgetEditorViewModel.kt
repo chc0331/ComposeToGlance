@@ -45,7 +45,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WidgetEditorViewModel @Inject constructor(
     private val widgetLayoutRepository: WidgetLayoutRepository,
-    private val widgetCanvasStateRepository: WidgetCanvasStateRepository
+    private val widgetCanvasStateRepository: WidgetCanvasStateRepository,
+    private val idGenerator: PlacedWidgetIdGenerator
 ) : ViewModel() {
 
     val selectedLayoutState = widgetCanvasStateRepository.dataStoreFlow.map { widgetCanvas ->
@@ -184,7 +185,9 @@ class WidgetEditorViewModel @Inject constructor(
             val colSpan = spanX
             val widgetCategory = widget.getWidgetCategory().toProto()
             val widgetTag = widget.getWidgetTag()
-            val placedWidgetComponent = PlacedWidgetComponent.newBuilder().setGridIndex(gridIndex)
+            val placedWidgetComponent = PlacedWidgetComponent.newBuilder()
+                .setId(idGenerator.generateId())
+                .setGridIndex(gridIndex)
                 .setOffsetX(offsetX).setOffsetY(offsetY)
                 .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory)
                 .addAllOccupiedGridIndices(cellIndices)
@@ -203,19 +206,33 @@ class WidgetEditorViewModel @Inject constructor(
     ) {
         Log.i("heec.choi", "Move $offset ")
         viewModelScope.launch {
+            val startCellIndex = cellIndices.firstOrNull() ?: 0
             val newPlacedWidget = placedWidget.toBuilder()
+                .setId(placedWidget.id) // ID 보존
+                .setGridIndex(startCellIndex)
+                .clearOccupiedGridIndices()
+                .addAllOccupiedGridIndices(cellIndices)
                 .setOffsetX(offset.x)
-                .setOffsetX(offset.y).build()
+                .setOffsetY(offset.y)
+                .build()
 
             widgetCanvasStateRepository.updatePlacedWidget(newPlacedWidget)
         }
 
 
         // ID 기반으로 인덱스 찾기 (copy()로 인한 새 인스턴스 생성 문제 해결)
-        val index = positionedWidgets.indexOfFirst { it.widgetTag == placedWidget.widgetTag }
+        val index = positionedWidgets.indexOfFirst { it.id == placedWidget.id }
         if (index != -1) {
             // ID를 유지하면서 offset과 cellIndices만 업데이트
-            val updatedWidget = placedWidget
+            val startCellIndex = cellIndices.firstOrNull() ?: 0
+            val updatedWidget = placedWidget.toBuilder()
+                .setId(placedWidget.id) // ID 보존
+                .setGridIndex(startCellIndex)
+                .setOffsetX(offset.x)
+                .setOffsetY(offset.y)
+                .clearOccupiedGridIndices()
+                .addAllOccupiedGridIndices(cellIndices)
+                .build()
             positionedWidgets[index] = updatedWidget
         }
     }
@@ -224,7 +241,7 @@ class WidgetEditorViewModel @Inject constructor(
      * 배치된 위젯 제거 (ID 기반)
      */
     fun removePositionedWidget(positionedWidget: PlacedWidgetComponent) {
-        val index = positionedWidgets.indexOfFirst { it.widgetTag == positionedWidget.widgetTag }
+        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
         if (index != -1) {
             positionedWidgets.removeAt(index)
         }

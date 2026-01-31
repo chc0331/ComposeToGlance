@@ -3,6 +3,7 @@ package com.widgetworld.app.editor.widgetcanvas
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.widgetworld.app.editor.PlacedWidgetIdGenerator
 import com.widgetworld.app.repository.WidgetCanvasStateRepository
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WidgetDropViewModel @Inject constructor(
-    private val widgetCanvasStateRepository: WidgetCanvasStateRepository
+    private val widgetCanvasStateRepository: WidgetCanvasStateRepository,
+    private val idGenerator: PlacedWidgetIdGenerator
 ) : ViewModel() {
 
 //    fun onDrop(result: DropResult) {
@@ -61,7 +63,9 @@ class WidgetDropViewModel @Inject constructor(
             val colSpan = spanX
             val widgetCategory = widget.getWidgetCategory().toProto()
             val widgetTag = widget.getWidgetTag()
-            val placedWidgetComponent = PlacedWidgetComponent.newBuilder().setGridIndex(gridIndex)
+            val placedWidgetComponent = PlacedWidgetComponent.newBuilder()
+                .setId(idGenerator.generateId())
+                .setGridIndex(gridIndex)
                 .setOffsetX(offsetX).setOffsetY(offsetY)
                 .setRowSpan(rowSpan).setColSpan(colSpan).setWidgetCategory(widgetCategory)
                 .setWidgetTag(widgetTag).build()
@@ -82,17 +86,22 @@ class WidgetDropViewModel @Inject constructor(
             val data = widgetCanvasStateRepository.dataStoreFlow.first()
             val positionedWidgets = data.placedWidgetComponentList
             val index =
-                positionedWidgets.indexOfFirst { it.gridIndex == positionedWidget.gridIndex }
+                positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
             if (index != -1) {
                 // ID를 유지하면서 offset과 cellIndices만 업데이트
+                val startCellIndex = cellIndices.firstOrNull() ?: 0
                 val placedWidgetComponent = PlacedWidgetComponent.newBuilder()
-                    .setGridIndex(cellIndices.first())
+                    .setId(positionedWidget.id) // ID 보존
+                    .setGridIndex(startCellIndex)
                     .setOffsetX(offset.x)
                     .setOffsetY(offset.y)
                     .setRowSpan(positionedWidget.rowSpan)
                     .setColSpan(positionedWidget.colSpan)
                     .setWidgetCategory(positionedWidget.widgetCategory)
-                    .setWidgetTag(positionedWidget.widgetTag).build()
+                    .setWidgetTag(positionedWidget.widgetTag)
+                    .clearOccupiedGridIndices()
+                    .addAllOccupiedGridIndices(cellIndices)
+                    .build()
                 widgetCanvasStateRepository.updatePlacedWidget(placedWidgetComponent)
             }
         }
@@ -103,9 +112,10 @@ class WidgetDropViewModel @Inject constructor(
             val data = widgetCanvasStateRepository.dataStoreFlow.first()
             val positionedWidgets = data.placedWidgetComponentList
             val index =
-                positionedWidgets.indexOfFirst { it.gridIndex == positionedWidget.gridIndex }
+                positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
             if (index != -1) {
                 val placedWidgetComponent = PlacedWidgetComponent.newBuilder()
+                    .setId(positionedWidget.id) // ID 보존
                     .setGridIndex(positionedWidget.gridIndex)
                     .setOffsetX(positionedWidget.offsetX)
                     .setOffsetY(positionedWidget.offsetY)
