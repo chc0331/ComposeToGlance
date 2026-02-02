@@ -21,13 +21,12 @@ import com.widgetworld.widgetcomponent.proto.WidgetCategory
  *
  * gridIndex = 4
  * */
-fun PlacedWidgetComponent.getCellIndices(): List<Int> {
-    var indices = mutableListOf<Int>()
+fun PlacedWidgetComponent.getCellIndices(gridColumns: Int): List<Int> {
+    val indices = mutableListOf<Int>()
 
-    Log.i("heec.choi","Index : $rowSpan $colSpan $gridIndex")
     (0 until rowSpan).forEach { row ->
-        (0 until colSpan).forEach { colSpan ->
-            val index = gridIndex + (row * colSpan)
+        (0 until colSpan).forEach { col ->
+            val index = gridIndex + (row * gridColumns) + col
             indices.add(index)
         }
     }

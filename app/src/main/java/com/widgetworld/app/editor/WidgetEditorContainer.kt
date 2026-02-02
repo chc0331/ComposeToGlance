@@ -88,6 +88,7 @@ fun WidgetEditorScreen(
                 categories = viewModel.categories,
                 onLayoutSelected = { viewModel.selectLayout(it) },
                 onWidgetSelected = { widget ->
+                    //todo : add widget
                     viewModel.addedWidget = widget
                 },
                 selectedLayout = viewModel.selectedLayout,
