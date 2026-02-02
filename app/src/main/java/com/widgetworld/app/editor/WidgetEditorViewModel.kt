@@ -198,49 +198,6 @@ class WidgetEditorViewModel @Inject constructor(
         }
     }
 
-    fun movePositionedWidget(
-        placedWidget: PlacedWidgetComponent,
-        offset: Offset,
-        startRow: Int,
-        startCol: Int,
-        cellIndices: List<Int>
-    ) {
-        Log.i("heec.choi", "Move $offset ")
-        viewModelScope.launch {
-            val startCellIndex = cellIndices.firstOrNull() ?: 0
-            val newPlacedWidget = placedWidget.toBuilder()
-                .setId(placedWidget.id) // ID 보존
-                .setGridIndex(startCellIndex)
-                .clearOccupiedGridIndices()
-                .addAllOccupiedGridIndices(cellIndices)
-                .setOffsetX(offset.x)
-                .setOffsetY(offset.y)
-                .build()
-
-            widgetCanvasStateRepository.updatePlacedWidget(newPlacedWidget)
-        }
-    }
-
-    /**
-     * 배치된 위젯 제거 (ID 기반)
-     */
-    fun removePositionedWidget(positionedWidget: PlacedWidgetComponent) {
-        val index = positionedWidgets.indexOfFirst { it.id == positionedWidget.id }
-        if (index != -1) {
-            positionedWidgets.removeAt(index)
-        }
-    }
-
-    /**
-     * 특정 셀 인덱스들에 위젯을 배치할 수 있는지 검사
-     * @param cellIndices 배치하려는 셀 인덱스 리스트
-     * @return 배치 가능하면 true, 충돌이 있으면 false
-     */
-    fun canPlaceWidget(cellIndices: List<Int>): Boolean {
-        val occupiedCells = getOccupiedCells()
-        return cellIndices.all { !occupiedCells.contains(it) }
-    }
-
     /**
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
@@ -248,7 +205,6 @@ class WidgetEditorViewModel @Inject constructor(
         return positionedWidgetsState.value.filter {
             excluding == null || it.id != excluding.id
         }.flatMap { widget ->
-            Log.i("heec.choi","Widget : $widget, ${widget.rowSpan} ${widget.getCellIndices()}")
             widget.getCellIndices()
         }.toSet()
     }
@@ -356,7 +312,9 @@ class WidgetEditorViewModel @Inject constructor(
         canvasPosition: Offset, layoutBounds: LayoutBounds,
         selectedLayout: LayoutType
     ) {
+        //todo : Add 안됨.
         addedWidget?.let { widget ->
+            val occupiedIndices = getOccupiedCells()
             val gridSpec = selectedLayout.getGridCell()
             val (startRow, startCol) = findFirstAvailablePosition(widget, gridSpec) ?: (0 to 0)
             val widgetSizeInCells = widget.getSizeInCellsForLayout(
@@ -369,6 +327,10 @@ class WidgetEditorViewModel @Inject constructor(
                 startRow, startCol,
                 widgetWidthCells, widgetHeightCells, gridSpec
             )
+            Log.i("heec.choi","addWidget $cellIndices $occupiedIndices")
+            if (cellIndices.any { it in occupiedIndices }) {
+                return
+            }
 
             val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
             val adjustedOffset = GridCalculator.calculateWidgetOffset(
@@ -420,4 +382,5 @@ class WidgetEditorViewModel @Inject constructor(
             }
         }
     }
+
 }

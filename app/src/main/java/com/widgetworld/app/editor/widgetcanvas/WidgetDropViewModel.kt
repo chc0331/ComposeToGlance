@@ -28,33 +28,6 @@ class WidgetDropViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-//    fun onDrop(result: DropResult) {
-//        when (result) {
-//            is DropResult.Add -> addPositionedWidget(
-//                result.widget,
-//                result.offset,
-//                result.startRow,
-//                result.startCol,
-//                result.cellIndices,
-//                result.widthCells,
-//                result.heightCells
-//            )
-//
-//            is DropResult.Move -> movePositionedWidget(
-//                result.positionedWidget,
-//                result.offset,
-//                result.startRow,
-//                result.startCol,
-//                result.cellIndices
-//            )
-//
-//            is DropResult.Remove -> removePositionedWidget(result.widget)
-//
-//            DropResult.Ignore -> Unit
-//        }
-//        clearDragState()
-//    }
-
     fun addPositionedWidget(
         widget: WidgetComponent,
         offset: Offset,
