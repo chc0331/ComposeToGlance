@@ -112,14 +112,14 @@ fun WidgetDropHandler(
             //6. 충돌 검사: 드래그 중인 위젯의 원래 위치(모든 행 포함)는 제외하고 다른 위젯과의 충돌만 확인
             val occupiedIndices = if (droppedItem is PlacedWidgetComponent) {
                 // 드래그 중인 위젯을 제외한 점유된 셀들 (모든 행의 셀 포함)
-                val occupiedByOthers = viewModel.getOccupiedCells(excluding = droppedItem)
+                val occupiedByOthers = viewModel.getOccupiedCells(excluding = droppedItem, gridSpec = gridSpec)
                 // 원래 위치의 모든 셀 인덱스 (모든 행 포함)를 명시적으로 제외 (부분 겹침 허용을 위해)
-                val originalIndices = droppedItem.getCellIndices()
+                val originalIndices = droppedItem.getCellIndices(gridSpec.column)
                 // 원래 위치의 모든 셀(모든 행 포함)을 제외하여 부분 겹침 이동 허용
                 // 예: (1,1) (2,1)에서 (2,1) (3,1)로 이동 가능
                 occupiedByOthers - originalIndices
             } else {
-                viewModel.getOccupiedCells()
+                viewModel.getOccupiedCells(gridSpec = gridSpec)
             }
 
             if (indices.any { it in occupiedIndices }) {

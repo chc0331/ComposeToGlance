@@ -105,12 +105,12 @@ fun WidgetCanvas(
             }
 
 
-            val gridCells = rememberGridCells(selectedLayout, layoutBounds)
-            val occupiedCells = remember(viewModel.positionedWidgets) {
-                derivedStateOf {
-                    viewModel.getOccupiedCells()
-                }
-            }.value
+//            val gridCells = rememberGridCells(selectedLayout, layoutBounds)
+//            val occupiedCells = remember(viewModel.positionedWidgets) {
+//                derivedStateOf {
+//                    viewModel.getOccupiedCells()
+//                }
+//            }.value
 
 //            DragStateOverlay(
 //                viewModel = viewModel,

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.widgetworld.app.editor.PlacedWidgetIdGenerator
 import com.widgetworld.app.editor.widgettab.getCellIndices
 import com.widgetworld.app.repository.WidgetCanvasStateRepository
+import com.widgetworld.widgetcomponent.GridSpec
 import com.widgetworld.widgetcomponent.component.WidgetComponent
 import com.widgetworld.widgetcomponent.proto.PlacedWidgetComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -89,11 +90,11 @@ class WidgetDropViewModel @Inject constructor(
     /**
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
-    fun getOccupiedCells(excluding: PlacedWidgetComponent? = null): Set<Int> {
+    fun getOccupiedCells(excluding: PlacedWidgetComponent? = null, gridSpec: GridSpec): Set<Int> {
         return placedWidgetsState.value.filter {
             excluding == null || it.id != excluding.id
         }.flatMap { widget ->
-            widget.getCellIndices()
+            widget.getCellIndices(gridSpec.column)
         }.toSet()
     }
 }

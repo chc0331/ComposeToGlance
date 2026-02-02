@@ -178,7 +178,7 @@ class WidgetEditorViewModel @Inject constructor(
     ) {
         val startCellIndex = cellIndices.firstOrNull()
         viewModelScope.launch {
-            Log.i("heec.choi", "addPositionedWidget-$cellIndices")
+            Log.i("heec.choi", "addPositionedWidget-$cellIndices $spanX $spanY")
             val gridIndex = startCellIndex ?: 0
             val offsetX = offset.x
             val offsetY = offset.y
@@ -201,11 +201,11 @@ class WidgetEditorViewModel @Inject constructor(
     /**
      * 현재 배치된 위젯들이 차지하는 셀 인덱스 집합을 반환
      */
-    fun getOccupiedCells(excluding: PlacedWidgetComponent? = null): Set<Int> {
+    fun getOccupiedCells(excluding: PlacedWidgetComponent? = null, gridSpec: GridSpec): Set<Int> {
         return positionedWidgetsState.value.filter {
             excluding == null || it.id != excluding.id
         }.flatMap { widget ->
-            widget.getCellIndices()
+            widget.getCellIndices(gridSpec.column)
         }.toSet()
     }
 
@@ -228,7 +228,7 @@ class WidgetEditorViewModel @Inject constructor(
         )
         val widgetWidthCells = widgetSizeInCells.first
         val widgetHeightCells = widgetSizeInCells.second
-        val occupiedCells = getOccupiedCells()
+        val occupiedCells = getOccupiedCells(gridSpec = spec)
 
         // 모든 가능한 위치를 순회하면서 첫 번째 사용 가능한 위치 찾기
         for (row in 0 until spec.row) {
@@ -270,6 +270,8 @@ class WidgetEditorViewModel @Inject constructor(
         offset: Offset,
         startRow: Int,
         startCol: Int,
+        spanX: Int,
+        spanY: Int,
         cellIndices: List<Int>
     ) {
         addPositionedWidget(
@@ -277,34 +279,10 @@ class WidgetEditorViewModel @Inject constructor(
             offset = offset,
             startRow = startRow,
             startCol = startCol,
+            spanX = spanX,
+            spanY = spanY,
             cellIndices = cellIndices
         )
-    }
-
-    /**
-     * 기존 위젯들을 새로운 그리드에 맞게 마이그레이션
-     */
-    private fun migratePositionedWidgets(oldLayout: LayoutType, newLayout: LayoutType) {
-        val oldSpec = oldLayout.getGridCell()
-        val newSpec = newLayout.getGridCell()
-
-        val migratedWidgets = positionedWidgets.mapNotNull { positionedWidget ->
-            val oldIndices = positionedWidget.getCellIndices()
-            if (oldIndices.isEmpty()) return@mapNotNull null
-
-            // 셀 인덱스 마이그레이션
-            val newIndices = GridCalculator.migrateCellIndices(oldIndices, oldSpec, newSpec)
-            if (newIndices.isEmpty()) return@mapNotNull null
-
-            // 새로운 위치 계산 (첫 번째 셀 인덱스 기준)
-            val firstIndex = newIndices.first()
-
-            // 새로운 오프셋 계산은 UI에서 수행되므로 임시값 사용
-            positionedWidget
-        }
-
-        positionedWidgets.clear()
-        positionedWidgets.addAll(migratedWidgets)
     }
 
     fun addWidgetToCanvas(
@@ -312,42 +290,52 @@ class WidgetEditorViewModel @Inject constructor(
         canvasPosition: Offset, layoutBounds: LayoutBounds,
         selectedLayout: LayoutType
     ) {
-        //todo : Add 안됨.
-        addedWidget?.let { widget ->
-            val occupiedIndices = getOccupiedCells()
-            val gridSpec = selectedLayout.getGridCell()
-            val (startRow, startCol) = findFirstAvailablePosition(widget, gridSpec) ?: (0 to 0)
-            val widgetSizeInCells = widget.getSizeInCellsForLayout(
-                selectedLayout.name,
-                selectedLayout.getDivide()
-            )
-            val widgetWidthCells = widgetSizeInCells.first
-            val widgetHeightCells = widgetSizeInCells.second
-            val cellIndices = GridCalculator.calculateCellIndices(
-                startRow, startCol,
-                widgetWidthCells, widgetHeightCells, gridSpec
-            )
-            Log.i("heec.choi","addWidget $cellIndices $occupiedIndices")
-            if (cellIndices.any { it in occupiedIndices }) {
-                return
+        viewModelScope.launch {
+            addedWidget?.let { widget ->
+                val gridSpec = selectedLayout.getGridCell()
+                val occupiedIndices = getOccupiedCells(gridSpec = gridSpec)
+                Log.i("heec.choi", "Occupied indices : $occupiedIndices $gridSpec")
+                val (startRow, startCol) = findFirstAvailablePosition(widget, gridSpec) ?: (0 to 0)
+                val widgetSizeInCells = widget.getSizeInCellsForLayout(
+                    selectedLayout.name,
+                    selectedLayout.getDivide()
+                )
+                val widgetWidthCells = widgetSizeInCells.first
+                val widgetHeightCells = widgetSizeInCells.second
+                Log.i(
+                    "heec.choi",
+                    "addWidget1 $startCol $startRow $widgetWidthCells $widgetHeightCells"
+                )
+
+                val cellIndices = GridCalculator.calculateCellIndices(
+                    startRow, startCol,
+                    widgetWidthCells, widgetHeightCells, gridSpec
+                )
+                Log.i("heec.choi", "addWidget2 $cellIndices")
+                if (cellIndices.any { it in occupiedIndices }) {
+                    return@launch
+                }
+
+                val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
+                val adjustedOffset = GridCalculator.calculateWidgetOffset(
+                    startRow,
+                    startCol,
+                    widgetWidthCells,
+                    widgetHeightCells,
+                    widgetWidthPx,
+                    widgetHeightPx,
+                    layoutBounds, gridSpec, canvasPosition
+                )
+
+                addWidgetToFirstAvailablePosition(
+                    widget, adjustedOffset, startRow, startCol,
+                    widgetWidthCells, widgetHeightCells,
+                    cellIndices
+                )
+                addedWidget = null
             }
-
-            val (widgetWidthPx, widgetHeightPx) = widget.toPixels(density, selectedLayout)
-            val adjustedOffset = GridCalculator.calculateWidgetOffset(
-                startRow,
-                startCol,
-                widgetWidthCells,
-                widgetHeightCells,
-                widgetWidthPx,
-                widgetHeightPx,
-                layoutBounds, gridSpec, canvasPosition
-            )
-
-            addWidgetToFirstAvailablePosition(
-                widget, adjustedOffset, startRow, startCol, cellIndices
-            )
-            addedWidget = null
         }
+
     }
 
     /**
