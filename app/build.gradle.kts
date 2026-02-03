@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.androidx.compose.remote.creation)
     implementation(libs.androidx.compose.remote.creation.compose)
     implementation(libs.androidx.compose.remote.player.view)
+    implementation(libs.androidx.compose.remote.player.core)
+    implementation(libs.androidx.compose.remote.player.compose)
     
     // Hilt
     implementation(libs.hilt.android)

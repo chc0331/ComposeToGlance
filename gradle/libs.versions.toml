@@ -39,6 +39,8 @@ androidx-compose-remote-creation-android = { group = "androidx.compose.remote", 
 androidx-compose-remote-creation-compose = { group = "androidx.compose.remote", name = "remote-creation-compose", version.ref = "composeRemote" }
 androidx-compose-remote-player-core = { group = "androidx.compose.remote", name = "remote-player-core", version.ref = "composeRemote" }
 androidx-compose-remote-player-view = { group = "androidx.compose.remote", name = "remote-player-view", version.ref = "composeRemote" }
+androidx-compose-remote-player-compose = {group="androidx.compose.remote", name="remote-player-compose", version.ref = "composeRemote"}
+
 protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
