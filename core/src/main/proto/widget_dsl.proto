@@ -9,6 +9,7 @@ option java_multiple_files = true;
 enum WidgetType {
   WIDGET_TYPE_GLANCE = 0;  // Default type
   WIDGET_TYPE_REMOTE_VIEWS = 1;
+  WIDGET_TYPE_REMOTE_COMPOSE = 2;
 }
 
 // Widget mode (normal vs preview)

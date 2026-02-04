@@ -1,5 +1,7 @@
 package com.widgetworld.widgetcomponent.component
 
+import androidx.compose.remote.creation.compose.layout.RemoteComposable
+import androidx.compose.runtime.Composable
 import com.widgetworld.widgetcomponent.SizeType
 import com.widgetworld.widgetcomponent.WidgetCategory
 import com.widgetworld.widgetcomponent.WidgetComponentRegistry
@@ -75,4 +77,12 @@ abstract class WidgetComponent : ViewIdProvider {
      * * @return ComponentDataStore 또는 null
      */
     open fun getDataStore(): ComponentDataStore<*>? = null
+
+    val useRemoteCompose: Boolean = false
+
+    @RemoteComposable
+    @Composable
+    fun RcContent() {
+
+    }
 }
